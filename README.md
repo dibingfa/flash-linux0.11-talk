@@ -10,7 +10,7 @@
 
 一些共性的问题在这里：[FAQ](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E8%AF%BB%E8%80%85%E5%88%86%E4%BA%AB)
 
-一些读者们自己的分享和见解：[读者分享]()
+一些读者们自己的分享和见解：[读者分享](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E8%AF%BB%E8%80%85%E5%88%86%E4%BA%AB)
 
 ### 系列目录：
 
