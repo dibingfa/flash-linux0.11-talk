@@ -18,6 +18,8 @@
 
 **还有个有趣的事情大家可以共同参与进来**：[Intel手册翻译计划](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/Intel%20%E6%89%8B%E5%86%8C%E4%B8%AD%E6%96%87%E7%89%88)
 
+---
+
 **架构图**
 
 ![架构图](https://user-images.githubusercontent.com/25787738/141248934-7b48b96c-dbb6-4f9e-a438-6f6f414c8113.png)
