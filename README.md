@@ -8,7 +8,7 @@
 
 一些非必须的资料可以备着：[资料包](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E4%B8%80%E4%BA%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E8%B5%84%E6%96%99)
 
-一些共性的问题在这里：[FAQ](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E8%AF%BB%E8%80%85%E5%88%86%E4%BA%AB)
+一些共性的问题在这里：[FAQ](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/FAQ)
 
 一些读者们自己的分享和见解：[读者分享](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E8%AF%BB%E8%80%85%E5%88%86%E4%BA%AB)
 
