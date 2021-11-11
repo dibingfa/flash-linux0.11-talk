@@ -2,6 +2,8 @@
 
 原系列地址：关注公众号 低并发编程
 
+![qrcode_for_gh_711c6efc893a_258](https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg)
+
 发文时间：每周一和每周四
 
 开篇词请看这里：[闪客新系列！你管这破玩意叫操作系统源码](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
