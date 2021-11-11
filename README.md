@@ -1,5 +1,10 @@
 ## 你管这破玩意叫操作系统源码 —— 像小说一样品读 Linux 0.11 核心代码
 
+<p align='center'>
+<a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客sun-2277cc.svg?style=flat-square&logo=GitHub"></a>
+<a href="https://i.loli.net/2020/10/10/MhRTyUKfXZOlQYN.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-低并发编程-009977.svg?style=flat-square&logo=WeChat"></a>
+</p>
+
 **目标**：带大家把 Linux 0.11 核心代码与操作系统的设计思想啃下来
 
 **首发地址**：关注公众号 低并发编程
@@ -28,16 +33,16 @@
 
 ### 已发布文章：
 
-- **第一部分：进入内核前的苦力活**
+* **第一部分：进入内核前的苦力活**
 
-   - [第一回 最开始的两行代码](https://mp.weixin.qq.com/s/LIsqRX51W7d_yw-HN-s2DA)
+   * [第一回 最开始的两行代码](https://mp.weixin.qq.com/s/LIsqRX51W7d_yw-HN-s2DA)
 
-- **第二部分：大战前期的初始化工作**
+* **第二部分：大战前期的初始化工作**
 
-- **第三部分：一个新进程的诞生**
+* **第三部分：一个新进程的诞生**
 
-- **第四部分：shell 程序的到来**
+* **第四部分：shell 程序的到来**
 
-- **第五部分：从一个命令的执行看操作系统各模块的运作**
+* **第五部分：从一个命令的执行看操作系统各模块的运作**
 
-- **第六部分：操作系统哲学与思想**
+* **第六部分：操作系统哲学与思想**
