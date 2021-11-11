@@ -16,7 +16,7 @@
 
 第一部分：进入内核前的苦力活
 
-- 第一回 (最开始的两行代码)[https://mp.weixin.qq.com/s/LIsqRX51W7d_yw-HN-s2DA]
+- [第一回 最开始的两行代码](https://mp.weixin.qq.com/s/LIsqRX51W7d_yw-HN-s2DA)
 
 第二部分：大战前期的初始化工作
 
