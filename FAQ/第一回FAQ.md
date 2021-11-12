@@ -11,3 +11,8 @@
 当然，这只是个规定而已，具体见 Intel 手册 Volume 1 Chapter 1.3.1 Bit and Byte Order，这里还有个小端序的知识点，是这个问题的延伸。
 
 ![image](https://user-images.githubusercontent.com/25787738/141405075-282ba4df-31e7-4c31-ab58-533e29994a02.png)
+
+### 昨天的两行代码后执行完后，且在ds没有更改之前，是不是以后的执行的每一条指令的物理地址都等于0x07c0<<4 + 偏移地址？
+这个问题本身错了，在于不清楚 ds 寄存器只是数据访问的基地址，而不是代码。具体见 Intel 手册 Volume-1 3.4.2 Segment Registers，里面清晰表达了访问代码、数据、栈用的都是哪个段寄存器。
+
+![image](https://user-images.githubusercontent.com/25787738/141405471-44a45263-df37-418a-bc47-3bf1f3729f64.png)
