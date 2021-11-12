@@ -1,0 +1,976 @@
+#!gawk -f
+# dsw2mak.awk
+#
+# An Awk script that generates a unix Makefile from a
+# Microsoft Developer Studio workspace file.
+#
+# Copyright (C) 2001  José Fonseca
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License, http://www.gnu.org/copyleft/gpl.html
+# for more details.
+#
+# José Fonseca <j_r_fonseca@yahoo.co.uk>
+#
+# Features:
+#   - generation of GUI applications (including resource files), 
+#     DLLs, console applications and static libraries
+#   - translations of the most common compiler and linker options
+#   - conversion of workspace files (.dsw) and all associated 
+#     projects files (.dsp) generating all necessary Makefiles
+#   - handling of nested !IF, !ELSEIF and !ENDIF maintaining the 
+#     same build configurations as the original project
+#   - automatic generation of the dependencies
+#
+# Example:
+#   gawk -f dsw2mak.awk MyApp.dsw
+#
+# Notes:
+#   - Make sure that both this script and the input files are in
+#     a line ending convention that gawk version in your system
+#     can handle.
+#   - If an option is not handled by this script don't edit all 
+#     generate Makefiles by hand. Add support for the option in 
+#     this script and submit your additions to the author.
+#
+# Changelog (incomplete):
+#   2001-02-18: José Fonseca
+#     Improved linker libraries and options handling.
+#     Debug output.
+#     Better handling of custom builds
+#
+#   2001-02-15: José Fonseca
+#     Improved C compiler options handling.
+#     More verbose warning output.
+#
+#   2001-02-14: José Fonseca
+#     Added comments to the source code.
+#
+
+
+# check and remove unnecessary quotes from a string
+function fixquotes(str) {
+	if(str ~ /^"[^[:blank:]]+"$/) {
+		sub(/^"/, "", str);
+		sub(/"$/, "", str);
+	}
+	
+	return str
+}
+
+# fixes a path string
+function fixpath(path) {
+	# remove leading and trainling whitespaces
+	sub(/^[[:blank:]]+/, "", path);
+	sub(/[[:blank:]]+$/, "", path);
+	
+	# check and remove unnecessary quotes
+	path = fixquotes(path)
+	
+	# change the forward slashes to backslashes
+	gsub(/\\/, "/", path)
+	
+	# remove reduntant ./ directories
+	gsub(/^(\.\/)+/, "", path)
+	gsub(/^\/(\.\/)+/, "", path)
+	
+	return path
+}
+
+# get the base directory from a path
+function basedir(path) {
+	# remove leading and trainling whitespaces
+	sub(/^[[:blank:]]+/, "", path);
+	sub(/[[:blank:]]+$/, "", path);
+	
+	# remove the quotes
+	if(path ~ /^".+"$/) {
+		sub(/^"/, "", path);
+		sub(/"$/, "", path);
+	}
+	
+	# remove the leading path
+	sub(/(^|[\/\\:])[^\/\\:]*$/, "", path)
+	
+	# add quotes if needed
+	if(path ~ /[[:blank:]]/)
+		path = "\"" path "\""
+	
+	return path
+}
+
+# get the filename from a path
+function basefile(path) {
+	# remove leading and trainling whitespaces
+	sub(/^[[:blank:]]+/, "", path);
+	sub(/[[:blank:]]+$/, "", path);
+	
+	# remove the quotes
+	if(path ~ /^".+"$/) {
+		sub(/^"/, "", path);
+		sub(/"$/, "", path);
+	}
+	
+	# remove the trailing path
+	sub(/^.*[\/\\:]/, "", path)
+	
+	# add quotes if needed
+	if(path ~ /[[:blank:]]/)
+		path = "\"" path "\""
+		
+	return path
+}
+
+# skip lines until matching a given regular expression
+# NOTE: not used but it could be eventually handy
+function skip(regexp, infile, ret) {
+	while((ret = getline < infile) == 1 && $0 !~ regexp) {}
+	
+	return ret
+}
+
+# parses a project file (.dsp) specified by 'infile' and generates a makefile to 'outfile'
+function parse_dsp(infile, outfile, i) {
+	print infile
+	
+	# this specifies verbose debug output
+	debug = 0
+
+	# this specifies a prefix to the binutils and gcc binaries
+	#prefix = "mingw32-"
+	prefix = ""
+
+	# this specifies the name of the 'rm -f' or equivalent command
+	rm = "rm -f"
+
+	# check for a bad file
+	if((getline < infile) == -1) { 
+		print infile ": " ERRNO
+		return
+	}
+	
+	# Strip DOS line-endings
+	gsub(/\r$/, "")
+	
+	# count the number of lines
+	inline = 1
+	
+	# print the Makefile header
+	print "# Makefile - " basefile(infile) > outfile
+	print "" > outfile
+
+	# this specifies the default name for the dependencies file
+	dependencies = ".dependencies"
+
+	# attemp to get the project name
+	if(/^# Microsoft Developer Studio Project File/) {
+		name = gensub(/^# Microsoft Developer Studio Project File - Name="(.*)".*$/, "\\1", "1")
+		dependencies = name ".dep"
+	}
+
+	# main loop
+	while((getline < infile) == 1) {
+		# Strip DOS line-endings
+		gsub(/\r$/, "")
+		
+		# increment the number of lines
+		inline = inline + 1
+		
+		# catch the target type definition
+		if(/^# TARGTYPE/) {
+			if (/[[:space:]]0x0101$/) {
+				# Win32 (x86) Application
+				exeflag = 1
+				dllflag = 0
+				libflag = 0
+			}
+			if (/[[:space:]]0x0102$/) {
+				# Win32 (x86) Dynamic-Link Library
+				exeflag = 0
+				dllflag = 1
+				libflag = 0
+			}
+			if (/[[:space:]]0x0103$/) {
+				# Win32 (x86) Console Application
+				exeflag = 1
+				dllflag = 0
+				libflag = 0
+			}
+			if (/[[:space:]]0x0104$/) {
+				# Win32 (x86) Static Library
+				exeflag = 0
+				dllflag = 0
+				libflag = 1
+			}
+			continue
+		}
+		
+		# catch the default configuration definition
+		if(/^CFG=/) {
+			print "ifndef CFG" > outfile
+			print > outfile
+			print "endif" > outfile
+		}
+		
+		# deal with the preprocessor commands
+		if(/^!/) {
+			# as GNU make doesn't have the '!ELSEIF' equivalent we have to use nested 'if ... else .. endif' to obtain the same effect
+			# a stack is used to keep track of the current nested level
+		
+			if(/^!IF/) {
+				$0 = gensub(/^!IF[[:space:]]+(.+)[[:space:]]*==[[:space:]]*(.+)$/, "ifeq \\1 \\2", "1")
+				$0 = gensub(/^!IF[[:space:]]+(.+)[[:space:]]*!=[[:space:]]*(.+)$/, "ifneq \\1 \\2", "1")
+				print > outfile
+				stacktop += 1
+				stack[stacktop] = 1
+				continue
+			}
+			if(/^!ELSE$/) {
+				print "else"
+			}
+			if(/^!ELSEIF/) {
+				$0 = gensub(/^!ELSEIF[[:space:]]+(.+)[[:space:]]*==[[:space:]]*(.+)$/, "else\nifeq \\1 \\2", "1")
+				$0 = gensub(/^!ELSEIF[[:space:]]+(.+)[[:space:]]*!=[[:space:]]*(.+)$/, "else\nifneq \\1 \\2", "1")
+				print > outfile
+				stack[stacktop] += 1
+				continue
+			}
+			if(/^!ENDIF[[:space:]]*$/) {
+				for (i = 0; i < stack[stacktop]; i++)
+					print "endif" > outfile
+				stacktop -= 1
+				continue
+			}
+		}
+		
+		# catch the C++ compiler definition
+		if(/^CPP=/) {
+			print "CC=" prefix "gcc" > outfile
+			print "CFLAGS=" > outfile
+			print "CXX=" prefix "g++" > outfile
+			print "CXXFLAGS=$(CFLAGS)" > outfile
+			
+			continue
+		}
+		
+		# catch the C++ compiler flags
+		if(/^# ADD CPP /) {
+			if (debug)
+				print infile ":" inline ": " $0
+		
+			# extract the flags from the line
+			cflags = $0
+			sub(/^# ADD CPP /, "", cflags)
+			
+			split(" " cflags, options, /[[:space:]]+\//)
+			
+			cflags = ""
+			for(i in options) {
+				option = options[i]
+			
+				# translate the options
+				# some of the translations effectively remove the option (and its arguments) since there is no translation equivalent
+				
+				if (option == "") {
+				} else if(option ~ /^nologo$/) {
+					# Suppress Startup Banner and Information Messages
+					option = "" 
+				} else if (option ~ /^W0$/) {
+					# Turns off all warning messages
+					option = "-w"
+				} else if (option ~ /^W[123]$/) {
+					# Warning Level
+					option = "-W"
+				} else if (option ~ /^W4$/) {
+					# Warning Level
+					option = "-Wall"
+				} else if (option ~ /^WX$/) {
+					# Warnings As Errors
+					option = "-Werror"
+				} else if (option ~ /^Gm$/) {
+					# Enable Minimal Rebuild
+					option = "" 
+				} else if (option ~ /^GX$/) {
+					# Enable Exception Handling
+					option = "-fexceptions" 
+				} else if (option ~ /^Z[d7iI]$/) {
+					# Debug Info
+					option = "-g" 
+				} else if (option ~ /^Od$/) {
+					# Disable Optimizations
+					option = "-O0" 
+				} else if (option ~ /^O1$/) {
+					# Minimize Size
+					option = "-Os" 
+				} else if (option ~ /^O2$/) {
+					# Maximize Speed
+					option = "-O2" 
+				} else if (option ~ /^Ob0$/) {
+					# Disables inline Expansion 
+					option = "-fno-inline"
+				} else if (option ~ /^Ob1$/) {
+					# In-line Function Expansion
+					option = "" 
+				} else if (option ~ /^Ob2$/) {
+					# auto In-line Function Expansion
+					option = "-finline-functions" 
+				} else if (option ~ /^Oy$/) {
+					# Frame-Pointer Omission
+					option = "-fomit-frame-pointer" 
+				} else if (option ~ /^GZ$/) {
+					# Catch Release-Build Errors in Debug Build
+					option = "" 
+				} else if (option ~ /^M[DLT]d?$/) {
+					# Use Multithreaded Run-Time Library
+					option = "" 
+				} else if (option ~ /^D/) {
+					# Preprocessor Definitions
+					gsub(/^D[[:space:]]*/, "", option)
+					option = "-D" fixquotes(option)
+				} else if (option ~ /^I/) {
+					# Additional Include Directories
+					gsub(/^I[[:space:]]*/, "", option)
+					option = "-I" fixpath(option)
+				} else if (option ~ /^U/) {
+					# Undefines a previously defined symbol
+					gsub(/^U[[:space:]]*/, "", option)
+					option = "-U" fixquotes(option)
+				} else if (option ~ /^Fp/) {
+					# Name .PCH File
+					option = "" 
+				} else if (option ~ /^F[Rr]/) {
+					# Create .SBR File
+					option = "" 
+				} else if (option ~ /^YX$/) {
+					# Automatic Use of Precompiled Headers
+					option = "" 
+				} else if (option ~ /^FD$/) {
+					# Generate File Dependencies
+					option = "" 
+				} else if (option ~ /^c$/) {
+					# Compile Without Linking
+					# this option is always present and is already specified in the suffix rules
+					option = "" 
+				} else if (option ~ /^GB$/) {
+					# Blend Optimization
+					option = "-mcpu=pentiumpro -D_M_IX86=500"
+				} else if (option ~ /^G6$/) {
+					# Pentium Pro Optimization
+					option = "-march=pentiumpro -D_M_IX86=600"
+				} else if (option ~ /^G5$/) {
+					# Pentium Optimization
+					option = "-mcpu=pentium -D_M_IX86=500"
+				} else if (option ~ /^G3$/) {
+					# 80386 Optimization
+					option = "-mcpu=i386 -D_M_IX86=300"
+				} else if (option ~ /^G4$/) {
+					# 80486 Optimization
+					option = "-mcpu=i486 -D_M_IX86=400"
+				} else if (option ~ /^Yc/) {
+					# Create Precompiled Header
+					option = ""
+				} else if (option ~ /^Yu/) {
+					# Use Precompiled Header
+					option = ""
+				} else if (option ~ /^Za$/) {
+					# Disable Language Extensions
+					option = "-ansi"
+				} else if (option ~ /^Ze$/) {
+					# Enable Microsoft Extensions
+					print infile ":" inline ": /" option ": Enable Microsoft Extensions option ignored" > "/dev/stderr"
+					option = "" 
+				} else if (option ~ /^Zm[[:digit:]]+$/) {
+					# Specify Memory Allocation Limit
+					option = "" 
+				} else if (option ~ /^Zp1$/) {
+					# Packs structures on 1-byte boundaries
+					option = "-fpack-struct" 
+				} else if (option ~ /^Zp(2|4|8|16)?$/) {
+					# Struct Member Alignment
+					option = "" 
+					print infile ":" inline ": /" option ": Struct Member Alignment option ignored" > "/dev/stderr"
+				} else {
+					print infile ":" inline ": /" option ": C compiler option not implemented" > "/dev/stderr"
+					option = ""
+				}
+				
+				if (option != "") {
+					if(cflags == "")
+						cflags = option
+					else
+						cflags = cflags " " option
+				}
+					
+			}
+			
+			# change the slashes
+			gsub(/\\/, "/", cflags)
+			
+			print "CFLAGS+=" cflags > outfile
+			
+			if (debug)
+				print outfile ": " "CFLAGS+=" cflags
+			
+			continue
+		}
+		
+		# catch the linker definition
+		if(/^LINK32=/) {
+			if (exeflag)
+				print "LD=$(CXX) $(CXXFLAGS)" > outfile
+			if (dllflag)
+				print "LD=" prefix "dllwrap" > outfile
+			
+			print "LDFLAGS=" > outfile
+			
+			continue
+		}
+		
+		# catch the linker flags
+		if(/^# ADD LINK32 /) {
+			if (debug)
+				print infile ":" inline ": " $0
+				
+			# extract the flags from the line
+			ldflags = $0
+			sub(/^# ADD LINK32 /, "", ldflags)
+			
+			split(ldflags, options, /[[:space:]]+\//)
+			
+			# attempts to get the used libraries to a seperate variable
+			libs = options[1]
+			libs = gensub(/([[:alnum:]/\\_-]+)\.lib/, "-l\\1", "g", libs)
+			delete options[1]
+			
+			ldflags = ""
+			for(i in options) {
+				option = options[i]
+			
+				# translate the options
+				# some of the translations effectively remove the option (and its arguments) since there is no translation equivalent
+				if (option == "") {
+				} else if (option ~ /^base:/) {
+					# Base Address
+					gsub(/^base:/, "--image-base ", option)
+				} else if (option ~ /^debug$/) {
+					# Generate Debug Info
+					option = ""
+				} else if (option ~ /^dll$/) {
+					# Build a DLL
+					dllflag = 1
+				
+					# remove this option since the DLL output option is handled by the suffix rules
+					option = ""
+				} else if (option ~ /^incremental:[[:alpha:]]+$/) {
+					# Link Incrmentally
+					option = ""
+				} else if (option ~ /^implib:/) {
+					# Name import library
+					gsub(/^implib:/, "", option)
+					option = "--implib " fixpath(gensub(/([[:alnum:]_-]+)\.lib/, "lib\\1.a", "g", option))
+				} else if (option ~ /^libpath:/) {
+					# Additional Libpath
+					gsub(/^libpath:/, "", option)
+					option = "-L" fixpath(option)
+				} else if (option ~ /^machine:[[:alnum:]]+$/) {
+					# Specify Target Platform
+					option = ""
+				} else if (option ~ /^map/) {
+					# Generate Mapfile
+					if (option ~ /^map:/)
+						gsub(/^map:/, "-Map ", option)
+					else
+						option = "-Map " name ".map"
+				} else if(option ~ /^nologo$/) {
+					# Suppress Startup Banner and Information Messages
+					option = "" 
+				} else if (option ~ /^out:/) {
+					# Output File Name
+					target = fixpath(gensub(/out:("[^"]+"|[^[:space:]]+).*$/, "\\1", "1", option))
+					
+					print "TARGET=" target > outfile
+					
+					# remove this option since the output option is handled by the suffix rules
+					option = ""
+				} else if (option ~ /^pdbtype:/) {
+					# Program Database Storage
+					option = ""
+				} else if (option ~ /^subsystem:/) {
+					# Specify Subsystem
+					gsub(/^subsystem:/, "-Wl,--subsystem,", option)	
+				} else if (option ~ /^version:[[:digit:].]+$/) {
+					# Version Information
+					option = ""
+				} else {
+					print infile ":" inline ": /" option ": linker option not implemented" > "/dev/stderr"
+					option = ""
+				}
+				
+				if (option != "") {
+					if(ldflags == "")
+						ldflags = option
+					else
+						ldflags = ldflags " " option
+				}
+					
+			}
+			
+			# attempt to get the name of the target from the '/out:' option
+			if (ldflags ~ /\/out:/) {	# Output File Name
+			}
+			
+			# change the slashes
+			gsub(/\\/, "/", ldflags)
+						
+			print "LDFLAGS+=" ldflags > outfile
+			print "LIBS+=" libs > outfile
+			
+			if (debug) {
+				print outfile ": " "LDFLAGS+=" ldflags
+				print outfile ": " "LIBS+=" libs
+			}
+			
+			continue
+		}
+		
+		# catch the library archiver definition
+		if(/^LIB32=/) {
+			libflag = 1
+			
+			print "AR=" prefix "ar" > outfile
+			
+			continue
+		}
+
+		# catch the library archiver flags
+		if(/^# ADD LIB32 /) {
+			# extract the flags from the line
+			arflags = $0
+			sub(/^# ADD LIB32 /, "", arflags)
+			
+			# translate the options
+			gsub(/\/nologo[[:space:]]*/, "", arflags)		# Suppress Startup Banner and Information Messages
+			gsub(/\/machine:[[:alnum:]]+[[:space:]]*/, "", arflags)	# Specify Target Platform
+			
+			# attempt to get the name of the target from the '/out:' option
+			if (arflags ~ /\/out:/) {
+				target = fixpath(gensub(/^.*\/out:(".*"|[^[:space:]]+).*$/, "\\1", "1", arflags))
+				target = basedir(target) "/lib" basefile(gensub(/(\.[^.]*)?$/, ".a", 1, target))
+				
+				print "TARGET=" target > outfile
+				
+				# remove this option since the output option is handled differentely
+				sub(/\/out:(".*"|[^[:space:]]+)/, "", arflags)
+			}
+			
+			# change the slashes
+			gsub(/\\/, "/", arflags)
+			
+			print "ARFLAGS=rus" > outfile
+			
+			continue
+		}
+		
+		# catch the resource compiler definition
+		if(/^RSC=/) {
+			print "RC=" prefix "windres -O COFF" > outfile
+			continue
+		}
+		
+		# handle the begin of the target definition
+		if(/^# Begin Target$/) {
+			print "" > outfile
+		
+			# print the default target name definition
+			print "ifndef TARGET" > outfile
+			if(exeflag)
+				print "TARGET=" name ".exe" > outfile
+			if(dllflag)
+				print "TARGET=" name ".dll" > outfile
+			if(libflag)
+				print "TARGET=lib" name ".a" > outfile
+			print "endif" > outfile
+			print "" > outfile
+		
+			# print the default target and the suffix rules
+			print ".PHONY: all" > outfile
+			print "all: $(TARGET)" > outfile
+			print "" > outfile
+			print "%.o: %.c" > outfile
+			print "\t$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<" > outfile
+			print "" > outfile
+			print "%.o: %.cc" > outfile
+			print "\t$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<" > outfile
+			print "" > outfile
+			print "%.o: %.cpp" > outfile
+			print "\t$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<" > outfile
+			print "" > outfile
+			print "%.o: %.cxx" > outfile
+			print "\t$(CXX) $(CXXFLAGS) $(CPPFLAGS) -o $@ -c $<" > outfile
+			print "" > outfile
+			print "%.res: %.rc" > outfile
+			print "\t$(RC) $(CPPFLAGS) -o $@ -i $<" > outfile
+			print "" > outfile
+		
+			# initialize some bookeeping variables
+			ngroups = 0	# number of groups in the target
+			nsources = 0	# number of isolated sources in the target
+			groupflag = 0	# state variable that indicates if we are inside or outside of a group definition
+			
+			continue
+		}
+		
+		# handle the end of a target definition
+		if(/^# End Target$/) {
+			# print the sources files definition that includes...
+			printf "SRCS=" > outfile
+			
+			# ... the sources groups variables...
+			for (i = 0; i < ngroups; i++)
+				printf "$(%s) ", groups[i] > outfile
+			
+			# ... and isolated sources not included in any group
+			if (nsources) {
+				print " \\" > outfile
+				for (i = 0; i < nsources - 1; i++)
+					print "\t" sources[i] " \\" > outfile
+				print "\t" sources[i] > outfile
+			}
+			else
+				print "" > outfile
+			print "" > outfile
+		
+			# define the objects automatically from the sources in the Makefile
+			print "OBJS=$(patsubst %.rc,%.res,$(patsubst %.cxx,%.o,$(patsubst %.cpp,%.o,$(patsubst %.cc,%.o,$(patsubst %.c,%.o,$(filter %.c %.cc %.cpp %.cxx %.rc,$(SRCS)))))))" > outfile
+			print "" > outfile
+		
+			# print the target rule, according with the type of target
+			print "$(TARGET): $(OBJS)" > outfile
+			if (exeflag)
+				print "\t$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)" > outfile
+			if (dllflag)
+				print "\t$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)" > outfile
+			if (libflag)
+				print "\t$(AR) $(ARFLAGS) $@ $(OBJS)" > outfile
+			print "" > outfile
+			
+			continue
+		}
+		
+		# gather groups of source files to put them in diferent variables in the Makefile
+		if(/^# Begin Group/) {
+			# get the group name
+			groupname = gensub(/^# Begin Group "(.*)"$/, "\\1", "1")
+			
+			# take the variable name as the upper case of the group name and changing the spaces to underscores
+			groupvarname = toupper(groupname)
+			gsub(/[[:space:]]/, "_", groupvarname)
+			
+			# add this information to the groups array
+			groups[ngroups] = groupvarname
+			ngroups += 1
+		
+			# initialize some bookeeping variables
+			ngsources = 0	# number of sources in this group
+			
+			# signal that we are inside a group
+			groupflag = 1
+			
+			continue
+		}
+		if(/^# End Group$/) {
+			# print the group source variable definition
+			printf "%s=", groupvarname > outfile
+			if (ngsources) {
+				for (i = 0; i < ngsources; i++)
+					printf " \\\n\t%s", gsources[i] > outfile
+			}
+			print "" > outfile
+			print "" > outfile
+			
+			# signal that we are outside a group
+			groupflag = 0
+			
+			continue
+		}
+		
+		if (/^SOURCE=/) {
+			# get the source file name
+			source = fixpath(gensub(/^SOURCE=(.*)$/, "\\1", "1"))
+			
+			# add to the group sources or isolated sources according we are in a group or not
+			if (groupflag)
+			{
+				gsources[ngsources] = source
+				ngsources += 1
+			}
+			else
+			{
+				sources[nsources] = source
+				nsources += 1
+			}
+			
+			continue
+		}
+		
+		# attempts to handle custom builds definition
+		if(/^# Begin Custom Build/) {
+			print infile ":" inline ": " source ": Custom Build" > "/dev/stderr"
+			
+			# signal we are inside a custom build definition
+			customflag = 1
+			ncustomvars = 0
+			
+			continue
+		}
+		if(/^# End Custom Build/) {
+			# signal we are leaving a custom build definition
+			customflag = 0
+			
+			continue
+		}
+		if(customflag) {
+			if (debug)
+				print infile ": " $0
+				
+			# MSDS handles customs builds defining a series of variables for the user convenience
+			# handle their definition ...
+			if($0 ~ /^IntDir=/) {
+				gsub(/^IntDir=/, "", $0)
+				Intdir = fixpath($0)
+				continue
+			}
+			if($0 ~ /^IntPath=/) {
+				gsub(/^IntPath=/, "", $0)
+				IntPath = fixpath($0)
+				continue
+			}
+			if($0 ~ /^OutDir=/) {
+				gsub(/^OutDir=/, "", $0)
+				OutDir_ = fixpath($0)
+				OutDir = "."
+				continue
+			}
+			if($0 ~ /^InputDir=/) {
+				gsub(/^InputDir=/, "", $0)
+				InputDir = fixpath($0)
+				continue
+			}
+			if($0 ~ /^InputName=/) {
+				gsub(/^InputName=/, "", $0)
+				InputName = fixquotes($0)
+				continue
+			}
+			if($0 ~ /^InputPath=/) {
+				gsub(/^InputPath=/, "", $0)
+				InputPath = fixpath($0)
+				continue
+			}
+			if($0 ~ /^TargetDir=/) {
+				gsub(/^TargetDir=/, "", $0)
+				TargetDir_ = fixpath($0)
+				TargetDir = "."
+				continue
+			}
+			if($0 ~ /^TargetPath=/) {
+				gsub(/^TargetPath=/, "", $0)
+				gsub(TargetDir_, ".", $0)
+				TargetPath = fixpath($0)
+				continue
+			}
+			
+			# ... and substitute them in the rules
+			gsub(/\$\(IntDir\)/, IntDir)
+			gsub(/\$\(IntPath\)/, IntPath)
+			gsub(/\$\(OutDir\)/, OutDir)
+			gsub(/\$\(InputDir\)/, InputDir)
+			gsub(/\$\(InputName\)/, InputName)
+			gsub(/\$\(InputPath\)/, InputPath)
+			gsub(/\$\(TargetDir\)/, TargetDir)
+			gsub(/\$\(TargetPath\)/, TargetPath)
+			
+			gsub(/\$\(SOURCE\)/, source)
+			gsub(/"\$\(INTDIR\)"[[:space:]]*/, "")
+			gsub(/"\$\(OUTDIR\)"[[:space:]]*/, "")
+			
+			# do a serie of generic actions to convert the rule
+			gsub(/^   /, "\t")
+			gsub(/\\/, "/")
+			gsub(/\/$/, "\\")
+			gsub(/\.obj/, ".o")
+			
+			print > outfile
+			
+			if (debug)
+				print outfile ": " $0
+		}
+	}
+
+	# print the 'clean' target rule
+	print ".PHONY: clean" > outfile
+	print "clean:" > outfile
+	print "\t-" rm " $(OBJS) $(TARGET) " dependencies > outfile
+	print "" > outfile
+
+	# print the 'depends' target rule for automatic dependencies generation
+	print ".PHONY: depends" > outfile
+	print "depends:" > outfile
+	print "\t-$(CXX) $(CXXFLAGS) $(CPPFLAGS) -MM $(filter %.c %.cc %.cpp %.cxx,$(SRCS)) > " dependencies> outfile
+	print "" > outfile
+	print "-include " dependencies > outfile
+	print "" > outfile
+	
+	# close the files
+	close(outfile)
+	close(infile)
+}
+
+# parses a workpace file (.dsw) specified by 'infile' and generates a makefile to 'outfile'
+function parse_dsw(infile, outfile, i)
+{
+	print infile
+	
+	# print the Makefile header
+	print "# Makefile - " basefile(infile) > outfile
+	print "" > outfile
+
+	# initialize the number of projects counter
+	nprojects = 0
+	
+	# main loop
+	while((getline < infile) == 1) {
+		# catch a project definition
+		if(/^Project:/) {
+			# increment the project counter
+			project = nprojects
+			nprojects++
+
+			# extract the project name and filename
+			project_name[project] = fixpath(gensub(/^Project:[[:blank:]]+(.*)=(.*)[[:blank:]]+-[[:blank:]]+.*$/, "\\1", 1))
+			project_file[project] = fixpath(gensub(/^Project:[[:blank:]]+(.*)=(.*)[[:blank:]]+-[[:blank:]]+.*$/, "\\2", 1))
+			
+			# check for a .dsp file extension
+			if(project_file[project] ~ /\.[Dd][Ss][Pp]$/) {
+				# create the output filename by renaming the file extension from .dsp to .mak
+				project_makefile[project] = project_file[project]
+				sub(/(\.[^.]*)?$/, ".mak", project_makefile[project])
+			}
+			else
+				project_makefile[project] = ""
+		
+			# initialize the project dependencies
+			project_dependencies[project] = ""
+
+			continue
+		}
+		
+		# catch a project dependency marker
+		if(project && /^{{{$/) {
+			# read dependencies until the end marker
+			while((getline < infile) == 1 && !/^}}}$/)
+				if(/^[[:blank:]]*Project_Dep_Name[[:blank:]]+/)
+					project_dependencies[project] = project_dependencies[project] " " fixpath(gensub(/^[[:blank:]]*Project_Dep_Name[[:blank:]]+(.*)$/, "\\1", 1))
+					
+			continue
+		}
+		
+		# catch other (perhaps important) section definitions and produce a warning
+		if(/^[[:alpha:]]+:/)
+		{
+			project = 0
+			print infile ": " gensub(/^([[:alpha:]]+):/, "\\1", 1) ": unknown section" > "/dev/stderr"
+		}
+	}
+
+	# print the default target rule
+	print ".PHONY: all" > outfile
+	printf "all:" > outfile
+	for(i = 0; i < nprojects; i++)
+		printf " \\\n\t%s", project_name[i] > outfile
+	print "" > outfile
+	print "" > outfile		
+
+	# print the rules for each project target
+	for(i = 0; i < nprojects; i++) {
+		print ".PHONY: " project_name[i] > outfile
+		print project_name[i] ":" project_dependencies[i] > outfile
+		if(project_makefile[i] != "") {
+			if(basedir(project_makefile[i]) == "")
+				print "\t$(MAKE) -f " project_makefile[i] > outfile
+			else
+				print "\t$(MAKE) -C " basedir(project_makefile[i]) " -f " basefile(project_makefile[i]) > outfile
+		}
+		print "" > outfile
+	}
+
+	# print the 'clean' target rule
+	print ".PHONY: clean" > outfile
+	print "clean:" > outfile
+	for(i = 0; i < nprojects; i++)
+		if(project_makefile[i] != "") {
+			if(basedir(project_makefile[i]) == "")
+				print "\t$(MAKE) -f " project_makefile[i] " clean" > outfile
+			else
+				print "\t$(MAKE) -C " basedir(project_makefile[i]) " -f " basefile(project_makefile[i]) " clean" > outfile
+		}
+	print "" > outfile
+
+	# print the 'depends' target rule for automatic dependencies generation
+	print ".PHONY: depends" > outfile
+	print "depends:" > outfile
+	for(i = 0; i < nprojects; i++)
+		if(project_makefile[i] != "") {
+			if(basedir(project_makefile[i]) == "")
+				print "\t$(MAKE) -f " project_makefile[i] " depends" > outfile
+			else
+				print "\t$(MAKE) -C " basedir(project_makefile[i]) " -f " basefile(project_makefile[i]) " depends" > outfile
+		}
+	print "" > outfile
+
+	close(outfile)
+	close(infile)
+
+	# parse every project file
+	for(i = 0; i < nprojects; i++)
+		if(project_makefile[i] != "") {
+			if(basedir(infile) == "")
+				parse_dsp(project_file[i], project_makefile[i])
+			else
+				parse_dsp(basedir(infile) "\\" project_file[i], basedir(infile) "\\" project_makefile[i])
+		}
+}
+
+# main program
+BEGIN {
+	print "dsw2mak.awk   Generates a Makefile from a .DSW/.DSP file   Jose Fonseca"
+	print ""
+	
+	# for each argument ...
+	for (i = 1; i < ARGC; i++) {
+		infile = ARGV[i]
+		
+		# determine whether is a workspace or a project file and parse it
+		if(infile ~ /\.[Dd][Ss][Ww]$/) {
+			# create the output filename by renaming the filename to Makefile
+			outfile = infile
+			sub(/[^\/\\:]+$/, "Makefile", outfile)
+			
+			parse_dsw(infile, outfile)
+		} else if(infile ~ /\.[Dd][Ss][Pp]$/) {
+			# create the output filename by renaming the file extension from .dsp to .mak
+			outfile = infile
+			sub(/(\.[^.]*)?$/, ".mak", outfile)
+			
+			parse_dsp(infile, outfile)
+		} else {
+			print infile ": unknown file format" > "/dev/stderr"
+		}
+	}
+}
