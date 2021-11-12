@@ -4,3 +4,10 @@
 ### 初始时 ds 指向了 0x07c0，那 cs 寄存器初始是多少？
 见 Intel 手册 Volume 3A Chapter 9 PROCESSOR MANAGEMENT AND INITIALIZATION
 ![image](https://user-images.githubusercontent.com/25787738/141229578-e6c75b45-4048-43ba-a5e7-6c8d9d0ae53c.png)
+
+### 请问一下这里0x7c00加上第一扇区512字节的内容，这里应该为0x8c00才对吧？
+这个问题在于没有理解两个事，一个是内存地址是表示 1 byte，并不是 1 bit。第二个是，一个内存地址是表示一个字节的低端位置，并不是高端位置。
+
+当然，这只是个规定而已，具体见 Intel 手册 Volume 1 Chapter 1.3.1 Bit and Byte Order，这里还有个小端序的知识点，是这个问题的延伸。
+
+![image](https://user-images.githubusercontent.com/25787738/141405075-282ba4df-31e7-4c31-ab58-533e29994a02.png)
