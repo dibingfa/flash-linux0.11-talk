@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>About the code</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Ideas for other sections"
+HREF="other.html"><LINK
+REL="NEXT"
+TITLE="Directory Structure"
+HREF="directory-structure.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="other.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="directory-structure.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="ABOUT-THE-CODE"
+></A
+>Chapter 2. About the code</H1
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="CODE-OVERVIEW"
+>2.1. Overview</A
+></H1
+><P
+>The initial versions of some sections in this chapter are based on a document
+written by Peter "Firefly" Lund. It was added and updated in January 2006.</P
+><P
+>The Bochs virtual PC consists of many pieces of hardware. At a bare minimum
+there are always a CPU, a PIT (Programmable Interval Timer), a PIC
+(Programmable Interrupt Controller), a DMA controller, some memory (this
+includes both RAM and BIOS ROMs), a video card (usually VGA), a keyboard port
+(also handles the mouse), an RTC with battery backed NVRAM, and some extra
+motherboard circuitry.</P
+><P
+>There might also be a NE2K ethernet card, a PCI controller, a Sound Blaster 16,
+an IDE controller (+ harddisks/CDROM), a SCSI controller (+ harddisks), a
+floppy controller, an APIC ..</P
+><P
+>There may also be more than one CPU.</P
+><P
+>Most of these pieces of hardware have their own C++ class - and if Bochs is
+configured to have more than one piece of a type of hardware, each will have
+its own object.</P
+><P
+>The pieces of hardware communicates over a couple of buses with each other -
+some of the things that the buses carry are reads and writes in memory space,
+reads and writes in I/O space, interrupt requests, interrupt acknowledges, DMA
+requests, DMA acknowledges, and NMI request/acknowledge. How that is simulated
+is explained later.<IMG
+SRC="../images/undercon.png"></P
+><P
+>Other important pieces of the puzzle are: the options object (reads/writes
+configuration files, can be written to and queried while Bochs is running) and
+the GUI object. There are many different but compatible implementations of the
+GUI object, depending on whether you compile for X (Unix/Linux), Win32,
+Macintosh (two versions: one for Mac OS X and one for older OS's), BeOS, Amiga,
+etc.</P
+><P
+>And then there is the supporting cast: debugger, config menu, panic handler,
+disassembler, tracer, instrumentation.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="other.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="directory-structure.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Ideas for other sections</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Directory Structure</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

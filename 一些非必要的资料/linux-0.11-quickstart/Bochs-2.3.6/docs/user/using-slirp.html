@@ -1,0 +1,357 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using the 'slirp' networking module</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuring and using a tuntap network interface"
+HREF="config-tuntap.html"><LINK
+REL="NEXT"
+TITLE="Using the 'socket' networking module"
+HREF="using-socket.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tuntap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-socket.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="USING-SLIRP"
+>8.12. Using the 'slirp' networking module</A
+></H1
+><P
+>Slirp is a software program that emulates a PPP, SLIP, or CSLIP connection to
+the Internet via a shell account. The original version has been written by
+Danny Gasparovski in 1995. It has been integrated in QEMU to provide user mode
+networking. Now a port of the QEMU Slirp implementation is available in Bochs.</P
+><P
+>Features and limitations:
+<P
+></P
+><UL
+><LI
+><P
+>Access to the internet and host network services without root/Administrator
+privileges or additional libraries.</P
+></LI
+><LI
+><P
+>Builtin DHCP and TFTP servers</P
+></LI
+><LI
+><P
+>Optional SMB support on Linux</P
+></LI
+><LI
+><P
+>ICMP traffic (ping) from guest to the host's network or the internet
+not supported</P
+></LI
+><LI
+><P
+>guest access from the host or external network disabled by default</P
+></LI
+></UL
+></P
+><P
+>This example shows how to use the 'slirp' module with the NE2000 adapter. The line
+is very similar for the E1000 or PCI Pseudo NIC.
+<PRE
+CLASS="SCREEN"
+>ne2k: mac=52:54:00:12:34:56, ethmod=slirp, ethdev=/home/volker/tests/bochs, script=""</PRE
+>
+The "ethdev" value specifies the TFTP root directory. All other options for Slirp must
+be set in a config file specified with "script" parameter. If no config file is set up,
+Bochs uses this "classic" Slirp configuration shown in the "Default" column below.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4060"
+>8.12.1. Advanced Slirp setup with config file</A
+></H2
+><P
+>An example for a Slirp config file can be found in the Bochs sources and in
+binary packages (<TT
+CLASS="FILENAME"
+>misc/slirp.conf</TT
+>).
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN4064"
+></A
+><P
+><B
+>Table 8-2. Slirp config file options</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Option</TH
+><TH
+>Description</TH
+><TH
+>Default value</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>restricted</TD
+><TD
+>if set to 1, only built-in services are available</TD
+><TD
+>0</TD
+></TR
+><TR
+><TD
+>net</TD
+><TD
+>base IP address of the virtual network</TD
+><TD
+>10.0.2.0</TD
+></TR
+><TR
+><TD
+>mask</TD
+><TD
+>netmask of the virtual network</TD
+><TD
+>255.255.255.0</TD
+></TR
+><TR
+><TD
+>host</TD
+><TD
+>IP address of the DHCP and TFTP server</TD
+><TD
+>10.0.2.2</TD
+></TR
+><TR
+><TD
+>hostname</TD
+><TD
+>DHCP client hostname</TD
+><TD
+>undefined</TD
+></TR
+><TR
+><TD
+>dhcpstart</TD
+><TD
+>start address of DHCP pool</TD
+><TD
+>10.0.2.15</TD
+></TR
+><TR
+><TD
+>dns</TD
+><TD
+>IP address of the virtual DNS server</TD
+><TD
+>10.0.2.3</TD
+></TR
+><TR
+><TD
+>bootfile</TD
+><TD
+>boot filename returned by DHCP</TD
+><TD
+>undefined</TD
+></TR
+><TR
+><TD
+>dnssearch</TD
+><TD
+>comma-separated list of DNS suffixes to search (DHCP extension)</TD
+><TD
+>undefined</TD
+></TR
+><TR
+><TD
+>smb_export</TD
+><TD
+>absolute path to the shared folder (non-Windows SMB support)</TD
+><TD
+>undefined</TD
+></TR
+><TR
+><TD
+>smb_srv</TD
+><TD
+>alternative IP address of the SMB server</TD
+><TD
+>10.0.2.4</TD
+></TR
+><TR
+><TD
+>hostfwd</TD
+><TD
+>map guest port to host port for host-to-guest access
+    (see below for details)</TD
+><TD
+>undefined</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4121"
+>8.12.2. Access to guest services from the host</A
+></H2
+><P
+>With the config file option "hostfwd" you can map guest ports to ports on the host
+system. This is the format of the directive:
+<PRE
+CLASS="SCREEN"
+>  hostfwd = <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>protocol:hostaddr:hostport-guestaddr:guestport</I
+></SPAN
+></PRE
+>
+The host and guest IP addresses are optional. This example shows how to access
+the guest SSH server using the host port 12345.
+<PRE
+CLASS="SCREEN"
+>  hostfwd = tcp::12345-:22</PRE
+>
+Up to 5 port redirection rules are supported per slirp instance.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tuntap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-socket.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuring and using a tuntap network interface</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using the 'socket' networking module</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

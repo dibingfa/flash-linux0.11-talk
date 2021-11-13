@@ -4,9 +4,7 @@
 
 具体过程为：
 
-第一步：安装 bochs.exe 并设置好 PATH
-
-第二步：进入 Linux-0.11 目录，双击 run.bat 就直接跑起来了
+进入 Linux-0.11 目录，双击 run.bat 就直接跑起来了
 
 ![image](https://user-images.githubusercontent.com/25787738/141492974-5584f999-bb6d-422f-ab31-7690b678a235.png)
 

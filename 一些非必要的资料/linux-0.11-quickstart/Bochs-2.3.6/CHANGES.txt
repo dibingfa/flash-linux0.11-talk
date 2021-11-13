@@ -1,0 +1,2709 @@
+Changes in 2.3.6 (December 24, 2007):
+
+Brief summary :
+
++ More than 25% emulation speedup vs Bochs 2.3.5 release!
+
+      - Thanks to Darek Mihocka (http://www.emulators.com) 
+        for providing patches and ideas that made the
+        speedup possible!
+
++ Up to 40% speedup vs Bochs 2.3.5 release with trace cache optimization!
+
+- Lots of bugfixes in CPU emulation
+- Bochs benchmarking support
+- Added emulation of Intel SSE4.2 instruction set
+
+Detailed change log :
+
+- CPU
+  - Added emulation of SSE4.2 instruction set, to enable use
+        --enable-sse=4 --enable-sse-extension configure options
+    to enable POPCNT instruction only use configure option
+        --enable-popcnt
+  - Implemented MTRR emulation, to enable use --enable-mtrr configure
+    option. MTRRs is enabled by default when cpu-level >= 6.
+  - Implemented experimental MONITOR/MWAIT support including optimized 
+    MWAIT CPU state and hardware monitoring of physical address range, 
+    to enable use --enable-monitor-mwait configure option.
+  - Removed hostasm optimizations, after Bochs rebenchmarking it was found 
+    that the feature bringing no speedup or even sometimes slows down
+    emulation!
+  - Merged trace cache optimization patch, the trace cache optimization
+    is enabled by default when configure with --enable-all-optimizations 
+    option, to disable trace cache optimization configure with
+        --disable-trace-cache
+  - Many minor bugfixes in CPU emulation (both ia32 and x86-64)
+  - Updated CPU instrumentation callbacks
+
+- Bochs Internal Debugger and Disassembler
+  - Many fixes in Bochs internal debugger and disassembler, some debugger
+    interfaces significantly changed due transition to the param tree
+    architecture
+  - Added support for restoring of the CPU state from external file
+    directly from Bochs debugger
+
+- Configure and compile
+  - Renamed configure option --enable-4meg-pages to --enable-large-pages.
+    The option enables page size extensions (PSE) which refers to 2M pages
+    as well.
+  - Removed --enable-save-restore configure option, save/restore feature 
+    changed to be one of the basic Bochs features and compiled by default 
+    for all configurations.
+  - Added new Bochs benchmark mode. To run Bochs in benchmark mode execute
+    it with new command line option 'bochs -benchmark time'. The emulation
+    will be automatically stopped after 'time' millions of emulation 
+    cycles executed.
+  - Another very useful option for benchmarking of Bochs could be enabled
+    using new 'print_timestamps' directive from .bochsrc:
+        print_timestamps: enable=1
+  - Added --enable-show-ips option to all configuration scripts used to 
+    build release binaries, so all future releases will enjoy IPS display.
+  - Enable alignment check in the CPU and #AC exception by default for
+    --cpu-level >= 4 (like in real hardware)
+
+- SF patches applied
+ [1857149] Define some IPL values by Sebastian
+ [1850183] Get memory access mode in BX_INSTR_LIN_READ by Lluis Vilanova
+ [1841421] pic: keep slave_pic.INT and master_pic.IRQ_in bit 2 in sync by Russ Cox
+ [1841420] give segment numbers in exception logs by Russ Cox
+ [1801696] Allow Intel builds on Mac OS X
+ [1830658] Fix >32GB disk banner by Samuel Thibault
+ [1813314] Move #define IPL_* and typedef ipl_entry by Sebastian
+ [1809001] Save PnP Option ROM Product Name string in IPL Boot Table by Sebastian
+ [1821242] Fix for #1801285, Niclist.exe broken by Sebastian
+ [1819567] Code warning cleanup
+ [1816162] Update comment on bios_printf() by Sebastian
+ [1811139] Trivial Fix when BX_PCIBIOS and BX_ROMBIOS32 not defined by Myles Watson
+ [1811190] Improve HD recognition and CD boot by Myles Watson
+ [1811860] Implement %X in bios_printf by Sebastian
+ [1809649] printf %lx %ld %lu by Myles Watson
+ [1809651] move BX_SUPPORT_FLOPPY by Myles Watson
+ [1809652] dpte and Int13DPT fixes by Myles Watson
+ [1809669] clip cylinders to 16383 in hard drive by Myles Watson
+ [1799903] Build BIOS on amd64 by Robert Millan
+ [1799877] Fix for parallel build (make -j2) by Robert Millan
+
+- these S.F. bugs were closed
+ [1837354] website bug: View the Source link broken
+ [1801268] Reset from real mode no longer working
+ [1843250] Using forward slashes gives invalid filename
+ [1823446] BIOS bug, local APIC #0 not detected
+ [1801285] Niclist.exe broken
+ [1364472] breakpoints sometimes don't work
+  [994451] breakpoint bug
+ [1801295] NSIS installer vs Windows Notepad
+ [1715328] Unreal mode quirk
+ [1503972] debugger doesn't debug first instruction on exception
+ [1069071] div al, byte ptr [ds:0x7c18] fails to execute
+ [1800080] Wrong "BX_MAX_SMP_THREADS_SUPPORTED" assertion  
+
+-------------------------------------------------------------------------
+Changes in 2.3.5 (September 16, 2007):
+
+Brief summary :
+- Critical problems fixed for x86-64 support in CPU and Bochs internal debugger
+- ACPI support
+- The release compiled with x86-64 and ACPI
+- Hard disk emulation supports ATA-6 (LBA48 addressing, UDMA modes)
+- Added emulation of Intel SSE4.1 instruction set
+
+Detailed change log :
+
+- CPU
+  - Fixed critical bug with 0x90 opcode (NOP) handling in x86-64 mode
+  - implied stack references where the stack address is not in canonical form
+    should causes a stack exception (#SS)
+  - Added emulation of SSE4.1 instruction set (Stanislav)
+  - Do not save and restore XMM8-XMM15 registers when not in x86-64 mode
+  - Fixed zero upper 32-bit part of GPR in x86-64 mode
+  - CMOV_GdEd should zero upper 32-bit part of GPR register even if the
+    'cmov' condition was false !
+  - Implemented CLFLUSH instruction, report non-zero cache size in CPUID
+  - Fixed PUSHA/POPA instructions behavior in real mode
+  - Fixed detection of inexact result by FPU
+  - Fixed denormals-are-zero (DAZ) handling by SSE convert instructions
+  - Implemented Misaligned Exception Mask support for SSE (MXCSR[17])
+  - Implemented Alignment Check in the CPU and #AC exception, to enable
+    use --enable-alignment-check configure option
+
+- General
+  - 2nd simulation support in wxBochs now almost usable (simulation cleanup
+    code added and memory leaks fixed)
+
+- Configure and compile
+  - several fixes for MacOSX, OpenBSD and Solaris 10
+  - enable save/restore feature by default for all configurations
+  - reorganized SSE configure options to match Intel(R) Programming 
+    Reference Manual, new option introduced for SSE extensions enabling.
+    To enable Intel Core Duo 2 new instructions use 
+        --enable-sse=3 --enable-sse-extension
+    enabling of SSE4.1 (--enable-sse=4) will enable SSE3 extensions as well
+  - removed old PIT, always use new PIT written by Greg Alexander,
+    removed configure option --enable-new-pit
+
+- I/O devices (Volker)
+  - Floppy
+    - partial non-DMA mode support (patch by John Comeau)
+  - Hard drive / cdrom
+    - hard disk emulation now supports ATA-6 (LBA48 addressing, UDMA modes)
+    - VMWare version 4 disk image support added (patch by Sharvil Nanavati)
+  - PCI
+    - initial support for the PIIX4 ACPI controller
+  - Serial
+    - added support for 3-button mouse with Mousesystems protocol
+  - USB
+    - experimental USB device change support added
+    - rewrite of the existing USB devices code
+    - new USB devices 'disk' and 'tablet' (ported from the Qemu project)
+
+- Bochs internal debugger
+  - fixed broken debugger "rc file" option (execute debugger command from file)
+  - implementation of a gui frontend ("windebug") for win32 started
+  - gdbstub now accepts connection from any host
+  - several documentation updates
+  - a lot of disasm and internal debugger x86_64 support fixes
+
+- Configuration interface
+  - fixes and improvements to the save state dialog handling
+
+- Display libraries
+  - text mode color handling improved in some guis
+  - win32 fullscreen mode (patch by John Comeau)
+
+- System BIOS (Volker)
+  - 32-bit PM BIOS init code for ACPI, PCI, SMP and SMM (initial patches by
+    Fabrice Bellard)
+  - PCI BIOS function "find class code" implemented
+
+- SF patches applied
+ [1791000] 15h 8600h is reading the wrong stack frame by Sebastian
+ [1791016] rombios32.c, ram_probe(), BX_INFO missing value by Sebastian
+ [1786429] typo in bochsrc.5 by Sebastian
+ [1785204] Extend acpi_build_table_header to accept a revision number by Sebastian
+ [1766536] Partial Patch for Bug Report 1549873 by Ben Lunt
+ [1763578] ACPI Table Revision 0 -> 1  
+ [1642490] implement alignment check and #AC exception by Stanislav Shwartsman
+ [1695652] [PATCH] .pcap pktlog and vnet PXE boot by Duane Voth
+ [1741153] Add expansion-ROM boot support to the ROMBIOS
+ [1734159] Implemented INT15h, fn 0xC2 (mouse), subfn 3, set resolution
+ [1712970] bios_printf %s fix  
+ [1573297] PUSHA/POPA real mode fix by Stanislav Shwartsman
+ [1641816] partial support for non-DMA access to floppy by John Comeau 
+ [1624032] shows where write outside of memory occurred by John Comeau
+ [1607793] allow fullscreen when app requests it by John Comeau
+ [1603013] Bugfix for major NOP problem on x64 by mvysin
+ [1600178] Make tap and tuntap compile on OpenBSD by Jonathan Gray
+ [1149659] improve gdbstub network efficiency by Avi Kivity 
+ [1554502] Trivial FPU exception handling fix  
+
+- these S.F. bugs were closed
+ [1316008] Double faults when it shouldn't - gcc 4.0.2
+ [1787289] broken ABI for redolog class when enable-compressed-hd
+ [1787500] tftp_send_optack not 64bit clean
+ [1264540] Security issue with Bochs website  
+ [1767217] Debugger Faults including ud2
+ [1729822] Various security issues in io device emulation
+ [1675202] mptable hosed (bad entry count in header)
+ [1197141] 'make install' installs to bad location
+ [1157623] x86Solaris10 cannot recoginize ACPI RSD PTR
+ [1768254] large HDD in Bochs/bximage
+ [1496157] Windows Vista Beta2 dosn't boot
+ [1755915] Illegal Hard Disk Signature Output
+ [1717790] info gdt and info idt scrolls away, too long result  
+ [1726640] Debugger displays incorrect segment for mov instruction
+ [1719156] Typo in misc_mem.cpp
+ [1715270] Debugger broken in/beyond 2.3
+ [1689107] v8086 mode priviledge check failed
+ [1704484] A few checks when CPU_LEVEL < 4  
+ [1678395] Problem with zero sector...
+  [876990] SA-RTL OS fails on PIC configuration
+ [1673582] save/restore didn't restore simulation correctly
+ [1586662] EDD int 13h bug, modify eax
+  [666618] POP_A Panic in DOS EMU
+ [1001485] panic: not enough bytes on stack
+ [1667336] delay times an order of magnitude slow  
+ [1665601] crash disassembling bootcode
+ [1657065] CVS sources won't compile
+ [1653805] bochs's gdbstub uses incorrect protocol
+ [1640737] ASM sti command frezzes guest OS
+ [1636439] latest CVS sources don't compile under Cygwin
+ [1634357] disasm incorrect (no sign ext) displacement in 64-bit mode
+ [1376453] pcidev segfaults bochs
+ [1180890] IOAPIC in BOCHS - WinXP 64 in MP version
+ [1597528] 2.3 fails to compile on amd64
+ [1526255] FLD1 broken when compaling with gcc 4.0.x
+ [1597451] eth_fbsd is broken under FreeBSD
+ [1571949] Bochs will not compile under Solaris
+ [1500216] Bochs fails to boot BeOs CD
+ [1458339] bochs-2.2.6 WinXP Binary ACPI error installing FreeBSD 6.0
+ [1440011] patches needed for FreeBSD 6.0 to compile Bochs
+  [431674] some devices don't have a prefix
+  [458150] QNX demo disk crashes with new pit
+  [818322] Bochs 2.1 cvs: OS/2 - read verify on non disk
+  [906840] KBD: bogus scan codes generated in set 3
+ [1005053] No keyboard codes translation
+ [1109374] Problem with Scancodeset 2
+ [1572345] Bochs won't continue
+ [1568153] Bochs looks for (and loads?) unspecified display libraries
+ [1563462] Errors in /iodev/harddrv.h
+ [1562172] TLB_init() fails to initialize priv_check array if USE_TLB 0
+ [1385303] debugger crashes after panic
+ [1438227] crc.cpp missing in bx_debug version 2.2.6
+ [1501825] debugger crashes on to high input
+ [1420959] Memory leak + buffer overflow in Bochs debugger
+ [1553289] Error in Dis-assembler
+  [542464] I cannot use FLAT
+ [1548270] Bochs won't die with its pseudo terminal
+ [1545588] roundAndPackFloatx80 does not detect round up correctly  
+
+-------------------------------------------------------------------------
+Changes in 2.3 (August 27, 2006):
+
+Brief summary :
+- limited save/restore support added (config + log options, hardware state)
+- configuration parameter handling rewritten to a parameter tree
+- lots of cpu and internal debugger fixes
+- hard disk geometry autodetection now supported by most of the image types
+- hard disk emulation now supports ATA-3 (multiple sector transfers)
+- VBE memory size increased to 8MB and several VGA/VBE fixes
+- updated LGPL'd VGABIOS to version 0.6a
+
+Detailed change log :
+
+- CPU and internal debugger fixes
+  - Fixed bug in FSTENV instruction (Stanislav Shwartsman)
+  - Recognize #XF exception (19) when SSE is enabled
+  - Fixed bug in PSRAW/PSRAD MMX and SSE instructions
+  - Save and restore RIP/RSP only for FAULT-type exceptions, not for traps
+  - Correctly decode, disassemble and execute multi-byte NOP '0F F1' opcode
+  - Raise A20 line after system reset (Stanislav Shwartsman)
+  - Implemented SMI and NMI delivery (APIC) and handling in CPU (Stanislav)
+  - Experimental implementation of System Management Mode (Stanislav)
+  - Added emulation of SSE3E instructions (Stanislav Shwarstman)
+  - Save and restore FPU opcode, FIP and FDP in FXSAVE/FRSTOR instructions
+  - Fixed bug in MOVD_EdVd opcode (always generated #UD exception)
+  - Fixed critical issue, Bochs was not supporting > 16 bit LDT.LIMIT values
+  - Many fixes in Bochs internal debugger and disassembler
+
+- CPU x86-64 fixes
+  - Fixed SYSRET instruction implementation
+  - Fixed bug in CALL/JMP far through 64-bit callgate in x86-64 mode
+  - Correctly decode, disassemble and execute 'XCHG R8, rAX' instruction
+  - Correctly decode and execute 'BSWAP R8-R15' instructions
+  - Fixed ENTER and LEAVE instructions in x86-64 mode (Stanislav)
+  - Fixed CR4 exception condition (No Name)
+  - Fixed x86 debugger to support x86-64 mode (Stanislav)
+
+- APIC and SMP
+  - Support for Dual Core and Intel(R) HyperThreading Technology. Now you
+    could choose amount of cores per processor and amount of HT threads per
+    core from .bochsrc for SMP simulation (Stanislav Shwartsman)
+  - Allow to control SMP quantum value through .bochsrc CPU
+    option parameter. Previous Bochs versions used hardcoded quantum=5
+    value.
+  - Fixed interrupt priority bug in service_local_apic()
+  - Fixed again reading of APIC IRR/ISR/TMR registers. Finally it becomes
+    fully correct :-)
+
+- Configure and compile 
+  - Moved configure time --enable-reset-on-triple-fault option to runtime, 
+    the 'cpu' option in .bochsrc is extended and the old configure option
+    is deprecated (Stanislav Shwartsman)
+  - Removed --enable-pni configure option, to compile with PNI use 
+    --enable-sse=3 instead (Stanislav Shwartsman)
+  - enable SEP (SYSENTER/SYSEXIT) support by default for Penitum II+
+    processor emulation (i.e. if cpu-level >= 6 and MMX is enabled)
+
+- general
+  - Limited save/restore support added. The state of CPU, memory and all
+    devices can be saved now (state of harddisk images not handled yet).
+  - Fixed several memory leaks
+
+- configuration interface
+  - Configuration parameter handling rewritten to a parameter tree. This is
+    required for dynamic menus/dialogs, user-defined options and save/restore.
+  - Support for user-defined bochsrc options added
+  - help support at the parameter prompt in textconfig added
+
+- I/O devices (Volker)
+  - Floppy
+    - partial sector transfers fixed
+  - Hard drive / cdrom
+    - several fixes to the IDE register behaviour (e.g. in case of a channel
+      with only one drive connected)
+    - fixed data alignment of 'growing' hard drive images (sharing images
+      between Windows and Linux now possible)
+    - disk geometry autodetection now supported by most of the image types
+      (unsupported: external, dll and compressed modes)
+    - multi sector read/write commands implemented
+    - hard disk now reporting ATA-3 supported
+    - ATAPI 'inquiry' now returns a unique device name
+  - Keyboard
+    - reset sent to keyboard has no effect on the 8042 (scancode translation)
+  - PCI
+    - forward PIRQ register changes to the I/O APIC (if present)
+    - attempt to fix and update the emulation part of 'pcidev' (untested)
+  - VGA
+    - VBE memory size increased to 8MB and several VBE fixes
+    - VGA memory read access fixed (bit plane access and read mode)
+    - VGA memory is now a part of the common video memory
+
+- System BIOS (Volker)
+  - enable interrupts before executing INT 19h
+  - fixed ATA device detection in case of one drive only connected to controller
+  - improved INT 15h function AX=E820h
+  - real mode PCI BIOS now returns IRQ routing information (function 0Eh)
+  - keyboard LED flags handling fixed and improved
+  - fixed handling of extended keys in INT 09h
+  - Updated LGPL'd VGABIOS to version 0.6a
+
+- SF patches applied
+ [1340111] fixes and updates to usb support by Ben Lunt
+ [1539420] minor addition to pci_usb code by Ben Lunt
+ [1455958] call/jmp through call gate in 64-bit mode
+ [1433107] PATCH: fix compile with wxwindows 2.6 (unicode / utf8) by jwrdegoede
+ [1386671] Combined dual core and hyper-threading patch
+
+- these S.F. bugs were closed
+  [833927] TTD: System Error TNT.40025: Unexpected processor exception
+  [789230] Sending code that shows lock up when setting idt
+  [909670] Problems with Symantec Ghost
+ [1540241] include missing in osdep.cc
+ [1539373] Incorrect disasm for "mov moffset,bla" in 64bit
+ [1538419] incorrect disassembly of [rip+disp] with rex.b
+ [1535432] shift+cursor key maps to a digit
+ [1504891] Knoopix 5.0.1 error
+ [1424355] bochs-2.2.6 ata failure in windoze 98se
+ [1533979] wrong disassembly of IN instruction
+  [620059] paste won't stop
+ [1164904] status bar doesn't show num/caps/scroll lock status
+ [1061720] ATA Support level for HD
+ [1522196] Broken CHANGES link in main page
+ [1438415] crash if screen scrolled downwards
+  [778441] Shouldn't interrupts be enable after BIOS?
+ [1514949] I got a problem with the 8253 timer
+ [1513544] disasm of 0xec (in AL,DX) returns ilen of 2 instead of 1
+ [1508947] APIC interrupt priority checking and interrupt delivery
+  [766286] Debugger halts after any GPF exception
+  [639143] va_list is not a pointer on linuxppc
+ [1501815] debugger examines memory over page-boundary wrong
+ [1503978] movsb/w/d doesn't work when direction is stored
+ [1499405] WinPCap has changed URL hosting
+ [1498519] APIC IRR bits not set while interrupts disabled
+ [1498193] Bochs segfaults on LTR instruction
+  [787140] Guest2HostTLB optimization bug
+ [1492070] instrument stop
+ [1487772] No SEP on P4
+ [1488335] Growing hard disk images severe interoperability errors!
+ [1076312] Shadow RAM and TLB
+ [1282249] The real i440FX chipset Award bios hangs
+ [1479763] mistake "mov ax,[es:di]" for "mov ax,[ds:di]"
+ [1453575] Misconfigured floppy DMA transfers do not terminate.
+ [1460068] Incorrect handling for the Options Menu Item
+  [910203] bochs-2.1.1 wx.lo failed
+ [1438654] PANIC when trying to run install-amd64-minimal-2005.0.iso
+ [1458320] compile hdimage.h fails
+ [1455880] bochs-2.2.6,2: make error on FreeBSD
+  [696890] Network wouldn't run under W2k hosting MSDOS
+  [673391] SMP timer problems
+ [1291059] wxWindows GUI on non-windows/configure issue
+ [1356450] bochs 2.2.1 errors-omittions
+ [1178017] Win98 guest cannot receive network packets from host
+ [1076315] a20_mask after restarting
+ [1436323] real hw does not panic when bad Ib in CMPSS_VssWssIb
+ [1435269] cdrom_amigaos is not compilable
+ [1433314] disasm issues
+ [1170614] relative jumps/calls wrong in debugger
+  [758121] user might get confused when interrupt handler invoked
+ [1170622] You cannot toggle OFF "show" flags
+ [1406387] JMP instruction should display absolute address
+ [1428813] PANIC: ROM address space out of range
+ [1426288] DR-DOSs EMM386 problem
+ [1412036] Bochs cannot recognize PCI NIC correctly
+  [435115] dbg: modebp broken and no docs
+ [1419366] disasm cs:eip does not work anymore
+ [1419393] SSE's #XF exception -> "exception(19): bad vector"
+ [1419429] disassembly of "260f6f00" show DS: instead of ES: prefix
+ [1417583] Interrupt behaviour changed from 2.2.1 to 2.2.5
+ [1418281] 'push' (6A) incorrectly disassembled
+ [1417791] FLDENV generating exception when real hw does not.
+ [1264583] OS/2 1.1 doesn't run  
+ 
+-------------------------------------------------------------------------
+Changes in 2.2.6 (January 29, 2006):
+
+- First major SMP release ! 
+  - several APIC and I/O APIC fixes make SMP Bochs booting Windows NT4.0 
+    or Knoppix 4.0.2 without noapic kernel option in SMP configuration.
+  - critical APIC timer bug fixed 
+  - obsolete SMP BIOS images removed (MP tables created dynamicaly) 
+  - determine number of processors in SMP configuration through .bochsrc 
+    new .bochsrc option 'CPU' allows to choose number of processors to emulate
+  - new configure option --enable-smp to configure Bochs for SMP support, 
+    the old --enable-processors=N option is deprecated 
+- CPU and internal debugger fixes 
+  - enabled #PCE bit in CR4 register, previosly setting of this bit 
+    generated #GP(0) fault 
+  - enabled LAHF/SAHF instructions in x86-64 mode 
+  - fixed bug in PMULUDQ SSE2 instruction 
+  - fixes in Bochs debugger 
+- Configure and compile 
+  - enable VME (virtual 8086 mode extensions) by default if cpu-level >= 5 
+  - enable Bochs disassembler by default for all configurations 
+  - win32 installer script improvements 
+  - ips parameter moved to new 'CPU' option 
+  - show IPS value in status bar if BX_SHOW_IPS is enabled 
+- Other 
+  - several fixes in the hard drive, keyboard, timer, usb and vga code 
+  - new user button shortcut "bksl" (backslash) 
+  - updated Bochs instrumentation examples 
+  - user and development documentation improved 
+
+-------------------------------------------------------------------------
+Changes in 2.2.5 (December 30, 2005):
+
+Brief summary :
+- added virtual 8086 mode extensions (VME) implementation
+- several fixes/improvements in x86-64 emulation, debugger and disassembler
+- new serial mode 'socket' connects a network socket
+- IDE busmaster DMA feature for harddisks and cdroms completed and enabled
+- many improvements in Bochs emulated I/O devices (e.g. floppy, cdrom)
+- Updated LGPL'd VGABIOS to version 0.5d
+
+Detailed change log :
+
+- CPU
+  - fixed XMM registers restore in FXRSTOR instruction (Andrej Palkovsky)
+  - print registers dump to the log if tripple fault occured
+  - fixed PANIC in LTR instruction (Stanislav)
+  - added virtual 8086 mode extensions (VME) implementation, to enable
+    configure with --enable-vme (Stanislav)
+  - flush caches and TLBs when executing WBINVD and INVD instructions
+  - do not modify segment limit and AR bytes when modifying segment
+    register in real mode (support for unreal mode)
+  - fixed init/reset values for LDTR and TR registers
+  - reimplemented hardware task switching mechanism (Stanislav)
+  - generate #GP(0) when fetching instruction cross segment boundary
+
+- CPU (x86-64) (Stanislav Shwartsman)
+  - implemented call_far/ret_far/jmp_far instructions in long mode
+  - fixed IRET operation in long mode
+  - fixed bug prevented setting of NXE/FFXSR bits in MSR.EFER register
+  - implemented RDTSCP instruction
+  - do not check CS.limit when prefetching instructions in long mode
+  - fixed masked write instructions (MASKMOVQ/MASKMOVDQU) in long mode
+  - fetchdecode fixes for x86-64
+
+- APIC
+  - Fixed bug in changing local APIC id (Stanislav)
+  - Fixed reading of IRR/ISR/TMR registers (patch by wmrieker)
+  - Implemented spurious interrupt register (Stanislav, patch by wmrieker)
+  - Fixed interrupt delivery bug (anonymous #SF patch)
+  - Correctly implemented ESR APIC register (Stanislav)
+
+- Bochs debugger
+  - Fixed bug in bochs debugger caused breakpoints doesn't fire sometimes
+    (Alexander Krisak)
+  - watchpoints in device memory fixed (Nickolai Zeldovich)
+  - new debug interface to access Bochs CPU general purpose registers
+    with support for x86-64
+
+- Disassembler (Stanislav Shwartsman)
+  - Fixed disassembly for FCOMI/FUCOMI instructions
+  - Full x86-64 support in disassembler. The disassembler module extended
+    to support x86-64 extensions. Still limited by Bochs debugger which 
+    is not supporting x86-64 at all ;(
+
+- I/O devices (Volker)
+  - general
+    - memory management prepared for large BIOS images (up to 512k)
+    - slowdown timer sleep rate fixed (now using 1 msec on all platforms)
+    - some device specific parameter handlers moved into the device code
+  - serial
+    - new serial mode 'socket' connects a network socket (#SF patch by Andrew Backer)
+  - hard drive / cdrom
+    - assign a unique serial number to each drive (fixes harddrive detection 
+      problems with Linux kernels 2.6.x: "ignoring undecoded slave")
+    - geometry autodetection for 'flat' hard disk images added. Works with 
+      images created with bximage (heads = 16, sectors per track = 63)
+    - ATAPI command 'read cd' implemented, some other commands improved
+    - cdrom read block function now tries up to 3 times before giving up
+    - emulation of raw cdrom reads added, some other lowlevel cdrom fixes
+    - IDE busmaster DMA feature for harddisks and cdroms completed and enabled
+    - disk image size limit changed from 32 to 127 GB
+    - split ATA/ATAPI emulation code and image handling code
+  - floppy
+    - fixes for OS/2 (patch by Robin Kay)
+    - disk change line behaviour fixed (initial patch by Ben Lunt)
+    - end-of-track (EOT) condition handling implemented
+    - more accurate timing for read/write data and format track commands using
+      a motor speed of 300 RPM
+    - timing of recalibrate and seek commands now depends on the step rate,
+      date rate and the steps to do
+    - floppy controller type changed to 82077AA
+  - cmos
+    - RTC 12-hour and binary mode implemented
+    - number of CMOS registers changed from 64 to 128
+    - bochsrc option 'cmosimage' improved
+    - save cmos image on exit if enabled
+  - speaker
+    - simple speaker support for OS X added (patch by brianonn@telus.net)
+  - pci
+    - BeOS boot failure fix in the PCI IDE code
+    - don't register i/o and memory regions during PCI probe
+  - vga
+    - memory allocation for vga extensions fixed
+  - usb
+    - some bugfixes by Ben Lunt (mouse and keypad are usable now)
+  - networking modules
+    - VDE networking module now enabled on Linux
+
+- display libraries
+  - general
+    - new syntax for the userbutton shortcut string and more keys supported
+  - win32
+    - fixed keycode generation for right alt/ctrl/shift keys
+    - runtime dialog is now a property sheet
+  - x11
+    - simple dialog boxes for the "ask" and "user shortcut" feature implemented
+    - Slovenian keymap added (contributed by Mitja Ursic)
+
+- configuration interface
+  - ask dialog is now enabled by default for win32, wx and x display libraries
+  - bochsrc option floppy_command_delay is obsolete now (floppy timing now based
+    on hardware specs)
+  - floppy image size detection now available in the whole config interface
+  - some device specific parameter handlers moved into the device code
+  - calculate BIOS ROM start address from image if not specified
+
+- System BIOS (Volker)
+  - PCI i/o and memory base address initialization added
+  - several keyboard interrupt handler fixes (e.g. patch by japheth)
+  - several floppy fixes (e.g. OS/2 works with patch by Robin Kay)
+  - some more APM functions added
+  - Updated LGPL'd VGABIOS to version 0.5d
+  - generate SMP specific tables dynamicly by the Bochs memory init code
+
+- SF patches applied
+ [1389776] Disk sizes over 64 Gbytes by Andrzej Zaborowski
+ [1359162] disasm support for x86-64 by Stanislav Shwartsman
+  [857235] task priority and other APIC bugs, etc by wmrieker
+ [1359011] build breaks for 386 + debugger + disasm by shirokuma
+ [1352761] Infinite loop when trying to debug a triple exception
+ [1311170] small APIC bug fix (interrupt sent to the wrong CPU)
+ [1309763] Watchpoints don't work in device memory by Nickolai Zeldovich
+ [1294930] change line status on floppy by Ben Lunt
+ [1282033] SSE FXRESTORE not working correctly by Ondrej Palkovsky
+  [816979] wget generalizations by Lyndon Nerenberg
+ [1214886] No more pageWriteStamp / unified icache by H. Johansson
+ [1107945] com->socket redirection support by Andrew Backer
+
+- these S.F. bugs were closed
+  [669180] win95 install : unknown SET FEATURES subcommand 0x03
+ [1346692] bochs 2.2.1 VGA BIOS error
+ [1354963] floppy in KolibriOS
+ [1378204] error: bochs-2.2.1, --enable-sb16, --disable-gameport
+ [1368412] VDE problems in BOCHS
+  [533446] CPU and APIC devices appear twice
+ [1000796] bximage fails to create image of specified size
+ [1170793] Quarterdeck QEMM doesn't work
+  [923704] Multiple opcode prefixes don't reflect Trap 13
+ [1166392] DocBook/documentation issues
+ [1368239] broken grater than 4GB size of sparse type hd image
+ [1365830] i386 compile breaks on paging
+  [427550] Incomplete IRETD implementation
+ [1215081] MSVC workspace STILL not fixed
+  [736279] Jump to Task
+ [1356488] FD change fail & occur error
+  [957615] [CPU ] prefetch: RIP > CS.limit
+ [1353866] not booting linux-2.6.14
+ [1351667] load32bitOSImage does not work with --enable-x86-debugger
+ [1217476] Incorrect (?) handling of segment registers in real mode
+ [1184711] OS2 DOS crash [2.2.pre2]
+  [624330] support for disks > 32GiB
+ [1348368] bochs 2.2.1 bximage error
+ [1342081] Configuration Menu option failed
+ [1138616] OS/2 Warp 4 hangs when booting
+ [1049840] mouse and video conflict
+ [1164570] Unable to perform Fedora Core 4 test 1 installation
+ [1183201] Windows 2000 (MSDN build 2150?) does not completely install
+ [1194284] Can't boot from CD-ROM (Windows NT)
+  [962969] Windows NT crashes while trying to intall them.
+ [1054594] WinXP install halts (redo)
+ [1153107] Windows XP fails with BSOD on 'vga'
+  [938518] Win XP installation fails
+  [645420] getHostMemAddr vetoed direct read
+ [1179985] MS XENIX: >>PANIC<< VGABIOS panic at vgabios.c, line 0
+ [1329600] WBINVD and INVD should flush caches and TLB
+  [638924] eliminate BX_USE_CONFIG_INTERFACE
+ [1048711] Funny behaviour with CTRL
+ [1288450] keyboard BIOS error
+ [1310706] Keyboard - about key SHIFT
+ [1295981] Ubuntu 5.04 Live-CD won't boot in Bochs
+  [879047] APIC timer behavior different before reset and after
+ [1188506] I still can't install the german Windows XP!
+ [1301847] Windows XP dosn't boot - FXRSTOR problem ?
+  [661259] does not boot QNX under WinX
+  [924412] Keyboard lock states all whacked
+  [681127] MIPSpro compiler (IRIX) is allergic to ^M
+ [1285923] BIOS keyboard handler
+  [516639] ATA controller revisited...
+  [657918] does not boot BeOS under WinX
+  [649245] BeOS CD locks halfway on boot
+ [1094385] Attachment for bug 1090339 (beos failure)
+ [1183196] BeOS 4.5 developer CD does not install
+ [1090339] BeOS fails to boot
+  [639484] panics when int 13 is called
+  [711701] divide by zero
+  [704295] ATAPI/BIOS call missing
+  [682856] hard drive problems
+  [627691] Cursor keys problem
+  [588011] keyboard not working  
+  [542260] os/2 warp crashes with floppy handling
+ [1273878] SB16 doesn't work in pure DOS
+  [542254] OS/2 FDC driver dies
+ [1099610] Windows 98 SE Does not install
+  [875479] cr3 problem on task switch
+  [731423] NE2000 causing PANIC on Win2K detection
+ [1156155] bochs fails to boot plan9 iso
+ [1251979] --enable-cpu-level=3 should assume --without-fpu
+ [1257538] Interupt 15h 83h - set wait event interval
+  [658396] Panic for DR DOS emm386
+  [679339] /? doesn't divulge Bochs command-line syntax
+ [1167016] call/jump/return_protected doesn't support x86-64
+ [1252432] Mac OS X compile bug
+  [881442] Bochs 2.1 PANIC when loading DOS Turbo Pascal protected mode
+ [1249324] Boch2.2.1 Buffer Overfollow in void bx_local_apic_c::init ()
+ [1197144] 'make install' has dependency on wget
+ [1079595] LTR:386TSS: loading tr.limit < 103
+ [1244070] Compilation Error in gui/rfb.cc
+  [761707] CPU error when trying to start Privateer
+  [517281] Crash running Privateer in DOS...  
+ 
+-------------------------------------------------------------------------
+Changes in 2.2.1 (July 8, 2005):
+
+- Fixed several compilation warnings and errors for different platforms (Volker)
+- Fixed FPU tag word restore in FXRSTOR instruction (Stanislav)
+- Added missing scancodes for F11 and F12 to BIOS translation table (Volker)
+- Bochs disassembler bugfixes (h.johansson)
+- About 5% emulation speed improvement (h.johansson)
+- Handle writing of zero to APIC timer initial count register (Stanislav)
+- Enable Idle-Hack for 'TERM' GUI (h.johansson)
+- Reduced overhead of BX_SHOW_IPS option to minimum. Now every simulation 
+  could run with --enable-show-ips without significant performance 
+  penalty. (Stanislav)
+- Fixed pcipnic register access (Volker)
+- Limited write support for TFTP server in 'vnet' networking module added (Volker)
+- Changed some timing defaults to more useful values (Volker)
+- WinXP/2003 style common controls now supported (Vitaly Vorobyov)
+- Updated LGPL'd VGABIOS to version 0.5c (Volker)
+- Added new BX_INSTR_HLT callback to instrumentation (Stanislav)
+
+-------------------------------------------------------------------------
+Changes in 2.2 (May 28, 2005):
+
+Brief summary :
+- New floating point emulator based on SoftFloat floating point 
+  emulation library.
+- improved x86-64 emulation
+- Cirrus SVGA card emulation added
+- status bar with indicators for keyboard, floppy, cdrom and disk (gui dependant)
+- many improvements in Bochs emulated I/O devices (e.g. PCI subsystem)
+
+Detailed change log :
+
+- CPU
+  - fixes for booting OS/2 by Dmitri Froloff
+    - fixed v8086 priveleged instruction processing bug (was also reported
+      by LightCone Aug 7 2003)
+    - exception process bug (was reported by Diego Henriquez Sat Nov 15
+      01:16:51 CET 2003)
+    - segment validation with IRET instruction
+    - CS segment not present exception processing with IRET
+  - several fixes by Kevin Lawton
+  - add MSVC host asm instructions (patch by suzu)
+  - fixed bug in HADDPD/HSUBPD (SSE3) instructions
+  - fixed bug in float to integer SSE/SSE2 convert instructions
+  - fixed BCD instructions implementation
+  - execution speed improvements (sshwarts and psychosmur)
+  - fix MSR_APICBASE base address (Kangmo Kim, Christian Neubert)
+  - change BX_PANIC messages to BX_INFO when behaviour exactly 
+    matches Intel docs
+  - EIP > CS.limit case should always cause #GP(0), even in real mode.
+    Fixed all jump, call and ret instructions for 16/32 modes
+  - fixed using invalid segment register for MOV instruction (h.johansson)
+  - fixed ET bit mismatch between CR0 and SMSW instruction
+  - fixed possible simulator #DIVZERO fault when executing IDIV instruction
+  - fixed undocumented flags handling for BTS, BTR, SHR, SHLD, MUL and IMUL
+    instructions (Stanislav Shwartsman)
+  - added missed #GP(0) exception when loading incorrect flags combination 
+    to CR0 (Stanislav Shwartsman)
+  - in case of --enable-ignore-bad-msr enabled read ignored MSRs as zero
+  - enabled #DE, #TSD and #MCE bits in CR4 register, previosly setting
+    of one of these bits generated #GP(0) (Stanislav, Volker Ruppert)
+  - exceeding the instruction length limit of 15 bytes (this only can
+    occur when redundant prefixes are placed before an instruction)
+    generate #GP(0) (Stanislav Shwartsman)
+  - corrected PAE functionality
+
+- CPU (x86-64)
+  - fetchdecode fixes for x86-64 and 3DNow! (Stanislav)
+  - fixed CF flag handling for SHL instruction in x86-64 mode (Stanislav)
+  - implemented CR8 register (aliased to APIC.TPR[7:4]) (Stanislav)
+  - implemented NXE bit (No-Execute page protection) support (Stanislav)
+  - STOSQ instruction emulation fixed (Avi Kivity)
+  - allow null SS selector for MOV SS, POP SS, and LSS instructions 
+    in long mode (Avi Kivity)
+  - ignore segment bases for all segments (except FS and GS) in long
+    mode (Avi Kivity)
+  - allow SYSENTER/SYSEXIT instructions together with x86-64 (Stanislav)
+  - canonical address checking for RIP (Stanislav)
+
+- FPU (Stanislav Shwartsman)
+  - totally rewritten all FPU code based on softfloat library 
+  - significantly improved accuracy of all floating point
+    instructions.
+  - implemented all missed P6 and PNI floating point instructions.
+  - hundreds of bug fixes in FPU code.
+
+  TODO:
+    ! Unmasked underflow/overflow should correct the result 
+      by magic number for all operations, including float32 
+      and float64.
+
+- APIC (Zwane Mwaikambo)
+  - APIC arbitration
+  - Processor priority
+  - Various interrupt delivery fixes
+  - Focus processor checking
+  - ExtINT delivery
+
+- Disassembler
+  - fixed MOV opcode 0x88, had exchanged the operands (h.johansson)
+  - fixed MOV opcode 0xA3, had wrong operand size (h.johansson)
+  - fixed BOUND opcode 0x62 (Stanislav)
+  - fixed CALLW opcode 0xFF /3 and JMPW opcode 0xFF /5 (Stanislav)
+  - fixed INS opcode 0x6D, had wrong operand size (Stanislav)
+  - fixed disassembly for repeatable instructions (Stanislav)
+  - fixed sign-extended immediate opcodes (Stanislav)
+  - fixed MOVSS/MOVSD instructions opcode names (Stanislav)
+  - fixed NEG instruction opcode name (Stanislav)
+  - fixed CMPXCHG8B instruction, had wrong operand size (Stanislav)
+  - fixed floating point instructions operands (Stanislav)
+  - experimental support of AT&T syntax in disassembler (Stanislav)
+
+- I/O devices
+  - general
+    - handle cpu reset through port 0x92
+    - new memory handler API for PCI i/o and memory handling (Frank Cornelis)
+  - speaker emulation for Linux (David N. Welton) and Win32 (Volker Ruppert) added
+  - pci
+    - PCI slot configuration added for 5 slots (Volker)
+    - PCI irq routing, irq sharing and level sensitive irq mode implemented
+    - ne2k device appears as a Realtec 8029 NIC if connected to a PCI slot
+    - PCI IDE controller dummy device added
+    - PCI host device mapping for Linux (Frank Cornelis)
+    - PCI Pseudo-NIC emulation (Michael Brown)
+  - serial
+    - multiple serial port support added (4 ports now available)
+    - partial raw serial support on win32 (transmit data)
+    - serial port i/o mode option added (modes: null, file, term, raw, mouse)
+  - parallel
+    - multiple parallel port support added (2 ports now available)
+  - mouse
+    - serial mouse support (Volker)
+    - PS/2 and serial wheel mouse support (Ben Lunt)
+  - usb
+    - USB mouse and keypad support (Ben Lunt)
+    - config option to specify devices connected to USB ports
+  - vga
+    - VBE 8 bit DAC support added
+    - VBE memory now registered using DEV_register_memory_handlers()
+    - CL-GD 54xx SVGA emulation added (Makoto Suzuki)
+    - vga extension option added (choices: vbe, cirrus, none) (Volker)
+  - floppy
+    - raw floppy access now works on Win9x host (Ben Lunt)
+  - sb16
+    - MacOSX sound support (Brian Huffman)
+  - networking modules
+    - new: 'eth_vnet' simulates ARP, DHCP, ICMP-echo and read-only TFTP
+      (m_suzu, easeway)
+    - new: 'eth_vde' for Virtual Distributed Ethernet (Renzo Davoli)
+
+- System BIOS
+  - turn floppy motor off 2 seconds after last read/write/recalibrate command
+    (Ben Lunt)
+  - int13_cdrom / 32 bit register update fixes for FreeBSD cdrom boot
+    (Fabrice Bellard)
+  - APM and system shutdown support (Fabrice Bellard)
+  - checksum calculation for expansion ROMs
+  - extended floppy parameter table (Mike Nordell, Derek Favcus)
+  - PCI IRQ initialisation added
+  - boot sequence with up to 3 boot devices added
+
+- display libraries
+  - status bar with indicators for cdrom, floppy, harddisk and keyboard added
+    (done in rfb, sdl, win32, wx and x)
+  - 3rd (middle) mouse button now supported (rfb, sdl, win32, wx, x)
+  - mouse wheel support (sdl, win32, x)
+  - CTRL key + middle mouse button now used to toggle the mouse capture mode
+    (sdl, win32, wx, x)
+  - text mode split screen feature added (sdl, win32, wx, x)
+  - new gui function returns the display library capabilities (xres, yres, bpp)
+    for the Bochs VBE support
+  - display library specific options added - currently supported:
+    rfb:   timeout (time to wait for client connection)
+    sdl:   fullscreen (startup in fullscreen mode)
+    win32: legacyF12 (use F12 to toggle mouse)
+  - new graphics update API added (used by svga_cirrus) (Robin Kay)
+
+- configuration interface
+  - win32: gui runtime dialogs replace textconfig runtime dialogs
+  - set default IPS to 10000000 in .bochsrc sample
+  - SB16 options dmatimer and loglevel now available at runtime
+
+- configure script / compile
+  - --enable-ignore-bad-msr (ignore bad MSR references) option is enabled 
+    by default
+  - --enable-mmx enabled by default only if cpu-level >= 5
+  - --enable-4meg-pages will be enabled by default if cpu-level >= 5
+  - fixes for Solaris SunPro (Robin Kay)
+  - --enable-pni option added
+  - --enable-show-ips option added, enable Instruction Per Second counter 
+    in log file 
+  - autodetection for lowlevel sound support added
+
+- documentation
+  - a bunch of updates in user and documentation docs (Alexander Schuch)
+
+- SF patches applied
+  [894595] MSR_APICBASE always returns APIC ADDRESS 0 by Kangmo Kim
+  [907163] ctrl_xfer8 clean/speed up
+  [907161] clean/speed up of io.cc
+  [899972] data xfer performance patch V 2.0.4
+  [904549] imul gives incorrect result in long mode
+  [877510] amd64 fixes...
+  [903465] SEGV in iodev/ne2k.cc line 1211 on Alpha architecture by Christian Lestrade
+  [903332] copy the bximage result to clipboard, etc by Lukewarm
+  [950905] Do not PANIC on rare, bad input from user-mode by h.johansson
+  [924428] ET bit mismatch between CR0 and MSW
+  [869822] a real SVGA implementation by m_suzu
+  [867045] fix for compiler errors on VC++ by m_suzu
+  [838601] support for the over 2GB disk size with MSVC++
+  [874816] local ARP/ping/DHCP simulator by m_suzu
+  [976066] Keyboard: Get controller version by Ben Lunt
+  [832330] ROMBIOS improvement (reduce stack consumption, etc.)
+  [977900] READ_CDROM_TOC and base address by Ben Lunt
+  [961665] WinXP patch to read physical CDROM's TOC by Ben Lunt
+  [978793] CDROM_SENSE_MODE medium_type by Ben Lunt
+  [615457] gif to png migration
+ [1021767] Portability in sb16ctrl.c by Robert Millan
+  [690400] gzip is confused by GZIP variable in Makefile
+  [567595] guess floppy image size from image file length by Tal Benavidor
+  [888426] bochsrc to make vnet useful by m_suzu
+ [1021758] GNU/k*BSD host support by Robert Millan
+  [969967] int 15/ah=87h clearing cr0 by Ben Lunt
+ [1048327] Russian Keymap by Dmitry Soshnikov
+  [851332] DESTDIR support for install_dlx by Ville Skyttä
+  [970929] gdbstub support for MinGW tool chains by Muranaka Masaki
+ [1021740] Turn gdb stub into a runtime option by Charles Duffy
+ [1063329] RFB key press/release bug fix by Remko van der Vossen
+ [1079240] Wheel Mouse by Ben Lunt
+ [1087537] Fix for Win9x CD boot by lukewarm
+ [1083218] Start of wheel for USB #2 by Ben Lunt
+ [1098480] bochsrc: fixed floppya example by Alexander Schuch (ci-dev)
+ [1094407] configure.in: changed wxWindows to wxWidgets by Alexander Schuch
+ [1092058] serial.cc debug output cleanup by Ben Lunt
+ [1101165] APIC base address by Christian Neubert (flashburn)
+ [1093796] Fix for bug #1093786 (Nigel Horne)
+ [1082584] The start of Bus mice and USB mice by Ben Lunt
+ [1104695] msvc6 compatibility update (Royce Mitchell III)
+ [1059199] VGA text font bug fix (Anonymous)
+ [1108001] Null pointer on bx_atexit() (Ben Lunt)
+ [1112093] Fixed mouse cursor remain area drawing (Anonymous)
+ [1114826] Fix PCIBIOS (Destruction prevention of esi and edi)
+ [1095473] Reading from a CDRW (Fixed) by Ben Lunt
+ [1123895] x86-64 gdb/debugger fixes by Avi Kivity
+ [1145423] stosq simulation bugfix by Avi Kivity
+ [1151012] allow null ss on x86-64 by Avi Kivity
+ [1153327] ignore segment bases in x86-64 by Avi Kivity
+ [1153511] Fixed broken screen update (VBE)
+ [1152808] use 'install' instead of 'cp' during installation by Avi Kivity
+ [1159626] bugfix [1156776] keyboard scanmode fault by Rene Kootstra
+  [843328] PATCH: support for Flat-style ToolBar with Win32GUI
+ [1198308] PATCH: fix incorrect moving mouse cursor when wheel used
+ [1200515] add TFTP server to vnet & ipv4 bug fix by easeway
+ [1203305] tuntap incompatibility by Jan Kratochvil
+
+- SF patches partially applied
+  [896733] Lazy flags, for more instructions, only 1 src op
+ [1005422] Improve mouse cursol Grub when 2 buttons-mouse use (WIN32)
+           (TODO: improved japanese keyboard support)
+
+- patches applied
+  - patch.rombios.markevich (Start/Stop Wait Timer) (Kory Markevich)
+  - patch.apic-zwane (APIC fixes) (Zwane Mwaikambo)
+  - patch.v8086-exception.lightcone (LightCone)
+
+- these S.F. bugs were closed
+  #957660 >>PANIC<< APIC: R(curr timer count): delta < initial
+ #1192654 60 x 90 text not quite right... 
+ #1189097 "configure --with-sdl --with-rfb" doesn't compile
+ #1188980 Crash on XP when break into debugger
+ #1186693 Improving quality of ./configure --help
+ #1185245 Errors Making Bochs with Mingw32
+ #1185289 PSE is not enabled by default on Pentium
+ #1170620 info cpu scrolls away, is too long
+ #1157998 ips shown even when waiting for input
+  #663108 APIC Timer Bug 
+  #831750 bochs unlike real PC in paging
+ #1182698 PAE support doesn't work
+  #954400 debugger causes segfaults when gcc 3.4.0 is used
+ #1171312 Possible SMP problem with ICACHE pageWriteStamp
+ #1179964 PANIC: RIP>CS.limit when jumping to longmode
+ #1171067 configure fails to add -lpthread
+ #1171065 Term UI needs -lncurses 
+ #1171061 SDL GUI startup failure
+ #1022056 win32 error build debug version..c2146
+  #957190 error while attempting to compile sb16.cc
+  #804797 Debugger: visualization problem (jmp) 
+  #675523 2.0.1 doesn't run on W2K?
+ #1167358 When using 5430PCI in DR-DOS Bochs would panic with a PUSHAD
+ #1164654 Bochs VBE bios causing exception 0B in Windows 95 (SVGA bios)
+ #1162983 conflicts which configure could detect
+ #1164536 Windows 95 B crashes during install
+  #526978 cygwin: in an rxvt, stdout is flaky
+  #542303 >>PANIC<< call_protected: CS selector null
+  #859457 BRICKS game doesn't work
+ #1159639 text modes on address A0000-BFFFF are not handled properly
+ #1164225 define BX_SUPPORT_X86_64 0
+ #1163720 ROL bug
+ #1156776 keyboard scanmode fault
+ #1162042 Duke Nukem 3D: >>PANIC<< iret: VM set on stack, CPL!=0
+ #1161945 ctrl_xfer32 compile/make error 
+ #1157124 Bochs doesn't run with large amounts of memory in bochsrc 
+ #1154266 weird INT handling in V86 mode
+ #1157051 default Bochs CVS doesn't work-out-of-the-box
+  #923954 enter() with level > 0, >>PANIC<< iret: return CS selector
+ #1098476 Privilege Problem after SYSEXIT
+ #1121734 Bochs crashes when shutting down Win95 
+ #1099294 VESA for Win98 bogus
+ #1112836 PGE-Bit crashes Bochs
+  #947586 The specification difference in x86-64 emulation
+ #1117145 Push reset Button, APIC0 Error occur 
+ #1123043 fpu stack pointer changed *despite* fault occured (e.g. #pf)
+ #1122066 PANIC: iret: IP > descriptor limit when installing os/2 warp 
+  #809574 rm -f segfaults
+  #593952 SuSE rm segfaults
+  #929783 floppy not recogniced since 2.1
+ #1099298 SB16 for Win98 Bogus
+ #1079483 Reading from a CDRW 
+  #549793 flaw in interrupt gate handling(exception.cc)
+  #692055 SMP Error
+  #805479 Booting from disk causes illegal instruction warnings
+  #909677 pc-speaker doesn't work 
+  #831751 behaviour unrealistic
+  #661213 CR4.TSD is broken
+  #685508 PANIC: prefetch: RIP > CS.limit 
+ #1037923 Non-executable page support missed (NX bit, x86-64)
+ #1106530 wrong disassemble result 
+ #1105208 drive order for boot gets saved wrong
+  #661060 Problem with Win98SE
+  #837377 Norton Ghost don't boot
+  #876689 Unknown register 0x17 [CPU] / WIN98SE
+  #947282 Bochs segfault
+  #963317 Persistent Win98SE  
+ #1101168 APIC base address change
+  #680737 panic when installing winme
+ #1097187 Install FC3 on bochs-win failed
+  #875461 vgabios-lgpl should be default
+  #594797 Bochs segfaults
+  #602994 bochs breaks boot kernel
+  #571539 FreeBSD Install from CD Fails
+  #774257 Device doesn't work under W98
+  #759228 Installing Suse 8.2 in Bochs on WinME
+  #792561 cant boot freebsd 5.1 from cdrom
+  #804004 Live cd will halt on boot..
+  #956173 FreeBSD won't boot iso install images in Bochs v2.1 or 2.2.
+  #864401 >>PANIC<< jmp_ev: IP out of CS limits!
+  #853831 Error on int 15h
+ #1094150 DR-DOS 7.03: panics when using multitasker
+  #655592 win98 hardwaredetection
+ #1093786 Solaris 9 installation CD fails
+  #959585 USB UHCI IO-Device 
+  #963314 Redhat Fedora Installer Kernel Panic and Crash
+ #1086920 Bochs (cvs) doesn't compile on FreeBSD 5
+  #879050 Bochs reports enabled APIC without support
+ #1071199 dBaseII cause prefetch: RIP > CS limit 
+ #1070812 typecast error while compiling wx.cc
+ #1068786 FSINCOS Cos value wrong at 90 degrees 
+  #675248 Panic: EIP > limit on win98 install
+  #829793 [CPU ] prefetch: RIP > CS.limit
+ #1034059 >>PANIC<< prefetch: running in bogus memory
+ #1067813 pbm fpu_proto.h:144 ebuild gentoo bochs 2.1.1 
+  #922034 bios not aliased at 0xFFFFF000, registers wrong after reset
+  #912666 Configure fails on Yellow Dog Linux 3.0.1
+  #922038 Unexisting memory should read back as 0xFFFFFFFF
+ #1019723 HD image
+ #1057814 Shadow RAM not aligned
+ #1057240 Invalid IRET32 implementation
+  #809682 >> PANIC << : prefetch: RIP > CS.limit
+  #618680 memory referencing problems
+  #724262 A few things (Windows 2.03, Wolfenstein)
+  #985375 Crash Mandrake 7.1
+  #913418 compiler errors with --enable-external-debugger option
+  #708847 CR8 access should not panic X86-64
+ #1039499 Compile error pcipnic.cc (cygwin)
+  #978024 compile against wxGTK-2.5.2 fails
+  #639073 MacOSX: Networking not implemented
+  #639074 MacOSX: Soundblaster not implemented
+  #963264 Latest CVS --enable-pcidev fails to configue on YDL Linux
+  #586282 Mac OS X, will not "make"
+  #699532 CVS (as of 2003/03/07) cannot read disk images
+  #639275 wrong more than 2GB size DVD-ROM
+  #766020 info registers / dump_cpu get old eflags
+  #655920 QuickBasic (qbx.exe) panics
+  #676188 Error BX_MAX_DIRTY_PAGE_TABLE_MEGS
+  #923821 LOCK not generating exceptions properly
+ #1007747 Wrong configure?
+ #1022577 show "call" command crashes bochs every time
+  #681849 SuSE 8.1 Compile problem
+  #660322 Install bochs 2.0 on SuSe 8,0
+ #1022587 "Unrecognized args" message wrong after invalid show command
+  #833118 TUN/TAP interface bug
+ #1022178 tuntap module mangles incoming broadcast packets
+ #1028682 Report incorrect disk parameters of floppy
+ #1026234 make fails on Cygwin because of missing .exe extension
+ #1026241 --enable-cpp needed for .conf.win32-cygwin
+  #855323 BIOS Panic at rombios.c, line 1563
+  #762773 ROM checksum is not checked in rom_scan_loop
+  #657604 concat_image_t.lseek to byte -1378816 fa
+  #800140 No AH=83h INT15h implemented
+  #831965 Win32.zip BIOSes in wrong directory
+  #873280 bximage crashes after createing "growing"
+  #892223 bochsrc-sample.txt/vgaromimage option error
+ #1014361 Bximage on WinXP won't create image
+  #651510 bximage won't create larger than 2GB
+  #759206 bximage fails on Win32 for hd images over 2Gb
+  #759210 Bochs fails on image files over 2Gb on Win32
+  #799785 bximage doesn't work
+  #903345 Problem compiling harddrv.cc
+  #933303 Bochs cannot lseek() HD images > 2GB on W32 platforms
+  #888438 bximage crashes...(hacked fix included)
+  #871720 bximage 2GB file size limit
+  #930368 Can't create big hard drives (>2 GB)
+  #912496 IDIV can cause simulator divide error
+  #522111 Host os SIGILL, booting grub from hd
+ #1005052 DMA Controller Model Problem
+  #552939 Bochs window doesn't resize when win311
+  #989478 I-Cache and undefined Instructions
+  #661008 make install fails
+  #845691 Workaround: Ne2k and Windows 2000 not working
+  #923662 BIOS diskette motor countdown byte broken
+  #848141 VGA problems running Scitech Display Driver on Win95
+  #799370 Problem booting ReactOS 0.1.3
+  #670143 No rule to make config.h
+  #653444 with vbe/lgpl bios, scrn updates broken
+  #655696 quickstart broken?
+  #659350 FDC
+  #620853 Ne2000 ethernet card *NOT* supported
+  #607611 Numlock
+  #543476 Sound card does not work in Windows 95
+  #529554 unsupported VBE features DISPI update
+  #487316 Access violation on Win32
+  #576253 RTC too fast
+  #489748 io read from address 000003c0, len=2
+  #656861 Gentoo Linux panics in VGA code
+  #787184 Video BIOS's don't checksum correctly
+  #988529 textconfig [Save options to] function output obsolete option
+  #987293 Cannot accesss header/toolbar
+  #988246 floppy read error
+  #933199 speedup Bochs compilation 4x -> suggestion
+  #979106 Incorrect disassembly table entry
+  #658374 FPU incorrect emulation
+  #706933 Problem with the F12-Key
+  #477043 math_abort panic in RH 7.1
+  #634371 Floating point problems
+  #681138 // is not valid in C
+  #643300 cpuid feature flag 15, cmov and fcmov
+  #913697 missing division by 0 exeption in fpu emuation
+  #923682 FSTENV/FINIT problems
+  #923855 FPTAN doesn't work right with full NPX stack
+  #924379 ET bit mismatch between CR0 and MSW 
+  #716116 Direct floppy access
+  #962919 Mac: iodev/cdrom.cc disordered
+  #954751 Two FPU.CPP in project
+  #954359 Compile faile is 3dnow support is selected without SSE support
+  #906412 FreeSCO error
+  #942060 FDC Controller not conforming to specifications
+  #938522 Win XP installation fails
+  #923613 BOUND instruction exception handling is broken
+  #923223 memtest86 errors
+  #593342 autoconf script doesn't regenerate clean
+  #616116 Crash on exit...
+  #922042 shutdown through port 92 does not work
+  #891633 02839990390p[CPU0 ] >>PANIC<< RDMSR: Unknown register 0x17
+  #923653 DAA instruction is broken
+  #911225 obscure AAA / AAS bugs
+  #837206 Problems with numerical keys
+  #658765 BOCHS halts in runtime config
+  #890734 Bochsrc Parser Bug with commas included in strings
+  #877285 MSR_APICBASE zero upon startup
+  #526984 SDL compiled in cygwin just quits
+  #886406 I/O permissions bug
+  #883239 undefined symbols in gui/siminterface.h:1215
+  #419647 on OSF1, cxx hates C++ inlines
+  #809790 "No rule to make target `devices.cc?..."
+  #873654 How compile without plug-in support ?
+  #837161 Test case for BX_CPU_C::IRET32
+  #888116 mmx.cc compile error
+
+-------------------------------------------------------------------------
+Changes in 2.1.1 (February 8, 2004):
+
+- fix bug in int15h function 0xe820 (Christian Neubert)
+- fix vmware3 disk support on big-endian platforms (Christophe Bothamy)
+- fix conditions for NM exception on FWAIT instruction (Christophe)
+- fix symbol conflict in rfb and x display libraries (Volker Ruppert)
+- allow 16 bit writes to ne2k page 0 (Kenneth Stailey)
+- notify display libraries on change of bpp (Volker)
+- fix bug in int13h function 0x10 (Volker)
+- fix floppy dialog error on win2k (Volker)
+- fix adress check in TSS IO permission bitmap (Christophe)
+- fix buffer overflow vulnerability pointed out by SeSoX (Christophe)
+- updates for MacOS compile (Daniel Gimpelevich)
+
+-------------------------------------------------------------------------
+Changes in 2.1 (January 9, 2004):
+
+Brief summary :
+- New disassembler
+- 3DNow!/SSE/SSE2/PNI instruction support
+- Vmware3/Sparse/Undoable/Growing harddisk images support
+- many VGA emulation improvements (e.g. high/true color VBE modes added)
+- No more X11 vga font required
+
+Detailed change log :
+
+- CPU
+  - added emulation of AMD 3DNow! instructions set. (Stanislav Shwartsman)
+    Bochs now could decode all AMD 3DNow! instructions. 
+    Most of instructions still not implemented, but the basis already presents.
+    Configure --enable-3dnow to enable 3DNow! support.
+    Notes : 
+      - These instructions are not implemented yet:
+	PFPNACC_PqQq, PF2IW_PqQq, PFNACC_PqQq, PFCMPGE_PqQq, PFMIN_PqQq,
+	PFRCP_PqQq, PFRSQRT_PqQq, PFSUB_PqQq, PFADD_PqQq, PFCMPGT_PqQq,
+	PFMAX_PqQq, PFRCPIT1_PqQq, PFRSQIT1_PqQq, PFSUBR_PqQq, PFACC_PqQq,
+	PFCMPEQ_PqQq, PFMUL_PqQq, PFRCPIT2_PqQq
+     - CPUID does not report 3DNow! instruction set.
+  - added emulation of SSE/SSE2 floating point instructions. (Stanislav)
+    All SSE/SSE2 floating point instructions are fully implemented using 
+    free softfloat library (including DAZ support and floating point
+    exceptions). Correctness of the emulation checked with heavily random 
+    testing. 
+  - added emulation of SSE3 (PNI) instructions (Stanislav)
+    Currently only 3 PNI opcodes still not implemented:
+	FISTTP m16int, FISTTP m32int, FISTTP m64int
+  - added P4 CPU support to CPUID instruction. (Stanislav)
+  - fixed implementation of FXSAVE/FXRSTOR instructions. (Stanislav)
+  - bugfix: unallowed lock prefix cases must cause #UD exception. (Stanislav)
+  - fixed fetchdecode bug caused #UD in SYSENTER/SYSEXIT instructions
+    in 32bit mode. (Stanislav)
+  - fixed fetchdecode64 bug caused wrong decoding of opcodes containing
+    BxImmediate_IvIw or BxImmediate_IwIb in x86-64. (Stanislav)
+  - fixed bug in int01 (opcode 0xF1) emulation. (Vitaly Vorobyov)
+  - fixed bug in x86 debugger with dr0-dr3 registers (Vitaly)
+  - fixed bug with mov to/from dr register in v86mode.
+    (now exception is generated (according to Intel documentation)
+    instead of panic) (Vitaly)
+  - fixed stack limit checking, now message is generated as BX_DEBUG,
+    rather then BX_PANIC, and exception code is executed. (Vitaly)
+  - instrumentation code updated. (Stanislav)
+  - fix flaw in IO bitmap permission of TSS (Christophe Bothamy)
+  - cpu resets on triple fault (Christophe)
+  - remove calculation on cr3 in dtranslate_linear to increase
+    emulation speed (Conn Clark)
+  - numerous x86-64 fixes (Peter Tattam)
+
+- FPU
+  - hundreds of bugfixes in FPU emulation after checking of the emulation
+    with testfloat (Scott Duplichan).
+    - Fixed cases:
+        - floatx80_to_int32,   floatx80_to_float32
+        - floatx80_to_float64, floatx80_round_to_int
+        - floatx80_add,        floatx80_sub, 
+        - floatx80_mul,        floatx80_div
+  - implemented FCMOVcc instructions (Stanislav)
+  - 64-bit addressing support for x86-64 mode (Peter)
+
+- Disassembler
+  - replaced Bochs disassember. New table-based disassembler fully supports
+    all IA-32 instruction sets including all FPU/MMX/SSE/SSE2/SSE3 opcodes.
+    (Stanislav)
+
+- I/O devices
+  - general
+    - i/o access mask implemented, unallowed cases are now handled in the devices
+      code and cause a BX_ERROR (Volker Ruppert)
+    - include slowdown timer as a runtime option (Christophe)
+    - netBSD : fix serial, ethernet, cdrom (fredb, uebayasi and David Laight)
+  - VGA
+    - color depth 15, 16, 24 and 32 bpp supported by VBE (Volker and
+      Christopher Nelson for 32 bpp on win32). Supported by sdl, x, win32 and wx.
+    - SVGA mode 0x6A (800x600x4bpp) implemented (Volker)
+    - new CGA graphics modes 640x200x1bpp and 160x100x4bpp (text mode 80x100) (Volker)
+    - raster operations AND, OR and XOR in write mode 2 (based on SF patch #707931) (Volker)
+    - 'split screen' in standard VGA graphics mode implemented (Volker)
+    - 'double scan' and 'double width' now handled in the VGA code (Volker)
+    - more accurate emulation of the horizontal and vertical retrace (Volker)
+    - changeable start address and variable line length supported by all
+      graphics modes (Volker)
+    - VBE: preserve video memory feature implemented (Volker)
+    - additional text mode features prepared (handled in the display library
+      code) (Volker)
+  - PCI
+    - add experimental PCI VGA card (Mike Nordell)
+    - add experimental PCI USB card (Ben Lunt)
+  - Harddisks 
+    - per device selectable harddisk modes :
+      - undoable, volatile, growing disks support (Christophe)
+      - sparse disks support (justinSB)
+      - vmware3 disks support (Sharvil Nanavati)
+    - fix non detection of hard drives by minix2 (Christophe)
+    - implement atapi command 0xA8 read (12)  (Christophe)
+    - mode sense command updated (Hartmut Birr)
+  - sb16 
+    - opl2 support enhanced (James E. Flemer)
+  - ne2k
+    - tap support for FreeBSD (Ronald Klop and Gen Otsuji)
+    - fix when booting with grub (Keir Fraser)
+  - cmos
+    - date/time change support added (Volker)
+    - UIP bit and divider chain reset implemented (Volker)
+    - initial time can now be set to local time or utc (Christophe, Daniel Gimpelevich)
+  - keyboard
+    - keyboard reset function (0xff) now resets the keyboard (Volker)
+  - gameport
+    - new standard PC gameport device (real joystick connected on Linux and
+      win32 only). Enable it with --enable-gameport or the SB16 emulation (Volker)
+  - serial
+    - FIFO emulation (UART type 16550A) implemented (Volker)
+  - floppies 
+    - 160k,180k,320k floppies support (Ben Lunt)
+
+- display libraries
+  - X11
+    - onboard vgacard charmap usage (no need for external X11 vga font any more) (Christophe)
+    - vgacard charmap change support (Christophe)
+    - fix black stripes on partial exposes (Dirk Thierbach)
+    - headerbar redraw optimizations (Dirk Thierbach)
+    - external font files and their installation mechanism removed (Volker)
+    - belgian keymap support (Wouter Verhelst, Eric Brasseur)
+  - win32 + wx + x: new application/window icon (bochs.ico / icon_bochs.xpm) (Volker)
+  - sdl + win32 + wx + x: new textmode features: variable line length,
+    char width switch, horizontal and vertical pel panning (Volker)
+  - win32 + wxMSW: key event handling rewritten (Volker)
+  - win32: status bar at the bottom of the simulation window added (Volker)
+  - wxMSW: resource problems fixed - wx dll plugin works now without errors (Volker)
+  - term: variable line length and cursor enable/disable feature implemented (Volker)
+  - rfb
+    - textmode: charmap change, better cursor emulation, variable line length (Volker)
+    - headerbar works now (power, reset and user button are okay) (Volker)
+    - key event handling rewritten (Volker)
+    - Bochs-RFB waits up to 30 seconds for a client connection. The emulation
+      starts after connecting the client. (Volker)
+  - carbon: Alt/Ctrl/Shift key handling rewritten & SysRq/Ctrl-Break key support added
+    (Daniel)
+ 
+- configuration interface
+  - gui dialogs as an extension of the textconfig interface on win32 added (Volker)
+    * ask dialog
+    * save text snapshot
+    * user button shortcut
+    * floppy image change
+  - wxwindows configuration dialogs improved (Volker, Christophe)
+
+- support tools
+  - bximage : added support for 
+    - growing disks (Christophe)
+    - sparse disks (justinSB)
+  - created bxcommit tool for undoable disk images (Christophe)
+
+- System BIOS :
+  - fixed int15 function e801 (get memory size) (Christophe)
+  - added int75_handler for FPU Dos Exceptions (Christophe)
+  - added int16 function 0a (Get Keyboard ID) (Volker)
+  - added support for ElTorito Harddisk-on-CD emulation (Christophe)
+  - fixed ATA/Serial ioport conflict (Daniel)
+
+- VGA BIOS : updated to version 0.4c (Christophe)
+
+- configure script/compile/porting to other OSes/installation
+  - fixes for compilation with MSVC (Andrew Zabolotny)
+  - fixes for cross-compilation (Jeroen Janssen)
+  - win32 nsis installer script updates (Volker)
+  - small configure fixes for MacOS (Christophe)
+  - optimizations & compile fixes for MacOS/X (Daniel)
+
+- configuration files. The following options have been deprecated :
+  diskc, diskd, cdromd, time0, pit, newharddrivesupport.
+
+- documentation
+  - already ported and obsolete parts of the old documentation removed (Volker)
+  - user documentation updated and extended :
+    - improved section "What does Bochs need" (Volker)
+    - command line arguments (Volker)
+    - search order for the configuration file (Volker)
+    - the configuration interface 'textconfig' (Volker)
+    - FreeDOS Beta 8 installation instructions (Volker)
+    - disk modes (Christophe)
+    - LBA translation  (Christophe)
+    - cdboot error codes (Christophe)
+    - SCO OpenServer install section (Carl Sopchak)
+    - MacOS-X DMG install guide (Aard Vark)
+    - update Win98 install guide (Dirk Thierbach)
+
+- SF patches applied
+  #658950  Bug in FPU                                                  (Anonymous)
+  #678117  build fail due to bad SGML punctuation                      (Anonymous)
+  #671873  minimal USB support (UHCI)                                  (Ben Lunt)
+  #682539  Fix CapsLock and NumLock behavior                           (rock at gimp.org)
+  #720776  REX MOVB immediate broken for x86_64                        (Arnd Bergmann)
+  #729450  new keymap x11-pc-be.map                                    (Wouter Verhelst)
+  #735990  Limited patches for VC++                                    (Anonymous)
+  #742670  fix library dependencies in GUI plugins                     (Robert Millan)
+  #742782  LFB bugfix                                                  (Jan L. Hauffa)
+  #748414  load32bitOShack bug                                         (kyriazis at nvidia.com)
+  #830079  Fix bochs's application error if unsupported key pressed    (Anonymous)
+  #724466  enable building with CC=gcc-3.2 CXX=g++-3.2; dist-clean adds(Leonard Norrgard)
+  #834962  Fixed drawing graphics is broken                            (Anonymous)
+  #838401  Fixed redrawing of ToolBar on Win32GUI                      (Anonymous)
+  #850236  Fixed accessing DVD-ROM with direct device access on Win32  (Anonymous)
+  #847822  Bochs crash when exmining memory that crosses page boundary (ortal at jungo.com)
+
+- SF patches partially applied
+  #707931  Support EGA/VGA write mode 2 and others                     (Anonymous)
+           already applied: disable IME, split screen, write mode 2,
+           BIOS INT16h/AH=05h
+  #856506/#856510  Patch to fix compile-time iodev/cd-rom.cc error     (alden.dima at nist.gov)
+           Correct patch provided in SF bug report #843433             (birkhofer at users.sourceforge.net)
+
+- patches applied
+  - patch.highmem  (memory allocation) (Zwane Mwaikambo)
+  - patch.floppy-160k-180k-320k-benlunt (exotic floppies) (Ben Lunt)
+  - patch.perf-regparm-cclark (performance) (Conn Clark)
+
+- new patches present in the patches directory :
+        patch.pipelined-asm-cclark
+        patch.mingw-resources
+        patch.v8086-exception.lightcone
+        patch.pit-vitaly-vorobyov
+        patch.rombios-vitaly-vorobyov
+        patch.win32-vitaly-vorobyov
+        patch.win32-new-files-vitaly-vorobyov.tgz
+        patch.rombios.markevich
+        patch.rombios.dirk.thierbach
+
+- these S.F. bugs were closed 
+   #865354 ">>PANIC<< CRA: divider chain control 0x07" in Linux 1.1
+   #725796 configure script bug 
+   #859768 cpuid 
+   #863964 panic in duron 2000 
+   #843433 cdrom.cc on MacOSX: wrong const names 
+   #818493 EMU][ (DJGPP app running on FreeDOS) broken 
+   #787005 Some MOV instructions are not implemented!!! 
+   #840664 2200136693936p[CPU ] >>PANIC<< prefetch: RIP > CS.limit 
+   #837416 V2 OS not compatible !? 
+   #650917 Serial port broken under win95 
+   #829863 Make bochs 2.0.2 build with gcc3 
+   #816971 main.cc: getcwd() missing argument 
+   #813556 Compile error under gcc 3.3.1 
+   #809758 RIGHT ALT does not function properly 
+   #809695 CVS complains about unknown files after compilation 
+   #628762 Error in Floppy Booting 
+   #474526 Crash under win32 (access violation) 
+   #687619 test case for BX_CPU_C::IRET32 
+   #664544 Panic in IRET32 - Reporting test case 
+   #637822 test case for BX_CPU_C::IRET32 
+   #603410 BX_CP U_C::IRET32 
+   #537047 IRET32 incomplete emulation, panic 
+   #805541 Compile fails on i686, gcc 3.3 
+   #798829 Problem booting from ISO image 
+   #688163 Panic at rombios.c 
+   #688161 rombios.c crashes when boot from a CD. 
+   #796339 int 15h, e801h broken? 
+   #666946 Slowdown Timer should be a module 
+   #783826 the clock is extremely fast 
+   #645609 Real Time Clock is too *FAST* 
+   #663320 flaw in IO bitmap permission handling
+   #764929 Timing is off.
+   #659510 Bochs timing off by x10
+   #787138 No ROM BIOS character map 
+   #787134 Config options not saved
+   #689201 Disassembler bug
+   #666202 Windows 2000 - random screen blanking with linux DLX demo
+   #629242 reset during Doom -> BIOS panic
+   #695434 minix floppies won't boot.
+   #764473 Freesco Linux crashes on boot
+   #656026 error when trying to run some stuff
+   #614202 HD: non-byte IO read to 01f4
+   #777357 Strange FPU compiler error
+   #583758 gag bootloader doesn't run
+   #658639 ne2k panics with MS lanman Client/DOS62
+   #536711 problem running smart bootmanager
+   #741433 Disabling all ata# results in HD error.
+   #753200 lock instruction doesn't do an illegal instruction trap
+   #679389 libbx_wx.so.0: undefined symbol
+   #758936 Problem Installing Bochs
+   #742580 I configured fants but bochs still give me the same error
+   #772242 iodev/vga.cc wrong memory access.
+   #739222 Cannot change resultion
+   #693344 libwx_gtk2.3.so.2 RedHat linux 8.0
+   #639320 sparc: needs -lm to compile 
+   #587422 Windows 95j doesn't boot
+   #547817 sparc: rfb needs -lsocket
+   #480963 RFB: option to wait for client
+   #763893 i've got problems with a "libvga.so.1" and another file
+   #766490 Documentation mistake
+   #766481 Bochs 2.0.2 Fails to compile on YDL3.0
+   #626144 %lld is not portable
+   #752241 lock prefix erronously allowed for some instructions 
+   #743305 fetchdecode.c probs
+   #658707 Automatic exit?
+   #696758 BeOS can't mount image disk, won't complete boot.
+   #737048 Enabling keyboard resets controllers translation mode
+   #717713 Bochs panics on startup on RH 9
+   #741108 VGA PANIC
+   #730922 seg fault on "bochs boot: cdrom"
+   #658905 VGA read write error
+   #564218 Panic on vga_mem_write
+   #614231 X11 doesn't support charmap change
+   #708311 Missing CGA low-res emulation 
+   #720776 REX MOVB immediate broken for x86_64
+   #643296 lock prefix, unallowed cases
+   #716964 [sb16] OPL.timer_running not initialized
+   #662074 little mistake in the default config example
+   #470701 CD-ROM on Win2K needs FILE_SHARE_READ
+   #706454 bug??
+   #653861 Win32 build bug
+   #421155 panic on vga read 0x3c7,0x3cb
+   #666434 VGA BIOS: Incompatible mode reporting
+   #681819 Incorrent return value from cdrom reads
+   #648222 Lotus Agenda futuristic dates off
+   #657455 doesn't boot plan9
+   #658938 SGDT in VM8086 
+
+-------------------------------------------------------------------------
+Changes in 2.0.2 (January 21, 2003):
+
+- fix possible segfault in wxWindows (Volker Ruppert)
+- fix instrumentation (Stanislav Shwartsman)
+- fix cdrom read_toc() function for *BSD (Keith Matthew Jones)
+- fix NetBSD boot from cdrom (Christophe Bothamy)
+- fix cmos checksum (Volker)
+- fix "refresh bit" behaviour in pit (Volker)
+- fix .bochsrc parsing (Volker)
+- fix vga resize/redraw problems (Volker)
+- fix compilation issues on Irix and Tru64 (Christophe)
+- fix MMX/SSE bugs (Stanislav, Peter Tattam)
+
+-------------------------------------------------------------------------
+Changes in 2.0.1 (January 4, 2003):
+
+- fix corrupt saved configuration files (Christophe Bothamy)
+- fix missing break statements in apic (Shai Fultheim)
+- fix compiling sb16 under FreeBSD (Volker Ruppert)
+- updates to the documentation (Volker)
+- fix text mode colors 8 to 15 (Volker)
+- fix FPU integer load bug (Volker)
+- stop pasting on hardware reset (Volker)
+
+-------------------------------------------------------------------------
+Changes in 2.0 (December 21, 2002):
+
+Since the change log is hundreds of lines long, here is a very brief summary.
+- 2x emulation speedup!!!
+- added plugin devices and guis. Now you can compile with many more
+  options, and choose between them at runtime.
+- added emulation of AMD x86-64, MMX, SSE, SSE2 instructions
+- add wxWindows port (a graphical configuration interface and display lib)
+  and SVGAlib port (full screen display for Linux without X11)
+- improvements in many I/O devices: for example up to 8 hard disks/cdroms,
+  TUN/TAP network interface, 360k floppies,
+- improved MacOSX/Carbon interface and updated MacOS9 port
+- GDB remote stub, allows symbolic debugging with Bochs simulation.
+- support for up to 32gig hard disk images
+
+Detailed change log follows.
+
+- documentation
+  - manpages updated (Volker, Christophe)
+  - install HTML rendering of docbook documentation instead of 
+    docs-html (Bryce)
+  - doc/docbook/Makefile is now generated by configure script.
+    if configure detects docbook2html on your system, it will turn on
+    --enable-docbook and run make in the doc/docbook directory.  Also
+    make install will install documentation into $(docdir).  You can use
+    --disable-docbook to turn this off, if necessary. (Bryce)
+  - add "make bochsdoc.tar.gz" target to create a documentation tarball.
+    If you do "make webinst" and you have write access on SF shell server,
+    it updates doc/docbook/* on the website (Bryce)
+  - user documentation additions:
+    - new options (Bryce, Volker, Christophe)
+    - Bios tips section (Christophe)
+    - Tuntap section (Christophe)
+    - Serial Port section (Christophe)
+    - "Will it Work for Me" / "Is Bochs Right for Me" sections 
+      (N. David Guarneri)
+    - VESA section (Jeroen Janssen)
+    - several documents, previously existing as separate html files, have
+      been included :
+      - internal debugger section (Christophe)
+      - gdb stub debugger section (Christophe)
+      - WinME, WinNT, WinXP, The Hurd, Japanese Win95 install tips (Christophe)
+      - Win95, Win98 install tips (N. David)
+      - SB16 section (N. David)
+
+- configure script/compile/porting to other OSes/installation
+  - added plugin architecture
+    - plugin code written by Bryce, Christophe, Volker based on
+      plex86's plugin code by Kevin.  Testing help from Psyon and Br'fin.
+    - Plugins are shared libraries that can be loaded on demand.  Example:
+      the serial device is implemented as a plugin.  In UNIX, the
+      serial plugin is called libbx_serial.so.  When Bochs reads its
+      configuration file, if the serial device is enabled it loads
+      libbx_serial.so.
+    - all display libraries, most I/O devices are converted to plugins now
+    - plugins supported on Linux, Solaris, and MacOS X using libtool,
+      Cygwin using dlltool.  On MacOSX, you must have dlcompat installed
+      and in your include/library paths at configure time.  (See .conf.macosx
+      for an example.)
+    - we use libtool's LTDL library from libtool 1.4.2, with a number of
+      critical bug fixes (Bryce Denney)
+    - the Linux binary RPMs are built with plugin support
+    - to compile with plugins, configure with --enable-plugins
+    - the LTDL_LIBRARY_PATH variable tells Bochs where its plugins can be
+      found.  Bochs has a compile-time default for this variable which is
+      correct if you do a make install.  You would only need to set the
+      variable if the default is wrong.
+    - for win32 plugins we added "BOCHSAPI" in front of many classes
+      and methods, to aid in building DLLs.  This turns into __declspecs
+      which are used when making an export library for Bochs.
+  - allow many display libraries to be configured and compiled at
+    a time.  For example --with-win32 --with-sdl --with-rfb.
+    Also, we added an experimental option --with-all-libs which
+    tries to detect which --with-* options will work.  If the
+    autodetection fails, just type the --with-* options explicitly. (Bryce)
+  - add #if's around all files which are conditionally compiled such
+    as cdrom.cc and sb16.cc.  This makes it possible to compile every
+    source file all the time, which has the potential to simplify the
+    configure script and makefiles.  At present we only take advantage
+    of this capability in the win32 VC++ workspace. (Bryce)
+  - the MacOS9 port has been updated so that it works again.  It had
+    not been updated in at least 2 years, maybe more.  (Christophe Bothamy)
+  - improve support for FHS standard (Robert Millan, Volker Ruppert)
+    See patches 551811 and 650066.
+  - keep separate CFLAGS and CXXFLAGS for Bochs (usually a graphical
+    program) and console programs such as bximage and niclist.  Some
+    sdl and wx compile flags were making bximage and niclist unusable.(Bryce)
+  - add concept of cross-configuring in the configure script.  If you
+    use the --target option to generate makefiles to be used on another
+    machine, some detection of compilers and libraries is disabled. (Bryce)
+  - fix term compile on Cygwin, but it has to be done without -mno-cygwin,
+    which means that several win32 features such as networking do not work.
+  - add "-Wno-multichar" on beos
+  - test for largefile support, and add required CFLAGS (Bryce)
+  - add -lm when it's needed, and not when it's not (Bryce)
+  - add configure support for 8 processors. Bochs can support up to 15
+    with some work on the BIOS.
+  - fix nmake makefile generation (Psyon)
+  - improved pthread detection function from ac-archive project on SF
+  - add installer package for Windows, using Nullsoft (Michael Rich, Bryce)
+  - on MacOSX, add startup script that creates a text console and then
+    runs Bochs.  Also add make target to create a DMG disk image (Br'fin)
+  - do not restart the font server on Unix/X11, if vga.pcf was already
+    installed.  On several modern machines, if you restart the font 
+    server the user has to restart X windows. (Bryce)
+  - update most .conf.* files with modern options such as 
+    --enable-all-optimizations. (Bryce)
+  - The MacosX .conf script adds /sw/include and /sw/lib to the compile/link
+    path list because it is a common place to put dlcompat.  Dlcompat is
+    required when building with plugins. (Bryce)
+  - rpms can now be built without root privileges (Bryce)
+
+- command line
+  - fixed up our command line options (Volker, Bryce, Christophe)
+      Usage: bochs [flags] [bochsrc options]
+      -n               no configuration file
+      -f configfile    specify configuration file
+      -q               quick start (skip configuration interface)
+      --help           display this help and exit
+
+- configuration file (bochsrc)
+  - There are several new options. See the documentation for more details.
+    - config_interface: select text mode menus or wxWindows for configuration
+    - display_library: select which display lib to use
+    - optromimage: load optional rom images
+    - ataN (N=0,1,2,3): up to 4 ATA controllers for hard disks, cdroms
+    - ataN-master, ataN-slave, N=0,1,2,3: defines a hard disk or cdrom.
+      The "ata*" options replace diskc, diskd, and cdromd, which are
+      now deprecated.
+    - floppy_bootsig_check: control the 0xaa55 signature check on boot floppies
+    - logprefix: lets you change the format of log messages
+      (patch by Carl Sopchak, help from Christophe)
+    - debugger_log: log all output from bochs debugger
+    - user_shortcut: allow you to type key combinations like Ctrl-Alt-Del
+    - pit: control the PIT model, including realtime option to try to
+      keep in sync with real time.
+    - Credits: Christophe added optromimage, everything about ATA, 
+      floppy_bootsig_check, debugger_log.  Bryce added config_interface
+      and display_library.  Volker did the user_shortcut button.
+      Greg Alexander wrote the PIT model and added the realtime option.
+  - since v1.3 we've been able to use environment variables in pathnames
+    in the bochsrc file.  Now, a few variables have default values, set at
+    compile time, that are used if the user does not set a value.  If Bochs 
+    is installed correctly, the defaults will be correct and the user will 
+    not need to override them.
+    - $LTDL_LIBRARY_PATH is the path name where the plugins can be found.
+      The default value comes from $(plugdir) in the makefile.  This is only
+      important if plugins are enabled. (Bryce)
+    - $BXSHARE is the path where the BIOSes and keymaps are installed.
+      The default value comes from $(sharedir) in the makefile.  Disk
+      images on the Bochs website will begin to use BIOS pathnames like
+      $BXSHARE/BIOS-bios-latest.  On win32, the $BXSHARE default is 
+      set by the NSIS installer and read from the registry.  On MacoSX,
+      the $BXSHARE default is set to the path containing bochs.app.
+      (Bryce, Volker, Br'fin)
+  - new option in the configuration interface to reset all bochsrc 
+    settings to initial defaults.  A reset occurs just before reading
+    a new configuration file, so that leftover parameters from a
+    previous configuration do not affect the new configuration.  Also, 
+    you can request a reset using the configuration interface. (Volker, Bryce)
+  - ne2k line can now specify a script to set up the interface (Christophe)
+  - on Unix, also search /etc/bochsrc (Bernhard Bablok)
+  - you can use #include in the bochsrc to read configuration from other 
+    files (Volker)
+
+- CPU
+  - speed optimizations from Kevin Lawton, yielding around 2x speedup
+    - guest2host_tlb : for entries in the paging TLB which point to normal
+      physical memory pages, a pointer to the host address of the emulated
+      physical memory (from malloc()) page is stored in the TLB entry.  In
+      many cases, this pointer can be used in memory accesses to directly
+      read/write the guest memory address.  In exceptional cases, the physical
+      memory access routines are used.  Turn on with --enable-guest2host-tlb.
+    - repeat IO/string : for some variants of repeatable IO and string
+      instructions, the segmentation and paging checks are done in batch along
+      with the data transfers, constrained within page boundaries and the
+      segment limits.  Turn on with --enable-repeat-speedups.
+    - icache : The structure holding instruction decode information was
+      reduced to 32 bytes.  24 bytes for the actual decode data, and 4 each
+      for pointers to the address resolution routine (not always needed) and
+      the instruction emulation routine.  With a reasonably small
+      per-instruction decode size, an instruction cache (iCache) was created,
+      which is simply a hash table.  The main cpu loop looks in the table
+      first; if the instruction has already been decoded, execution can begin
+      immediately without decoding.  Turn on with --enable-icache.
+    - host specific asm : when compiling on an x86 platform, use of
+      x86-specific asms can be enabled to accelerate several facets of
+      emulating instructions.  For example, the EFLAGS values are much more
+      efficient to calculate when the actual x86 instructions are used to
+      generate the EFLAGS values.  Turn on with --enable-host-specific-asms.
+      (Kevin, with help from Jas Sandys-Lumsdaine)
+    - if you want to enable all the speed optimizations that we believe
+      to be stable, use --enable-all-optimizations.  The release binaries
+      are built with this option.
+  - add support for AMD's x86-64 instruction set.  To enable, configure with
+    --enable-x86-64.  The AMD x86-64 support is about 90% complete and is
+    still experimental.  We've implemented the core x86-64 instruction set and
+    the changes to the rest of Bochs necessary to operate in long mode, but
+    we've still to implement checking for canonical 64 bit addresses. The code
+    has been tested on a limited number of test programs.  It has been able to
+    successfully boot a x86-64 Linux kernel and run a 64 bit userland
+    application.  It has also successfully run a DOS based 64 bit protected
+    mode test application. (Peter Tattam, with merge/bugfix help from Kevin
+    Lawton and Bryce Denney)
+  - add MMX support. To enable, configure with --enable-mmx. 
+    (Stanislav Shwartsman)
+  - add SSE and SSE2 support. To enable, configure with --enable-sse=1
+    or --enable-sse=2. (Stanislav)
+  - fixed the behaviour of the bcd instructions AAM, AAD and DAA based on
+    SF patch #537146 (Volker)
+  - stop printing an error for VERR/VERW. According to the i386 opcode
+    description there is no error present. (Volker)
+  - fix bug [ 625878 ] reset doesn't reset something(?). Fix cpu reset
+    when executing a rep instruction (Christophe)
+  - use accessors methods for CFLAGS and several other registers, so that
+    the implementation can be changed transparently later (Bryce, Stanislav)
+  - add support for page size extensions, also known as 4meg pages.
+    Turn on with --enable-4meg-pages. (Kevin Lawton)
+  - add support for page global extensions.  Turn on with
+    --enable-global-pages.   (Kevin)
+  - add support for physical address extensions.  Turn on with --enable-pae.
+    (Peter Tattam)
+  - implement RDMSR and WRMSR. not all MSRs are supported (Zwane Mwaikambo)
+  - new configure option --enable-ignore-bad-msr, which makes unrecognized
+    MSR reads and writes into just a warning
+  - fix PIC/APIC interrupt problem that caused Linux 2.4.19 to hang 
+    during boot (Peter)
+  - CMPXCHG8B patch (Michael Hohmuth)
+  - EFLAGS are now stored in the same form as the native EFLAGS on an x86,
+    so that we can use native machine instructions in some cases (Kevin)
+  - instrumentation code updated (Stanislav)
+
+- FPU
+  - fixed bug [ 452275 ] fprem emulation bug (Volker)
+  - fixed bug [ 648579 ] Mac OSX >>PANIC<< FPU_printall. There was an 
+    endianness issue with the fpu (Christophe)
+
+- I/O devices
+  - rewrote pc_system timers (Kevin)
+  - biosdev
+    - this new device handles the panic/error/info/debug messages sent 
+      by the Bios and VGABios.  It was previously done in the unmapped device. 
+  - cdrom
+    - implementation of the function READ TOC for cdrom image files. (Volker)
+    - function capacity() for win32 fixed. Now it returns the number of blocks
+      instead of bytes. (Volker)
+    - added multiple cdrom support for win32 (NT/2000 version untested). The
+      ASPI version uses the cdrom drives in the system's order. Drive letters
+      are not used by ASPI. (Volker)
+    - fix configure script's cdrom detection on BeOS (Bryce)
+    - fix physical CD change at runtime (Bryce)
+  - cmos
+    - fix panic when WinXP read port 70h (Christophe)
+    - add ps/2 style century at index 37 to allow WinXP to boot. (Bryce)
+  - dma
+    - DMA register and unregister functions for DMA channels added and macros
+      for DMA functions defined. The changes are based on the Plex86 functions.
+      (Volker)
+    - implementation of the DMA controller reset (Volker)
+    - the value of the command register must be always 0x00 (BX_ERROR fixed)
+  - floppy (Volker)
+    - implemented Tape Drive Register (Dave Poirier)
+    - added support for 360k floppy images
+    - the skip flag (SK) in command 'read sector' is ignored now
+    - floppy read and write function do not set the 'seek end' bit in status
+      register 0 (fixes SF bug #553377)
+    - the status of the 'disk changed' line depends on the selected drive.
+      The digital input register is now an array (DIR[4]).
+    - apply patch [ 635021 ] floppy cleanup by Alex Thiel 
+    - distinguish between floppy drive type and media type
+  - hard drive
+    - add largefiles support, to allow disk images larger than 2gig.
+      (Stu Grossman)
+    - missing conditions for lower_irq() added (Volker)
+    - several noncritical panics replaced with BX_ERRORS and the controller
+      returns an error code until we implement the features (Volker)
+    - applied patch from Carl Sopchak for booting  sco openserver
+    - allow disk block access only if concatenated images are not used
+      (Christophe)
+    - fix bug [ 419415 ] netbsd 1.5 rescue disk won't boot (Volker)
+    - multiple drq atapi data transfers corruption fixed (Christophe)
+    - added some commands to the unsupported "Set Feature" commands (Christophe)
+    - speedups in repeated IO transfers (Kevin)
+    - support for Peter Tattam's external disk simulator (Bryce)
+    - 4 channels / 8 devices support (Christophe)
+    - "inquiry" atapi command results corrected (Volker)
+    - check for incomplete devices configuration before starting the
+      simulation (Bryce)
+    - implemented the different bios disk translation schemes (Christophe)
+  - keyboard and mouse
+    - add commands 0xd2, 0xdd and 0xdf (Dave)
+    - fix bug [ 613975 ] wxWindows: params redefined on restart (Bryce)
+    - in function mouse_motion(): added parentheses to fix compilation problems
+      with MSVC. See SF bug #575301. (Volker)
+    - added missing register_irq() for the PS/2 mouse IRQ12 (Volker)
+    - fix "AltGr" key on European keyboards wxWindows/win32, SDL (Volker)
+  - NE2000
+    - function reset() clears the IRQ line (Volker)
+    - added TUN/TAP interface (Renzo Davoli, Christophe)
+    - fix DOS based packet drivers that use an odd count for the NE2000 DMA (Peter)
+    - changed "TCR write, reserved bits set" panic into an error, fixes
+      networking with debian image (Bryce)
+  - parallel
+    - parport1 enable/disable support added (Volker)
+  - PCI (Volker)
+    - implementation of the PCI device register mechanism
+    - PCI memory handling moved to the memory code
+    - replaced memcpy() in pci_read() by a more portable code. Problems with
+      PCI on big-endian machines are fixed now (SF bug #638481).
+    - implementation of the PCI-to-ISA bridge started (still incomplete)
+  - PIC
+    - fixed detection of single mode and level senistive mode in ICW1 (Volker)
+    - fixed handling of rotate_on_autoeoi for master PIC (Volker)
+    - irq mask is now cleared on initialization (Dave)
+    - fixed lockup during mouse movements during win98 install. (patch from 
+      Wilfried Weissmann)
+  - PIT
+    - Added realtime PIT support (Greg)
+  - Sound Blaster 16
+    - it used to enable itself all the time; now only when you ask
+    - fix memory leaks (Bryce)
+  - serial
+    - don't cause problems when serial device is disabled (Volker)
+  - unmapped
+    - add programmatic shutdown feature at port 0x8900 (Christophe)
+  - vga
+    - VBE fixes (Jeroen, Volker)
+    - CRTC fixes (Volker)
+    - sequencer reset with bits 'reset1' and 'reset2' implemented (Volker)
+    - add charmap change support (used by SDL, win32 and wxWindows gui) (Volker)
+    - screen dimensions / updates for some graphics and text modes fixed (Volker)
+    - use the start address when calculating the byte offset for standard
+      EGA/VGA modes (Volker)
+    - byte offset for modeX fixed (use value of CRT register 0x13) (Volker)
+    - text mode memory mappings 0 and 1 support (Christophe)
+    - fix bug [ 612741 ] VBE mem conflicts w/ local APIC address (Jeroen)
+    - fix bug #635223: VGA tiles array access out of bounds (Bryce)
+
+- ROM BIOS
+  - improve compile process. Now bioses for 1, 2, 4 and 8 processors 
+    are built at the same time (Bryce)
+  - fixes to be able to compile the bios with gcc2 or gcc3 (Jeroen and
+    Christophe)
+  - changes on boot signature check (Christophe):
+    - never done for cdroms
+    - always done for hard-disks
+    - conditional for floppies
+  - add keyboard int16 functions 0x09 (get keyboard functionality) and 
+    0x0a (get keyboard id) (Christophe)
+  - fix bug [ 629810 ] int 16/ah=01 broken? Enable interrupt on entering
+    int16 handler (Christophe)
+  - new keyboard init in POST (patch from Adam Sulmicki)
+  - flush input and output keyboard buffer before keyboard self test
+    (Volker and Christophe)
+  - fix bug [ 547603 ] kbd up/down arrows in dos install (Christophe)
+  - fix bug [ 549815 ] bios wrongly loads CS,ES.  CS and ES are set to 0
+    before the bootloader code is called. (Christophe)
+  - PCI functions support (Volker) :
+    - BIOS32 service directory
+    - real mode PCI int1a functions 
+    - protected mode PCI int1a functions 
+  - fix reset for MS-DOS and Win95 (Volker)
+  - 360K floppy support (Volker)
+  - enhanced ata/atapi support (Christophe) :
+    - 4 channels / 8 devices
+    - device auto detection (with help from Adam Sulmicki)
+    - EDD3.0 
+    - 32bits device access
+    - optional disk translation "large", "r-echs" or "lba" (up to 8.4GiB)
+  - re-enable harddisk controller interrupt after reads/writes. 
+    Win95 can now use native access to harddisks and cdroms. (Volker)
+  - shutdown status handling (cmos index 0x0f) (Christophe) :
+    - fix bug [ 601166 ] CMOS Problem @ "0x0F Index 0x05 data". After reset
+      execution will resume by a jump to [0x40:0x67] if the shutdown status 
+      is 5 
+    - the bios don't panic any more if the shutdown status is 9
+  - two parallel ports detection in POST (Volker)
+  - two serial ports detection in POST (Volker)
+  - add int15 extended memory function 0xe820 (patch from osmaker) and
+    0xe801 (patch from Hartmut Birr)
+  - fix return values on some int15 functions (Bryce)
+  - fix int70 handler overlapping int08 handler (Christophe)
+  - simplify 8 processors BIOS for operating systems which don't do 
+    paranoia/sanity checks (Zwane)
+
+- configuration interface
+  - wxWindows config interface now allows you to change every bochsrc
+    option using menus and dialog boxes.  There is also the beginning of
+    a wxWindows graphical debugger, but it needs a lot of work before it
+    will be useful.
+  - renamed control.cc to textconfig.cc.  Now we're calling it a 
+    text configuration interface, instead of a control panel.
+
+- display libraries
+  - Even though we've had them for years, the term "display library" is new in
+    release 2.0.  In the gui directory, Bochs has a number of different C++
+    files which you can select to display the text and graphics on the
+    simulated monitor.  Each of these is a display library.  The display
+    libraries are:
+      x          use X windows interface, cross platform
+      win32      use native win32 libraries
+      carbon     use Carbon library (for MacOS X)
+      beos       use native BeOS libraries
+      macintosh  use MacOS pre-10
+      amigaos    use native AmigaOS libraries
+      sdl        use SDL library, cross platform
+      svga       use SVGALIB library for Linux, allows graphics without X
+      term       text only, uses curses/ncurses library, cross platform
+      rfb        provides an interface to AT&T's VNC viewer, cross platform
+      wx         use wxWindows library, cross platform
+      nogui      no display at all
+  - it is now possible to compile Bochs with support for many different
+    display libraries and select the one to use at runtime (even without
+    plugins).  See the display_library directive in .bochsrc.
+  - add new svgalib display library by Igor Popik
+  - fix bug [ 614724 ] SDL can get stuck in full screen mode
+    display libraries such as SDL which have a full screen mode can be
+    dangerous, if Bochs does not switch back to normal display mode at
+    the right time.  This is fixed for SDL and the new svga.
+  - keymap support added in SDL interface (Bryce, Volker)
+  - new keymap files: SDL keymaps for US and DE keyboards,  X11 keymap
+    for Danish keyboard.
+  - use keyboard mapping for keyup messages too
+  - renamed almost all references to data type "Boolean" to "bx_bool".
+    The Boolean data type was defined in Carbon.h headers, and conflicted
+    with Bochs's definition.  See bug [ 618388 ] Unable to boot under MacOS X
+    Exceptions: When talking to the Carbon library, you must use Boolean.
+    Also, siminterface.h uses standard "bool" instead of bx_bool.
+  - "User" button added in toolbar. It can send keyboard shortcuts to
+    the guest OS. (Volker)
+  - snapshot improvement and memory leak fixed (Volker)
+  - testing framework, based on comparing screen content, added (Greg)
+  - term display library:
+    - support for color terminal, function keys, clear screen (Volker)
+    - solaris compilation problem (bug #613393) fixed (Bryce)
+  - win32 display library:
+    - use native win32 toolbar for headerbar, use system palette (Volker)
+  - many Carbon interface improvements:
+    - patch [ 549248 ] Fix Carbon key & menu handling (Chris Thomas)
+    - partial keymap support, copy&paste, menu items fixed, new toolbar
+      behavior, dialog box display for panics (Br'fin)
+  - sdl display library:
+    - keyboard fixes and key mapping added (Bryce)
+    - when captured, the mouse is forced to stay in the window. fix bug
+      [ 619283 ] SDL: os mouse pointer leaves the window (Bryce)
+  - x display library:
+    - bug [ #537593 ] vga font not being found fixed. If vga font not 
+      found, search for a font called "-*-vga-*" (Bryce)
+    - keyboard problems fixed (Bryce, Christophe)
+  - beos platform, any display library: add a nice icon to the executable
+    (Bernd Korz)
+
+- wxWindows
+  - wxWindows is a cross-platform C++ user interface library which you can
+    download for free at http://wxwindows.org.  wxWindows provides C++
+    classes for all sorts of GUI controls (buttons, menubars, etc.) and
+    implements all of them using the native controls on the platform.
+  - The new wxWindows port of Bochs provides both a graphical configuration
+    interface (for editing bochsrc options) and a display.  It was
+    written by Bryce Denney, Don Becker, Dave Poirier, and Volker Ruppert.
+  - In release 2.0, we concentrated on making the wxWindows port as stable
+    and functional as the other interfaces.  wxWindows provides a great
+    toolbox that we can use to make Bochs easier to learn and use.
+  - wxWindows supports charmap changes, keyboard mapping, cut and paste,
+    text and graphics modes, text mode cursor size, and mouse (Volker, Bryce)
+  - To compile Bochs with wxWindows, you should install wxWindows 2.3.3
+    or later.  Then configure Bochs with --with-wx.
+  - if you have multiple versions of wxWindows installed (e.g. a debug
+    and a release version), you can set $WX_CONFIG before configuring 
+    to select between them. (Bryce)
+
+- Bochs debugger
+  - [ 609616 ] remote GDB stub
+    add GDB Stub support from Johan Rydberg, with bug fixes by Stu Grossman
+  - add hooks for external debugger for win32.  The external debugger 
+    that connects to Bochs is distributed in 
+    build/win32/tattam-external-debugger.zip in binary form. Turn on
+    with --enable-external-debugger.  (Peter)
+  - add "debugger_log" option to bochsrc, which logs all debug output
+    into a file. feature [ 629068 ] (Christophe)
+  - debugger is now usable in fullscreen SDL and SVGA guis.  It will
+    switch back to text mode for each debug prompt (Bryce)
+  - disassembly output cleaned up and improved 
+    (Kernel Panic, Peter Tattam, Jonathan Shapiro, Luiz Henrique Shigunov)
+  - fix [ 628806 ] debug: x/c prints unprintable chars (Bryce)
+  - add the beginnings of a wxWindows debugger. Not ready for mainstream use
+    yet. CPU register display is implemented, and you can type any debugger
+    command you want into the Debug Console window. (Bryce)
+  - add help command (Alexander Krisak)
+  - symbol table lookups cleaned up a bit (Bryce)
+  - displays the address of the caught watchpoint, feature #435271 (Dave)
+  - remove obsolete "loader"
+
+- utilities
+  - fixed bug [ 487758 ] bximage fails on file creation >2048meg 
+    Bximage should now work up to 32gig. (Bryce)
+  - on win32, both bximage and niclist now ask the user to press
+    return before exiting, so that you have time to read the results
+    before the window disappears. (Bryce)
+
+-------------------------------------------------------------------------
+Changes in 1.4.1 (June 22, 2002):
+
+- now cdrom is enabled in configure, unless you specifically disable
+  it with --disable-cdrom. (Christophe)
+- fix compile error in main.cc when SMP or APIC is enabled (Dave)
+- the runtime menu now displays 11 (continue) by default (Bryce)
+- initialize DMA controller before floppy and SB16
+- fix DMA panic when installing win95 (Volker)
+- first character of the vga bitmap is blank on win32 (Volker)
+  Before, it was incorrectly coded as a '@'.
+- AltGr key on European keyboards works now on win32 (Volker)
+- fix problem with console/serial port on Bochs exit (Volker)
+- enable serial port for GNU and GNU/Linux (Volker)
+- small documentation fixes (Volker)
+- remove unnecessary include statements for X11 (Volker)
+- italian keymap added (Emanuele Goldoni)
+- fix win32 ethernet frames error. It will no longer reject packets
+  that are less than 60 bytes long. (Peter Tattam)
+- BIOS fixes :
+  - win2k cd-boot (Christophe)
+  - emm386 crash (Dave)
+  - cs=0 at boot time (Christophe)
+  - keyboard failure in scandisk (Dave)
+- fix bug in forming the 64-bit APIC base address from two 32-bit registers.
+  A compiler warning in cpu/proc_ctrl.cc pointed this out.
+- fix default choice in the runtime options menu
+
+-------------------------------------------------------------------------
+Changes in 1.4 (March 27, 2002):
+- ROM BIOS
+  - Boot from CDROM!  Christophe Bothamy added partial El Torito support in
+    rombios.c, which allows Bochs to boot cdroms.  Booting from win2k or winXP
+    cdrom is not supported yet.  The default BIOS includes El Torito functions.
+    the boot line must say "cdrom".
+    Example:
+      boot: cdrom
+  - implementation of int13 diskette function 5 (format track) (Volker)
+  - initialisation of PIC and DMA-2 added to POST code (Volker)
+- configure script (Bryce Denney)
+  - the configure script now detects your platform and provides a default
+    GUI and the required compiler flags.  All supported platforms should
+    compile with simply "configure" and "make".
+  - default guis by platform: 
+     - win32/windows/cygwin: win32 gui
+     - MacOS X: carbon gui
+     - MacOS 9 or earlier: macos gui
+     - BeOS: beos gui
+     - AmigaOS: amigaos gui
+     - all other platforms: X windows gui
+  - compile arguments supplied by configure script
+    - win32: too many to list here; see documentation
+    - cygwin: -mno-cygwin -DWIN32
+	- MacOS X: -fpascal-strings -fno-common -arch ppc -Wno-four-char-constants
+	           -Wno-unknown-pragmas -Dmacintosh
+  - the --with-GUINAME configure option is only needed if you want to override
+    the default GUI.  This is the only way to use the Term, RFB, and SDL
+    GUIs.
+- VGA
+  - added VESA BIOS Extensions code by Jeroen Janssen (banked mode only, LFB
+	support in patches)
+  - vga memory read/write functions in text mode fixed
+  - implementation of CGA mode 320*200*4 (patch from Sebastien Bechet)
+- VGA BIOS
+  - updated Christophe Bothamy's LGPL VGA BIOS to version 0.3a.  This consists
+    of a bug fix for function ah=13 and VBE support by Jeroen Janssen.
+- networking
+  - chipmem read/write limit fixed (Mike Lerwill)
+  - writing a byte in 16-bit mode now possible (Mike Lerwill)
+  - new ethertap interface for Linux, which allows Bochs to talk to 
+    the local machine and the internet (Bryce Denney)
+  - NE2000 is now enabled by default on Win32, Cygwin, and Linux compiles
+    in the .conf.* scripts and release binaries.
+  - fix check for auto transmit disable, which was checking the wrong bit
+    (Peter Tattam)
+  - Win32 only
+    - niclist.exe has been revised to work on more Windows versions, and it
+      suggests a usable ne2k line (Dean Payne)
+    - fix timeout setting so that ne2000 does not slow down the whole
+      simulation (Don Becker)
+    - bug fix: be able to handle multiple packets that arrive at once
+      (Mike Lerwill)
+- GUI changes
+  - cdrom button: click this to notify Bochs when you changed the CDROM (Volker)
+  - snapshot button: saves the text on the Bochs screen into a file called
+    snapshot.txt (Volker)
+  - copy button: on Win32 and X windows, copy the text on the Bochs screen
+    to the clipboard (Volker)
+  - paste button: on Win32 and X windows, paste the characters on the 
+    clipboard into the Bochs window.  This requires keyboard_mapping to
+    be enabled. (Bryce Denney)
+  - improved text mode cursor for Win32, X11, and SDL (Volker)
+  - new SDL interface (Dave Poirier, debugging by Christophe, Volker, Bryce)
+    SDL is a graphics library that has works on many platforms.  This interface
+    is experimental, and is missing a few features of the standard Bochs
+    interfaces: extended keys (arrows, keypad).
+  - MacOS X: add MacOS X carbonized event handlers by Jeremy Parsons
+  - X windows: when not enough colors can be allocated, force use of 
+    private colormap (Bryce Denney)
+  - bug #490570 fixed: OUTB set and command 0xaa encountered (Dave Poirier)
+- keyboard
+  - completed keyboard emulation with the implementation of the three scancodes
+    sets (mf1, mf2, mf3) with or without translation. This is based on Ludovic 
+    Lange's plex86 keyboard patch. (Christophe Bothamy)
+  - added a "keyboard_type" option, that defines the answer to an "identify 
+    keybord" request to the keyboard controller. The available values are
+    "xt","at","mf".  (Christophe Bothamy)
+  - added an optional keyboard_mapping option that enables to use your
+    country specific keyboard with Bochs.  If enabled, the keymap file must be 
+    specified in bochsrc.  The available keymaps are US, German, Spanish and
+    French for PCs running X11.  Contributions are welcomed.  (Christophe
+    Bothamy)
+  - added Windows(tm) key definitions (Volker Ruppert)
+  - added paste button, which causes the emulated keyboard to type characters
+    from the system clipboard.  This only works when keyboard_mapping is
+    enabled. (Bryce Denney)
+- cdrom
+  - bug fix: win32 could not read a cdrom image file
+  - eject cd support for linux (patch from Petr Stehlik)
+  - BeOS fixes
+  - changing cdrom media is possible now with CDROM button
+- sound blaster(tm) emulation (Volker)
+  - you can use --enable-sb16=freebsd now
+  - 16-bit DMA controller added
+  - 16-bit mode of the SB16 implemented (output to file works)
+- floppy drive (Volker Ruppert)
+  - implementation of the floppy command 'format track'
+  - implementation of read / write operations with MT=0
+  - behaviour of a few floppy commands fixed
+  - floppy reset behaviour fixed
+  - lots of other fixes
+- fixed bug [ #468340 ] pic:slave: OCW3 not implemented.  Now the slave PIC
+  supports all the modes that the master PIC does, and nobody will see this
+  message again.
+- serial port (by Volker Ruppert unless noted)
+  - improved IRQ handling
+  - now Windows 95 serial driver works correctly
+  - fixed the return value of the MCR (loopback bit)
+  - interrupt reasons LSR change and MSR change implemented
+  - the number of data bits is considered when sending data
+  - all serial port changes are tested in loopback mode only
+  - serial port emulation fixed for FreeBSD and OpenBSD (Stu Grossman)
+  - fix receiver poll frequency so that it doesn't slow emulation (Stu Grossman)
+- Bochs debugger
+  - when tracing, print the instruction just before it is executed, instead
+    of just after (Greg Alexander)
+  - after a triple-fault panic, you can now return to the debugger
+- symmetric multiprocessor (SMP) simulation
+  - no more panic if you read the EOI register
+  - fixed default destination format in local APIC
+  - fix SMP instruction tracing in bochs debugger
+  - fix deadlock when debugger enabled and all processors HLT
+  - MSR support added by Zwane Mwaikambo
+- simulation of interrupts is more accurate (Volker)
+  - implemented edge triggered interrupt mode
+  - added functions raise_irq() and lower_irq()
+- programmable interrupt timer (Greg Alexander)
+  - fixed the PIT gate and improved the PIT printing options
+  - experimental real-time PIT
+- parallel port improvements (Volker Ruppert)
+- bug fix: hard disk errors caused by overflowing imul in the BIOS code.  
+  Sebastian Bechet and Peter Tattam tracked it down and fixed it.
+- fix some memory leaks (patch from Darko Tominac)
+- Double-Word IO is supported for ATA devices
+- fix bash-specific syntax in install-x11-fonts script
+- print stack_return_from_v86 error only the first 100 times
+
+-------------------------------------------------------------------------
+Changes in 1.3 (December 10, 2001):
+- networking works on Windows and Linux platforms
+- emulated cdrom can now read from ISO image files, on any platform.
+- new PIT model by Greg Alexander which is much more complete than the
+  old one.  The new PIT is used by default, but you can switch back to 
+  the old one if you configure with --disable-new-pit.
+  (PIT = 8254 programmable interrupt timer)
+- new configuration menus by Bryce Denney, which allow you to change any
+  bochsrc option using text menus, then save the configuration into
+  a new bochsrc file for later use.  You can disable the new code using
+  configure --disable-control-panel.  Also you can use the command
+  line arguments -nocp or -nocontrolpanel.  Also, there is a new
+  "Config" button on the GUI that allows limited changes to the 
+  configuration at runtime, such as changing the floppy disk.
+- add docbook documentation directory in the sources under doc/docbook.
+  The transition from HTML to docbook documentation is still in progress.
+- Add new log action "ask", as shown in these example bochsrc lines:
+    panic: action=ask
+    error: action=ask
+  When an event occurs which is set to "ask", you get a beep and message
+  on the text terminal that asks what you want to do.  Choices are: continue,
+  continue and disable future messages from this device, quit immediately,
+  or segfault (where abort() function is available).  If compiled with
+  --enable-debugger, you can also choose to enter the debugger.
+- Parallel port emulation cleaned up by Volker Ruppert.  See .bochsrc for
+  syntax of new parport1 line in bochsrc.
+- PCI support improved by Volker Ruppert, including BIOS changes.  Still
+  not complete.
+- floppy controller returns a proper error response if you try to write
+  a read-only disk image.  For systems such as DOS that actually use the BIOS
+  services, it was also necessary to add code in int13_diskette_function to
+  recognize a write-protected error and return the correct error status code
+  (AH=3, Carry Set).
+- the ROM BIOS now prints panic messages to the console.  Thanks to Cliff
+  Hones for his console display code.
+- the ROM BIOS detects nonbootable disks (Barry Allard), and prints a message
+  on the console.  Barry Allard's patch who helped with checking the boot
+  signature.
+- LBA support added for hard disks.  (Not tested very much.)
+- add dependencies to makefiles
+- logging code moved into a separate file, logio.cc
+- new option --enable-slowdown-timer, by Greg Alexander, which kicks in if
+  Bochs simulation time starts to run faster than real time.  This helps to
+  keep the Bochs clock in sync with the real clock when the CPU is mostly
+  idle.
+- new option --enable-iodebug, by Dave Poirier, which creates an I/O
+  interface to the debugger.  This lets you write software to be emulated
+  in Bochs which can turn on instruction, register, or memory tracing
+  using I/O accesses.
+- improved detection of readline in configure script
+- configure substitutes the version number into many files, instead of
+  using sed in the makefile.  There are still a few uses of sed remaining.
+- you can now use environment variables in bochsrc values.  For example,
+  diskd: file="$BOCHS_IMG/diskd.img", cyl=615, heads=6, spt=17
+- configure with --prefix=PATH works now
+- running configure from a different directory works now, thanks to 
+  a patch from Edouard G. Parmelan
+- fix [ #433759 ] virtual address checks can overflow.
+  > Bochs has been crashing in some cases when you try to access data which
+  > overlaps the segment limit, when the segment limit is near the 32-bit
+  > boundary.  The example that came up a few times is reading/writing 4 bytes
+  > starting at 0xffffffff when the segment limit was 0xffffffff.  The
+  > condition used to compare offset+length-1 with the limit, but
+  > offset+length-1 was overflowing so the comparison went wrong.
+- cmpxchg8b patch from Michael Hohmuth <hohmuth@innocent.com>
+- apply patch from Thomas Fitzsimmons <fitzsim@cygnus.com> to fix compile
+  problems when BX_SUPPORT_PAGING and BX_USE_TLB are turned off
+- fix bug introduced in 1.2.1 which caused spurious exceptions.
+  See patch #439314, Exception 1 (debug) on HALT, from
+  thomas.petazzoni@meridon.com.
+- add panic in ctrl_xfer32.cc where the IRET32 implementation is broken.
+  This only happens if you are NOT in vm8086 mode or protected mode.
+  The intent is to warn people when they are getting bad emulation, and
+  encourage people to report how they got to that point.
+- apply patch from Santiago Bazerque.  See this bug report:
+  [ #463018 ] retf not removing parameters sometimes
+- fix bug [ #461730 ] IRETD causes problems if NT-flag is set
+  reported by Peter Lammich.
+- apply patch [ #455014 ] CR0 bug in 80486, described as:
+  > In the register CR0, when the bit PM is enabled, the bit 4 is 0
+  > when should be 1.
+- apply patch from Mike Rieker <mrieker@o3one.org> associated with this bug
+  report: [ #480422 ] gdt 'accessed' bit
+- in task_switch when it tried to ensure that the old TSS was paged in,
+  it actually used the new TSS address, fixed.
+- updated the instrumentation code, and added a working example.  To try
+  it, configure --enable-instrumentation=instrument/example1.  Then when
+  you run bochs, you will get one line for each instruction PC and for
+  each I/O access in a new file called bxevent.txt.
+- set a bit in the CMOS that says the processor has an FPU.  This is
+  from patch [ #455006 ] Device byte is not initialized aptly.
+  Author did not leave their name.
+- add logging code to the "null ethernet" which does not require host OS
+  support.  All this does is print the outgoing packets from the guest OS.
+- cleanup of log functions (Todd Fries)
+- add BX_ERROR for every command in ATAPI-6 that bochs does not support.
+  I still need to do add some commands from older specs that are obsolete
+  (and not listed) in ATAPI-6.  Commands that aren't in the spec will still
+  panic.
+- only put 0xf into the 2nd hard disk field when the cdrom is not present.
+  This is a patch from Volker Ruppert <Volker.Ruppert@t-online.de>, who
+  comments: "The fdisk command reports an unusable second harddisk if the cdrom
+  is enabled. This patch helps, but I don't know if it is the right way."
+- make hard disk code return error codes when data is not available instead
+  of just panicing.  In particular, if the logical sector is out of bounds
+  or the disk image cannot be read/written at the desired offset, we now
+  abort the ATA command and return an error code.  Many of the old BX_PANIC
+  messages are turned to BX_ERROR, so they will still appear in the
+  log, but now the device model will try to communicate this fact to
+  the OS instead of simply giving up.
+- don't blindly reject odd length atapi commands.  There are cases when
+  it's really ok according to ATA-4.
+- for big endian machines, reversed the bit fields in interrupt_reason.
+  This was pointed out by Nicholai Benalal.
+- extended keyboard improvements by Dave Poirier
+- major mouse patch from Dave Spring, that implements several missing 
+  mouse modes.
+- commit keyboard patch from David Haslam <dch@sirius.clara.co.uk>
+  posted to mailing list, that addresses the problem of each key press
+  printing ^@.  See cvs log for details.
+- mouse performance fixes by Greg Alexander and Robb Main
+- NE2000 fixes by Frode Vatvedt Fjeld, ecelca@yahoo.com, Greg Alexander,
+  and angelos@openbsd.org.
+- fix bug [ #468340 ] pic:slave: OCW3 not implemented.  Some event handling
+  code appeared in the master pic but not the slave pic.
+- fix compile problems in SB16 code, related to fpos_t being treated as 
+  an integer.
+- patch from Volker Ruppert <Volker.Ruppert@t-online.de> to fix
+  midi output file so that winamp can play it.
+- some cleanup of serial code by Todd Fries and Volker Ruppert, but it
+  doesn't work yet.
+
+X Windows specific:
+- commit patch from David Haslam <dch@sirius.clara.co.uk>
+  [ #455763 ] Cursor trail with DOS Edit/Minix vi
+- error for missing fonts now points to the documentation
+- new option --enable-idle-hack, by Roland Mainz, which makes Bochs more
+  friendly toward other processes when its CPU is idle.  Presently, 
+  this option is specific to X windows.
+
+Win32 specific:
+- now Windows 95/98/ME can read the physical cdrom (Don Becker)
+- The default configuration for Win32 VC++, given in .conf.win32-vcpp,
+  now enables the NE2000 and renames all .cc files to .cpp.  This keeps VC++
+  happy but may make it hard to use CVS.
+- The default configuration for Cygwin, given in .conf.win32-cygwin, now
+  enables cdrom and SB16.
+- See "new docs" on the web site for compile instructions for VC++ and Cygwin.
+- The sources include a VC++ workspace, in addition to the old "nmake"
+  makefile.
+- ethernet support (emulated NE2000 card), coded by Don Becker.  This
+  implementation requires a library called WinPCap, which you can 
+  download from http://netgroup-serv.polito.it/winpcap.
+- new utility called niclist.exe which lists the ID number of all your network
+  cards (well probably you just have one).  The ID be used when setting up your
+  .bochsrc.
+- patch [ #466403 ] make text colors more accurate.  The author did not leave
+  his/her name.
+- fix GUI bug [ #452159 ] win32: mouse stuck if bochs win partly off screen
+  Now we center the mouse periodically, whether or not the mouse has
+  wandered outside of the window or not.
+- event handler recognizes the extended keycode flag
+- fixes for raw floppy and floppy disk images (Don Becker)
+
+Linux specific:
+- Ethernet (emulated NE2000 card) now works in Linux!  Contributed by
+  splite@purdue.edu.  This has been tested using host OS kernel 2.2.14, and
+  works with telnet, ftp, irc, lynx, etc.  Because it is a packet filter
+  solution, you aren't able to talk to the host machine, only to other 
+  machines on the network.  
+- The default configuration for Linux, given in .conf.linux, now enables
+  the NE2000 model.
+- RPM build process configures with --prefix=/usr so that everything is
+  installed in /usr/bochs instead of /usr/local/bochs.
+- DLX Linux disk image is now installed so that only root can write it, to
+  avoid security problems.  When you run the bochs-dlx script, it creates a
+  local copy in your home directory and then runs it.
+- code that determines the capacity of a cdrom now works for both ATAPI
+  and SCSI drives (splite@purdue.edu)
+- applied patch from bochs@sigint.cs.purdue.edu.  The comments are:
+  > The Linux 2.4.5 CD-ROM driver sends a READ_DISC_INFO command which caused
+  > an "unrecognized ATAPI command" panic.  Looks like READ_DISC_INFO is only
+  > recognized by CD-R and CD-RW drives, so I ignore it for now.
+
+Amiga MorphOS specific:
+- Bochs now compiles and works on Amiga MorphOS.  Configure with
+  --with-amigaos.  For AmigaOS only, see .bochsrc for use of fullscreeen and
+  screenmode options.  The Amiga MorphsOS is written and maintained by
+  Nicholai Benalal <nicholai@chello.se>.
+- raw cdrom supported if you configure with --enable-cdrom
+
+BeOS specific:
+- Bochs compiles and works on BeOS.  Configure with --with-beos.
+  Bernd Thorsten Korz <bernd.korz@insidebeos.de> maintains the BeOS port.
+- raw cdrom supported if you configure with --enable-cdrom
+
+MacOS X specific:
+- Bochs now compiles and works on MacOS X.  Configure with --with-carbon.
+  Emmanuel Mailliard <e.rsz@libertysurf.fr> ported the Macintosh code to the
+  Carbon API.
+- The MacOS X application is built using (gasp) mkdir, copy, and rez.
+  Surely this is not the right way, but it works.
+- raw cdrom supported if you configure with --enable-cdrom
+
+RFB mode:
+- apply patch.rfb-mouse by MURANAKA Masaki (monaka@users.sf.net)
+  see this source forge bug [ #457968 ] Strange mouse motion on RFB
+- add a retry loop in RFB code, so that if port 5900 is not available
+  it can try 5901, etc.
+
+Bochs Debugger:
+- do a vga update whenever you print a debugger prompt.
+- added debugger command "info fpu" that prints the FPU registers.  If you
+  do "info all" you get cpu and fpu registers.
+- added debugger command "info ne2k" which prints all the registers
+  of the NE2000 model
+- add ability to do register tracing and flag tracing (Dave Poirier).
+  Try the trace-reg-on and trace-reg-off commands.
+- instruction trace now includes time ticks
+- fixed problems in which bochs compiled with debugger measured time 
+  differently from bochs compiled without debugger.  Also when instruction
+  trace was enabled, breakpoints and control-C did not work.  Also,
+  breakpoints at the beginning of an interrupt handler did not work.
+
+-------------------------------------------------------------------------
+Changes in 1.2.1 (June 12, 2001):
+- more work on makefile for building RPMs
+- [ #432382 ] build debian packages patch
+  add build/debian directory from Rob Lemley <rjlemley@calypsoblue.org>
+  which allows us to make Debian packages!
+- optimize for speed when simulating one processor.  Now 1-processor
+  performance should be equivalent to 1.1.2.
+- [ #425640 ] sb16 assumes fpos_t is long int
+  This fixes compiles of iodev/sb16.cc on linux systems with newer libraries
+  in which fpos_t is not an integer.
+- [ #432488 ] SMP:assert "n_logfn < MAX_LOGFNS" fails
+  increase MAX_LOGFNS since we ran out of them on an SMP simulation with
+  4 processors
+- changes to compile clean on cygwin:
+  - don't use the WIN32 snprintf define for cygwin
+  - add ssize_t definition for cygwin
+  - only compile "struct timeval tval" if select is available
+    on that platform.
+- [ #432491 ] SMP: CPUID says no APIC feature
+  clean up inconsistent use of BX_SUPPORT_APIC and BX_APIC_SUPPORT, which
+  caused the CPUID to report no APIC was present
+- [ #431025 ] --enable-external-device-models broken
+  removed configure options for external-device-models and 
+  external-cpu-memory.  These don't work and aren't going to be fixed.
+- [ #429448 ] configure: -lreadline when not there
+  Now configure allows you to choose not to use readline, even if it's found
+  on your system.
+- [ #428915 ] apply extended keyboard patch
+  extended keyboard patch by Dave Poirier <eks@void-core.2y.net>
+- [ #428626 ] if no X11 found, configure&make fails
+  Now configure halts if X windows is selected but no X libraries are found.
+- updated rombios to version 1.13.  This fixes several problems:
+  - [ #430472 ] DOS HIMEM "A20 line" error
+    This problem was apparantly caused when Bryce added a function that prints
+    the BIOS version, and he called it too early in the boot process.  Now the
+    same function is called later, and it doesn't break the A20.
+  - [ #431010 ] SMP structure overwritten in v1.2
+    SMP structures were getting overwritten by BCC-generated data, 
+    preventing SMP operating systems from detecting that other processors
+    were available.
+  - [ #431016 ] bios: SMP struct has wrong entry count
+    SMP structure had the wrong entry counts
+- very minor doc updates (typos, replace broken link to mtools info)
+- quit when the user clicks the power button, even if they have disabled
+  panics.
+- win32 now defaults to having mouse capture mode turned off.  For new users,
+  it would be distressing for their mouse cursor to disappear until they
+  pressed F12.
+- [ #428222 ] vga font not installed
+  added script called "install-x11-fonts" which should help people install
+  the VGA font on X windows systems, if it isn't already there.
+
+-------------------------------------------------------------------------
+Changes in 1.2 (June 3, 2001):
+- [ #427259 ] rombios HALT calls don't print
+  Fixed bios/rombios.c HALT macro so that it writes the line number of the
+  panic to the PANIC_PORT (port 0x400) and then does NOT do a halt 
+  instruction.  Also changed iodev/unmapped.cc so that the line number written
+  to PANIC_PORT is displayed as a BX_PANIC message.  Because the HALT
+  macro now triggers the normal panic behavior, it can be controlled by
+  the bochsrc.
+- [ #429016 ] crash if no hard drive
+  rombios used to call HALT macro if no hard drive was found. Now it only
+  calls HALT if a hard drive has an illegal geometry.
+- [ #425388 ] include source for simple disk img tool
+  [ #428478 ] mkimg tool creates image 1 byte too big
+  Added bximage tool, which makes empty floppy and hard disk images.
+  It is now included in the top level Makefile, so it will get built
+  by default on all platforms.
+- [ #426036 ] eth_fbsd.cc compile problem on solaris26
+  added configure test so that "configure --enable-ne2000" only
+  includes the Berkeley Packet Filter code (eth_fbsd) if the header
+  file <net/bpf.h> can be found.  If you don't have BPF the ne2000
+  will not actually move packets, but at least it will compile clean now.
+- [ #428214 ] 1.2.pre1 need documentation for binaries
+  Write windows and linux specific documentation to be installed in
+  binary releases.
+- [ #429258 ] disable RESET for version 1.2
+  Since soft reset was not completely working, I reverted the reset patch.
+  Now it does panics on reset instead of trying to reboot, as the old
+  bochs versions did.
+- [ #428222 ] Should the linux RPM install vga font?
+  now font/vga.pcf will be installed in the RPM package
+- [ #429020 ] stop renaming the BIOS!!!
+  new BIOS changes are now in BIOS-bochs-latest, instead of a BIOS 
+  whose name changes every time we change anything!  To help distinguish
+  different BIOS versions, the BIOS now prints its RCS Id into the
+  log file.
+- [ #428625 ] compile problem if SHOW_IPS is on
+  removed extra paren that broke SHOW_IPS
+- [ #428219 ] PCI doesn't compile with SMF=1
+- [ #429375 ] pthreads detection broken
+- [ #429073 ] configure: if no X11, makes bad config
+- [ #429229 ] install current .bochsrc in binary rels
+- install Tim's man pages on linux RPM
+- BIOS prints messages in log in case of boot failure
+- rewrote instructions for compiling in win32 (win32.txt)
+- fixed link in HTML changelog.html to point to the real sources on SF.
+- added missing LOG_THIS definition to gui/nogui.cc and gui/rfb.cc
+- added additional check for null pointer in debugger exit routine
+- added diskd to .bochsrc
+
+-------------------------------------------------------------------------
+Changes in version 1.2-pre1 (May 25, 2001):
+- major cleanup of .bochsrc
+- major cleanup of stderr output: prints bochs version information when
+  starting, and at the end it tries to print the message that caused 
+  bochs to quit.
+- two hard disk support (diskd).  At present, you cannot have two 
+  hard drives and a cdrom at the same time, because there is only
+  one IDE controller with two channels.
+- split hard disk support allows different partitions to be stored in
+  different image files
+- two new GUI choices: term mode and RFB mode.  Term is a text-only
+  interface, and RFB creates a server that can be accessed using
+  the AT&T VNC viewer.
+- now Bochs can simulate an SMP machine, if you configure with
+  --enable-processors=N.  Configuring more than one processor has
+  a major performance impact, so the default is 1 processor.
+  See SMP documentation for more details.
+- to make SMP work, bx_mem and bx_cpu have been replaced with
+  bx_mem_array[] and bx_cpu_array[].  The cpus are referenced through
+  the BX_CPU(n) macro and memories through the BX_MEM(n).  Normal
+  mode has one cpu and one memory, SMP mode has multiple cpu's and 
+  one memory, cosimulation mode has multiple cpus and multiple memories.
+- use --enable-cpu-level=6 to make Bochs claim to be a Pentium Pro.
+  The only feature that requires CPU level 6 is apic support.
+- new logging system by Todd Fries, which has 4 levels of event
+  severity (panic, error, info, debug).  There are new .bochsrc
+  options that control what action to take when a 
+  panic/error/info/debug event occurs.
+- now searches for .bochsrc, bochsrc, bochsrc.txt, and (on unix only)
+  $HOME/.bochsrc.
+- use GNU readline library if --enable-debugger is on, as long as readline
+  can be found on the machine
+- configure checks for existence strtoull and strtouq. if neither exists, 
+  Bochs uses its own implementation
+- applied patches from Cliff Hones <cliff@aonix.co.uk> to fix up the
+  rombios.  This includes many improvements, which you can list by
+  doing "cvs log -r 1.6 bios/rombios.c" or looking at cvsweb.
+- added suggested geometries of larger disks to the documentation
+- this is the first release to have official binary packages for win32
+  and Linux.  There is a new "make rpm" in the top-level Makefile which
+  will create an RPM of the current bochs directory.  To use this,
+  become root and type "configure; make rpm".
+- applied some FreeBSD patches from Maxim Sobolev (cdrom and serial).
+
+-------------------------------------------------------------------------
+Changes in version 1.1.2 (bugfix3, May 16, 2001):
+- updated Elpin VGA BIOS to version 2.40, and changed pointer in .bochsrc
+- fixed .conf.x86 script so that it uses c++ instead of egcs for C++ files
+- now Makefile targets that recurse into subdirectories use double colons,
+  so that it will always recurse into subdirectories.  Now a single make
+  command should notice a modified source file in a subdir.
+- fixed bug in bx_panic.  If BX_PANIC_IS_FATAL==0 and a (non-fatal) panic 
+  occurs, it used to call bx_atexit() and then return.  It should never
+  call bx_atexit, which starts to shut down the simulator, unless it's
+  really going to quit!
+- support 2.88 MB floppy disks
+- since dataseghack is checked in as non-executable, invoke it with 
+  "csh dataseghack"
+- double fault patch from Thomas Petazzoni <thomas.petazzoni@ifrance.com>,
+  sourceforge patch #423726.
+- removed -fno-builtin from fpu makefiles
+- redefine u_char, u_short, etc. in order to not conflict with system
+  definitions of these same types.
+- in cdrom.cc, remove the extern "C" { } structure around some of the
+  header files.  This is no longer necessary.
+- do not panic on hard disk command 0x1f2 (read sector count)
+- in keyboard.cc:
+  - apply Todd Fries' reset patch
+  - recognize most of the "Grey" insert/delete/home/end/etc. keys the
+    same as keypad keys.
+  - removed panic on "kbd_ctrl_to_kbd(): got value of 0x??"
+  - implement mouse command 0xf6 (set defaults)
+- apply Suboner@aol.com's Xwindows timing patch from
+  http://sourceforge.net/tracker/index.php?func=detail&aid=418730&group_id=12580&atid=312580
+- remove all patches from patches subdir which have already been applied.
+  The remaining ones are under consideration but not applied.
+
+-------------------------------------------------------------------------
+Changes in version 1.1.1 (bugfix2, April 9, 2001):
+- in soundwin.cc, arg 3 should be typecast to LPWAVEFORMATEX
+- in fpu_entry.c, Bryce mistyped his own initials!
+- in configure.in and configure, define good defaults for VC++
+   #define BX_64BIT_CONSTANTS_USE_LL 0
+   #define inline __inline
+   #define BX_NO_EMPTY_STRUCTS 1
+   #define BX_NO_ATTRIBUTES 1
+   #define BX_HAVE_HASH_MAP 0
+- in config.h.in, fixed typo in #error message
+
+-------------------------------------------------------------------------
+Changes in version 1.1 (bugfix1, April 6, 2001):
+
+(FIXED, patch #414360: update copyrights)
+update headers.  Change copyright to 2001, replace config.h.in header with
+the standard mandrake header that every other file uses.
+
+(FIXED, patch #414356: inlines)
+make macro to replace inline and static/extern keywords.  Then make 
+define the macro appropriately based on configure.
+
+(FIXED: patch #414234: macos-no-strdup)
+--with-macos should force HAVE_STRDUP=0.
+
+(FIXED, patch #403027: Fix mouse bugs in Linux and BSD)
+Linux and BSD (maybe others) cause panic in mouse code.
+
+(FIXED, patch #413851: const64bit patch)
+VC++ does not allow "LL" after 64-bit constant.
+
+(FIXED, patch #413859: fabs symbol conflict)
+fpu code contains fabs, which conflicts with math library fabs.
+
+(FIXED, patch #403004: Implement aborts on a few SET FEATURE commands...)
+Implement aborts on a few SET FEATURE commands for ATA.
+
+(FIXED, patch #402991: Update to iodev/vga.cc to add 3c3h read support)
+Implement VGA enable register, at 0x3c3.
+
+(FIXED, patch #403027: Fix mouse bugs in Linux and BSD)
+Mouse panic in linux/BSD: 
+KBD: io write 0x64: command = 0xD3(write mouse outb)
+
+(FIXED, patch #414229: panic-is-fatal)
+Allow user to decide if panic is fatal, or just a warning
+
+(FIXED, patch #414230: sun-cdrom)
+Support Sun CDROM
+
+(FIXED, patch #413574: portable1)
+there are cases where a pointer is cast to a 32-bit int,
+then later cast to a pointer and dereferenced, which crashes any 64-bit
+machine.
+
+(FIXED, patch #413574: portable1)
+some machines have no snprintf or strtoull.  include a replacement function
+when needed.
+
+(FIXED, patch #413574: portable1)
+Some compilers don't allow "typedef struct { } foo;"
+
+(FIXED, patch #413574: portable1)
+Some people don't have hash_map.h, used in dbg_main.cc.  Disable this code
+if hash_map.h not found.
+
+(FIXED, patch #413574: portable1)
+Some compilers can't handle labels at the end of a block, as in
+   void main () { /*code*/ label: }  
+
+(FIXED, patch #413574: portable1)
+Most compilers can't handle __attribute__.  Use macro to define it away.
+
+(FIXED, patch #413574: portable1)
+if --enable-debugger, turn on --enable-disasm too.
+
+(FIXED, patch #413574: portable1)
+ome compilers can't handle any chars after an #endif
+
+(FIXED, patch #413574: portable1)
+wrong type arg1 of bx_dbg_watch and bx_dbg_unwatch.  The code in
+lexer.l was calling it with integers (not booleans)
+
+(FIXED, patch #413574: portable1)
+in fpu code, "setcc" macro was implemented with braces inside parens,
+which some compilers don't understand.
+
+(FIXED, patch #413574: portable1)
+in fpu_entry.c, FPU_load_int32 was consistently called with arg1 of
+type (s32 *), but should be (u32 *)
+
+(FIXED, patch #413574: portable1)
+comment out sigcontext structure in fpu/stubs/asm/sigcontext.h because
+it conflicted with sigcontext of other machines.  This struct was never
+used by bochs anyway.
+
+(FIXED, patch #414046: portable2)
+move definition of missing library functions into osdep.h and osdep.cc,
+include contents of macutils*.
+
+(FIXED, patch #414061: win32-rawcd)
+CDROM drive letter for WIN32 should not be hardcoded.
+
+(FIXED, patch #414060: win32-rawfloppy)
+Bypass fstat when opening WIN32 raw floppy disk.
+
+(FIXED, patch #414226: pit-panic)
+WinME install dies with panic:
+bochs: panic, pit: outp(43h): comm Bh, mode 00, bcd 00 unhandled
+I think I had a similar problem.  All three timers should support modes
+0, 2, and 3.  Other modes really aren't implemented.

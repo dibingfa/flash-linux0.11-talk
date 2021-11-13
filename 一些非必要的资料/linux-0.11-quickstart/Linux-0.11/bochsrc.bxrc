@@ -6,8 +6,8 @@
 megs: 32
 
 # filename of ROM images
-romimage: file=$BXSHARE/BIOS-bochs-latest
-vgaromimage: file=$BXSHARE/VGABIOS-elpin-2.40
+romimage: file=../bochs-2.3.6/BIOS-bochs-latest
+vgaromimage: file=../bochs-2.3.6/VGABIOS-elpin-2.40
 
 # what disk images will be used 
 floppya: 1_44=boot.img, status=inserted
@@ -24,4 +24,4 @@ log: bochsout.txt
 mouse: enabled=0
 
 # enable key mapping, using US layout as default.
-keyboard_mapping: enabled=1, map=$BXSHARE/keymaps/x11-pc-us.map
+keyboard_mapping: enabled=1, map=../bochs-2.3.6/keymaps/x11-pc-us.map

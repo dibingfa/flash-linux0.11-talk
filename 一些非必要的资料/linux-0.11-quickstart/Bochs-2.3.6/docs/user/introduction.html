@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Introduction to Bochs</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="NEXT"
+TITLE="Who uses Bochs?"
+HREF="who-uses-bochs.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="index.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="who-uses-bochs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="INTRODUCTION"
+></A
+>Chapter 1. Introduction to Bochs</H1
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="WHATISBOCHS"
+>1.1. What is Bochs?</A
+></H1
+><P
+>Bochs is a program that simulates a complete Intel x86 computer.  It 
+can be configured to act like a  386, 486, Pentium, Pentium II, 
+Pentium III, Pentium 4 or even like x86-64 CPU, including optional MMX, SSEx 
+and 3DNow! instructions.
+Bochs interprets every instruction from power-up to reboot, and has
+device models for all of the standard PC peripherals: keyboard, mouse,
+VGA card/monitor, disks, timer chips, network card, etc.  Because Bochs
+simulates the whole PC environment, the software running in the simulation
+"believes" it is running on a real machine.  This approach allows Bochs
+to run a wide variety of software with no modification, include most popular
+x86 operating systems: Windows 95/98/NT/2000/XP and Vista, all Linux flavors, 
+all BSD flavors, and more.</P
+><P
+>Bochs is written in the C++ programming language, and is designed to run
+on many different host platforms<A
+NAME="AEN32"
+HREF="#FTN.AEN32"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+>, including x86, PPC, Alpha, Sun, and MIPS.  No matter what the
+host platform is, Bochs still simulates x86 software.  In other words, it
+does not depend on the native instructions of the host machine at all.
+This is both a strength and a weakness, and it's the major difference between
+Bochs and many other x86 emulation software such as plex86, VMware, etc.
+Because Bochs uses software simulation for every single x86 instruction, it
+can simulate a Windows application on an Alpha or Sun workstation.  However,
+the downside of Bochs' approach is simulation performance.  To model the
+processor accurately, Bochs must run many instructions for every simulated x86
+instruction, and this makes the simulated machine many times slower than
+the physical machine.  Commercial PC emulators (VMware, Connectix, etc.) can
+achieve much high emulation speed using a technique called 
+virtualization<A
+NAME="AEN34"
+HREF="#FTN.AEN34"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+>, but they are neither portable to non-x86 platforms nor open
+source.  The <A
+HREF="http://savannah.nongnu.org/projects/plex86"
+TARGET="_top"
+>Plex86</A
+> project is
+working toward an open-source x86 simulator with virtualization.</P
+><P
+>To do anything interesting in the simulated machine, Bochs needs to interact
+with the operating system on the host platform (the host OS).  When you press a
+key in the Bochs display window, a key event goes into the device model for the
+keyboard.  When the simulated machine needs to read from the simulated hard
+disk, Bochs reads from a disk image file on the host machine.  When the
+simulated machine sends a network packet to the local network, Bochs uses the
+host platform's network card to send the packet out into the real world.  These
+interactions between Bochs and the host operating system can be complicated,
+and in some cases they are host platform specific.  Sending a network packet in
+FreeBSD requires different code than sending the packet in Windows 95, for
+example.  For this reason, certain features are supported on some host
+platforms and not others.  On GNU/Linux, Bochs can simulate a network card that
+communicates with the world, but on BeOS the simulated network card may not
+work because the communication code between the device model and the BeOS
+operating system has not been written.</P
+><P
+>&#13;Bochs was written by Kevin Lawton starting in 1994.  It began as a 
+commercial product, which you could buy with source code for ...
+<IMG
+SRC="../images/undercon.png"> <A
+NAME="AEN40"
+HREF="#FTN.AEN40"
+><SPAN
+CLASS="footnote"
+>[3]</SPAN
+></A
+> Finally, in March 2000, MandrakeSoft (now called
+<A
+HREF="http://www.mandriva.com/"
+TARGET="_top"
+>Mandriva</A
+>) bought Bochs
+(<A
+HREF="http://www.linux-mandrake.com/en/announce-bochs-20000323.php3"
+TARGET="_top"
+>press release</A
+>)
+and made it open source under the GNU LGPL.
+
+In March 2001, Kevin helped a few developers to move all Bochs activities from
+bochs.com to a new site at bochs.sourceforge.net.  Since then the Bochs project
+has settled into its new home, and around release times has even hit #1 most
+active project of the week at SourceForge.</P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN32"
+HREF="introduction.html#AEN32"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Since Bochs can run on one kind of machine and simulate another machine, we
+have to be clear in our terminology to avoid confusion.  The host platform is
+the machine that runs the Bochs software.  The guest platform is the operating
+system and applications that Bochs is simulating.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN34"
+HREF="introduction.html#AEN34"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Virtualization takes advantage of simulating x86 instructions on an
+x86 machine, allowing large portions of the simulation to take place
+at native hardware speed.  Whenever the simulated machine talks to the
+hardware or enters certain privileged modes (such as in kernel code),
+the simulator typically takes control and simulates that code in
+software at much slower speed, just like Bochs does.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN40"
+HREF="introduction.html#AEN40"
+><SPAN
+CLASS="footnote"
+>[3]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>We need a Bochs historian to help out here.  For background, it would be
+interesting to know how much Bochs used to cost and what it was used for.  I
+thought I saw an interview out there somewhere where Kevin says why he started
+it and some more background information.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="who-uses-bochs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Bochs User Manual</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Who uses Bochs?</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

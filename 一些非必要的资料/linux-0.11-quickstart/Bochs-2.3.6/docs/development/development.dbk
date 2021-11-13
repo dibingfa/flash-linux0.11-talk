@@ -1,0 +1,3445 @@
+<!--
+================================================================
+doc/docbook/development/development.dbk
+$Id: development.dbk 13771 2020-01-04 22:46:00Z vruppert $
+
+This is the top level file for the Bochs Developers Manual.
+================================================================
+-->
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+
+<!-- include definitions that are common to all Bochs documentation -->
+<!ENTITY % bochsdefs SYSTEM "../include/defs.sgm">
+%bochsdefs;
+
+]>
+<book>
+<bookinfo>
+   <title>Bochs Developers Guide</title>
+   <authorgroup>
+   <author><firstname>Kevin</firstname><surname>Lawton</surname></author>
+   <author><firstname>Bryce</firstname><surname>Denney</surname></author>
+   <author><firstname>Christophe</firstname><surname>Bothamy</surname></author>
+   <editor><firstname>Michael</firstname><surname>Calabrese</surname></editor>
+   </authorgroup>
+</bookinfo>
+
+<!-- *************************************************************** -->
+<chapter id="resources"><title>Resources for developers</title>
+<para>
+The development guide describes resources that are intended for developers
+in particular.  Many Bochs resources are also covered in the User Guide,
+including compile instructions, bochsrc options, how to find the mailing
+lists, etc.
+</para>
+
+<section id="svn-write-access-setup"><title>Setting up SVN write access</title>
+<para>
+If you are an official SourceForge developer, then you can use SVN with write
+access.  The SVN contains the most recent copy of the source code, and with
+write access you can upload any changes you make to the SVN server for others
+to use. The SVN checkout command is identical to the one for normal users, but
+you might want to get the whole tree to work with branches and tags.
+</para>
+
+<screen>
+  <command>svn co https://svn.code.sf.net/p/bochs/code bochs-svn</command>
+</screen>
+
+<para>
+Depending on your network connection this may take a long time, since it downloads all
+files from all branches and tags that exist in the repository at the current revision.
+</para>
+
+</section> <!-- end setting up svn write access -->
+
+<section id="using-svn-write-access"><title>Using SVN write access</title>
+
+<section><title>Checking in files</title>
+<para>
+Once you have a Bochs directory, you can compile the files, edit them, test them, etc.
+See the documentation section, <ulink url="../user/get-src-svn.html">Tracking the source code with SVN</ulink>
+for more info on SVN, in the User Manual. But what's new and different is that
+you can now do SVN commits. When a file is all fixed and ready to share with the rest of
+the world, you run a commit command to upload your version to the server.
+First, it's good to do a SVN update to make sure nobody else has changed it
+since you downloaded it last. At the first commit you'll always have to specify your
+SF username and type your password.
+</para>
+
+<screen>
+  $ svn update file.cc
+  $ svn commit --username <replaceable>sfusername</replaceable> file.cc
+  [editor opens. type log message, save, and exit.]
+  Login area: &lt;https://svn.code.sf.net:443&gt; SourceForge Subversion area
+  Username: <replaceable>sfusername</replaceable>
+  Password for '<replaceable>sfusername</replaceable>': <replaceable><--type your password</replaceable>
+  Sending        file.cc
+  Transmitting file data .
+  Committed revision 10.
+</screen>
+
+<para>
+When SVN starts an editor, The default is usually vi. If you want a different
+editor, set the EDITOR environment variable to the name of your preferred
+editor.  When you're done, just save the file and quit the editor.  Unless
+there's some problem, you will see a message that says what the new SVN revision
+number is, and then "done".  If while you're editing the log message, you decide
+that you don't want to commit after all, don't save the file. Quit the editor,
+and when it asks where the log message went, tell it to abort.
+</para>
+
+<para>
+Here is an example of a successful checkin:
+
+<screen>
+  $ svn commit misc.txt
+  [edit log msg]
+  Sending        misc.txt
+  Transmitting file data .
+  Committed revision 6.
+</screen>
+
+And here is an aborted one:
+
+<screen>
+  $ svn commit misc.txt
+  [quit editor without saving]
+  Log message unchanged or not specified
+  a)bort, c)ontinue, e)dit:
+  a
+</screen>
+
+</para>
+</section> <!--end of "Checking in Files" -->
+
+<section><title>Creating a backup of the SVN repository</title>
+<para>
+Backups of the SVN repository can be made with the <command>rsync</command> utility.
+In case of data corruption or other problems on the server, the repository with all
+revisions, branches and tags can be restored easily. It is recommended to update this
+backup frequently. The following example creates a folder called
+<filename>bochs-svn-rsync</filename> that contains the repository.
+<screen>
+  rsync -av svn.code.sf.net::p/bochs/code bochs-svn-rsync
+</screen>
+</para>
+</section>
+
+<section><title>Setting SVN commit notifications</title>
+<para>
+The Bochs SVN repository is set up to send a notification email to the "bochs-cvs"
+mailing list after each successful commit. This email contains the log message, a list
+of the modified files and a diff against the previous revision. The diff of large
+commits will be truncated at 96 kByte.
+</para>
+<para>
+After each commit the SVN server runs the script <command>post-commit</command> located
+in the <filename>hooks</filename> folder. On SourceForge, this script forces a refresh
+of the Allura code browser and it can call a script <command>post-commit-user</command>
+for addition operations if it exists. For Bochs we have set up this script and call
+<command>svnnotify</command> from it to create the notification email.
+<screen>
+#!/bin/sh
+
+svnnotify --repos-path $1 --revision $2 -O -C -d -e 98304 -t bochs-cvs@lists.sourceforge.net
+</screen>
+</para>
+</section>
+
+</section> <!--end of "Using SVN write access" -->
+
+<section id="other"><title>Ideas for other sections</title>
+<para>
+<screen>
+Ideas:
+- how to browse code with the Allura code browser
+- how to find an identifier, variable, or specific text in the code
+- how to make patches with SVN
+</screen>
+</para>
+</section>
+
+</chapter>
+
+<chapter id="about-the-code"><title>About the code</title>
+
+<section id="code-overview"><title>Overview</title>
+<para>
+The initial versions of some sections in this chapter are based on a document
+written by Peter "Firefly" Lund. It was added and updated in January 2006.
+</para>
+<para>
+The Bochs virtual PC consists of many pieces of hardware. At a bare minimum
+there are always a CPU, a PIT (Programmable Interval Timer), a PIC
+(Programmable Interrupt Controller), a DMA controller, some memory (this
+includes both RAM and BIOS ROMs), a video card (usually VGA), a keyboard port
+(also handles the mouse), an RTC with battery backed NVRAM, and some extra
+motherboard circuitry.
+</para>
+<para>
+There might also be an ethernet card, a PCI controller, a soundcard,
+an IDE controller (+ harddisks/CDROM), a SCSI controller (+ harddisks), a
+floppy controller, an APIC ...
+</para>
+<para>
+There may also be more than one CPU.
+</para>
+<para>
+Most of these pieces of hardware have their own C++ class - and if Bochs is
+configured to have more than one piece of a type of hardware, each will have
+its own object.
+</para>
+<para>
+The pieces of hardware communicates over a couple of buses with each other -
+some of the things that the buses carry are reads and writes in memory space,
+reads and writes in I/O space, interrupt requests, interrupt acknowledges, DMA
+requests, DMA acknowledges, and NMI request/acknowledge. How that is simulated
+is explained later.&FIXME;
+</para>
+<para>
+In addition to the simulator itself, some other components are required for
+the communication with the user. The most important parts are these:
+<itemizedlist>
+<listitem><para>the window that simulates the monitor and receives keyboard / mouse events</para></listitem>
+<listitem><para>the configuration interface that allows to adjust simulation settings</para></listitem>
+<listitem><para>the simulator interface for the communication between the other componnents</para></listitem>
+<listitem><para>the parameter tree (for configuration settings and save/restore)</para></listitem>
+<listitem><para>the logfunctions class (handle and configure panic/error/info/debug)</para></listitem>
+</itemizedlist>
+These componnents of Bochs are optional:
+<itemizedlist>
+<listitem><para>the plugin interface</para></listitem>
+<listitem><para>the builtin debugger</para></listitem>
+<listitem><para>the disassembler</para></listitem>
+<listitem><para>the instrumentation feature</para></listitem>
+</itemizedlist>
+</para>
+<para>
+The simulation window is handled by the GUI object (other terms used in the
+sources are "display library", "VGAW"). There are many different but compatible
+implementations of the GUI object, depending on whether you compile for X (Unix/Linux),
+Win32, Macintosh (two versions: one for Mac OS X and one for older OS's), Amiga,
+etc. The cross-platform libraries SDL and wxWidgets are also supported.
+</para>
+<para>
+For the configuration interface there are also some different implementations: textconfig
+(text menus only), wxdialog (wxWidgets port), win32dialog/win32paramdlg (Windows port).
+</para>
+</section>
+
+<section id="directory-structure"><title>Directory Structure</title>
+<para>
+<table>
+<title>Directory structure</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Location</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>bios</entry><entry>System and VGA BIOS images, system BIOS sources and makefile</entry></row>
+<row><entry>build</entry><entry>additional stuff required for building Bochs on different platforms</entry></row>
+<row><entry>bx_debug</entry><entry>the builtin Bochs debugger</entry></row>
+<row><entry>cpu</entry><entry>the cpu emulation sources</entry></row>
+<row><entry>cpu/avx</entry><entry>sources for emulating AVX instructions</entry></row>
+<row><entry>cpu/cpudb</entry><entry>sources for emulating different cpu models</entry></row>
+<row><entry>cpu/fpu</entry><entry>the fpu emulation sources</entry></row>
+<row><entry>disasm</entry><entry>the disassembler for the Bochs debugger</entry></row>
+<row><entry>doc/docbook</entry><entry>the Bochs documentation in DocBook format</entry></row>
+<row><entry>doc/man</entry><entry>Bochs manual pages</entry></row>
+<row><entry>docs-html</entry><entry>old Bochs documentation in HTML (will be replaced by DocBook)</entry></row>
+<row><entry>gui</entry><entry>display libraries (guis), the simulator interface and text mode config interface</entry></row>
+<row><entry>gui/bitmaps</entry><entry>bitmaps for the headerbar</entry></row>
+<row><entry>gui/font</entry><entry>the default VGA font used by most of the display libraries</entry></row>
+<row><entry>gui/keymaps</entry><entry>keymaps for the keyboard mapping feature</entry></row>
+<row><entry>host</entry><entry>host specific drivers (currently only used by the pcidev kernel module for Linux)</entry></row>
+<row><entry>instrument</entry><entry>directory tree for the instrumentation feature</entry></row>
+<row><entry>iodev</entry><entry>standard PC devices, PCI core devices</entry></row>
+<row><entry>iodev/display</entry><entry>display adapters (vga, cirrus, voodoo)</entry></row>
+<row><entry>iodev/hdimage</entry><entry>support for different disk image types and lowlevel cdrom access</entry></row>
+<row><entry>iodev/networking</entry><entry>networking devices and lowlevel modules</entry></row>
+<row><entry>iodev/sound</entry><entry>sound devices and lowlevel modules</entry></row>
+<row><entry>iodev/usb</entry><entry>USB HCs and pluggable devices</entry></row>
+<row><entry>memory</entry><entry>memory management and ROM loader</entry></row>
+<row><entry>misc</entry><entry>useful utilities (e.g. bximage, niclist)</entry></row>
+<row><entry>misc/sb16</entry><entry>tool to control the SB16 emulation from the guest side</entry></row>
+<row><entry>patches</entry><entry>pending patches</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+
+<section id="emulator-objects"><title>Emulator Objects</title>
+<section><title>Weird macros and other mysteries</title>
+<para>
+Bochs has many macros with inscrutable names. One might even go as far as to
+say that Bochs is macro infested.
+Some of them are gross speed hacks, to cover up the slow speed that C++ causes.
+Others paper over differences between the simulated PC configurations.
+Many of the macros exhibit the same problem as C++ does: too much stuff happens
+behind the programmer's back. More explicitness would be a big win.
+</para>
+</section>
+<section id="static-methods-hack"><title>Static methods hack</title>
+<para>
+C++ methods have an invisible parameter called the this pointer - otherwise the
+method wouldn't know which object to operate on. In many cases in Bochs, there
+will only ever be one object - so this flexibility is unnecessary. There is a
+hack that can be enabled by #defining BX_USE_CPU_SMF to 1 in <filename>config.h
+</filename> that makes most methods static, which means they have a "special
+relationship" with the class they are declared in but apart from that are
+normal C functions with no hidden parameters. Of course they still need access
+to the internals of an object, so the single object of their class has a globally
+visible name that these functions use. It is all hidden with macros.
+</para>
+<para>
+Declaration of a class, from iodev/pic.h:
+</para>
+<screen>
+...
+#if BX_USE_PIC_SMF
+#  define BX_PIC_SMF  static
+#  define BX_PIC_THIS thePic->
+#else
+#  define BX_PIC_SMF
+#  define BX_PIC_THIS this->
+#endif
+...
+class bx_pic_c : public bx_pic_stub_c {
+
+public:
+  bx_pic_c();
+  ~bx_pic_c();
+...
+  BX_PIC_SMF void   service_master_pic(void);
+  BX_PIC_SMF void   service_slave_pic(void);
+  BX_PIC_SMF void   clear_highest_interrupt(bx_pic_t *pic);
+};
+</screen>
+<para>
+And iodev/pic.cc:
+</para>
+<screen>
+...
+#define LOG_THIS thePic->
+
+bx_pic_c *thePic = NULL;
+...
+void bx_pic_c::service_master_pic(void)
+{
+  Bit8u unmasked_requests;
+  int irq;
+  Bit8u isr, max_irq;
+  Bit8u highest_priority = BX_PIC_THIS s.master_pic.lowest_priority + 1;
+  if(highest_priority > 7)
+    highest_priority = 0;
+
+  if (BX_PIC_THIS s.master_pic.INT) { /* last interrupt still not acknowleged */
+    return;
+  }
+
+  isr = BX_PIC_THIS s.master_pic.isr;
+  if (BX_PIC_THIS s.master_pic.special_mask) {
+    /* all priorities may be enabled.  check all IRR bits except ones
+     * which have corresponding ISR bits set
+     */
+    max_irq = highest_priority;
+  }
+  else { /* normal mode */
+    /* Find the highest priority IRQ that is enabled due to current ISR */
+    max_irq = highest_priority;
+...
+}
+...
+</screen>
+<para>
+Ugly, isn't it? If we use static methods, methods prefixed with BX_PIC_SMF are
+declared static and references to fields inside the object, which are prefixed
+with BX_PIC_THIS, will use the globally visible object, thePic->. If we don't
+use static methods, BX_PIC_SMF evaluates to nothing and BX_PIC_THIS becomes this->.
+Making it evaluate to nothing would be a lot cleaner, but then the scoping rules
+would change slightly between the two Bochs configurations, which would be a load
+of bugs just waiting to happen. Some classes use BX_SMF, others have their own
+version of the macro, like BX_PIC_SMF above.
+</para>
+</section>
+<section id="cpu-mem-objects"><title>CPU und memory objects in UP/SMP configurations</title>
+<para>
+The CPU class is a special case of the above: if Bochs is simulating a uni-
+processor machine then there is obviously only one bx_cpu_c object and the
+static methods trick can be used. If, on the other hand, Bochs is simulating an
+smp machine then we can't use the trick. The same seems to be true for memory:
+for some reason, we have a memory object for each CPU object. This might become
+relevant for NUMA machines, but they are not all that common -- and even the
+existing IA-32 NUMA machines bend over backwards to hide that fact: it should
+only be visible in slightly worse timing for non-local memory and non-local
+peripherals. Other than that, the memory map and device map presented to each
+CPU will be identical.
+</para>
+<para>
+In a UP configuration, the CPU object is declared as bx_cpu. In an SMP
+configuration it will be an array of pointers to CPU objects (bx_cpu_array[]).
+For memory that would be bx_mem and bx_mem_array[], respectively.
+Each CPU object contains a pointer to its associated memory object.
+Access of a CPU object often goes through the BX_CPU(x) macro, which either
+ignores the parameter and evaluates to &amp;bx_cpu, or evaluates to bx_cpu_array
+[n], so the result will always be a pointer. The same goes for BX_MEM(x).
+If static methods are used then BX_CPU_THIS_PTR evaluates to BX_CPU(0)->. Ugly,
+isn't it?
+</para>
+</section>
+<section id="config-parameter-tree"><title>The configuration parameter tree</title>
+<para>
+Starting with version 1.3, the Bochs configuration parameters are stored in parameter
+objects. These objects have get/set methods with min/max checks and it is possible
+to define parameter handlers to perform side effects and to override settings.
+Each parameter type has it's own object type with specific features (numeric,
+boolean, enum, string and file name). A special object type containing a list of
+parameters is designed for building and managing configuration menus or dialogs
+automatically. In the original implementation the parameters could be accessed
+only with their unique id from a static list or a special structure containing
+pointers to all parameters.
+</para>
+<para>
+Starting with version 2.3, the Bochs parameter object handling has been rewritten
+to a parameter tree. There is now a root list containing child lists, and these
+lists can contain lists or parameters and so on. The parameters are now accessed
+by a name build from all the list names in the path and finally the parameter
+name separated by periods.
+<screen>
+Bit32u megs = SIM->get_param_num("memory.standard.ram.size")->get();
+</screen>
+</para>
+<para>
+The example above shows how to get the memory size in megabytes from the simulator
+interface. In the root list (".") there is child list named "memory" containing
+a child list "standard". It's child list "ram" contains the numeric parameter type
+"size". The SIM->get_param_num() methods returns the object pointer and the get()
+method returns the parameter value.
+</para>
+<para>
+The table below shows all parameter types used by the Bochs configuration interface.
+<table>
+<title>Parameter types</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Type</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>bx_object_c</entry>
+<entry>Base class for all the other parameter types. It contains the unique parameter id and the object type value.</entry>
+</row>
+<row>
+<entry>bx_param_c</entry>
+<entry>Generic parameter class. It contains the name, label, description and the input/output formats.</entry>
+</row>
+<row>
+<entry>bx_param_num_c</entry>
+<entry>Numerical (decimal/hex) config settings are stored in this parameter type.</entry>
+</row>
+<row>
+<entry>bx_param_bool_c</entry>
+<entry>This parameter type is based on bx_param_num_c, but it is designed for boolean values. A dependency
+list can be defined to enable/disable other parameters depending on the value change.</entry>
+</row>
+<row>
+<entry>bx_param_enum_c</entry>
+<entry>Based on bx_param_num_c this parameter type contains a list of valid values.</entry>
+</row>
+<row>
+<entry>bx_param_string_c</entry>
+<entry>Configuration strings are stored in this type of parameter.</entry>
+</row>
+<row>
+<entry>bx_param_filename_c</entry>
+<entry>Based on bx_param_string_c this parameter type is used for file names.</entry>
+</row>
+<row>
+<entry>bx_list_c</entry>
+<entry>Contains a list of pointers to parameters (bx_param_*_c and bx_list_c).
+In the config interface it is used for menus/dialogs.</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+<section id="save-restore"><title>The save/restore feature</title>
+<para>
+The save/restore feature is based on an extension to the parameter tree concept.
+A subtree (list) called "bochs" appears in the root of the parameter tree
+and some new "shadow" parameter types store pointers to values instead of the values
+itself. All the hardware objects have register_state() methods to register pointers
+to the device registers and switches that need to be saved. The simulator interface
+saves the registered data in text format to the specified folder (usually one file
+per item in the save/restore list). Large binary arrays are registered with a
+special parameter type, so they are saved as separate files. The filename is then
+created from the full parameter path without the prefix "bochs.".
+</para>
+<para>
+The table below shows the additional parameter types for save/restore.
+<table>
+<title>Save/restore parameter types</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Type</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry>bx_shadow_num_c</entry>
+<entry>Based on bx_param_num_c this type stores a pointer to a numerical variable.</entry>
+</row>
+<row>
+<entry>bx_shadow_bool_c</entry>
+<entry>This parameter type stores a pointer to a boolean variable (bit #0 only) or
+a numerical one (only one selected bit).</entry>
+</row>
+<row>
+<entry>bx_shadow_data_c</entry>
+<entry>This special parameter type stores pointer size of a binary array. The data is
+saved in a separate file and the text file uses the file name as the value.</entry>
+</row>
+<row>
+<entry>bx_shadow_filedata_c</entry>
+<entry>This special parameter type stores the descriptor of an open file
+(added in Bochs 2.5).</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+It is also possible to use the bx_param_num_c object with parameter save/restore
+handlers. With this special way several device settings can be saved to and restored
+from one single parameter. The disk image state is also handled this way (see below).
+</para>
+<para>
+All devices can uses these two save/restore specific methods:
+<itemizedlist>
+<listitem><para>register_state() is called after the device init() to register the device members for save/restore</para></listitem>
+<listitem><para>after_restore_state() is an optional method to do things directly after restore (e.g. vga: force a display update)</para></listitem>
+</itemizedlist>
+</para>
+<para>
+To implement save/restore for hard drive images, the new method register_state() has
+been added to the base class of the disk image objects. It creates a bx_param_bool_c
+object called "image" and installs static save and restore handlers. The save
+operation finally sets the parameter's value (1 = success) and the save/restore
+handlers are doing the main job. The static handlers call the class-specific code.
+Depending on the image "mode" they copy either the whole image file or the file
+containing changes (journal). The files are saved similar to binary arrays with
+the same naming convention. The restore methods are doing some format or coherency
+checks, close the open image, copy the file(s) and finally re-open the image.
+</para>
+</section>
+</section>
+
+<section id="configure-scripting"><title>Configure Scripting</title>
+<para>
+Like many other open source projects, Bochs uses a configure script created with
+<command>autoconf</command>. The configure script generates all makefiles and a
+set of header and support files from templates.
+</para>
+<para>
+This example shows how to add an option to the template file <filename>configure.in</filename>.
+The resulting configure script sets up symbols like <option>BX_SUPPORT_BUSMOUSE</option>
+in the output file <filename>config.h</filename> and replaces <option>@BUSM_OBJS@</option>
+entries in the makefile output.
+<screen>
+BUSM_OBJS=''
+AC_MSG_CHECKING(for Busmouse support)
+AC_ARG_ENABLE(busmouse,
+  AS_HELP_STRING([--enable-busmouse], [enable Busmouse support (InPort)]),
+  [if test "$enableval" = yes; then
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(BX_SUPPORT_BUSMOUSE, 1)
+    BUSM_OBJS='busmouse.o'
+   else
+    AC_MSG_RESULT(no)
+    AC_DEFINE(BX_SUPPORT_BUSMOUSE, 0)
+   fi],
+  [
+    AC_DEFINE(BX_SUPPORT_BUSMOUSE, 0)
+    AC_MSG_RESULT(no)]
+  )
+AC_SUBST(BUSM_OBJS)
+</screen>
+</para>
+<para>
+These output files are generated by the configure script in addition to the makefiles.
+<itemizedlist>
+<listitem><para><filename>config.h</filename> - the main header file</para></listitem>
+<listitem><para><filename>ltdlconf.h</filename> - header file required for compiling with libtool</para></listitem>
+<listitem><para><filename>bxversion.h</filename> - header file containing version strings</para></listitem>
+<listitem><para><filename>bxversion.rc</filename> - resource file for Windows with version information</para></listitem>
+<listitem><para><filename>build/linux/bochs-dlx</filename> - DLX Linux shortcut script (Linux only)</para></listitem>
+<listitem><para><filename>build/macosx/Info.plist</filename> - property list file for MacOSX</para></listitem>
+<listitem><para><filename>build/win32/nsis/bochs.nsi</filename> - NSIS script for creating Windows installer package</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+<section id="logfunctions"><title>Log Functions</title>
+<para>
+The <emphasis>logfunctions</emphasis> class is one of the base classes of Bochs.
+It supports 4 log levels (debug, info, error, panic) and 4 possible "actions"
+that can be done when a log event occurs. Most of the higher level C++ classes of Bochs
+inherit this class to make the logging configuration per object (here called "module")
+possible. In the Bochs sources the log events appear as macros (BX_DEBUG, BX_INFO,
+BX_ERROR, BX_PANIC) and they call the related logfunction methods, unless the
+symbol BX_NO_LOGGING is set to 1. This is the definition in <emphasis>bochs.h</emphasis>:
+<screen>
+typedef class BOCHSAPI logfunctions
+{
+  char *name;
+  char *prefix;
+  int onoff[N_LOGLEV];
+  class iofunctions *logio;
+  // default log actions for all devices, declared and initialized
+  // in logio.cc.
+  BOCHSAPI_CYGONLY static int default_onoff[N_LOGLEV];
+public:
+  logfunctions(void);
+  logfunctions(class iofunctions *);
+ ~logfunctions(void);
+
+  void info(const char *fmt, ...)   BX_CPP_AttrPrintf(2, 3);
+  void error(const char *fmt, ...)  BX_CPP_AttrPrintf(2, 3);
+  void panic(const char *fmt, ...)  BX_CPP_AttrPrintf(2, 3);
+  void ldebug(const char *fmt, ...) BX_CPP_AttrPrintf(2, 3);
+  void fatal (const char *prefix, const char *fmt, va_list ap, int exit_status);
+  void ask (int level, const char *prefix, const char *fmt, va_list ap);
+  void put(const char *p);
+  void put(const char *n, const char *p);
+  void setio(class iofunctions *);
+  void setonoff(int loglev, int value) {
+    assert (loglev >= 0 && loglev < N_LOGLEV);
+    onoff[loglev] = value;
+  }
+  const char *get_name() const { return name; }
+  const char *getprefix() const { return prefix; }
+  int getonoff(int level) const {
+    assert (level>=0 && level&lt;N_LOGLEV);
+    return onoff[level];
+  }
+  static void set_default_action(int loglev, int action) {
+    assert (loglev >= 0 && loglev &lt; N_LOGLEV);
+    assert (action >= 0 && action &lt; N_ACT);
+    default_onoff[loglev] = action;
+  }
+  static int get_default_action(int loglev) {
+    assert (loglev >= 0 && loglev &lt; N_LOGLEV);
+    return default_onoff[loglev];
+  }
+} logfunc_t;
+</screen>
+</para>
+<section><title>Methods</title>
+<para>
+Here is a short description of some <emphasis>logfunctions</emphasis> methods.
+<itemizedlist>
+<listitem><para>
+The <emphasis>constructor</emphasis> registers a new log module with default values.
+The module's log prefix is empty and the log levels are set up with default actions.
+</para></listitem>
+
+<listitem><para>
+The <emphasis>destructor</emphasis> removes the log module from the table.
+</para></listitem>
+
+<listitem><para>
+The <emphasis>info()</emphasis>, <emphasis>error()</emphasis>, <emphasis>panic()</emphasis>
+and <emphasis>ldebug()</emphasis> methods are called via macros to create a log event
+of the related level.
+</para></listitem>
+
+<listitem><para>
+The <emphasis>fatal()</emphasis> method is called if a log event occurs and it's
+action is set to "fatal". It is used to shut down the Bochs simulation.
+</para></listitem>
+
+<listitem><para>
+The <emphasis>ask()</emphasis> method is called if a log event occurs and it's
+action is set to "ask". It sends an event to the simulator interface and depending
+on the return value the simulation continues or it is terminated by calling
+<emphasis>fatal()</emphasis>. The simulator interface either prompts the user on
+the console or calls some platform / gui specific code to handle the
+<emphasis>ask</emphasis> request.
+</para></listitem>
+
+<listitem><para>
+The <emphasis>put()</emphasis> methods are used to set up the log module prefix in
+that appears in the log file and the log module name that appears in the config
+interface. If the name is not specified, the prefix is used instead.
+</para></listitem>
+<listitem><para>
+The <emphasis>setio()</emphasis> method sets up the <emphasis>iofunctions</emphasis>
+class for the log file output. This method is only used by the <emphasis>logfunctions</emphasis>
+constructors.
+</para></listitem>
+<listitem><para>
+The <emphasis>getonoff()</emphasis> and <emphasis>setonoff()</emphasis> methods
+are used by the config interface to display and change the log actions for a
+Bochs facility.
+</para></listitem>
+<listitem><para>
+The <emphasis>get_default_action()</emphasis> and <emphasis>set_default_action()</emphasis>
+methods are also used by the config interface to set up the default action for a
+log level.
+</para></listitem>
+<listitem><para>
+The <emphasis>get_name()</emphasis> and <emphasis>getprefix()</emphasis> methods return
+the strings set up with the <emphasis>put()</emphasis> method. The config interface
+is also using them to build the menu / dialog to set up the log functions.
+</para></listitem>
+</itemizedlist>
+</para>
+</section>
+</section>
+
+<section id="timers"><title>Internal timers</title>
+<section><title>Overview</title>
+<para>
+The Bochs internal timers are required to provide timer features in the device
+emulation and for the interaction between simulator and gui. They are implemented
+in the <emphasis>bx_pc_system_c</emphasis> class and driven by the cpu. When
+programming a timer the interval is specified in useconds and the timer code
+translates the value to cpu ticks using the <ulink url="../user/bochsrc.html#BOCHSOPT-CPU-IPS">IPS</ulink>
+value. In the original implementation the cpu object calls a timer method to increment
+the system time by one tick after completing one instruction. If a timer has
+expired, the related timer handler function is called. Now it is also possible
+to execute a number of cpu instructions, finally update the timer subsystem
+with this number and possibly call several timer handlers. Here are some
+examples for timers in the devices and gui code:
+<itemizedlist>
+<listitem><para>the PIT (i82C54) system timer at 18.2 Hz</para></listitem>
+<listitem><para>the CMOS RTC one-second-timer</para></listitem>
+<listitem><para>the display update timer (set up with "vga: update_freq=X")</para></listitem>
+<listitem><para>the devices timer (polls keyboard/mouse events from the gui every 1 emulated msecond)</para></listitem>
+<listitem><para>the LED auto-off timer (indicating data transfer for min 0.5 seconds)</para></listitem>
+<listitem><para>the synchronization timers (realtime/slowdown) are also based on the standard timers</para></listitem>
+</itemizedlist>
+</para>
+<para>
+These are the capabilities of the Bochs internal timers:
+<itemizedlist>
+<listitem><para>register / unregister at runtime</para></listitem>
+<listitem><para>activate / deactivate at runtime</para></listitem>
+<listitem><para>timer period changeable</para></listitem>
+<listitem><para>one-shot or continuous mode</para></listitem>
+</itemizedlist>
+</para>
+</section>
+<section><title>Timer definitions, members and methods</title>
+<para>
+Here are the timer-related definitions and members in <filename>pc_system.h</filename>:
+<screen>
+#define BX_MAX_TIMERS 64
+#define BX_NULL_TIMER_HANDLE 10000
+
+typedef void (*bx_timer_handler_t)(void *);
+
+  struct {
+    bx_bool inUse;      // Timer slot is in-use (currently registered).
+    Bit64u  period;     // Timer periodocity in cpu ticks.
+    Bit64u  timeToFire; // Time to fire next (in absolute ticks).
+    bx_bool active;     // 0=inactive, 1=active.
+    bx_bool continuous; // 0=one-shot timer, 1=continuous periodicity.
+    bx_timer_handler_t funct;  // A callback function for when the
+                               //   timer fires.
+    void *this_ptr;            // The this-> pointer for C++ callbacks
+                               //   has to be stored as well.
+#define BxMaxTimerIDLen 32
+    char id[BxMaxTimerIDLen];  // String ID of timer.
+    Bit32u param;              // Device-specific value assigned to timer (optional)
+  } timer[BX_MAX_TIMERS];
+
+  unsigned   numTimers;  // Number of currently allocated timers.
+  unsigned   triggeredTimer;  // ID of the actually triggered timer.
+  Bit32u     currCountdown; // Current countdown ticks value (decrements to 0).
+  Bit32u     currCountdownPeriod; // Length of current countdown period.
+  Bit64u     ticksTotal; // Num ticks total since start of emulator execution.
+  Bit64u     lastTimeUsec; // Last sequentially read time in usec.
+  Bit64u     usecSinceLast; // Number of useconds claimed since then.
+
+  // A special null timer is always inserted in the timer[0] slot.  This
+  // make sure that at least one timer is always active, and that the
+  // duration is always less than a maximum 32-bit integer, so a 32-bit
+  // counter can be used for the current countdown.
+  static const Bit64u NullTimerInterval;
+  static void nullTimer(void* this_ptr);
+</screen>
+</para>
+<para>
+These are the public timer-related methods for timer control, driving the timers
+with the cpu and retrieving the internal time implemented in the <emphasis>bx_pc_system_c</emphasis>
+class:
+<screen>
+  void   initialize(Bit32u ips);
+  int    register_timer(void *this_ptr, bx_timer_handler_t, Bit32u useconds,
+                         bx_bool continuous, bx_bool active, const char *id);
+  bx_bool unregisterTimer(unsigned timerID);
+  void   setTimerParam(unsigned timerID, Bit32u param);
+  void   start_timers(void);
+  void   activate_timer(unsigned timer_index, Bit32u useconds, bx_bool continuous);
+  void   deactivate_timer(unsigned timer_index);
+  unsigned triggeredTimerID(void) {
+    return triggeredTimer;
+  }
+  Bit32u triggeredTimerParam(void) {
+    return timer[triggeredTimer].param;
+  }
+  static BX_CPP_INLINE void tick1(void) {
+    if (--bx_pc_system.currCountdown == 0) {
+      bx_pc_system.countdownEvent();
+    }
+  }
+  static BX_CPP_INLINE void tickn(Bit32u n) {
+    while (n >= bx_pc_system.currCountdown) {
+      n -= bx_pc_system.currCountdown;
+      bx_pc_system.currCountdown = 0;
+      bx_pc_system.countdownEvent();
+      // bx_pc_system.currCountdown is adjusted to new value by countdownevent().
+    }
+    // 'n' is not (or no longer) >= the countdown size.  We can just decrement
+    // the remaining requested ticks and continue.
+    bx_pc_system.currCountdown -= n;
+  }
+
+  int register_timer_ticks(void* this_ptr, bx_timer_handler_t, Bit64u ticks,
+                           bx_bool continuous, bx_bool active, const char *id);
+  void activate_timer_ticks(unsigned index, Bit64u instructions,
+                            bx_bool continuous);
+  Bit64u time_usec();
+  Bit64u time_usec_sequential();
+  static BX_CPP_INLINE Bit64u time_ticks() {
+    return bx_pc_system.ticksTotal +
+      Bit64u(bx_pc_system.currCountdownPeriod - bx_pc_system.currCountdown);
+  }
+
+  static BX_CPP_INLINE Bit32u  getNumCpuTicksLeftNextEvent(void) {
+    return bx_pc_system.currCountdown;
+  }
+</screen>
+</para>
+<para>
+This private method is called when the function handling the clock ticks finds
+that an event has occurred:
+<screen>
+  void   countdownEvent(void);
+</screen>
+</para>
+</section>
+<section><title>Detailed functional description</title>
+<para>
+The Bochs timer implementation requires at least one timer to be active. That's why
+there is a so-called <function>nullTimer</function> to make it work. It is
+initialized in the constructor on the first timer slot with the highest possible
+timer interval and it's handler is an empty function.
+</para>
+<para>
+The most important variables of the timer subsystem are initialized on startup
+with the <function>nullTimer</function> values and updated after each timer
+modification (register / unregister / activate / deactivate / processing
+handler).
+<itemizedlist>
+<listitem><para><emphasis>ticksTotal</emphasis>: number of ticks total from emulator
+startup to the last update of timer subsystem</para></listitem>
+<listitem><para><emphasis>currCountdownPeriod</emphasis>: length of the period
+from <emphasis>ticksTotal</emphasis> to the next timer event</para></listitem>
+<listitem><para><emphasis>currCountdown</emphasis>: number of ticks remaining
+until the next timer event occurs</para></listitem>
+</itemizedlist>
+The number if ticks since emulator startup is calculated with the formula
+<emphasis>ticksTotal + currCountdownPeriod - currCountdown</emphasis> and
+returned with the <function>time_ticks()</function> method. The number of
+useconds since emulator startup is returned with the <function>time_usec()</function>
+method computed from the return value of <function>time_ticks()</function> and
+the <ulink url="../user/bochsrc.html#BOCHSOPT-CPU-IPS">IPS</ulink> value.
+</para>
+<para>
+&FIXME; To be continued
+</para>
+</section>
+</section>
+
+<section id="cmos-map"><title>Bochs's CMOS map</title>
+<para>
+In addition to the default CMOS RAM layout, the Bochs BIOS uses some additional
+registers for harddisk parameters and the boot sequence. The following table
+shows all CMOS registers and their meaning.
+</para>
+<para>
+<screen>
+Legend:
+S	- set by the emulator (Bochs)
+Q	- set by the emulator (Qemu)
+B	- set by the bios
+U	- unused by the bios
+
+LOC	NOTES	MEANING
+0x00	S	rtc seconds
+0x01	B	second alarm
+0x02	S	rtc minutes
+0x03	B	minute alarm
+0x04	S	rtc hours
+0x05	B	hour alarm
+
+0x06	S,U	day of week
+0x07	S,B	date of month
+0x08	S,B	month
+0x09	S,B	year
+
+0x0a	S,B	status register A
+0x0b	S,B	status register B
+0x0c	S	status register C
+0x0d	S	status register D
+
+0x0f	S	shutdown status
+    values:
+	0x00: normal startup
+	0x09: normal
+	0x0d+: normal
+	0x05: eoi ?
+	else: unimpl
+
+0x10	S	fd drive type (2 nibbles: high=fd0, low=fd1)
+    values:
+	1: 360K 5.25"
+	2: 1.2MB 5.25"
+	3: 720K 3.5"
+	4: 1.44MB 3.5"
+	5: 2.88MB 3.5"
+
+!0x11	configuration bits!!
+
+0x12	S	how many disks first (hd type)
+
+!0x13	advanced configuration bits!!
+
+0x14	S,U	equipment byte (?)
+	bits	where		what
+	7-6	floppy.cc
+	5-4	vga.cc		0 = vga
+	2	keyboard.cc	1 = enabled
+	0	floppy.cc
+
+0x15	S,U	base memory - low
+0x16	S,U	base memory - high
+
+0x17	S,U	extended memory in k - low
+0x18	S,U	extended memory in k - high
+
+0x19	S	hd0: extended type
+0x1a	S	hd1: extended type
+
+0x1b	S,U	hd0:cylinders - low
+0x1c	S,U	hd0:cylinders - high
+0x1d	S,U	hd0:heads
+0x1e	S,U	hd0:write pre-comp - low
+0x1f	S,U	hd0:write pre-comp - high
+0x20	S,U	hd0:retries/bad_map/heads>8
+0x21	S,U	hd0:landing zone - low
+0x22	S,U	hd0:landing zone - high
+0x23	S,U	hd0:sectors per track
+
+0x24	S,U	hd1:cylinders - low
+0x25	S,U	hd1:cylinders - high
+0x26	S,U	hd1:heads
+0x27	S,U	hd1:write pre-comp - low
+0x28	S,U	hd1:write pre-comp - high
+0x29	S,U	hd1:retries/bad_map/heads>8
+0x2a	S,U	hd1:landing zone - low
+0x2b	S,U	hd1:landing zone - high
+0x2c	S,U	hd1:sectors per track
+
+0x2d	S	boot from (bit5: 0:hd, 1:fd)
+
+0x2e	S,U	standard cmos checksum (0x10->0x2d) - high
+0x2f	S,U	standard cmos checksum (0x10->0x2d) - low
+
+0x30	S	extended memory in k - low
+0x31	S	extended memory in k - high
+
+0x32	S	rtc century
+
+0x34	S	extended memory in 64k - low
+0x35	S	extended memory in 64k - high
+
+0x37	S	ps/2 rtc century (copy of 0x32, needed for winxp)
+
+0x38	S	eltorito boot sequence + boot signature check
+	bits
+	0	floppy boot signature check (1: disabled, 0: enabled)
+	7-4	boot drive #3 (0: unused, 1: fd, 2: hd, 3:cd, else: fd)
+
+0x39	S	ata translation policy - ata0 + ata1
+	bits
+	1-0	ata0-master (0: none, 1: LBA, 2: LARGE, 3: R-ECHS)
+	3-2	ata0-slave
+	5-4	ata1-master
+	7-6	ata1-slave
+
+0x3a	S	ata translation policy - ata2 + ata3 (see above)
+
+0x3b	S	ata biosdetect flags - ata0 + ata1 (unimplemented)
+	bits
+	1-0	ata0-master (0: auto, 1: cmos, 2: none)
+	3-2	ata0-slave
+	5-4	ata1-master
+	7-6	ata1-slave
+
+0x3c	S	ata biosdetect flags - ata2 + ata3 (unimplemented)
+
+0x3d	S	eltorito boot sequence (see above)
+	bits
+	3-0	boot drive #1
+	7-4	boot drive #2
+
+0x3f	S	BIOS options
+	bits
+	0	fastboot (skip boot menu delay)
+	7-1	reserved
+
+0x5b	S 	extra memory above 4GB
+0x5c	S 	extra memory above 4GB
+0x5d	S 	extra memory above 4GB
+0x5f	Q	number of processors
+</screen>
+</para>
+</section>
+
+<section id="sb16-emulation-basics"> <!-- start of SB16 section-->
+
+<title>Sound Blaster 16 Emulation</title>
+
+<para>
+This section is a detailed description for configuring Sound Blaster 16 from
+source. If you have a binary and all you want to know is what to put in your
+<filename>bochsrc</filename> file, see the <ulink url="../user/bochsrc.html#BOCHSOPT-SB16">sb16</ulink>
+bochsrc option in the user guide.
+</para>
+
+<para>
+The original version of the Sound Blaster 16 (SB16) emulation for Bochs was
+written and donated by Josef Drexler. The entire set of his SB16 patches have
+been integrated into Bochs, however, so you can find everything you need here.
+</para>
+
+<section><title>How well does it work?</title>
+<para>
+Right now, MPU401 emulation is next to perfect. It supports UART
+and SBMIDI mode, because the SB16's MPU401 ports can't do anything else as well.
+</para>
+
+<para>
+The digital audio basically works, but the emulation is too slow for fluent
+output unless the application doesn't do much in the background (or the
+foreground, really). The sound tends to looping or crackle on slower
+computer, but the emulation appears to be correct. Even a MOD
+player works, although only for lower sampling speeds.
+</para>
+<para>
+The OPL3 chip now also produces output. The source code has been ported from
+DOSBox and the output data is polled from the mixer thread.
+</para>
+<para>
+Also, the MIDI data running through the MPU401 ports can be written
+into a SMF, that is the standard midi file. The wave output
+can be written into a VOC file, which has a format defined by
+Creative Labs. Output to a WAV file and dual output (device and file
+at the same time) is now also supported.
+</para>
+</section>
+
+<section><title>Output to a sound card</title>
+
+<para>
+Output to the host sound system is supported on Windows, Linux, FreeBSD, MacOS 9,
+MacOSX and platforms supported by SDL.
+</para>
+<para>
+On Linux using OSS, the output goes to any file or device. If you have a
+wavetable synthesizer, midi can go to <filename class="devicefile">/dev/midi00</filename>,
+otherwise you may need a midi interpreter. For example, the midid program from
+the DosEmu project would work. Wave output should go to <filename class="devicefile">/dev/dsp</filename>.
+These devices are assumed to be OSS devices, if they're not some of the ioctl's
+might fail. If ALSA is present on Linux and the sound driver is set to
+<filename>alsa</filename>, Bochs uses it's default PCM output device and MIDI
+sequencer.
+</para>
+<para>
+On Windows, midi and wave output go to the midi mapper and the wave mapper,
+respectively. The device ID for the midi is now selectable. A future version
+might also have selectable wave output devices.
+</para>
+<para>
+See the next section for more information about the sound lowlevel interface.
+</para>
+</section>
+
+<section><title>Configuring Bochs</title>
+
+<para>
+You need to <command>configure</command> Bochs using the <option>--enable-sb16</option>
+option.
+There are a few values in <filename>config.h</filename> that are relevant to the
+sound functions. Editing <filename>config.h</filename> after running configure
+is usually not necessary, since it detects the available drivers and enables them
+for the compilation.
+</para>
+
+<para>
+BX_USE_SB16_SMF should be 1 unless you intend to have several sound cards
+running at the same time.
+</para>
+
+<para>
+BX_SOUND_LOWLEVEL_NAME is the name of the driver used as the "default" one for
+all features. The default value of this setting is the dummy driver with no output.
+The configure script usually changes this value. The following are supported at
+the moment:
+</para>
+
+<programlisting>
+    alsa   Output for Linux with ALSA PCM and sequencer interface
+    oss    Output for Linux, to /dev/dsp and /dev/midi00
+    osx    Output for MacOSX midi and wave device
+    sdl    Wave output with SDL/SDL2
+    win    Output for Windows midi and wave mappers
+    file   Wave and midi output to file
+    dummy  Dummy functions, no output
+</programlisting>
+
+<para>
+Setup the SB16 emulation in your <filename>bochsrc</filename>, according to instructions
+in that file (see <ulink url="../user/bochsrc.html#BOCHSOPT-SB16">sb16</ulink> option
+in the user guide).
+</para>
+</section>
+
+<section><title>Runtime configuration</title>
+
+<para>
+The source and the DOS executable for the SB16CTRL program that is used to modify
+the runtime behaviour of the SB16 emulator is included in
+misc/sb16.
+</para>
+
+<para>
+See the section <ulink url="../user/using-sound.html#SB16CTRL">SB16CTRL</ulink>
+in the user documentation for information about the commands of SB16CTRL.
+</para>
+</section>
+
+</section> <!-- end of SB16 section-->
+
+<section id="sound-lowlovel-basics">
+<title>The sound lowlevel interface</title>
+
+<para>
+This file is intended for programmers who would like to port the sound
+output routines to their platform. It gives a short outline what services
+have to be provided.
+</para>
+<para>
+You should also have a look at the exisiting files, <emphasis>SOUNDLOW.CC</emphasis>,
+<emphasis>SOUNDMOD.CC</emphasis> and e.g. <emphasis>SOUNDLNX.CC</emphasis> for Linux
+or <emphasis>SOUNDWIN.CC</emphasis> for Windows and their respective header files
+to get an idea about how these things really work.
+</para>
+
+<section><title>Files</title>
+<para>
+The main include file for a lowlevel sound driver is <emphasis>iodev.h</emphasis>.
+It has all definitions for the system-independent functions that a sound driver
+uses. The sound driver also needs to include <emphasis>soundlow.h</emphasis> for
+the definitions of the base classes <emphasis>bx_sound_lowlevel_c</emphasis>,
+<emphasis>bx_soundlow_waveout_c</emphasis>, <emphasis>bx_soundlow_wavein_c</emphasis>
+and <emphasis>bx_soundlow_midiout_c</emphasis>.
+</para>
+
+<para>
+Additionally, every output driver will have an include file, which should be
+included on top of <filename>soundmod.cc</filename> to allow the emulator
+to use that driver. The code to initialize the object for the selected drivers
+can be found in that file, so a soundcard emulation does not need to include
+the specific driver headers.
+</para>
+
+<para>
+To actually make the emulator use any specific driver as the default,
+<emphasis>BX_SOUND_LOWLEVEL_NAME</emphasis> has to be set to the name of the
+respective driver.
+</para>
+
+<para>
+Note that if your class contains any system-specific statements,
+include-files and so on, you should enclose both the include-file and
+the CC-file in an <emphasis>#if defined</emphasis> (OS-define) construct.
+Also don't forget to add your file to the list of lowlevel sound object
+files (<emphasis>SOUNDLOW_OBJS</emphasis>) in the file <emphasis>configure.in</emphasis>
+and to regenerate the configure script,
+</para>
+</section>
+
+<section><title>Defines and strutures</title>
+<para>
+<screen>
+#define BX_SOUNDLOW_WAVEPACKETSIZE  19200
+
+#define BX_SOUNDLOW_OK   0
+#define BX_SOUNDLOW_ERR  1
+
+typedef struct {
+  Bit16u samplerate;
+  Bit8u  bits;
+  Bit8u  channels;
+  Bit8u  format;
+  Bit16u volume;
+} bx_pcm_param_t;
+
+const bx_pcm_param_t default_pcm_param = {44100, 16, 2, 1};
+</screen>
+</para>
+<para>
+The maximum size of a wave data packet, the return values of the lowlevel
+functions, the structure for the PCM parameters and the default parameter
+set are also important for the sound driver development. They can be found
+in the main include file <emphasis>soundlow.h</emphasis>.
+</para>
+<para>
+All lowlevel sound methods called from the device code have to return either
+<emphasis>BX_SOUNDLOW_OK</emphasis> if the function was successful, or
+<emphasis>BX_SOUNDLOW_ERR</emphasis> if not. If any of the initialization
+functions fail, the device emulation should disable the affected feature.
+</para>
+</section>
+
+<section><title>Classes</title>
+<para>
+The following classes are involved with the sound lowlevel interface:
+</para>
+<itemizedlist>
+<listitem><para>
+<emphasis>bx_soundmod_ctl_c</emphasis> is a pseudo device that is used to
+initialize the sound drivers depending on the configuration.
+</para></listitem>
+
+<listitem><para>
+<emphasis>bx_sound_lowlevel_c</emphasis> is the base class of the
+lowlevel sound support. It has methods to return pointers to the objects for
+the available services <emphasis>waveout</emphasis>, <emphasis>wavein</emphasis>
+and <emphasis>midiout</emphasis>. The base class returns NULL for all services.
+</para></listitem>
+
+<listitem><para>
+<emphasis>bx_sound_dummy_c</emphasis> is derived from <emphasis>bx_sound_lowlevel_c</emphasis>.
+It returns vaild pointers for all services, but the output classes are only
+implemented as stubs and the <emphasis>wavein</emphasis> service returns silence.
+This "dummy" driver is used whenever a OS specific driver does not implement
+all services.
+</para></listitem>
+
+<listitem><para>
+<emphasis>bx_soundlow_waveout_c</emphasis>, <emphasis>bx_soundlow_wavein_c</emphasis>
+and <emphasis>bx_soundlow_midiout_c</emphasis> are the base classes for the
+services provided by the Bochs lowlevel sound support. Some methods are stubs
+and used by the "dummy" sound driver, others are helper methods and used by
+the OS specific implementations derived from these base classes.
+</para></listitem>
+
+<listitem><para>
+<emphasis>bx_sound_OS_c</emphasis> is derived from <emphasis>bx_sound_lowlevel_c</emphasis>.
+It returns vaild pointers for all services it implements for the selected
+<emphasis>OS</emphasis> (operating system / library) or NULL for services it does
+not implement. In the second case the Bochs sound init code falls back to the
+"dummy" driver.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>The base class <emphasis>bx_sound_lowlevel_c</emphasis></title>
+<para>
+<screen>
+class bx_sound_lowlevel_c : public logfunctions {
+public:
+  bx_sound_lowlevel_c();
+  virtual ~bx_sound_lowlevel_c();
+
+  virtual bx_soundlow_waveout_c* get_waveout() {return NULL;}
+  virtual bx_soundlow_wavein_c* get_wavein() {return NULL;}
+  virtual bx_soundlow_midiout_c* get_midiout() {return NULL;}
+
+protected:
+  bx_soundlow_waveout_c *waveout;
+  bx_soundlow_wavein_c *wavein;
+  bx_soundlow_midiout_c *midiout;
+};
+</screen>
+</para>
+<para>
+The base class for sound lowlevel support is derived from the <emphasis>logfunctions</emphasis>
+class to make the Bochs logging capabilities available in the sound driver code.
+The constructor of this base class only initializes all pointers to NULL and
+the destructor deletes the objects if necessary.
+</para>
+</section>
+
+<section><title>The <emphasis>waveout</emphasis> base class <emphasis>bx_soundlow_waveout_c</emphasis></title>
+<para>
+<screen>
+class bx_soundlow_waveout_c : public logfunctions {
+public:
+  bx_soundlow_waveout_c();
+  virtual ~bx_soundlow_waveout_c();
+
+  virtual int openwaveoutput(const char *wavedev);
+  virtual int set_pcm_params(bx_pcm_param_t *param);
+  virtual int sendwavepacket(int length, Bit8u data[], bx_pcm_param_t *src_param);
+  virtual int get_packetsize();
+  virtual int output(int length, Bit8u data[]);
+  virtual int closewaveoutput();
+
+  virtual int register_wave_callback(void *, get_wave_cb_t wd_cb);
+  virtual void unregister_wave_callback(int callback_id);
+
+  virtual bx_bool mixer_common(Bit8u *buffer, int len);
+protected:
+  void convert_pcm_data(Bit8u *src, int srcsize, Bit8u *dst, int dstsize, bx_pcm_param_t *param);
+  void start_mixer_thread(void);
+
+  bx_pcm_param_t emu_pcm_param, real_pcm_param;
+  int cvt_mult;
+
+  int cb_count;
+  struct {
+    void *device;
+    get_wave_cb_t cb;
+  } get_wave[BX_MAX_WAVE_CALLBACKS];
+  int pcm_callback_id;
+};
+</screen>
+</para>
+<para>
+The base class for wave output support is also derived from the
+<emphasis>logfunctions</emphasis> class. In addition to wave output methods
+used from sound devices, it contains everything required for the mixer thread
+feature (register PCM sources, convert data formats, start mixer).
+</para>
+<para>
+The constructor should <emphasis>not</emphasis> allocate the output devices.
+This should be done in <emphasis>openwaveoutput()</emphasis>.
+</para>
+<para>
+This table shows the waveout class methods, where are they called from and
+if a platform / library specific implementation is required.
+<table>
+<title>Waveout methods</title>
+<tgroup cols="3">
+<thead>
+<row>
+<entry>Method</entry>
+<entry>Called from</entry>
+<entry>Platform code</entry>
+</row>
+</thead>
+<tbody>
+<row><entry><emphasis>openwaveoutput()</emphasis></entry><entry>Sound init code</entry><entry>Required</entry></row>
+<row><entry><emphasis>set_pcm_params()</emphasis></entry><entry><emphasis>openwaveoutput()</emphasis> and <emphasis>sendwavepacket()</emphasis></entry><entry>Required</entry></row>
+<row><entry><emphasis>sendwavepacket()</emphasis></entry><entry>Sound device emulation</entry><entry>Optional</entry></row>
+<row><entry><emphasis>get_packetsize()</emphasis></entry><entry>Mixer thread</entry><entry>Optional</entry></row>
+<row><entry><emphasis>output()</emphasis></entry><entry>Mixer thread</entry><entry>Required</entry></row>
+<row><entry><emphasis>closewaveoutput()</emphasis></entry><entry>Sound device emulation</entry><entry>Optional</entry></row>
+<row><entry><emphasis>register_wave_callback()</emphasis></entry><entry><emphasis>openwaveoutput()</emphasis> and sound device emulation</entry><entry>Optional</entry></row>
+<row><entry><emphasis>unregister_wave_callback()</emphasis></entry><entry>class destructor and sound device emulation</entry><entry>Optional</entry></row>
+<row><entry><emphasis>mixer_common()</emphasis></entry><entry>Mixer thread</entry><entry>Optional</entry></row>
+<row><entry><emphasis>convert_pcm_data()</emphasis></entry><entry>Internal</entry><entry>No</entry></row>
+<row><entry><emphasis>start_mixer_thread()</emphasis></entry><entry>Internal</entry><entry>No</entry></row>
+</tbody>
+</tgroup>
+</table>
+
+</para>
+
+<section><title>int openwaveoutput(const char *wavedev)</title>
+
+<para>
+<emphasis>openwaveoutput()</emphasis> is called when the sound output subsystem
+initializes. It should do the following:
+</para>
+
+<itemizedlist>
+<listitem><para>
+Set up the default PCM parameters for output.
+</para></listitem>
+<listitem><para>
+Open the given device, and prepare it for wave output.
+</para></listitem>
+<listitem><para>
+Register the callback function for the PCM buffer queue (<emphasis>sendwavepacket()</emphasis>
+adds the output to the queue and the mixer thread gets it from there).
+</para></listitem>
+<listitem><para>
+Start the mixer thread, unless the sound library has it's own one (e.g. SDL).
+</para></listitem>
+</itemizedlist>
+
+<para>
+<emphasis>openwaveoutput()</emphasis> will only be called once, whereas
+<emphasis>set_pcm_params()</emphasis> is called whenever the PCM samplerate
+has been changed.
+</para>
+
+<para>The parameters are the following:</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>wavedev</emphasis> is the wave output device selected by the user.
+It is strictly system-dependent. Some sound libraries currently ignore this
+value and use the default one instead. The value is that of the <emphasis>waveout=device</emphasis>
+configuration parameter of the <emphasis>sound</emphasis> bochsrc option.
+</para></listitem>
+</itemizedlist>
+
+<para>
+Note that only one wave output device will be used at any one time.
+<emphasis>wavedev</emphasis> may not have the same value throughout one session,
+but it will be closed before it is changed.
+</para>
+</section>
+
+<section>
+<title>int set_pcm_params(bx_pcm_param_t *param)</title>
+
+<para>
+This function should called from <emphasis>openwaveoutput()</emphasis> to initialize
+the output device with the default parameters and from <emphasis>sendwavepacket()</emphasis>
+whenever the samplerate has been changed in the emulated sound device.
+It should do the following:
+</para>
+
+<itemizedlist>
+<listitem><para>
+Open the wave output device, unless <emphasis>openwaveoutput()</emphasis> did that
+already.
+</para></listitem>
+
+<listitem><para>
+Prepare the device for data and set the device parameters to those given
+in the function call.
+</para></listitem>
+</itemizedlist>
+
+<para>
+The parameters are the following:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>param</emphasis> is a pointer to a structure containing the set of
+parameters required to set up a sound device for PCM output.
+</para></listitem>
+</itemizedlist>
+
+<para>
+The members of the structure <emphasis>bx_pcm_param_t</emphasis> are these:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>samplerate</emphasis> is the desired frequency of the
+output. Because of the capabities of the soundcards, it can have any value
+between 5000 and 48,000.
+</para></listitem>
+
+<listitem><para>
+<emphasis>bits</emphasis> is either 8 or 16, denoting the resolution
+of one sample.
+</para></listitem>
+
+<listitem><para>
+<emphasis>channels</emphasis> is the number of channels (2 for stereo output,
+or 1 for mono output.
+</para></listitem>
+
+<listitem><para>
+<emphasis>format</emphasis> is a bit-coded value (see below).
+</para></listitem>
+
+<listitem><para>
+<emphasis>volume</emphasis> is the output volume to be used by the mixer code.
+The 16 bit value consists of two 8 bit values for each channel.
+</para></listitem>
+</itemizedlist>
+
+<para>
+<table>
+<title>format bits</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Bit number</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row> <entry> 0 (LSB)  </entry><entry><para> 0: unsigned data </para><para>
+                                            1: signed data </para></entry> </row>
+<row> <entry> 1..6     </entry><entry> Type of codec (see below) </entry> </row>
+<row> <entry> 7        </entry><entry><para> 0: no reference byte </para><para>
+                                             1: with reference byte </para></entry> </row>
+<row> <entry> 8..x     </entry><entry> reserved (0) </entry> </row>
+</tbody>
+</tgroup>
+</table>
+
+<table>
+<title>codecs</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Value</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row> <entry> 0 </entry><entry> PCM (raw data) </entry> </row>
+<row> <entry> 1 </entry><entry> reserved </entry> </row>
+<row> <entry> 2 </entry><entry> 2-bit ADPCM (Creative Labs format) </entry> </row>
+<row> <entry> 3 </entry><entry> 2.4-bit (3-bit) ADPCM (Creative Labs format) </entry> </row>
+<row> <entry> 4 </entry><entry> 4-bit ADPCM (Creative Labs format) </entry> </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+Other codecs are not supported by the SB hardware. In fact, most applications will
+translate their data into raw data, so that in most cases the codec will be zero.
+</para>
+<para>
+The number of bytes per sample can be calculated from this as (bits / 8) * channels.
+</para>
+</section>
+
+
+<section>
+<title>int sendwavepacket(int length, Bit8u data[], bx_pcm_param_t *src_param)</title>
+
+<para>
+This function is called whenever a data packet of at most
+<emphasis>BX_SOUNDLOW_WAVEPACKETSIZE</emphasis> is ready at the soundcard
+emulation. It should then do the following:
+</para>
+
+<itemizedlist>
+<listitem><para>
+Add this wave packet to the waveout buffer chain after converting to 16 bit signed
+little endian. If the samplerate has been changed <emphasis>set_pcm_params()</emphasis>
+should be called to update the sound hardware settings.
+</para></listitem>
+</itemizedlist>
+
+<para>
+Parameters:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>length</emphasis> is the number of data bytes in
+the data stream. It will never be larger than <emphasis>BX_SOUNDLOW_WAVEPACKETSIZE</emphasis>.
+</para></listitem>
+
+<listitem><para>
+<emphasis>data</emphasis> is the array of data bytes.
+</para></listitem>
+
+<listitem><para>
+<emphasis>src_param</emphasis> is a pointer to a structure containing the PCM parameters
+(see above).
+</para></listitem>
+</itemizedlist>
+
+<para>
+The order of bytes in the data stream is the same as that in the Wave file format:
+
+<table>
+<title>wave output types</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Output type</entry>
+<entry>Sequence of data bytes</entry>
+</row>
+</thead>
+<tbody>
+<row> <entry> 8 bit mono </entry><entry> Sample 1; Sample 2; Sample 3; etc. </entry> </row>
+<row> <entry> 8 bit stereo </entry><entry> Sample 1, Channel 0; Sample 1, Channel 1; Sample 2, Channel 0; Sample 2, Channel 1; etc. </entry> </row>
+<row> <entry> 16 bit mono </entry><entry> Sample 1, LSB; Sample 1, MSB; Sample 2, LSB; Sample 2, MSB; etc. </entry> </row>
+<row> <entry> 16 bit stereo </entry><entry> Sample 1, LSB, Channel 0; Sample 1, MSB, Channel 0; Sample 1, LSB, Channel 1; Sample 1, MSB, Channel 1; etc. </entry> </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+<para>
+Typically 8 bit data will be unsigned with values from 0 to 255, and
+16 bit data will be signed with values from -32768 to 32767, although the
+soundcard emulations are not limited to this.
+site.
+</para>
+</section>
+
+<section><title>int get_packetsize()</title>
+<para>
+This function is called from the mixer thread to retrieve the size of a wave data
+packet based on the current samplerate. By default the packet size is big enough
+to send output for 0.1 seconds. If the host sound driver / library uses a different
+value, this value should be returned with this method.
+</para>
+</section>
+
+<section><title>int output(int length, Bit8u data[])</title>
+<para>
+This function is called from the mixer thread to send the mixed PCM output to
+the host sound hardware.
+</para>
+<para>
+Parameters:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>length</emphasis> is the number of data bytes in
+the data stream. It will never be larger than the value returned from <emphasis>get_packetsize</emphasis>.
+</para></listitem>
+
+<listitem><para>
+<emphasis>data</emphasis> is the array of data bytes.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>int closewaveoutput()</title>
+<para>
+This function is currently only called from the soundcard emulation if the "file"
+driver is used. This makes the runtime change of the output file possible.
+By default this method does nothing and the wave output device is closed in the
+destructor of the specific class.
+</para>
+</section>
+
+<section><title>int register_wave_callback(void *arg, get_wave_cb_t wd_cb)</title>
+<para>
+This function is called from <emphasis>openwaveoutput()</emphasis> to register
+the function to retrieve data from the PCM output buffer chain. Other sound
+emulation devices (e.g. OPL3, PC speaker) can register a function to poll the
+data from the device emulation. The return value is the ID of the registered
+function and it is usually used to unregister the source.
+</para>
+<para>
+Parameters:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>arg</emphasis> is the pointer to the device emulation object.
+</para></listitem>
+
+<listitem><para>
+<emphasis>wd_cb</emphasis> is the pointer to a static function that returns
+wave data from the device emulation. This function is usually called from the
+<emphasis>mixer_common()</emphasis> method.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>void unregister_wave_callback(int callback_id)</title>
+<para>
+This function is usually called from the destructor of the sound emulation
+device to unregister it's registered function to poll PCM data. If the
+driver / library doesn't use the default mixer thread, a specific implementation
+of this method my be required.
+</para>
+<para>
+Parameter:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>callback_id</emphasis> is the ID of the function to unregister.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>bx_bool mixer_common(Bit8u *buffer, int len)</title>
+<para>
+This is the main wave output mixing function. It is called from the mixer
+thread, it polls the wave data from all registered sources and it mixes the
+data using a simple algorithm (addition and clipping). The return value
+indicates whether or not wave data is available for output.
+</para>
+<para>
+Parameters:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>buffer</emphasis> is the output buffer for the wave data.
+</para></listitem>
+
+<listitem><para>
+<emphasis>len</emphasis> is the maximum length of the output buffer.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>void convert_pcm_data(Bit8u *src, int srcsize, Bit8u *dst, int dstsize, bx_pcm_param_t *param)</title>
+<para>
+This function converts the PCM data sent from the sound device emulation to the
+16 bit stereo signed little endian format. It should be called in <emphasis>sendwavepacket()</emphasis>
+after allocating the output buffer in the buffer queue. Future versions might
+also perform resampling here.
+</para>
+<para>
+Parameters:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>src</emphasis> is the buffer containing data sent from the sound emulation.
+</para></listitem>
+
+<listitem><para>
+<emphasis>srcsize</emphasis> is the amount of wave data to be converted.
+</para></listitem>
+
+<listitem><para>
+<emphasis>dst</emphasis> is the buffer for the converted wave data.
+</para></listitem>
+
+<listitem><para>
+<emphasis>dstsize</emphasis> is the size of the destination buffer.
+</para></listitem>
+
+<listitem><para>
+<emphasis>param</emphasis> is a pointer to the struture containing the format
+parameters of the source data.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>void start_mixer_thread()</title>
+<para>
+This function starts the mixer thread and it should be called in <emphasis>openwaveoutput()</emphasis>
+unless the sound driver / library has it's own way to do this (e.g. SDL). This
+function also initializes the mutex required for locking the mixer thread when
+adding data to the buffer chain or unregistering a source.
+</para>
+</section>
+</section>
+
+<section><title>The <emphasis>wavein</emphasis> base class <emphasis>bx_soundlow_wavein_c</emphasis></title>
+<para>
+<screen>
+class bx_soundlow_wavein_c : public logfunctions {
+public:
+  bx_soundlow_wavein_c();
+  virtual ~bx_soundlow_wavein_c();
+
+  virtual int openwaveinput(const char *wavedev, sound_record_handler_t rh);
+  virtual int startwaverecord(bx_pcm_param_t *param);
+  virtual int getwavepacket(int length, Bit8u data[]);
+  virtual int stopwaverecord();
+
+  static void record_timer_handler(void *);
+  void record_timer(void);
+protected:
+  int record_timer_index;
+  int record_packet_size;
+  sound_record_handler_t record_handler;
+};
+</screen>
+</para>
+<para>
+The base class for wave input support is also derived from the
+<emphasis>logfunctions</emphasis> class. It contains the framework for wave
+input (recording) support. The base class is used by the "dummy" sound driver
+and returns silence to let the input mechanism of the soundcard emulation work.
+The soundcard emulator object needs to implement a callback function to notifies
+the emulation about available data. This function usually calls the driver method
+to get the wave data packet. The driver objects has a periodic timer with an
+interval of 0.1 emulated seconds that is active during recording. The timer
+handler processes the wave data recorded with platform or library specific
+function and finally notifies the emulator.
+</para>
+<para>
+The constructor of the base class only initializes the timer ID. OS specific
+implementations should initialize other required members here.
+</para>
+<para>
+The destructor of the base class only calls <emphasis>stopwaverecord()</emphasis>.
+OS specific implementations should close the input device here if necessary.
+</para>
+
+<section><title>int openwaveinput(char *device, sound_record_handler_t rh)</title>
+<para>
+<emphasis>openwaveinput()</emphasis> is called when the sound emulation first
+receives a sound recording command. It should do the following:
+</para>
+
+<itemizedlist>
+<listitem><para>
+Open the given device, and prepare it for wave input
+</para></listitem>
+</itemizedlist>
+<para>
+<emphasis>or</emphasis>
+</para>
+<itemizedlist>
+<listitem><para>
+Store the device name so that the device can be opened in <emphasis>startwaverecord()</emphasis>.
+</para></listitem>
+</itemizedlist>
+
+<para>
+In addition to this the record handler value should be stored and the record timer
+should be registered. This is the definition of record handler callback function:
+<screen>
+typedef Bit32u (*sound_record_handler_t)(void *arg, Bit32u len);
+</screen>
+</para>
+
+<para>
+<emphasis>openwaveinput()</emphasis> will only be called once, whereas
+<emphasis>startwaverecord()</emphasis> is called for every new wave input
+command to the soundcard emulation. If feasible, it could be useful to open
+and/or lock  the input device in <emphasis>startwaverecord()</emphasis> as
+opposed to <emphasis>openwaveinput()</emphasis> to ensure that it can be used
+by other applications while Bochs doesn't need it.
+</para>
+
+<para>The parameters are the following: </para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>device</emphasis> is the wave device selected by the user. It is
+strictly system-dependent. The value is that of the <emphasis>wavein=device</emphasis>
+configuration parameter of the <emphasis>sound</emphasis> bochsrc option.
+</para></listitem>
+<listitem><para>
+<emphasis>rh</emphasis> is a pointer to the record handler method of the sound
+emulation. When sound recording is active, this handler is called periodicly to
+notify the sound emulation about newly available data.
+</para></listitem>
+</itemizedlist>
+
+<para>
+Note that only one wave input device will be used at any one time.
+<emphasis>device</emphasis> may not have the same value throughout one session,
+but it will be closed before it is changed.
+</para>
+</section>
+
+<section>
+<title>int startwaverecord(bx_pcm_param_t *param)</title>
+<para>
+This method receives a pointer to the required PCM parameters (samplerate,
+data format) as the argument and it should set up the input device for recording,
+calculate the size of the recording packet for 0.1 second and start the record
+timer.
+</para>
+</section>
+
+<section>
+<title>int getwavepacket(int length, Bit8u data[])</title>
+<para>
+This method is called from the record handler method of the sound emulation device
+to retrieve the recorded wave data packet.
+</para>
+</section>
+
+<section><title>int stopwaverecord()</title>
+<para>
+This method is called to stop the wave recording. It deactivates the timer that
+calls the method to perform the recording.
+</para>
+</section>
+
+</section>
+
+<section><title>The <emphasis>midiout</emphasis> base class <emphasis>bx_soundlow_midiout_c</emphasis></title>
+<para>
+<screen>
+class bx_soundlow_midiout_c : public logfunctions {
+public:
+  bx_soundlow_midiout_c();
+  virtual ~bx_soundlow_midiout_c();
+
+  virtual int openmidioutput(const char *mididev);
+  virtual int midiready();
+  virtual int sendmidicommand(int delta, int command, int length, Bit8u data[]);
+  virtual int closemidioutput();
+};
+</screen>
+</para>
+<para>
+The base class for MIDI output support is also derived from the
+<emphasis>logfunctions</emphasis> class.
+</para>
+<para>
+OS specific implementations should initialize required members in the constructor.
+</para>
+<para>
+The destructor of the base class only calls <emphasis>closemidioutput()</emphasis>.
+OS specific implementations should close the input device here if necessary.
+</para>
+
+<section><title>int openmidioutput(char *device)</title>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>openmidioutput()</emphasis> is called when the first midi output starts.
+It is only called if the midi output to the driver is active (midimode 1). It should
+prepare the given MIDI hardware for receiving midi commands.
+</para></listitem>
+</itemizedlist>
+
+<para>
+Description of the parameters:
+</para>
+
+<para>
+<itemizedlist>
+
+<listitem><para>
+<emphasis>mididev</emphasis> is a system-dependent variable.
+The value is that of the <emphasis>midiout=device</emphasis>
+configuration parameter of the <emphasis>sound</emphasis> bochsrc option.
+</para></listitem>
+
+<listitem><para>
+Note that only one midi output device will be used at any one time.
+<emphasis>device</emphasis>
+may not have the same value throughout one session, but it will be closed
+before it is changed.
+</para></listitem>
+</itemizedlist>
+</para>
+</section>
+
+<section><title>int midiready()</title>
+
+<para>
+<emphasis>midiready()</emphasis> is called whenever the applications asks if the
+midi queue can accept more data.
+</para>
+
+<para>
+Return values:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>BX_SOUNDLOW_OK</emphasis> if the midi output device is ready.
+</para></listitem>
+
+<listitem><para>
+<emphasis>BX_SOUNDLOW_ERR</emphasis> if it isn't ready.
+</para></listitem>
+</itemizedlist>
+
+<para>
+<emphasis>Note: </emphasis><emphasis>midiready()</emphasis> will be called a few times
+<emphasis>before</emphasis> the device is opened. If this is the case, it should
+always report that it is ready, otherwise the application (not Bochs)
+will hang.
+</para>
+</section>
+
+<section><title>int sendmidicommand(int delta, int command, int length, Bit8u data[])</title>
+
+<para>
+<emphasis>sendmidicommand()</emphasis>is called whenever a complete midi command has
+been written to the emulator. It should then send the given midi command to the midi hardware.
+It will only be called after the midi output has been opened. Note that
+if at all possible it should not wait for the completion of the command
+and instead indicate that the device is not ready during the execution
+of the command. This is to avoid delays in the program while it is
+generating midi output.
+</para>
+
+<para>
+Description of the parameters:
+</para>
+
+<itemizedlist>
+<listitem><para>
+<emphasis>delta</emphasis> is the number of delta ticks that
+have passed since the last command has been issued. It is always zero for
+the first command. There are 24 delta ticks per quarter, and 120 quarters
+per minute, thus 48 delta ticks per second.
+</para></listitem>
+
+<listitem><para>
+<emphasis>command</emphasis> is the midi command byte (sometimes
+called status byte), in the usual range of 0x80..0xff. For more information
+please see the midi standard specification.
+</para></listitem>
+
+<listitem><para>
+<emphasis>length</emphasis> is the number of data bytes that
+are contained in the data structure. This does <emphasis>not</emphasis> include the status
+byte which is not replicated in the data array. It can only be greater
+than 3 for SysEx messages (commands <emphasis>0xF0</emphasis> and <emphasis>0xF7</emphasis>)
+</para></listitem>
+
+<listitem><para>
+<emphasis>data[]</emphasis> is the array of these data bytes,
+in the order they have in the standard MIDI specification.
+Note, it might be <emphasis>NULL</emphasis> if length==0.
+</para></listitem>
+</itemizedlist>
+</section>
+
+<section><title>int closemidioutput()</title>
+
+<para>
+<emphasis>closemidioutput()</emphasis> is called before shutting down Bochs or
+when the
+emulator gets the <emphasis>stop_output</emphasis> command through the emulator port.
+After this, no more output will be necessary until <emphasis>openmidioutput()</emphasis>
+is called again, but <emphasis>midiready()</emphasis> might still be called. It should
+do the following:
+</para>
+
+<itemizedlist>
+<listitem><para>
+Wait for all remaining messages to be completed
+</para></listitem>
+<listitem><para>
+Reset and close the midi output device
+</para></listitem>
+</itemizedlist>
+</section>
+
+</section>
+
+</section>
+
+<section id="harddisk-redologs"><title>Harddisk Images based on redologs</title>
+<para>
+This section describes how the three new disk images "undoable", "growing", and "volatile" are
+implemented in Bochs 2.1. It also applies to the write support the "vvfat" disk
+image mode in Bochs 2.4.6.
+</para>
+<itemizedlist>
+<listitem><para>
+undoable -> base r/o file, plus growing, commitable, rollbackable redolog file
+</para></listitem>
+<listitem><para>
+growing  -> growing files, all previously unwritten sectors go to the end of file
+</para></listitem>
+<listitem><para>
+volatile -> base r/o file, plus hidden growing redolog
+</para></listitem>
+<listitem><para>
+vvfat -> virtual VFAT disk created from directory, plus hidden growing redolog
+</para></listitem>
+</itemizedlist>
+
+<para>
+</para>
+
+<section>
+<title>
+        Description
+</title>
+<para>
+The idea behind volatile and undoable disk images is to have a read-only base
+file, associated with one redolog file. In case of vvfat, a directory is
+associated with the redolog file.
+</para>
+<para>
+Reading a sector is done from the redolog file if it contains
+the sector, or from the base file / vvfat directory otherwise.
+</para>
+<para>
+Sectors written go to the redolog,
+so base image files are opened in read only mode in this configuration.
+</para>
+<para>
+The redolog is designed in a way so it starts as a small file
+and grows with every new sectors written to it. Previously written
+sectors are done in place. Redolog files can not shrink.
+</para>
+<para>
+The redolog is a growing file that can be created on the fly.
+</para>
+<para>
+Now, it turns out that if you only use a redolog without any
+base image file, you get a "growing" disk image.
+</para>
+<para>
+So "undoable", "volatile", "growing" and "vvfat" harddisk images classes
+are implemented on top of a redolog class.
+</para>
+</section>
+
+<section>
+<title>
+        How redologs works ?
+</title>
+
+<para>
+At the start of a redolog file, there is a header, so Bochs can check whether
+a file is consistent.
+This header is also checked when the automatic type and size detection is
+selected.
+</para>
+<para>
+The generic part of the header contains values like type of image, and
+spec version number.
+</para>
+<para>
+The header also has a specific part.
+For redologs, the number
+of entries of the catalog, the extent, bitmap and disk size are stored.
+</para>
+
+<para>
+In a redolog, the disk image is divided in a number of equal size "extents".
+Each extent is a collection of successive 512-bytes sectors of the disk image,
+preceeded by a n*512bytes bitmap.
+</para>
+
+<para>
+the n*512bytes bitmap defines the presence (data has been written to it)
+of a specific sector in the extent, one bit for each sector.
+Therefore with a 512bytes bitmap, each extent can hold up to 4k blocks
+</para>
+
+<para>
+Typically the catalog can have 256k entries.
+With a 256k entries catalog and 512bytes bitmaps, the redolog can hold up to 512GiB
+</para>
+
+<note>
+<para>
+All data is stored on images as little-endian values
+</para>
+</note>
+<section>
+<title>
+        Header
+</title>
+<para>
+At the start of a redolog file, there is a header. This header is designed
+to be reusable by other disk image types.
+</para>
+<para>
+The header length is 512 bytes. It contains :
+<table>
+<title>Generic header description</title>
+<tgroup cols="5">
+<thead>
+<row>
+<entry>Start position in bytes</entry>
+<entry>Length in bytes</entry>
+<entry>Data type</entry>
+<entry>Description</entry>
+<entry>Possible values</entry>
+</row>
+</thead>
+<tbody>
+<row> <entry> 0 </entry> <entry> 32 </entry> <entry> string </entry> <entry> magical value </entry> <entry> Bochs Virtual HD Image </entry> </row>
+<row> <entry> 32 </entry> <entry> 16 </entry> <entry> string </entry> <entry> type of file </entry> <entry> Redolog </entry> </row>
+<row> <entry> 48 </entry> <entry> 16 </entry> <entry> string </entry> <entry> subtype of file </entry> <entry> Undoable, Volatile, Growing </entry> </row>
+<row> <entry> 64 </entry> <entry> 4 </entry> <entry> Bit32u </entry> <entry> version of used specification </entry> <entry> 0x00010000, 0x00020000 </entry> </row>
+<row> <entry> 68 </entry> <entry> 4 </entry> <entry> Bit32u </entry> <entry> header size </entry> <entry> 512 </entry> </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+The current version of the header is 0x00020000 (2.0) - see below for details.
+<table>
+<title>Redolog specific header description</title>
+<tgroup cols="4">
+<thead>
+<row>
+<entry>Start position in bytes</entry>
+<entry>Length in bytes</entry>
+<entry>Data type</entry>
+<entry>Description</entry>
+</row>
+</thead>
+<tbody>
+<row> <entry> 72 </entry> <entry> 4 </entry> <entry> Bit32u </entry> <entry> number of entries in the catalog </entry> </row>
+<row> <entry> 76 </entry> <entry> 4 </entry> <entry> Bit32u </entry> <entry> bitmap size in bytes </entry> </row>
+<row> <entry> 80 </entry> <entry> 4 </entry> <entry> Bit32u </entry> <entry> extent size in bytes</entry> </row>
+<row> <entry> 84 </entry> <entry> 4 </entry> <entry> Bit32u </entry> <entry> timestamp in FAT format ("undoable" mode only - otherwise reserved)</entry> </row>
+<row> <entry> 88 </entry> <entry> 8 </entry> <entry> Bit64u </entry> <entry> disk size in bytes </entry> </row>
+</tbody>
+</tgroup>
+</table>
+</para>
+<para>
+The reserved field between "extent" and "disk" has been added in redolog version
+2.0 to fix an alignment bug on some platforms. It is now used for consistency
+check of the "undoable" mode. When creating the redolog file, the timestamp of
+the read-only file is stored there (in FAT format). After that, the "undoable"
+mode init code compares the timestamp of the r/o file with the one stored in
+the redolog.
+</para>
+</section>
+
+<section>
+<title>
+        Catalog
+</title>
+<para>
+Immediately following the header, there is a catalog containing
+the position number (in extents) where each extent is located in the file.
+</para>
+<para>
+Each position is a Bit32u entity.
+</para>
+</section>
+
+<section>
+<title>
+        Bitmap
+</title>
+<para>
+Each extent starts with a bitmap block of n*512 bytes size. Each byte of the
+bitmap stores the write status of 8 coresponding disk sectors in the extent
+(1 = data written).
+</para>
+</section>
+
+<section>
+<title>
+        Extent
+</title>
+<para>
+This is a collection of successive 512-bytes sectors of the disk image.
+The bitmap preceeding this data block contains the write status of each sector.
+</para>
+</section>
+</section>
+
+<section>
+<title>Parameters
+</title>
+<para>
+The following tables shows what parameters are used when creating redologs or creating "growing" images :
+<table>
+<title>
+        How number of entries in the catalog and number of blocks by extents are computed
+</title>
+<tgroup cols="5">
+<thead>
+<row>
+<entry>Catalog entries</entry> <entry>Catalog size(KiB)</entry> <entry>Bitmap size (B)</entry> <entry>Extent size (KiB)</entry> <entry>Disk Max Size</entry>
+</row>
+</thead>
+
+<tbody>
+<row>
+<entry>512</entry> <entry>2</entry> <entry>1</entry> <entry>4</entry> <entry>2MiB</entry>
+</row>
+<row>
+<entry>512</entry> <entry>2</entry> <entry>2</entry> <entry>8</entry> <entry>4MiB</entry>
+</row>
+<row>
+<entry>1k</entry> <entry>4</entry> <entry>2</entry> <entry>8</entry> <entry>8MiB</entry>
+</row>
+<row>
+<entry>1k</entry> <entry>4</entry> <entry>4</entry> <entry>16</entry> <entry>16MiB</entry>
+</row>
+<row>
+<entry>2k</entry> <entry>8</entry> <entry>4</entry> <entry>16</entry> <entry>32MiB</entry>
+</row>
+<row>
+<entry>2k</entry> <entry>8</entry> <entry>8</entry> <entry>32</entry> <entry>64MiB</entry>
+</row>
+<row>
+<entry>4k</entry> <entry>16</entry> <entry>8</entry> <entry>32</entry> <entry>128MiB</entry>
+</row>
+<row>
+<entry>4k</entry> <entry>16</entry> <entry>16</entry> <entry>64</entry> <entry>256MiB</entry>
+</row>
+<row>
+<entry>8k</entry> <entry>32</entry> <entry>16</entry> <entry>64</entry> <entry>512MiB</entry>
+</row>
+<row>
+<entry>8k</entry> <entry>32</entry> <entry>32</entry> <entry>128</entry> <entry>1GiB</entry>
+</row>
+<row>
+<entry>16k</entry> <entry>64</entry> <entry>32</entry> <entry>128</entry> <entry>2GiB</entry>
+</row>
+<row>
+<entry>16k</entry> <entry>64</entry> <entry>64</entry> <entry>256</entry> <entry>4GiB</entry>
+</row>
+<row>
+<entry>32k</entry> <entry>128</entry> <entry>64</entry> <entry>256</entry> <entry>8GiB</entry>
+</row>
+<row>
+<entry>32k</entry> <entry>128</entry> <entry>128</entry> <entry>512</entry> <entry>16GiB</entry>
+</row>
+<row>
+<entry>64k</entry> <entry>256</entry> <entry>128</entry> <entry>512</entry> <entry>32GiB</entry>
+</row>
+<row>
+<entry>64k</entry> <entry>256</entry> <entry>256</entry> <entry>1024</entry> <entry>64GiB</entry>
+</row>
+<row>
+<entry>128k</entry> <entry>512</entry> <entry>256</entry> <entry>1024</entry> <entry>128GiB</entry>
+</row>
+<row>
+<entry>128k</entry> <entry>512</entry> <entry>512</entry> <entry>2048</entry> <entry>256GiB</entry>
+</row>
+<row>
+<entry>256k</entry> <entry>1024</entry> <entry>512</entry> <entry>2048</entry> <entry>512GiB</entry>
+</row>
+<row>
+<entry>256k</entry> <entry>1024</entry> <entry>1024</entry> <entry>4096</entry> <entry>1TiB</entry>
+</row>
+<row>
+<entry>512k</entry> <entry>2048</entry> <entry>1024</entry> <entry>4096</entry> <entry>2TiB</entry>
+</row>
+<row>
+<entry>512k</entry> <entry>2048</entry> <entry>2048</entry> <entry>8192</entry> <entry>4TiB</entry>
+</row>
+<row>
+<entry>1024k</entry> <entry>4096</entry> <entry>2048</entry> <entry>8192</entry> <entry>8TiB</entry>
+</row>
+<row>
+<entry>1024k</entry> <entry>4096</entry> <entry>4096</entry> <entry>16384</entry> <entry>16TiB</entry>
+</row>
+<row>
+<entry>2048k</entry> <entry>8192</entry> <entry>4096</entry> <entry>16384</entry> <entry>32TiB</entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+</para>
+
+</section>
+
+<section>
+<title>
+        Redolog class description
+</title>
+<para>
+The class <emphasis>redolog_t();</emphasis> implements the necessary
+methods to create, open, close, read and write data to a redolog.
+It also contains methods for the subtype and consistency check and
+for the save/restore support. Managment of header catalog and sector
+bitmaps is done internally by the class.
+</para>
+<section>
+<title>
+        Constants
+</title>
+<para>
+<screen>
+#define STANDARD_HEADER_MAGIC     "Bochs Virtual HD Image"
+#define STANDARD_HEADER_VERSION   (0x00020000)
+#define STANDARD_HEADER_SIZE      (512)
+</screen>
+These constants are used in the generic part of the header.
+</para>
+
+<para>
+<screen>
+#define REDOLOG_TYPE "Redolog"
+#define REDOLOG_SUBTYPE_UNDOABLE "Undoable"
+#define REDOLOG_SUBTYPE_VOLATILE "Volatile"
+#define REDOLOG_SUBTYPE_GROWING  "Growing"
+</screen>
+These constants are used in the specific part of the header.
+</para>
+
+<para>
+<screen>
+#define REDOLOG_PAGE_NOT_ALLOCATED (0xffffffff)
+</screen>
+This constant is used in the catalog for an unwritten extent.
+</para>
+
+</section> <!-- Constants -->
+
+<section> <title>Methods</title>
+<para>
+<emphasis>redolog_t();</emphasis> instanciates a new redolog.
+</para>
+<para>
+<emphasis>int make_header(const char* type, Bit64u size);</emphasis> creates a header
+structure in memory, and sets its <emphasis>type</emphasis> and parameters based on the
+disk image <emphasis>size</emphasis>. Returns 0.
+</para>
+<para>
+<emphasis>int create(const char* filename, const char* type, Bit64u size);</emphasis>
+creates a new empty redolog file, with header and catalog, named <emphasis>filename</emphasis>
+of type <emphasis>type</emphasis> for a <emphasis>size</emphasis> bytes image.
+Returns 0 for OK or -1 if a problem occurred.
+</para>
+<para>
+<emphasis>int create(int filedes, const char* type, Bit64u size);</emphasis>
+creates a new empty redolog file, with header and catalog, in a previously
+opened file described by <emphasis>filedes</emphasis>, of type <emphasis>type</emphasis>
+for a <emphasis>size</emphasis> bytes image.
+Returns 0 for OK or -1 if a problem occurred.
+</para>
+<para>
+<emphasis>int open(const char* filename, const char* type, Bit64u size);</emphasis>
+opens a redolog file named <emphasis>filename</emphasis>, and checks
+for consistency of header values against a <emphasis>type</emphasis> and
+<emphasis>size</emphasis>.
+Returns 0 for OK or -1 if a problem occurred.
+</para>
+<para>
+<emphasis>int open(const char* filename, const char* type, Bit64u size, int flags);</emphasis>
+opens a redolog file with <emphasis>flags</emphasis> applied. This allows to
+open a redolog in read-only mode. All other parameters and the return value are
+similar to the default <emphasis>open()</emphasis> method above.
+</para>
+<para>
+<emphasis>void close();</emphasis>
+closes a redolog file.
+</para>
+<para>
+<emphasis>off_t lseek(off_t offset, int whence);</emphasis>
+seeks at logical data offset <emphasis>offset</emphasis> in a redolog.
+<emphasis>offset</emphasis> must be a multiple of 512.
+Only SEEK_SET and SEEK_CUR are supported for <emphasis>whence</emphasis>.
+Returns -1 if a problem occurred, or the current logical offset in
+the redolog.
+</para>
+<para>
+<emphasis>ssize_t read(void* buf, size_t count);</emphasis>
+reads <emphasis>count</emphasis> bytes of data of the redolog, from current logical offset,
+and copies it into <emphasis>buf</emphasis>.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes read, that can be 0 if the data
+has not previously be written to the redolog.
+</para>
+<para>
+<emphasis>ssize_t write(const void* buf, size_t count);</emphasis>
+writes <emphasis>count</emphasis> bytes of data from <emphasis>buf</emphasis>
+to the redolog, at current logical offset.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes written.
+</para>
+<para>
+<emphasis>Bit64u get_size();</emphasis>
+returns the size stored in the "disk" field in the header. This is used for size
+autodetection feature ("growing" mode) and the consistency check ("undoable"
+mode).
+</para>
+<para>
+<emphasis>Bit32u get_timestamp();</emphasis>
+returns the value of the "timestamp" field in the header (only used by the
+"undoable" mode).
+</para>
+<para>
+<emphasis>bx_bool set_timestamp(Bit32u timestamp);</emphasis>
+writes the <emphasis>timestamp</emphasis> to the header. This is done
+by the "undoable" mode init code if <emphasis>get_timestamp()</emphasis> returns
+0 or the redolog is newly created.
+</para>
+<para>
+<emphasis>static int check_format(int fd, const char *subtype);</emphasis>
+checks the format of the file with descriptor <emphasis>fd</emphasis>. Returns
+<emphasis>HDIMAGE_FORMAT_OK</emphasis> if the <emphasis>subtype</emphasis>
+matches the requested one. This is used for for the image mode autodetection
+feature.
+</para>
+<para>
+<emphasis>bx_bool save_state(const char *backup_fname);</emphasis>
+copies the redolog file to a new file <emphasis>backup_fname</emphasis>. This is
+used by the hdimage save/restore feature.
+</para>
+</section>
+
+</section> <!-- Redolog class description -->
+
+<section>
+<title>
+        Disk image classes description
+</title>
+<para>
+"volatile" and "undoable" disk images are easily implemented
+by instanciating a <emphasis>device_image_t</emphasis> object (base image)
+and a <emphasis>redolog_t</emphasis> object (redolog).
+</para>
+<para>
+"growing" disk images only instanciates a <emphasis>redolog_t</emphasis> object.
+</para>
+<para>
+Class names are <emphasis>undoable_image_t</emphasis>, <emphasis>volatile_image_t</emphasis>
+and <emphasis>growing_image_t</emphasis>.
+</para>
+<para>
+When using these disk images, the underlying data structure and layout
+is completely hidden to the caller. Then, all offset and size values are
+"logical" values, as if the disk was a flat file.
+</para>
+<section>
+<title>
+        Constants
+</title>
+<para>
+<screen>
+#define UNDOABLE_REDOLOG_EXTENSION ".redolog"
+#define UNDOABLE_REDOLOG_EXTENSION_LENGTH (strlen(UNDOABLE_REDOLOG_EXTENSION))
+#define VOLATILE_REDOLOG_EXTENSION ".XXXXXX"
+#define VOLATILE_REDOLOG_EXTENSION_LENGTH (strlen(VOLATILE_REDOLOG_EXTENSION))
+</screen>
+These constants are used when building redolog file names
+</para>
+</section>
+
+<section>
+<title>
+        undoable_image_t methods
+</title>
+<para>
+<emphasis>
+undoable_image_t(Bit64u size, const char* redolog_name);
+</emphasis>
+instanciates a new <emphasis>undoable_image_t</emphasis>
+object. This disk image logical length is <emphasis>size</emphasis> bytes and
+the redolog filename is <emphasis>redolog_name</emphasis>.
+</para>
+
+<para>
+<emphasis>
+int open(const char* pathname);
+</emphasis>
+opens the disk image <emphasis>pathname</emphasis> in read-only mode,
+as an undoable disk image. The image mode of this base image is auto-detected.
+All supported disk image modes can be used here. The associated
+redolog will be named <emphasis>pathname</emphasis> with a
+<emphasis>UNDOABLE_REDOLOG_EXTENSION</emphasis> suffix, unless set in the
+constructor. Returns 0 for OK or -1 if a problem occurred.
+</para>
+
+<para>
+<emphasis>
+void close();
+</emphasis>
+closes the base image and its redolog.
+</para>
+
+<para>
+<emphasis>
+off_t lseek(off_t offset, int whence);
+</emphasis>
+seeks at logical data position <emphasis>offset</emphasis> in
+the undoable disk image.
+Only SEEK_SET and SEEK_CUR are supported for <emphasis>whence</emphasis>.
+Returns -1 if a problem occurred, or the current logical
+offset in the undoable disk image.
+</para>
+
+<para>
+<emphasis>
+ssize_t read(void* buf, size_t count);
+</emphasis>
+reads <emphasis>count</emphasis> bytes of data
+from the undoable disk image, from current logical offset,
+and copies it into <emphasis>buf</emphasis>.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes read.
+Data will be read from the redolog if it has
+been previously written or from the base image
+otherwise.
+</para>
+
+<para>
+<emphasis>
+ssize_t write(const void* buf, size_t count);
+</emphasis>
+writes <emphasis>count</emphasis> bytes of data from <emphasis>buf</emphasis>
+to the undoable disk image, at current logical offset.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes written.
+Data will always be written to the redolog.
+</para>
+
+<para>
+<emphasis>
+bx_bool save_state(const char *backup_fname);
+</emphasis>
+calls the related redolog_t method to save the image state.
+</para>
+
+<para>
+<emphasis>
+void restore_state(const char *backup_fname);
+called by the hdimage restore code. Copies the backup file to the original
+location and overwrites the existing redolog file.
+</emphasis>
+</para>
+</section>
+
+<section>
+<title>
+        volatile_image_t methods
+</title>
+<para>
+<emphasis>
+volatile_image_t(Bit64u size, const char* redolog_name);
+</emphasis>
+instanciates a new <emphasis>volatile_image_t</emphasis>
+object. This disk image logical length is <emphasis>size</emphasis> bytes and
+the redolog filename is <emphasis>redolog_name</emphasis> plus a
+random suffix.
+</para>
+
+<para>
+<emphasis>
+int open(const char* pathname);
+</emphasis>
+opens the disk image <emphasis>pathname</emphasis> in read-only mode,
+as a volatile disk image. The image mode is auto-detected. The associated
+redolog will be named <emphasis>pathname</emphasis> with a random suffix,
+unless set in the constructor. Returns 0 for OK or -1 if a problem occurred.
+</para>
+
+<para>
+<emphasis>
+void close();
+</emphasis>
+closes the base image and its redolog.
+The redolog is deleted/lost after close is called.
+</para>
+
+<para>
+<emphasis>
+off_t lseek(off_t offset, int whence);
+</emphasis>
+seeks at logical data position <emphasis>offset</emphasis> in
+the volatile disk image.
+Only SEEK_SET and SEEK_CUR are supported for <emphasis>whence</emphasis>.
+Returns -1 if a problem occurred, or the current logical offset in
+the volatile disk image.
+</para>
+
+<para>
+<emphasis>
+ssize_t read(void* buf, size_t count);
+</emphasis>
+reads <emphasis>count</emphasis> bytes of data
+from the volatile disk image, from current logical offset,
+and copies it into <emphasis>buf</emphasis>.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes read.
+Data will be read from the redolog if it has
+been previously written or from the base image
+otherwise.
+</para>
+
+<para>
+<emphasis>
+ssize_t write(const void* buf, size_t count);
+</emphasis>
+writes <emphasis>count</emphasis> bytes of data from <emphasis>buf</emphasis>
+to the volatile disk image, at current logical offset.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes written.
+Data will always be written to the redolog.
+</para>
+
+<para>
+<emphasis>
+bx_bool save_state(const char *backup_fname);
+</emphasis>
+calls the related redolog_t method to save the image state.
+</para>
+
+<para>
+<emphasis>
+void restore_state(const char *backup_fname);
+called by the hdimage restore code. Copies the backup file to the original
+location and overwrites the existing redolog file.
+</emphasis>
+</para>
+</section>
+
+<section>
+<title>
+        growing_image_t methods
+</title>
+<para>
+<emphasis>
+growing_image_t(Bit64u size);
+</emphasis>
+instanciates a new <emphasis>growing_image_t</emphasis>
+object. This disk image logical length is <emphasis>size</emphasis> bytes.
+</para>
+
+<para>
+<emphasis>
+int open(const char* pathname);
+</emphasis>
+opens the growing disk image <emphasis>pathname</emphasis>,
+Returns 0 for OK or -1 if a problem occurred.
+</para>
+
+<para>
+<emphasis>
+void close();
+</emphasis>
+closes the growing disk image.
+</para>
+
+<para>
+<emphasis>
+off_t lseek(off_t offset, int whence);
+</emphasis>
+seeks at logical data position <emphasis>offset</emphasis> in
+the growable disk image.
+Only SEEK_SET and SEEK_CUR are supported for <emphasis>whence</emphasis>.
+Returns -1 if a problem occurred, or the current logical offset in
+the grwoing image.
+</para>
+
+<para>
+<emphasis>
+ssize_t read(void* buf, size_t count);
+</emphasis>
+reads <emphasis>count</emphasis> bytes of data
+from the growing disk image, from current logical offset,
+and copies it into <emphasis>buf</emphasis>.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes read.
+The buffer will be filled with null bytes if data
+has not been previously written to the growing image.
+</para>
+
+<para>
+<emphasis>
+ssize_t write(const void* buf, size_t count);
+</emphasis>
+writes <emphasis>count</emphasis> bytes of data from <emphasis>buf</emphasis>
+to the growing disk image, at current logical offset.
+<emphasis>count</emphasis> must be 512.
+Returns the number of bytes written.
+</para>
+
+<para>
+<emphasis>
+static int check_format(int fd, Bit64u imgsize);
+</emphasis>
+checks the format of the file with descriptor <emphasis>fd</emphasis>. Returns
+<emphasis>HDIMAGE_FORMAT_OK</emphasis> if the file format matches the "growing"
+one. This is used for the image mode autodetection feature.
+</para>
+
+<para>
+<emphasis>
+bx_bool save_state(const char *backup_fname);
+</emphasis>
+calls the related redolog_t method to save the image state.
+</para>
+
+<para>
+<emphasis>
+void restore_state(const char *backup_fname);
+called by the hdimage restore code. Copies the backup file to the original
+location and overwrites the existing redolog file.
+</emphasis>
+</para>
+</section>
+
+</section>
+
+</section>
+
+<section id="add-keymapping"><title>How to add keymapping in a GUI client</title>
+<para>
+Christophe Bothamy, wrote the keymapping code for Bochs, provided these
+instructions to help developers to add keymapping to a GUI.
+</para>
+
+<screen>
+Bochs creates a bx_keymap_c object named bx_keymap.
+This object allows you to :
+  - load the configuration specified keymap file
+  - get the translated BX_KEY_* from your GUI key
+
+You have to provide a translation function from string to your Bit32u key
+constant. Casting will be necessary if your key constants are not Bit32u typed.
+The function must be "static Bit32u (*)(const char *)" typed, and must return
+BX_KEYMAP_UNKNOWN if it can not translate the parameter string.
+
+What you have to do is :
+  - call once "void loadKeymap(Bit32u (*)(const char*))",
+    providing your translation function, to load the keymap
+  - call "Bit32u getBXKey(Bit32u)" that returns the BX_KEY_*
+    constant, for each key you want to map.
+
+The file gui/x.cc implements this architecture, so you can refer to it
+as an example.
+</screen>
+
+</section>
+<section id="bochsbios"><title>The Bochs BIOS</title>
+<section id="biossums"><title>The biossums utility</title>
+<section><title>Intention</title>
+<para>
+Writing a BIOS for a pc-compatible includes the task of embedding various
+checksums. At least there is the overall bios checksum stored in the very
+last byte of the program. Depending on the number and types of services the
+bios provides there are others, e.g.
+</para>
+<itemizedlist>
+<listitem><para>
+a checksum for the PCI BIOS extensions
+</para></listitem>
+<listitem><para>
+a checksum for the PCI interrupt routing table
+</para></listitem>
+<listitem><para>
+a checksum for the plug and play BIOS extensions
+</para></listitem>
+</itemizedlist>
+<para>
+All these checksums have one common point: using the usual assembler directives
+they are hard (if not impossible) to compute at compile time. You can either
+compute them by hand --- a tedious, error-prone task, where in addition you
+often have to make unreliable assumptions about the memory layout of the
+entire BIOS. Or you patch them directly into your compiled BIOS image. Apart
+from computing the checksums this is what <command>biossums</command> does for you.
+</para>
+</section>
+<section><title>Checksums</title>
+<para>
+With the exception of the overall BIOS checksum, in a modern PC BIOS checksums
+are not used to ensure data integrity. Instead they are used in conjunction
+with certain signatures to securely identify the entry points or the addresses
+of important data of some BIOS extensions. Because these services are often
+invoked from x86 protected mode the original method via interrupts is not
+applicable. Scanning (even only parts) of the BIOS for (short) signatures and
+solely relying on this is insecure though, cause the found signature might not
+refer to the sought service but rather be some obscure machine code resembling
+the signature by accident.
+</para>
+<para>
+Since signatures are usually part of a larger header or table the above
+mentioned problem is being circumvented by checksumming over this header and
+comparing the result to a checksum stored next to the signature. In practice the
+checksum is often part of the header, chosen in a way that the contents of the
+header add up to zero.
+</para>
+</section>
+<section><title>Usage</title>
+<para>
+<command>biossums</command> is very simple and straightforward. The only (and mandatory)
+argument is the file name of the BIOS image. The file is being read, patched and written.
+So if you want to keep your original file for reference, use <command>biossums</command>
+on a copy of your BIOS image.
+</para>
+<para>
+For now, <command>biossums</command> can only rely on signatures to find the locations
+of the accompanying checksums. Therefore <command>biossums</command> refuses to set any
+checksums if it finds more than one signature of the same type.
+</para>
+</section>
+<section><title>Example output</title>
+<para>
+Running upon the current BIOS-bochs-legacy <command>biossums</command> displays:
+<screen>
+PCI-Bios header at: 0x9610
+Current checksum:     0x17
+Calculated checksum:  0x17  
+
+
+$PIR header at:     0x99C0
+Current checksum:     0x37
+Calculated checksum:  0x37
+
+
+$PnP header at:     0x9C80
+Current checksum:     0xD1
+Calculated checksum:  0x0F  Setting checksum.
+
+
+Bios checksum at:   0xFFFF
+Current checksum:     0x00
+Calculated checksum:  0x28  Setting checksum.
+</screen>
+</para>
+<para>
+If we patch in a second "_32_" signature at offset 0x9F00 and reset the $PIR
+checksum to 0x00 we get:
+</para>
+<para>
+<screen>
+PCI-Bios header at: 0x9610
+Current checksum:     0x17
+Calculated checksum:  0x17  
+
+PCI-Bios header at: 0x9F00
+Current checksum:     0x00
+Calculated checksum:  0x00  Multiple PCI headers! No checksum set.
+
+
+$PIR header at:     0x99C0
+Current checksum:     0x00
+Calculated checksum:  0x37  Setting checksum.
+
+
+$PnP header at:     0x9C80
+Current checksum:     0x0F
+Calculated checksum:  0x0F
+
+
+Bios checksum at:   0xFFFF
+Current checksum:     0x28
+Calculated checksum:  0x05  Setting checksum.
+</screen>
+</para>
+</section>
+<section><title>Possible enhancements</title>
+<para>
+Although <command>biossums</command> takes care of all checksums being used by
+the BIOS of the Bochs project (as of version 2.02) there are more to cover, e.g.
+the checksums for "Plug and Play" BIOS extension.
+</para>
+<para>
+In addition it was planned to provide further information to <command>biossums</command>
+via map-/symbol-files to verify the locations of checksums apart from scanning for
+signatures. For now this seems not to be necessary; in practice no double
+signatures have been observed yet.
+</para>
+</section>
+</section>
+</section>
+
+</chapter>
+
+<chapter id="debugger-advanced"><title>Advanced debugger usage</title>
+<section id="iodebug"><title>I/O Interface to Bochs Debugger</title>
+<para>
+This device was added by Dave Poirier (eks@void-core.2y.net).
+</para>
+<para>
+Compiling Bochs with iodebug support
+<screen>
+./configure --enable-iodebug
+make
+</screen>
+Other optional fields may be added to the ./configure line, see Bochs
+documentation for all the information. To enable the iodebug plugin at runtime,
+it must be loaded with the 'plugin_ctrl' bochsrc option.
+</para>
+
+<para>
+<screen>
+Using the I/O Interface to the debugger
+
+port range:  0x8A00 - 0x8A01
+
+Port 0x8A00 servers as command register. You can use it to enable the i/o interface,
+change which data register is active, etc.
+
+Port 0x8A01 is used as data register for the memory monitoring.
+</screen>
+</para>
+<section><title>Commands supported by port 0x8A00</title>
+<para>
+<screen>
+
+0x8A00
+
+ Used to enable the device. Any I/O to the debug module before this command is sent
+ is sent will simply be ignored.
+
+
+0x8A01
+
+ Selects register 0: Memory monitoring range start address (inclusive)
+
+
+0x8A02
+
+ Selects register 1: Memory monitoring range end address (exclusive)
+
+
+0x8A80
+
+ Enable address range memory monitoring as indicated by register 0 and 1 and
+ clears both registers
+
+
+0x8AE0 - Return to Debugger Prompt
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE0 to port 0x8A00
+ after the device has been enabled will return the Bochs to the debugger prompt.
+ Basically the same as doing CTRL+C.
+
+
+0x8AE2 - Instruction Trace Disable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE2 to port 0x8A00
+ after the device has been enabled will disable instruction tracing
+
+
+0x8AE3 - Instruction Trace Enable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE3 to port 0x8A00
+ after the device has been enabled will enable instruction tracing
+
+
+0x8AE4 - Register Trace Disable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE4 to port 0x8A00
+ after the device has been enabled will disable register tracing.
+
+
+0x8AE5 - Register Trace Enable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE5 to port 0x8A00
+ after the device has been enabled will enable register tracing. This currently
+ output the value of all the registers for each instruction traced.
+ Note: instruction tracing must be enabled to view the register tracing
+
+
+0x8AFF
+
+ Disable the I/O interface to the debugger and the memory monitoring functions.
+</screen>
+<note><para>all accesses must be done using word</para></note>
+<note><para>reading this register will return 0x8A00 if currently activated, otherwise 0</para></note>
+</para>
+</section>
+<section><title>Access to port 0x8A01 (write-only)</title>
+<para>
+All accesses to this port must be done using words. Writing to this port will shift
+to the left by 16 the current value of the register and add the provided value to it.
+<screen>
+Sample:
+
+reg0 = 0x01234567
+
+out port: 0x8A01 data: 0xABCD
+
+reg0 = 0x4567ABCD
+</screen>
+</para>
+</section>
+<section><title>Sample</title>
+<para>
+Enable memory monitoring on first page of text screen (0xb8000-0xb8fa0):
+add in bochrc file: <command>optromimage1: file=&quot;asmio.rom&quot;, address=0xd0000</command>
+<screen>
+/*
+ *      Make asmio ROM file:
+ *      gcc -c asmio.S
+ *      objcopy -O binary asmio.o asmio.rom
+ */
+        .text
+        .global start
+        .code16
+
+/* ROM Header */
+        .byte 0x55
+        .byte 0xAA
+        .byte 1                 /* 512 bytes long */
+
+start:
+/* Monitor memory access on first page of text screen */
+        mov     $0x8A00,%dx     /* Enable iodebug (0x8A00->0x8A00) */
+        mov     %dx,%ax
+        out     %ax,%dx
+        mov     $0x8A01,%ax     /* Select register 0 start addr (0x8A01->0x8A00) */
+        out     %ax,%dx
+        mov     $0x8A01,%dx     /* Write start addr 0xB8000 (high word first) */
+        mov     $0xB,%ax
+        out     %ax,%dx
+        mov     $0x8000,%ax     /* Write start addr (low word) */
+        out     %ax,%dx
+
+        mov     $0x8A02,%ax     /* Select register 1 end addr (0x8A02->0x8A00) */
+        mov     $0x8A00,%dx
+        out     %ax,%dx
+        mov     $0x8A01,%dx     /* Write end addr 0xB8FA0 (high word first) */
+        mov     $0xB,%ax
+        out     %ax,%dx
+        mov     $0x8FA0,%ax     /* Write end addr (low word) */
+        out     %ax,%dx
+
+        mov     $0x8A00,%dx     /* Enable addr range memory monitoring (0x8A80->0x8A00) */
+        mov     $0x8A80,%ax
+        out     %ax,%dx
+
+        mov     $0x8A00,%dx     /* Return to Bochs Debugger Prompt (0x8AE0->0x8A00) */
+        mov     $0x8AE0,%ax
+        out     %ax,%dx
+        lret
+
+        .byte 0x6b              /* Checksum (code dependent!, update it as needed) */
+        .align 512              /* NOP follow */
+</screen>
+</para>
+</section>
+</section>
+<section id="instrumentation"><title>The instrumentation feature</title>
+<para>
+&FIXME; Not written yet.
+</para>
+</section>
+<section id="debugger-internals"><title>Bochs debugger internals</title>
+<para>
+&FIXME; Not written yet (take stuff from bxdebugger.html).
+</para>
+</section>
+</chapter>
+
+<chapter id="coding"><title>Coding</title>
+<section><title>Coding guidelines</title>
+<para>
+<itemizedlist>
+<listitem><para><command>Don't make use of any external C++ classes.</command></para>
+<para>They are not offered on all platforms and this would make Bochs non-portable.
+There is use of such classes in the optional debugger. I plan on removing this use.
+</para></listitem>
+<listitem><para><command>Don't use fancy C++ features.</command></para>
+<para>Bochs is incredibly performance sensitive, and will be increasingly so as
+more speed enhancements are added. There's a time and place for most everything
+and this is not it. Some advanced features create overhead in the generated code
+that you don't see. They also convolute the code, and sometimes occlude that is
+really going on.
+<itemizedlist>
+<listitem><para>Don't use templates</para></listitem>
+<listitem><para>Don't use virtual functions if not strictly required</para></listitem>
+<listitem><para>Don't use C++ exceptions</para></listitem>
+</itemizedlist></para></listitem>
+<listitem><para><command>Use soft tabs.</command></para>
+<para>At least when you submit code, convert all hard tabs to spaces.
+There is no uniform way to handle tabs properly.</para></listitem>
+<listitem><para><command>Please do compile with all warnings turned on.</command></para>
+<para>It's really difficult to spot interesting warnings when a compile is littered
+with non-interesting ones.</para></listitem>
+<listitem><para><command>Don't use signed ints where unsigned will do.</command></para></listitem>
+<listitem><para><command>Make sure that contributed code / patches are LGPL compatible.</command></para></listitem>
+</itemizedlist>
+</para>
+</section>
+<section id="svn-release"><title>Building a Bochs release</title>
+<section><title>Preparing source files and SVN</title>
+<para>
+Update version number and strings in configure.in.
+<screen>
+VERSION="2.6.9"
+VER_MAJOR=2
+VER_MINOR=6
+VER_REVISION=9
+VER_SVN=0
+REL_STRING="Build from SVN snapshot on April  9, 2017"
+</screen>
+In the README file you have to update version number and date. Add some
+information about new features if necessary.
+<screen>
+Bochs x86 Pentium+ Emulator
+Updated: Sun Apr  9 08:45:00 CEST 2017
+Version: 2.6.9
+</screen>
+In the file <filename>bochs.manifest</filename> you have to update the version
+number for the Windows build.
+<screen>
+  version="2.6.9.0"
+</screen>
+Check date, update/sumup info in CHANGES. Run autoconf to regenerate configure and check them in.
+Create an SVN tag that contains all files of the revision that was used in the release.
+For prereleases I create a normal SVN tag like this:
+<screen>
+  svn mkdir tags/REL_2_5_pre1_FINAL
+  svn copy trunk/bochs tags/REL_2_5_pre1_FINAL/bochs
+  svn commit
+</screen>
+But for a real release, I make an SVN branch tag AND a normal tag.
+<screen>
+  svn mkdir tags/REL_2_5_FINAL
+  svn copy trunk/bochs tags/REL_2_5_FINAL/bochs
+  svn mkdir branches/REL_2_5
+  svn copy trunk/bochs branches/REL_2_5/bochs
+  svn commit
+</screen>
+The tag marks where the branch split off of the main trunk.
+This is very useful in maintaining the branch since you can do diffs
+against it.
+<screen>
+   svn diff tags/REL_2_5_FINAL/bochs trunk/bochs
+   svn diff tags/REL_2_5_FINAL/bochs branches/REL_2_5
+   etc.
+</screen>
+All bugfix-only releases after the final release should be created from the REL_2_5 branch.
+Now you can start building packages with the sources from the created release tag.
+</para>
+</section>
+
+<section><title>Anonymous SVN checkout and platform-independent sources</title>
+<para>
+An anonymous SVN checkout from the release tag is the base for all official
+release packages. Do this checkout from the release tag and specify a not yet
+existing directory name with the version number as the destination. Then create
+the source package from this new directory. These steps can be done both on
+Linux and Windows (Cygwin).
+<screen>
+  svn co http://svn.code.sf.net/p/bochs/code/tags/REL_2_5_FINAL/bochs bochs-2.5
+  tar czvf bochs-2.5.tar.gz --exclude=.svn bochs-2.5
+</screen>
+The source TAR file bochs-2.5.tar.gz is ready for upload.
+</para>
+</section>
+
+<section><title>Building the release on Linux</title>
+<para>
+The RPM will be building using the configuration in .conf.linux with
+a few parameters from <command>build/redhat/make-rpm</command>. Make any last
+minute changes to .conf.linux. Any changes will go into the source RPM. The
+DLX Linux demo package will be downloaded from the Bochs website to the Bochs
+root directory if it is not already present there.
+<screen>
+  ./build/redhat/make-rpm | tee ../build.txt
+</screen>
+This produces two rpm files in the current directory. Test and upload.
+</para>
+</section>
+
+<section><title>Building the release on win32</title>
+<para>
+These instructions require cygwin and MSVC++. Use the Bochs sources from
+the SVN checkout or unpack the TAR file.
+</para>
+<para>
+In Cygwin:
+<screen>
+  sh .conf.win32-vcpp         # runs configure
+  make win32_snap             # unzip workspace, make a win32 source ZIP
+</screen>
+The source ZIP is present in the parent directory of the Bochs root and now
+ready for upload. To build the binary package, copy it to a Windows machine,
+if necessary.
+</para>
+<para>
+Open up Visual C++ and load the workspace file Bochs.sln.  Check
+the Build:Set Active Project Configuration is set the way you want it.
+For releases I use "Win32 Release".
+</para>
+<para>
+To create "bochsdbg.exe" with Bochs debugger support, manually change these
+lines in config.h to turn on the debugger and the enhanced debugger gui.
+<screen>
+#define BX_DEBUGGER 1
+#define BX_DISASM 1
+#define BX_DEBUGGER_GUI 1
+</screen>
+One of the optimization features must be turned off, since it is currently
+not compatible with the debugger.
+<screen>
+#define BX_SUPPORT_HANDLERS_CHAINING_SPEEDUPS 0
+</screen>
+VC++ will rebuild Bochs with debugger and overwrite bochs.exe.  To avoid
+trashing the non-debug version, move it out of the way while the debugger
+version is being built.  Then rename the debugger version to bochsdbg.exe.
+<screen>
+  cd obj-release
+  mv bochs.exe bochs-normal.exe
+  (build again with BX_DEBUGGER=1 this time)
+  mv bochs.exe bochsdbg.exe
+  mv bochs-normal.exe bochs.exe
+</screen>
+</para>
+<para>
+Do make <emphasis>install_win32</emphasis> into the NSIS folder in the Bochs
+source tree:
+<screen>
+  make install_win32 INSTDIR=./build/win32/nsis/bochs-2.5
+</screen>
+This downloads and unpacks both the DLX Linux demo and the HTML docs from the
+Bochs website, copies all the files into <emphasis>./build/win32/nsis/bochs-2.5</emphasis>
+and then creates a binary ZIP file in the NSIS folder.
+</para>
+<para>
+Now make the NSIS installer package (the current script is known to work with NSIS 3.04)
+<screen>
+  cd build/win32/nsis
+  make
+</screen>
+That gives an installer called <filename>Bochs-2.5.exe</filename>. Test and upload it.
+</para>
+</section>
+
+<section><title>Creating a file release and uploading files on SF</title>
+<para>
+When you are ready with creating release packages you have to upload them using
+the SF file manager feature. Create a subdirectory with the version number in
+the <filename>bochs</filename> directory. Point the download destination to the
+new directory and start uploading packages. The top of the <filename>CHANGES</filename>
+file should be used as the release notes. After setting up the file properties the
+new release is ready for download.
+</para>
+<para>
+After having all files set up in the download area, don't forget to post an announcement
+containing a brief summary of changes to the bochs-announce mailing list and the "Project
+News" section on SF.
+</para>
+</section>
+
+</section>
+
+</chapter>
+
+<chapter id="webmastering"><title>Webmastering</title>
+
+<section id="project-webspace"><title>Bochs project webspace</title>
+<para>
+The Bochs project webspace is stored under the SF directory <filename>/home/project-web/bochs</filename>.
+It can be accessed from the SF shell using SSH or with the commands <command>sftp</command>,
+<command>scp</command> and <command>rsync</command>. Some parts of the directory
+structure must be updated from the local CVS repository, others from Bochs SVN
+(directories <filename>bochs</filename> and <filename>sfsite</filename>).
+The online documentation, disk images and screenshots must be uploaded manually.
+<table>
+<title>Directory structure</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Location</entry>
+<entry>Meaning</entry>
+</row>
+</thead>
+<tbody>
+<row><entry>cgi-bin</entry><entry>CGI scripts for the website</entry></row>
+<row><entry>htdocs</entry><entry>root directory of the website</entry></row>
+<row><entry>htdocs/doc/docbook</entry><entry>Bochs online documentation</entry></row>
+<row><entry>htdocs/docs-html</entry><entry>old Bochs documentation</entry></row>
+<row><entry>htdocs/guestos</entry><entry>disk images directly stored on the Bochs website</entry></row>
+<row><entry>htdocs/screenshot</entry><entry>screenshots of Bochs running several guest operating systems</entry></row>
+<row><entry>htdocs/svn-snapshot</entry><entry>link to current snapshot</entry></row>
+<row><entry>htdocs/techspec</entry><entry>technical specifications of several hardware components</entry></row>
+<row><entry>lxr</entry><entry>Bochs source browser</entry></row>
+<row><entry>sfsite-cvsroot</entry><entry>local CVS repository</entry></row>
+<row><entry>sitebin</entry><entry>shell scripts (e.g. for snapshot generation)</entry></row>
+<row><entry>siteman</entry><entry>website manual pages</entry></row>
+<row><entry>snapshot</entry><entry>SVN snapshot storage area</entry></row>
+<row><entry>tmp</entry><entry>temp directory for shell scripts</entry></row>
+</tbody>
+</tgroup>
+</table>
+</para>
+</section>
+
+<section id="update-website"><title>Updating the Bochs website content</title>
+<para>
+The main HTML content of the Bochs website (except online documentation) is stored
+in the <filename>sfsite</filename> directory of the Bochs SVN repository. Unlike
+other SF projects you don't need to upload these files to the Bochs project webspace.
+Running a simple SVN update on the SF shell is enough after the files have been
+updated in the repository. Please see <link linkend="svn-write-access-setup">Setting
+up SVN write access</link> for general instructions. The only difference is the
+directory name <filename>sfsite</filename> instead of <filename>bochs</filename>.
+The example below shows how to start the SF shell with SSH and to update the
+HTML files.
+<screen>
+ssh -t vruppert,bochs@shell.sourceforge.net create
+vruppert,bochs@shell.sourceforge.net's password:
+
+Requesting a new shell for "vruppert" and waiting for it to start.
+queued... starting...
+
+This is an interactive shell created for user vruppert,bochs.
+Use the "timeleft" command to see how much time remains before shutdown.
+Use the "shutdown" command to destroy the shell before the time limit.
+For path information and login help, type "sf-help".
+
+[vruppert@shell-24002 ~]$ svnserve -d -r /home/svn/p/bochs/code
+[vruppert@shell-24002 ~]$ cd /home/project-web/bochs/htdocs/
+[vruppert@shell-24002 htdocs]$ svn update
+U    index.html
+Updated to revision 10752
+[vruppert@shell-24002 htdocs]$ shutdown
+Requesting that your shell be shut down.
+This request will be processed soon.
+[vruppert@shell-24002 htdocs]$
+Broadcast message from root (Mon Oct 31 09:45:04 2011):
+
+The system is going down for system halt NOW!
+Connection to shell-24002 closed by remote host.
+Connection to shell-24002 closed.
+Connection to shell.sourceforge.net closed.
+</screen>
+</para>
+</section>
+
+<section id="update-svn-snapshot"><title>Updating the SVN snapshot</title>
+<para>
+The SVN snapshot
+<footnote>
+<para>The SVN snapshot link can be found on the bottom of the page
+<filename>getcurrent.html</filename>.</para>
+</footnote>
+can be updated with SF shell access using SSH. There is a script
+called <command>update-svn-snapshot.sh</command> that can do all the required steps
+(checking out SVN, packing the source tree into one archive, updating the website
+link). See previous section how to create a shell.
+<screen>
+cd /home/project-web/bochs/sitebin/
+./update-svn-snapshot.sh
+</screen>
+</para>
+</section>
+
+<section id="update-online-docs"><title>Updating the online documentation</title>
+<para>
+To update the online documentation, a file called <filename>bochsdoc.tar.gz</filename>
+must be generated with the <command>make</command>. This file must be uploaded
+to the location of the online documentation on SF using <command>scp</command>.
+<screen>
+cd doc/docbook
+make bochsdoc.tar.gz
+scp bochsdoc.tar.gz vruppert,bochs@web.sf.net:htdocs/doc/docbook
+</screen>
+After a successful upload, the HTML files must be unpacked from the SF shell.
+See section <link linkend="update-website">Updating the Bochs website content</link>
+how to create a shell.
+<screen>
+cd /home/project-web/bochs/htdocs/doc/docbook
+tar xvzf bochsdoc.tar.gz
+</screen>
+The updated files can be accessed from the sidebar of the Bochs website.
+</para>
+</section>
+
+      <section id="other-content"><title>other content</title>
+      <para>
+      &FIXME; sources, tmp
+      </para>
+      </section>
+
+      <section id="available-tools"><title>available tools</title>
+      <para>
+      &FIXME; sources, tmp
+      </para>
+      </section>
+
+</chapter>
+</book>

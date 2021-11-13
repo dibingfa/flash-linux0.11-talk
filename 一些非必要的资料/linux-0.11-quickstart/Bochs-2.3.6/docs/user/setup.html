@@ -1,0 +1,289 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Setup</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Compiling Bochs"
+HREF="compiling.html"><LINK
+REL="NEXT"
+TITLE="bochsrc"
+HREF="bochsrc.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="compiling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="bochsrc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="SETUP"
+></A
+>Chapter 4. Setup</H1
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN1363"
+>4.1. What does Bochs need?</A
+></H1
+><P
+>These are the minimum requirements for running an OS inside of Bochs:
+<P
+></P
+><UL
+><LI
+><P
+>the Bochs executable</P
+></LI
+><LI
+><P
+>the BIOS image (usually called <TT
+CLASS="FILENAME"
+>BIOS-bochs-latest</TT
+>)</P
+></LI
+><LI
+><P
+>the VGA BIOS image (e.g. <TT
+CLASS="FILENAME"
+>VGABIOS-lgpl-latest</TT
+> or <TT
+CLASS="FILENAME"
+>VGABIOS-elpin-2.40</TT
+>)</P
+></LI
+><LI
+><P
+>at least one bootable media, either as disk image (floppy, hard disk or CD-ROM) or physical disk (floppy or CD-ROM)</P
+></LI
+></UL
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Both VGA BIOS versions as well as the ROM BIOS are part of Bochs. No separate download is necessary.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If you want to use the Cirrus SVGA adapter instead of VGA + Bochs VBE, you should
+have a look at <A
+HREF="cirrus-notes.html"
+>Section 8.17</A
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+>In that case you have to pass the configuration options on the command
+line or to use the configuration interface to set up Bochs for the simulation.
+Running Bochs is easier if you use a configuration file (we call it
+<TT
+CLASS="FILENAME"
+>bochsrc</TT
+>). See <A
+HREF="bochsrc.html"
+>Section 4.2</A
+> for all supported options.</P
+><P
+>The easiest way to setup Bochs for the first time is to use the example configuration
+file called <TT
+CLASS="FILENAME"
+>bochsrc-sample.txt</TT
+>. Locate that file (location depends
+on the (host) OS and on the installation facility used) and copy it to a location where
+Bochs looks for that file, see <A
+HREF="search-order.html"
+>Section 5.2</A
+>.</P
+><P
+>The next step is to change the configuration so that it fits your needs: You most
+likely want to setup a hard disk (see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> and
+<A
+HREF="bochsrc.html#BOCHSOPT-ATA-MASTER-SLAVE"
+>Section 4.2.9</A
+>), and install some OS on it using either
+a set of floppy disks (see <A
+HREF="bochsrc.html#BOCHSOPT-FLOPPYAB"
+>Section 4.2.7</A
+>) or a CD-ROM
+(see <A
+HREF="bochsrc.html#BOCHSOPT-ATA-MASTER-SLAVE"
+>Section 4.2.9</A
+> again) as installation media.
+Make sure you boot the emulation from the media you want, using the right setting
+as <A
+HREF="bochsrc.html#BOCHSOPT-BOOT"
+>boot option</A
+>.</P
+><P
+>If your keyboard output inside of Bochs is wrong, you may also need a keymap file
+to remap your keyboard layout to the U.S. layout. A set of keymap files for the
+X window system and SDL (Linux port) is distributed with Bochs. If your
+keyboard layout is not supported yet, you can create your own one by following the
+instructions given in <A
+HREF="keymap.html"
+>Section 4.4</A
+>.</P
+><P
+>A collection of disk images  of different operating systems can be found at
+<A
+HREF="http://bochs.sourceforge.net/diskimages.html"
+TARGET="_top"
+>http://bochs.sourceforge.net/diskimages.html</A
+>. Some disk
+images are the size of a floppy disk (1 meg compressed) and others are gigantic
+(160 meg compressed). If you want to create a disk image yourself, please see
+<A
+HREF="howto.html#DISKIMAGEHOWTO"
+>Section 8.1</A
+>.</P
+><P
+> <IMG
+SRC="../images/undercon.png"> This should be completed </P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  - (DONE )bochsrc, BIOS, VGABIOS, disk images.
+  - BIOS/VGABIOS, what do they do?
+  - disk images
+    - (DONE) where to find one pre-made
+    - grab one from a real hard disk</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="compiling.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bochsrc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Compiling Bochs</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>bochsrc</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

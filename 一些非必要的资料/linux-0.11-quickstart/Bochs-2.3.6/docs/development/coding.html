@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Coding</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="I/O Interface to Bochs Debugger"
+HREF="iodebug.html"><LINK
+REL="NEXT"
+TITLE="patches:"
+HREF="patches.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="iodebug.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="patches.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CODING"
+></A
+>Chapter 4. Coding</H1
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN1097"
+>4.1. Coding guidelines</A
+></H1
+><P
+><P
+></P
+><UL
+><LI
+><P
+><B
+CLASS="COMMAND"
+>Don't make use of any external C++ classes.</B
+></P
+><P
+>They are not offered on all platforms and this would make Bochs non-portable.
+There is use of such classes in the optional debugger. I plan on removing this use.</P
+></LI
+><LI
+><P
+><B
+CLASS="COMMAND"
+>Don't use fancy C++ features.</B
+></P
+><P
+>Bochs is incredibly performance sensitive, and will be increasingly so as
+more speed enhancements are added. There's a time and place for most everything
+and this is not it. Some advanced features create overhead in the generated code
+that you don't see. They also convolute the code, and sometimes occlude that is
+really going on.
+<P
+></P
+><UL
+><LI
+><P
+>Don't use templates</P
+></LI
+><LI
+><P
+>Don't use virtual functions if not strictly required</P
+></LI
+><LI
+><P
+>Don't use C++ exceptions</P
+></LI
+><LI
+><P
+>Don't use overloading of any kind</P
+></LI
+></UL
+></P
+></LI
+><LI
+><P
+><B
+CLASS="COMMAND"
+>Use soft tabs.</B
+></P
+><P
+>At least when you submit code, convert all hard tabs to spaces.
+There is no uniform way to handle tabs properly.</P
+></LI
+><LI
+><P
+><B
+CLASS="COMMAND"
+>Please do compile with all warnings turned on.</B
+></P
+><P
+>It's really difficult to spot interesting warnings when a compile is littered
+with non-interesting ones.</P
+></LI
+><LI
+><P
+><B
+CLASS="COMMAND"
+>Don't use signed ints where unsigned will do.</B
+></P
+></LI
+><LI
+><P
+><B
+CLASS="COMMAND"
+>Make sure that contributed code / patches are LGPL compatible.</B
+></P
+></LI
+></UL
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="iodebug.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="patches.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>I/O Interface to Bochs Debugger</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>patches:</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

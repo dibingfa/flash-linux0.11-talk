@@ -1,0 +1,124 @@
+-------------------------------------------------------------
+BOCHS TESTING FORM Version 0.3
+-------------------------------------------------------------
+
+Because of the variety of platforms and configurations that Bochs
+supports, it is difficult for any one person to test it thoroughly.
+This form is intended to help the Bochs developers keep track of test
+results from different sources.  To avoid confusion, this form should
+be submitted once for each combination of host OS and guest OS you
+try.  For example: your host OS is Debian Linux and you get both Win95
+and FreeDOS to start up.  You would send one form for
+Win95-under-Debian and a second form for FreeDOS-under-Debian.  In
+this case it would save time to fill in the host OS part, copy it a
+few times and fill out the guest OS part for each copy.
+
+To fill in a blank such as [__], replace the underlines and leave 
+the brackets.  Example: [Sun Ultrasparc 10].  To fill in a
+multiple-choice, just put an X in the brackets.  Example: [X]
+Mail completed forms to bochs-testing@tlw.com.
+
+
+What is the date?
+[__]
+
+What is your name?
+[__]
+
+What is your email address?
+[__]
+
+Do you mind if your name and email address are placed on a testing results 
+web page so that people with a similar setup can write to you?
+   [ ] Ok, put it on a web page
+   [ ] No, keep my address private.
+
+What type of hardware are you using, e.g. 500MHz Intel Celeron.
+[__]
+
+What operating system are you using?  Please be specific, e.g. 
+Redhat Linux 6.2 with 2.2.16 kernel.
+[__]
+
+What version of bochs are you using?
+   [ ] compiled from version 2.1.1
+   [ ] compiled from version [_____]
+   [ ] I compiled it from the CVS sources from date: [__]
+   [ ] other source distribution from URL: [__]
+   [ ] binary distribution from URL: [__]
+
+Please fill in the next few questions only if you compiled Bochs
+yourself, as opposed to downloading a binary.
+
+Did the configure script run ok, and detect your hardware and
+operating system?
+  [ ] Yes
+  [ ] No, configure crashed.
+  [ ] No, configure ran ok but produced a bad configuration.
+  [ ] No, I cannot run configure on my platform (win32 and mac).
+
+If you used configure, what arguments did you give it?  If you used a
+.conf.* script, give the name of the .conf script instead.
+[__]
+
+What compiler did you use?  (Please include version.)
+[__]
+
+Did Bochs compile clean without any hacking?
+  [ ] Yes
+  [ ] No
+
+If you had to make changes to compile, please summarize the problems you 
+had or include diffs.
+[__]
+
+End of compile-specific questions!
+
+What guest operating system are you using inside bochs?
+[__]
+
+Are you booting from a floppy or hard disk?
+  [ ] floppy image
+  [ ] raw floppy drive
+  [ ] hard drive image
+  [ ] raw hard drive         (is this even possible?)
+  [ ] other [__]
+
+Did the guest operating system boot successfully?
+  [ ] Yes
+  [ ] No
+
+If no, what error messages do you see on the console or in the log file?
+[__]
+
+What applications worked under this guest operating system?
+[__]
+
+What applications failed under this guest operating system?  Did the
+application function incorrectly, crash Bochs, or what?  If you got a
+panic, paste in the panic message that you received with some
+description of what was happening at the time.
+[__]
+
+The remaining questions are about Bochs features that you may not have
+used.  If you tried out the feature, move the X to the "works" or
+"fails" column.
+
+                  Not       Works    
+		  tested    ok      Fails   Comments?
+keyboard           [ ]      [ ]     [ ]     [__]
+floppy disk        [X]      [ ]     [ ]     [__]
+raw floppy disk    [X]      [ ]     [ ]     [__]
+hard disk          [X]      [ ]     [ ]     [__]
+floating point     [X]      [ ]     [ ]     [__]
+mouse              [X]      [ ]     [ ]     [__]
+cdrom              [X]      [ ]     [ ]     [__]
+sb16               [X]      [ ]     [ ]     [__]
+ne2000             [X]      [ ]     [ ]     [__]
+i440FX pci         [X]      [ ]     [ ]     [__]
+debugger           [X]      [ ]     [ ]     [__]
+external loader    [X]      [ ]     [ ]     [__]
+VGA                [X]      [ ]     [ ]     [__]
+
+Thank you for your contribution in the Bochs testing effort!  Please
+mail completed forms to bochs-testing@tlw.com.

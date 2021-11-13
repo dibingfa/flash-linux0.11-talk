@@ -1,0 +1,1011 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>How to write your own keymap table</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Setup"
+HREF="setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Sound Blaster 16 Emulation"
+HREF="sb16-emulation.html"><LINK
+REL="NEXT"
+TITLE="Using Bochs"
+HREF="using-bochs.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="sb16-emulation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-bochs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="KEYMAP"
+>4.4. How to write your own keymap table</A
+></H1
+><P
+>Christophe Bothamy wrote the keymapping code for Bochs, and provided this
+documentation for how to create new keymaps.  Keymapping was first 
+implemented for X windows only, so there are many references to X-specific
+values in this section. In Bochs 2.0 keymapping is also available for SDL 
+(Linux port) and wxWidgets (wxGTK port).</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  The standard US Keyboard looks like this:
+
+          -------------------------------------------
+  Top row Esc F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 
+          -------------------------------------------
+  2nd row ` 1 2 3 4 5 6 7 8 9 0 - = \ Back
+          -------------------------------------------
+  3rd row Tab Q W E R T Y U I O P [ ] Enter
+          -------------------------------------------
+  4rd row Caps A S D F G H J K L ; '
+          -------------------------------------------
+  5rd row lShift l\ Z X C V B N M , . / rShift
+          -------------------------------------------
+  6rd row lCtrl lAlt Space rAlt rCtrl
+          -------------------------------------------</PRE
+></TD
+></TR
+></TABLE
+><P
+>Each key of the US keyboard maps to a Bochs constant named
+BX_KEY_<TT
+CLASS="REPLACEABLE"
+><I
+>symbol</I
+></TT
+>. You can find the current list of
+BX_KEY_<TT
+CLASS="REPLACEABLE"
+><I
+>symbol</I
+></TT
+> in 
+<A
+HREF="keymap.html#BX-KEY-TABLE"
+>the BX_KEY table</A
+>, below. Please note that
+there is only one BX_KEY_<TT
+CLASS="REPLACEABLE"
+><I
+>symbol</I
+></TT
+> for each physical
+key.</P
+><P
+>Now, for each key of the US keyboard, look at which symbols you can type on your
+real keyboard. Each symbol maps to a X-windows
+XK_<TT
+CLASS="REPLACEABLE"
+><I
+>symbol</I
+></TT
+> constant.  In 
+<TT
+CLASS="FILENAME"
+>X11/keysymdef.h</TT
+>, you will find the list of all possible
+XK_<TT
+CLASS="REPLACEABLE"
+><I
+>symbol</I
+></TT
+> on your system.  Alternatively, you can
+use a small utility called "xev" that prints out the symbol names of a pressed
+key. Note that the symbol name given by xev does not contain the XK_ prefix.
+Don't forget to add a line for every symbol you can type on each key.  For the
+key BX_KEY_A, you can type both lowercase 'a' and uppercase 'A', so you would
+need two different entries. </P
+><P
+>You can then create your own map file. Keymap files are found in the
+"gui/keymaps" directory in the source code, or in the "keymaps" directory in
+binary releases.  Look at the existing keymap file as an example, and create a
+file containing one line for each symbol.  The first column tells what key or
+combination of keys can be used to produce a given symbol.  The second column
+is the ASCII equivalent for that symbol, or a special keyword (none, space,
+return, tab, backslash, or apostrophe).  The third column is the X windows
+keysym for that symbol.  </P
+><P
+>For example :
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>BX_KEY_0                                      '0'        XK_0
+BX_KEY_1                                      '1'        XK_1
+BX_KEY_2                                      '2'        XK_2
+BX_KEY_0+BX_KEY_SHIFT_L                       ')'        XK_parenright
+BX_KEY_1+BX_KEY_SHIFT_L                       '!'        XK_exclam
+BX_KEY_2+BX_KEY_SHIFT_L                       '@'        XK_at
+BX_KEY_A                                      'a'        XK_a
+BX_KEY_B                                      'b'        XK_b
+BX_KEY_A+BX_KEY_SHIFT_L                       'A'        XK_A
+BX_KEY_B+BX_KEY_SHIFT_L                       'B'        XK_B
+BX_KEY_TAB                                    tab        XK_Tab
+BX_KEY_ENTER                                  return     XK_Return
+BX_KEY_F1                                     none       XK_F1
+BX_KEY_F2                                     none       XK_F2
+BX_KEY_F3                                     none       XK_F3</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Now that there are several keymap files in the Bochs distribution, it is
+easiest to copy an existing keymap and follow the examples you see.  When it
+works, be sure to send it to the mailing list or post it on Source Forge so
+that we can include it in the next release.  You may need to look up some of
+your country specific X11 symbols in <TT
+CLASS="FILENAME"
+>X11/keysymdef.h</TT
+>.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="BX-KEY-TABLE"
+></A
+><P
+><B
+>Table 4-6. BX_KEY constants</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+> BX_KEY constant </TH
+><TH
+> Keyboard Symbol </TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>BX_KEY_CTRL_L</TD
+><TD
+> left Ctrl </TD
+></TR
+><TR
+><TD
+>BX_KEY_SHIFT_L</TD
+><TD
+> left Shift </TD
+></TR
+><TR
+><TD
+>BX_KEY_F1</TD
+><TD
+> F1 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F2</TD
+><TD
+> F2 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F3</TD
+><TD
+> F3 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F4</TD
+><TD
+> F4 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F5</TD
+><TD
+> F5 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F6</TD
+><TD
+> F6 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F7</TD
+><TD
+> F7 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F8</TD
+><TD
+> F8 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F9</TD
+><TD
+> F9 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F10</TD
+><TD
+> F10 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F11</TD
+><TD
+> F11 </TD
+></TR
+><TR
+><TD
+>BX_KEY_F12</TD
+><TD
+> F12 </TD
+></TR
+><TR
+><TD
+>BX_KEY_CTRL_R</TD
+><TD
+> right Ctrl </TD
+></TR
+><TR
+><TD
+>BX_KEY_SHIFT_R</TD
+><TD
+> right Shift </TD
+></TR
+><TR
+><TD
+>BX_KEY_CAPS_LOCK</TD
+><TD
+> CapsLock </TD
+></TR
+><TR
+><TD
+>BX_KEY_NUM_LOCK</TD
+><TD
+> NumLock </TD
+></TR
+><TR
+><TD
+>BX_KEY_ALT_L</TD
+><TD
+> left Alt </TD
+></TR
+><TR
+><TD
+>BX_KEY_ALT_R</TD
+><TD
+> right Alt </TD
+></TR
+><TR
+><TD
+>BX_KEY_A</TD
+><TD
+> A </TD
+></TR
+><TR
+><TD
+>BX_KEY_B</TD
+><TD
+> B </TD
+></TR
+><TR
+><TD
+>BX_KEY_C</TD
+><TD
+> C </TD
+></TR
+><TR
+><TD
+>BX_KEY_D</TD
+><TD
+> D </TD
+></TR
+><TR
+><TD
+>BX_KEY_E</TD
+><TD
+> E </TD
+></TR
+><TR
+><TD
+>BX_KEY_F</TD
+><TD
+> F </TD
+></TR
+><TR
+><TD
+>BX_KEY_G</TD
+><TD
+> G </TD
+></TR
+><TR
+><TD
+>BX_KEY_H</TD
+><TD
+> H </TD
+></TR
+><TR
+><TD
+>BX_KEY_I</TD
+><TD
+> I </TD
+></TR
+><TR
+><TD
+>BX_KEY_J</TD
+><TD
+> J </TD
+></TR
+><TR
+><TD
+>BX_KEY_K</TD
+><TD
+> K </TD
+></TR
+><TR
+><TD
+>BX_KEY_L</TD
+><TD
+> L </TD
+></TR
+><TR
+><TD
+>BX_KEY_M</TD
+><TD
+> M </TD
+></TR
+><TR
+><TD
+>BX_KEY_N</TD
+><TD
+> N </TD
+></TR
+><TR
+><TD
+>BX_KEY_O</TD
+><TD
+> O </TD
+></TR
+><TR
+><TD
+>BX_KEY_P</TD
+><TD
+> P </TD
+></TR
+><TR
+><TD
+>BX_KEY_Q</TD
+><TD
+> Q </TD
+></TR
+><TR
+><TD
+>BX_KEY_R</TD
+><TD
+> R </TD
+></TR
+><TR
+><TD
+>BX_KEY_S</TD
+><TD
+> S </TD
+></TR
+><TR
+><TD
+>BX_KEY_T</TD
+><TD
+> T </TD
+></TR
+><TR
+><TD
+>BX_KEY_U</TD
+><TD
+> U </TD
+></TR
+><TR
+><TD
+>BX_KEY_V</TD
+><TD
+> V </TD
+></TR
+><TR
+><TD
+>BX_KEY_W</TD
+><TD
+> W </TD
+></TR
+><TR
+><TD
+>BX_KEY_X</TD
+><TD
+> X </TD
+></TR
+><TR
+><TD
+>BX_KEY_Y</TD
+><TD
+> Y </TD
+></TR
+><TR
+><TD
+>BX_KEY_Z</TD
+><TD
+> Z </TD
+></TR
+><TR
+><TD
+>BX_KEY_0</TD
+><TD
+> 0 </TD
+></TR
+><TR
+><TD
+>BX_KEY_1</TD
+><TD
+> 1 </TD
+></TR
+><TR
+><TD
+>BX_KEY_2</TD
+><TD
+> 2 </TD
+></TR
+><TR
+><TD
+>BX_KEY_3</TD
+><TD
+> 3 </TD
+></TR
+><TR
+><TD
+>BX_KEY_4</TD
+><TD
+> 4 </TD
+></TR
+><TR
+><TD
+>BX_KEY_5</TD
+><TD
+> 5 </TD
+></TR
+><TR
+><TD
+>BX_KEY_6</TD
+><TD
+> 6 </TD
+></TR
+><TR
+><TD
+>BX_KEY_7</TD
+><TD
+> 7 </TD
+></TR
+><TR
+><TD
+>BX_KEY_8</TD
+><TD
+> 8 </TD
+></TR
+><TR
+><TD
+>BX_KEY_9</TD
+><TD
+> 9 </TD
+></TR
+><TR
+><TD
+>BX_KEY_ESC</TD
+><TD
+> Esc </TD
+></TR
+><TR
+><TD
+>BX_KEY_SPACE</TD
+><TD
+> SpaceBar </TD
+></TR
+><TR
+><TD
+>BX_KEY_SINGLE_QUOTE</TD
+><TD
+> ' </TD
+></TR
+><TR
+><TD
+>BX_KEY_COMMA</TD
+><TD
+> , </TD
+></TR
+><TR
+><TD
+>BX_KEY_PERIOD</TD
+><TD
+> . </TD
+></TR
+><TR
+><TD
+>BX_KEY_SLASH</TD
+><TD
+> / </TD
+></TR
+><TR
+><TD
+>BX_KEY_SEMICOLON</TD
+><TD
+> ; </TD
+></TR
+><TR
+><TD
+>BX_KEY_EQUALS</TD
+><TD
+> = </TD
+></TR
+><TR
+><TD
+>BX_KEY_LEFT_BRACKET</TD
+><TD
+> [ </TD
+></TR
+><TR
+><TD
+>BX_KEY_BACKSLASH</TD
+><TD
+> \ </TD
+></TR
+><TR
+><TD
+>BX_KEY_RIGHT_BRACKET</TD
+><TD
+> ] </TD
+></TR
+><TR
+><TD
+>BX_KEY_MINUS</TD
+><TD
+> - </TD
+></TR
+><TR
+><TD
+>BX_KEY_GRAVE</TD
+><TD
+> ` </TD
+></TR
+><TR
+><TD
+>BX_KEY_BACKSPACE</TD
+><TD
+> BackSpace </TD
+></TR
+><TR
+><TD
+>BX_KEY_ENTER</TD
+><TD
+> Enter </TD
+></TR
+><TR
+><TD
+>BX_KEY_TAB</TD
+><TD
+> Tab </TD
+></TR
+><TR
+><TD
+>BX_KEY_LEFT_BACKSLASH</TD
+><TD
+> left \ </TD
+></TR
+><TR
+><TD
+>BX_KEY_PRINT</TD
+><TD
+> PrintScreen </TD
+></TR
+><TR
+><TD
+>BX_KEY_SCRL_LOCK</TD
+><TD
+> ScrollLock </TD
+></TR
+><TR
+><TD
+>BX_KEY_PAUSE</TD
+><TD
+> Pause </TD
+></TR
+><TR
+><TD
+>BX_KEY_INSERT</TD
+><TD
+> Ins </TD
+></TR
+><TR
+><TD
+>BX_KEY_DELETE</TD
+><TD
+> Del </TD
+></TR
+><TR
+><TD
+>BX_KEY_HOME</TD
+><TD
+> Home </TD
+></TR
+><TR
+><TD
+>BX_KEY_END</TD
+><TD
+> End </TD
+></TR
+><TR
+><TD
+>BX_KEY_PAGE_UP</TD
+><TD
+> PageUo </TD
+></TR
+><TR
+><TD
+>BX_KEY_PAGE_DOWN</TD
+><TD
+> PageDown </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_ADD</TD
+><TD
+> Numeric Keypad + </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_SUBTRACT</TD
+><TD
+> Numeric Keypad - </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_END</TD
+><TD
+> Numeric Keypad 1 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_DOWN</TD
+><TD
+> Numeric Keypad 2 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_PAGE_DOWN</TD
+><TD
+> Numeric Keypad 3 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_LEFT</TD
+><TD
+> Numeric Keypad 4 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_5</TD
+><TD
+> Numeric Keypad 5 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_RIGHT</TD
+><TD
+> Numeric Keypad 6 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_HOME</TD
+><TD
+> Numeric Keypad 7 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_UP</TD
+><TD
+> Numeric Keypad 8 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_PAGE_UP</TD
+><TD
+> Numeric Keypad 9 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_INSERT</TD
+><TD
+> Numeric Keypad 0 </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_DELETE</TD
+><TD
+> Numeric Keypad . </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_ENTER</TD
+><TD
+> Numeric Keypad Enter </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_MULTIPLY</TD
+><TD
+> Numeric Keypad * </TD
+></TR
+><TR
+><TD
+>BX_KEY_KP_DIVIDE</TD
+><TD
+> Numeric Keypad / </TD
+></TR
+><TR
+><TD
+>BX_KEY_UP</TD
+><TD
+> UpArrow </TD
+></TR
+><TR
+><TD
+>BX_KEY_DOWN</TD
+><TD
+> DownArrow </TD
+></TR
+><TR
+><TD
+>BX_KEY_LEFT</TD
+><TD
+> LeftArrow </TD
+></TR
+><TR
+><TD
+>BX_KEY_RIGHT</TD
+><TD
+> RightArrow </TD
+></TR
+><TR
+><TD
+>BX_KEY_WIN_L</TD
+><TD
+> Left Windows </TD
+></TR
+><TR
+><TD
+>BX_KEY_WIN_R</TD
+><TD
+> Right Windows </TD
+></TR
+><TR
+><TD
+>BX_KEY_MENU</TD
+><TD
+> Menu </TD
+></TR
+><TR
+><TD
+>BX_KEY_ALT_SYSREQ</TD
+><TD
+> Alt-Sysreq </TD
+></TR
+><TR
+><TD
+>BX_KEY_CTRL_BREAK</TD
+><TD
+> Ctrl-Break </TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_BACK</TD
+><TD
+> Internet - back </TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_FORWARD</TD
+><TD
+> Internet - forward </TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_STOP</TD
+><TD
+> Internet - stop </TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_MAIL</TD
+><TD
+> Internet - mail </TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_SEARCH</TD
+><TD
+> Internet - search </TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_FAV</TD
+><TD
+>Internet - favorites</TD
+></TR
+><TR
+><TD
+>BX_KEY_INT_HOME</TD
+><TD
+> Internet - home </TD
+></TR
+><TR
+><TD
+>BX_KEY_POWER_MYCOMP</TD
+><TD
+> Powerkeys - my computer </TD
+></TR
+><TR
+><TD
+>BX_KEY_POWER_CALC</TD
+><TD
+> Powerkeys - calculator </TD
+></TR
+><TR
+><TD
+>BX_KEY_POWER_SLEEP</TD
+><TD
+> Powerkeys - sleep </TD
+></TR
+><TR
+><TD
+>BX_KEY_POWER_POWER</TD
+><TD
+> Powerkeys - power </TD
+></TR
+><TR
+><TD
+>BX_KEY_POWER_WAKE</TD
+><TD
+> Powerkeys - wake </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sb16-emulation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-bochs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Sound Blaster 16 Emulation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using Bochs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

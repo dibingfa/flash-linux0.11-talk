@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Knoppix</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="NEXT"
+TITLE="Minix"
+HREF="guest-minix.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guests.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-minix.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-KNOPPIX"
+>9.2. Knoppix</A
+></H1
+><P
+>    Contributed by Alexander Schuch.
+  </P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3691"
+>9.2.1. Getting Knoppix</A
+></H2
+><P
+>      Knoppix is a live CD (700M) or live DVD (3.2G) based on Debian GNU/Linux, with lots of
+      ready-to-run programs (web browser, office suite, a few games, and more), using
+      <ABBR
+CLASS="ABBREV"
+>KDE</ABBR
+> as desktop environment. It can be booted directly from CD, without
+      any installation needed. You can download it from <A
+HREF="http://www.knoppix.org/"
+TARGET="_top"
+>knoppix.org</A
+>.
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3696"
+>9.2.2. Preparing Bochs</A
+></H2
+><P
+>      As Knoppix runs completely from CD/DVD, you don't need to setup a hard disk. You just need to set up
+      the location of the downloaded ISO image in your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+>, and make Bochs boot
+      from it. Because Knoppix contains a graphical user interface, and has no other storage space but
+      the emulated RAM, it needs at least 128MB of it, see
+      <A
+HREF="bochsrc.html#BOCHSOPT-MEGS"
+>megs option</A
+>. Furthermore, you need to enable VBE support in
+      Bochs (see <A
+HREF="vesa-notes.html"
+>Section 8.16</A
+>).
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3702"
+>9.2.3. Using Knoppix</A
+></H2
+><P
+>      There is nothing more to do! Just start Bochs and wait for Knoppix to load...
+    </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>      You are logged in as normal user, if you want to become super user, just <B
+CLASS="COMMAND"
+>su</B
+>.
+      There is no password needed (empty password).
+    </P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-minix.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Guest operating systems</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Minix</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

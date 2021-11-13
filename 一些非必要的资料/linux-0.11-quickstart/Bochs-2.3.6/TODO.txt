@@ -1,0 +1,270 @@
+This is the "roadmap" posted in the mailing list, augmented by 
+comments from the mailing list and the irc chat. 
+Anybody is welcome to work on any of these issues. Some of
+these items are rather simple and can be implemented by single 
+individuals. Other items are quite complex and development needs 
+to be coordonated. So, if you want to contribute, please drop 
+us a note in the mailing list, so you can get help or exchange 
+ideas.
+Christophe Bothamy.
+
+0. Donations
+Source Forge recently set up a donation system for hosted projects.
+Should we accept donations ? What could we do with the money ? 
+- give to EFF, FSF or other 
+- fund Kevin to continue the work on plex86 so we can use it
+- bounties for somebody write optimized win9x/NT/XFree/linux/*BSD 
+  drivers for our vga/net/ide cards
+- other ?
+Status in Bochs 2.3:
+No decisions about this yet.
+
+1. Speed
+Speed (well lack of) is one of the biggest criticism made by users
+who'd like to see Bochs run as fast as Virtual PC.
+Paths we can explore to get more speed :
+4.1 virtualization : plex86
+4.2 dynamic translation : qemu, patch from h.johansson
+Status:
+Some work has been done for Bochs 2.3.6 but still long way is ahead.
+
+2. Plugin architecture
+2.1 The plugin architecture can be reworked if we want to support
+multiple similar devices like seral net or vga cards.
+We currently have two "types" of plugins: "core" and "optional". 
+Maybe we could add "classes" of plugins. The current version of 
+Bochs supports the classes "display_library" and "io_device". 
+New classes can be "config_interface", "net_lowlevel" and 
+"sound_lowlevel"
+2.2 Stanislav wrote :
+Plugin architecture should be rewritten like real plugin architecture s.t.
+Bochs VGA plugin for example will be real plugin. I mean that replacement 
+of plugin dll in already compiled Bochs will replace Bochs VGA card and 
+the new card will be detected automatically.
+This will allow for example developing of plugins separately from Bochs.
+2.3 Michael Brown wrote :
+If the configuration interface is to be reworked, could we also make it so 
+that plugins are self-contained, rather than needing to pollute config.cc 
+with code for defining and parsing plugin-specific options
+Status:
+A little bit of the basic work is done now: The config parameter handling has
+been rewritten to a parameter tree and user-defined bochsrc options are now
+supported. The main plugin architecture rewrite is not done yet.
+
+3. PCI host<->guest proxy
+Being able to use a real pci device from inside Bochs would be a 
+great feature of Bochs. It would ease reverse engineering of non
+documented cards, or one could even use a real spare vga card.
+Frank Cornellis has done a great job on this subject, and we began
+integrating his changes. 
+Status:
+The pcidev device is present in CVS and it has been updated for the new PCI
+infrastructure, but the new code is untested yet.
+
+4. Subdirectories in iodev
+The iodev directory contains the various implemented iodevice.
+With the new pci devices, new harddrives and new net access methods, 
+it could be interesting to add new subdirectories like :
+iodev/video/... --> for standard vga and new card emulation
+iodev/disks/... --> for the ata/atapi classes, hd/cd classes and host accesses
+iodev/net/...   --> for ne2k and host net access
+isa and pci devices would be mixed in the directories, but this should
+be manageable.
+Status:
+Not done yet.
+
+5 multithreading. Conn Clark wrote :
+Threading might be nice too, for those of us who have SMP/SMT machines. 
+I have a patch from Mathis (who hangs out on the IRC channel all the 
+time) that puts the video card interface in its own thread. It has 
+troubles though that I have not resolved. It may also be easier to debug 
+a threaded peripheral.
+I also think that it might be possible to thread a chunk of the CPU 
+emulation to improve performance on a SMP/SMT machine. Specificaly 
+write_virtual_dword, write_virtual_word, write_virtual_byte, etc... 
+might just be able to be threaded. I think the threading overhead might 
+be less than the protection and address translation code. We would have 
+to try it to find out. I'm also sure there can be some nasty hurdles to 
+overcome.
+Status:
+Third party proup started a para-Bochs project exacly to reach above goals,
+some beta version is already released. 
+The home page of the project: http://grid.hust.edu.cn/cluster/VirtualMachine/index.html
+
+6. CPU
+6.1 This was asked in the ml, and I believe it's a good idea to provide
+a configure switch to set the cpu model, for example :
+--with-cpu-386
+--with-cpu-486dx
+--with-cpu-pentium
+--with-cpu-pentium-mmx
+--with-cpu-k6-iii
+--with-cpu-amd64
+and so on. The main difficulty here is to set up the list of features
+by cpu model. I started such a list, available at 
+http://cbothamy.free.fr/projects/bochs/CPU_Features.sxc
+The configure script will then set up constants on features to compile in,
+ISA, FPU, MMX, 3DNOW, SSE, etc... Most of the feature flags already 
+exists in config.h, so this should be easy. It would also be a good
+idea to clean up the cpuid function beased on those flags.
+We also have to keep in mind that some features are also enablable
+by the guest os.
+Please note the all features are still not supported/complete in Bochs.
+6.2 Stanislav thinks that configure --with-cpu-pentium-mmx --enable-cpu-level-4 
+would create lots of conflicts in the generated config.h. He suggests
+that we should write an external GUI configure script that would propose 
+standard or custom cpus and would detect conflicts.
+Status:
+Not done yet.
+
+7. VGA
+For SVGA emulation we have Bochs VBE and the Cirrus adapter. We should have
+a look at the voodoo3 (specs http://v3tv.sourceforge.net/docs.php).
+Status:
+Not done yet.
+
+8. Random thoughts on disk emulation improvements :
+8.1 lba48 support
+8.2 autodetection of disk size / geometry
+8.3 uml cow disk image support
+8.4 compressed disk image support
+8.5 extend redolog-disk specification to add coherency check of the flat 
+image file, by storing its fstat-mtime field in the redolog.
+Status:
+Autodetection now works for all image types created with bximage and vmware3
+images. LBA48 and vmware4 disk images support was added in Bochs 2.3.5 release.
+The other items are not done yet.
+
+9. net
+9.1 bootable ethernet rom ? 
+see etherboot, Micheal Brown wrote :
+This already works; you can build an Etherboot rom image with the pnic 
+driver, specify it as an option ROM in bochsrc and it will boot.  I'm 
+using this extensively at the moment in Etherboot development.
+In the Etherboot project's CVS, in the contrib/bochs directory, you can
+find a working bochsrc file and an up-to-date README with step-by-step 
+instructions on getting this working.
+Status:
+The pnic device is present in CVS, but the status is unknown.
+
+10. Bios
+10.1 our bios is quite heavy on stack space (notably during int13 functions).
+Some parts can be rewritten in assembler, to save stack space and 
+make code smaller.
+Status:
+New BIOS supporting ACPI was introduced in Bochs 2.3.5 release.
+
+10.2 add "jump table placeholder" and log missing function calls in the bios. 
+Check completness with Ralf Brown interrupt list.
+Status:
+Not done yet.
+
+11. LGPL VGABios
+11.1 Video parameters table
+There is a very nice parameter table in 3dfx banshee document 
+http://www2.lm-sensors.nu/~lm78/pdfs/Banshee_2d_spec.PDF
+see also http://www.xyzzy.claranet.de/dos/vgacrt.c
+Status:
+The new version 0.6a of the LGPL'd VGABIOS has minimal support for the video
+parameter table.
+
+12. Optimized Guest drivers still needed : VGA, IDE, NET
+We have a specific VGA driver for winNT/2K, but still
+lack drivers for other OSes.
+Status:
+Not done yet.
+
+13. USB support
+Ben Lunt has been working on USB support. The USB mouse and keypad code
+is present in Bochs and almost stable. USB flash disk support has been
+started and the runtime device change support should be completed.
+Status:
+Under construction.
+
+14. Config file and dynamic menu
+14.1 Benjamen R. Meyer wrote :
+I think we should rework the .bochsrc file to be more standard across all
+devices. I like how the USB configuration is done in it, and think we should
+put something similar together for everything else. In otherwords, create
+something that can be easily used for everything, and make it easier to
+configure in the process.
+From what I can tell right now, most of the configuration lines are randomly
+thrown together as each gets implemented or added, instead of having
+something that is based on a standard approach to the configuration.
+The result should be something that would be able to easily auto-configured
+by another program (a configuration editor?) with minimal changes necessary
+when new devices/features are added.
+14.2  Franck Cornelis wrote : the config system needs some work... 
+e.g. the main menu is static while it could be generated at run-time...
+the main menu text lives somewhere in a file... while it should be generated 
+at run-time by iterating the main menu objects
+Status:
+The config options handling has been rewritten to a parameter tree.
+
+15. Save/Restore
+Save/restore of config and log options and the hardware state is supported
+in all Bochs configurations. Harddisk images are not handled yet.
+
+16. add to the roadmap that we should find some ideas to check 
+correctness of instructions emulation, especially system instructions.  
+arithmetic instructions could be validated with simply random testing
+Status:
+Not done yet.
+
+17. lowlevel serial support for Windows.
+Volker is currently working on this.
+Status:
+Not yet complete (transmit works, receive is losing data).
+
+18. Parallel port
+Conn Clark wrote :
+I would like to see better parallel port support so I can use a dongle. 
+This is something I would find very useful as it would mean I wouldn't 
+have to boot back into windows ever again. I also recognize that this 
+may require a kernel module be written, which is beyond my current 
+skills.  I know others will find this useful as I have had to tell a 
+few people that their parallel port driven peripherals that require a 
+bidirectional parallel port won't work.
+Status:
+Not done yet.
+
+19. Patches / Bug reports
+There are dozens of patches floating around. Some are outdated,
+don't apply cleanly, are obsolete/unneeded. We could try to do 
+some clean-up, and keep only relevent ones.
+We should also clean up the SF bug tracker. Some bugreports are 
+very old and we asked for more information with no response.
+Status:
+There is some progress, but still a lot of work to do.
+
+20. Positions
+If you want to help without coding, here are available positions :
+20.1 Webmaster : update website (Jan Bruun Andersen offered to help)
+22.2 patch coordonator : look at incoming patches (sourceforge and 
+mailing list) and upload / update in the cvs patches directory.
+20.3 platform maintainers for macos / win32 
+20.4 disk image maintainer : create and maintain our collection
+of disk images. Usually, only the configuration file needs to be
+updated, and old bios files have to be removed.  Some packages 
+still contain very old bios files, they should definitely have
+to be removed.
+Status:
+More active developers are needed to do the things described above.
+
+21. Bochs demo cd/dvd
+With version 2.1, it is now technically possible to use disk images 
+on a read-only media, with a journal files on a read/write media. 
+It would be great to create a demo cd/dvd with executables for 
+supported platforms, configuration files and read-only disk 
+images, the journal files would be written in a temporary 
+directory on the harddisk.
+Status:
+Not done yet.
+
+22. Other CPU architectures : arm, ppc 
+This has been asked in the mailing list. I'm not really
+interested, but other people might be. Should we propose to 
+host the new CPUs code in our source tree, or should we let 
+people fork ?
+Status:
+Not done yet.

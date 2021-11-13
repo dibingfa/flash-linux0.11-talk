@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using SVN write access</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Resources for developers"
+HREF="resources.html"><LINK
+REL="PREVIOUS"
+TITLE="Resources for developers"
+HREF="resources.html"><LINK
+REL="NEXT"
+TITLE="Ideas for other sections"
+HREF="other.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="resources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Resources for developers</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="other.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="USING-SVN-WRITE-ACCESS"
+>1.2. Using SVN write access</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN28"
+>1.2.1. Checking in files</A
+></H2
+><P
+>Once you have a Bochs directory, you can compile the files, edit them, test them, etc.
+See the documentation section, <A
+HREF="../user/get-src-svn.html"
+TARGET="_top"
+>Tracking the source code with SVN</A
+>
+for more info on SVN, in the User Manual. But what's new and different is that
+you can now do SVN commits. When a file is all fixed and ready to share with the rest of
+the world, you run a commit command to upload your version to the server.
+First, it's good to do a SVN update to make sure nobody else has changed it
+since you downloaded it last. At the first commit you'll always have to specify your
+SF username and type your password.</P
+><PRE
+CLASS="SCREEN"
+>  $ svn update file.cc
+  $ svn commit --username <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+> file.cc
+  [editor opens. type log message, save, and exit.]
+  Login area: &lt;https://svn.code.sf.net:443&gt; SourceForge Subversion area
+  Username: <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>
+  Password for '<TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>': <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;--type your password</I
+></TT
+>
+  Sending        file.cc
+  Transmitting file data .
+  Committed revision 10.</PRE
+><P
+>When SVN starts an editor, The default is usually vi. If you want a different
+editor, set the EDITOR environment variable to the name of your preferred
+editor.  When you're done, just save the file and quit the editor.  Unless
+there's some problem, you will see a message that says what the new SVN revision
+number is, and then "done".  If while you're editing the log message, you decide
+that you don't want to commit after all, don't save the file. Quit the editor,
+and when it asks where the log message went, tell it to abort.</P
+><P
+>Here is an example of a successful checkin:
+
+<PRE
+CLASS="SCREEN"
+>  $ svn commit misc.txt
+  [edit log msg]
+  Sending        misc.txt
+  Transmitting file data .
+  Committed revision 6.</PRE
+>
+
+And here is an aborted one:
+
+<PRE
+CLASS="SCREEN"
+>  $ svn commit misc.txt
+  [quit editor without saving]
+  Log message unchanged or not specified
+  a)bort, c)ontinue, e)dit:
+  a</PRE
+>&#13;</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN41"
+>1.2.2. Creating a backup of the SVN repository</A
+></H2
+><P
+>Backups of the SVN repository can be made with the <B
+CLASS="COMMAND"
+>rsync</B
+> utility.
+In case of data corruption or other problems on the server, the repository with all
+revisions, branches and tags can be restored easily. It is recommended to update this
+backup frequently. The following example creates a folder called
+<TT
+CLASS="FILENAME"
+>bochs-svn-rsync</TT
+> that contains the repository.
+<PRE
+CLASS="SCREEN"
+>  rsync -av svn.code.sf.net::p/bochs/code bochs-svn-rsync</PRE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN47"
+>1.2.3. Setting SVN commit notifications</A
+></H2
+><P
+>The Bochs SVN repository is set up to send a notification email to the "bochs-cvs"
+mailing list after each successful commit. This email contains the log message, a list
+of the modified files and a diff against the previous revision. The diff of large
+commits will be truncated at 96 kByte.</P
+><P
+>After each commit the SVN server runs the script <B
+CLASS="COMMAND"
+>post-commit</B
+> located
+in the <TT
+CLASS="FILENAME"
+>hooks</TT
+> folder. On SourceForge, this script forces a refresh
+of the Allura code browser and it can call a script <B
+CLASS="COMMAND"
+>post-commit-user</B
+>
+for addition operations if it exists. For Bochs we have set up this script and call
+<B
+CLASS="COMMAND"
+>svnnotify</B
+> from it to create the notification email.
+<PRE
+CLASS="SCREEN"
+>#!/bin/sh
+
+svnnotify --repos-path $1 --revision $2 -O -C -d -e 98304 -t bochs-cvs@lists.sourceforge.net</PRE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="resources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="other.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Resources for developers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="resources.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Ideas for other sections</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
