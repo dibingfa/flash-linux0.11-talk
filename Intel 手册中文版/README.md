@@ -13,11 +13,8 @@
 ### 具体手册链接
 
 - [卷一：基本架构.md](https://github.com/sunym1993/flash-linux0.11-talk/blob/main/Intel%20手册中文版/卷一：基本架构.md)
-
 - [卷二：指令集参照.md](https://github.com/sunym1993/flash-linux0.11-talk/blob/main/Intel%20手册中文版/卷二：指令集参照.md)
-
 - [卷三：系统编程指南.md](https://github.com/sunym1993/flash-linux0.11-talk/blob/main/Intel%20手册中文版/卷三：系统编程指南.md)
-
 - [卷四：特殊模块寄存器（MSR）.md](https://github.com/sunym1993/flash-linux0.11-talk/blob/main/Intel%20手册中文版/卷四：特殊模块寄存器（MSR）.md)
 
 ### 无需翻译的词
