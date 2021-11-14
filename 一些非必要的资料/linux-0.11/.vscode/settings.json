@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "tty.h": "c",
+        "stdarg.h": "c",
+        "io.h": "c",
+        "fcntl.h": "c",
+        "fs.h": "c"
+    }
+}

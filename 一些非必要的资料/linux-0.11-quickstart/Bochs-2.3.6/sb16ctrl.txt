@@ -1,0 +1,36 @@
+#
+# example for an sb16ctrl file
+#
+# comments start with hash character '#' (obviously...)
+# Numbers can be octal (0...) or hex (0x...) or decimal.
+#
+#
+# first, reset the translation table with command 'r'
+r
+
+# then load a few translations.
+# The format is:
+# t OldBankMSB OldBankLSB OldProgram NewBankMSB NewBankLSB NewProgram
+#
+# All values are in the range of 0-127 or 255.
+# For old values, 255 means "match any".
+# For new values, 255 means "don't change".
+#
+# When deciding whether a program change is to be remapped, these
+# remappings are checked first to last, and the first applicable remap 
+# is used.
+
+# This would map all bank changes to bank 0/0 
+# t 255 255 255	0 0 255
+# it's commented out, otherwise none of the below changes would
+# be checked, as this one matches anything.
+
+t 255 255 0	0 0 19	# remap piano to church organ
+t 255 255 255 	0 0 0	# everything remaining -> piano
+
+# now show the number of translations that have been loaded
+i 3
+
+# and enable GS/GM mode
+m 0xF0,0x41,0x10,0x42,0x12,0x40,0x00,0x7F,0x00,0x41,0xF7
+

@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Notes about Cirrus SVGA usage</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Notes about VESA usage"
+HREF="vesa-notes.html"><LINK
+REL="NEXT"
+TITLE="Disk Image Modes"
+HREF="harddisk-modes.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="vesa-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="harddisk-modes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="CIRRUS-NOTES"
+>8.17. Notes about Cirrus SVGA usage</A
+></H1
+><P
+>    Since Bochs 2.2 it is possible to use Cirrus SVGA graphics. The Cirrus device
+    supports both ISA and PCI depending on the <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> settings.
+    If PCI is disabled or the Cirrus card is not assigned to a PCI slot, it appears
+    as a CL-GD5430 ISA with 2MB VRAM. If you assign the Cirrus card to a PCI slot,
+    it appears as a CL-GD5446 PCI with 4MB VRAM.
+  </P
+><P
+>    In order to use Cirrus SVGA, you need to compile Bochs using the <CODE
+CLASS="OPTION"
+>--enable-clgd54xx</CODE
+>
+    option and enable it in your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> by setting the
+    <A
+HREF="bochsrc.html#BOCHSOPT-VGA"
+>vga option</A
+> to <CODE
+CLASS="PARAMETER"
+>cirrus</CODE
+>.
+    Finally, you need to use the Cirrus version of the
+    <A
+HREF="http://savannah.nongnu.org/projects/vgabios/"
+TARGET="_top"
+>LGPL'd VGABIOS</A
+>
+    as <A
+HREF="bochsrc.html#BOCHSOPT-VGAROMIMAGE"
+>vgaromimage option</A
+> for
+    applications to correctly detect Cirrus support.
+  </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  # Enable CL-GD5446 PCI
+  vga: extension=cirrus
+  vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest-cirrus
+  i440fxsupport: enabled=1, slot1=cirrus
+  </PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    The VGABIOS is already included in the Bochs release, so no separate download is necessary.
+  </P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="vesa-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="harddisk-modes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Notes about VESA usage</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Disk Image Modes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

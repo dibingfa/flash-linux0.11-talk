@@ -1,0 +1,184 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Nsgmls</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Documentation Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Reading and Writing"
+HREF="reading-writing.html"><LINK
+REL="PREVIOUS"
+TITLE="Reading and Writing"
+HREF="reading-writing.html"></HEAD
+><BODY
+CLASS="SECT1"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Documentation Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="reading-writing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Reading and Writing</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="NSGMLS"
+>4.2. Nsgmls</A
+></H1
+><P
+>The Bochs documentation is written in SGML docbook style, so any tool which can
+check SGML syntax can be used to check the docbook.  The DTD (data type
+description) for docbook tells exactly which elements can be used and where.
+It says which attributes are required and which are optional, and how elements
+should be nested.  The term "validate" has a specific meaning in SGML.  When
+you validate a SGML document, it means that you read the DTD and then check
+that the document conforms to all the rules of the DTD.</P
+><P
+>A program called nsgmls, written by James Clark <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:jjc@jclark.com"
+>jjc@jclark.com</A
+>&#62;</CODE
+>,
+can validate an SGML document such as our docbook.  Although nsgmls can do many
+other things, this command will validate the docbook against the DTD which
+defines the syntax: 
+<P
+><B
+CLASS="COMMAND"
+>nsgmls</B
+>   -s   <TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+> </P
+></P
+><P
+>Nsgmls is part of SP, a "free object-oriented toolkit for SGML parsing and
+entity management" by James Clark <CODE
+CLASS="EMAIL"
+>&#60;<A
+HREF="mailto:jjc@jclark.com"
+>jjc@jclark.com</A
+>&#62;</CODE
+>.  SP can be
+found at 
+<A
+HREF="http://www.jclark.com/sp"
+TARGET="_top"
+>http://www.jclark.com/sp</A
+>.
+There is a complete man page for nsgmls 
+<A
+HREF="http://www.jclark.com/sp/nsgmls.htm"
+TARGET="_top"
+>here</A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="reading-writing.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Reading and Writing</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="reading-writing.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

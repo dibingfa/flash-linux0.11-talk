@@ -1,0 +1,888 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Installing a Binary</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation"
+HREF="installation.html"><LINK
+REL="PREVIOUS"
+TITLE="Tracking the source code with CVS"
+HREF="get-src-cvs.html"><LINK
+REL="NEXT"
+TITLE="Compiling Bochs"
+HREF="compiling.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="get-src-cvs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Installation</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="compiling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="INSTALL-BINARY"
+>3.3. Installing a Binary</A
+></H1
+><P
+>This section is divided up by platform, since installing a binary package
+is different on different platforms.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN577"
+>3.3.1. Windows</A
+></H2
+><P
+>The Bochs binaries for Windows are distributed in an EXE installer package.
+The Bochs installer can be started like any other Windows program and it brings
+up the installation wizard. Here you can select the destination folder and the
+installation options. The wizard installs the files and creates the registry
+keys, start menu and desktop links.</P
+><P
+>Previous releases of Bochs were distributed as ZIP packages, too. These packages
+contained the same set of files as the installer package from the same version.</P
+><P
+>If you are new to Bochs you should try out the DLX Linux demo distributed with
+Bochs. The installation wizard has created a link on the desktop if you decided
+to install the demo. If you doubleclick the icon two windows will appear:
+one is the Bochs Display window, and the other is text window that is used for
+the runtime configuration and for log messages if no logfile is specified.</P
+><P
+>You can find more information on the DLX Linux demo in the next section below the
+DLX Linux screenshot.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN583"
+></A
+><P
+><B
+>Table 3-3. Files in Bochs directory (Windows version)</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>File</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>BIOS-bochs-latest </TD
+><TD
+> default ROM BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>BIOS-bochs-legacy </TD
+><TD
+> ROM BIOS image without 32-bit init code </TD
+></TR
+><TR
+><TD
+>bochs.exe </TD
+><TD
+> the main Bochs executable </TD
+></TR
+><TR
+><TD
+>bochs.ico </TD
+><TD
+> the Bochs icon (used for links in start menu and on the desktop) </TD
+></TR
+><TR
+><TD
+>bochsdbg.exe </TD
+><TD
+> the main Bochs executable with debugger enabled </TD
+></TR
+><TR
+><TD
+>bochsrc-sample.txt </TD
+><TD
+> sample Bochs configuration file </TD
+></TR
+><TR
+><TD
+>bxcommit.exe </TD
+><TD
+> tool for committing redologs to flat disk images </TD
+></TR
+><TR
+><TD
+>bximage.exe </TD
+><TD
+> tool for making new disk images </TD
+></TR
+><TR
+><TD
+>CHANGES.txt </TD
+><TD
+> what has changed between versions </TD
+></TR
+><TR
+><TD
+>COPYING.txt </TD
+><TD
+> copy of the LGPL license </TD
+></TR
+><TR
+><TD
+>README.txt </TD
+><TD
+> the read-me file from the source distribution. </TD
+></TR
+><TR
+><TD
+>TODO.txt </TD
+><TD
+> the TODO file from the source distribution. </TD
+></TR
+><TR
+><TD
+>niclist.exe </TD
+><TD
+> tool to find out the network interface name </TD
+></TR
+><TR
+><TD
+>penguin.ico </TD
+><TD
+> the Linux logo (used for the DLX link in start menu) </TD
+></TR
+><TR
+><TD
+>sb16ctrl.exe </TD
+><TD
+> tool to control sb16 in Bochs </TD
+></TR
+><TR
+><TD
+>sb16ctrl.txt </TD
+><TD
+> examples of sb16ctrl commands </TD
+></TR
+><TR
+><TD
+>VGABIOS-elpin-2.40 </TD
+><TD
+> VGA BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>VGABIOS-elpin-LICENSE.txt </TD
+><TD
+> license for VGA BIOS </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest-debug </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with debug output to the logfile </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest-cirrus </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with the Cirrus extension enabled </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest-cirrus-debug </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with the Cirrus extension enabled and debug output to the logfile </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-README.txt </TD
+><TD
+> readme for the LGPL'd VGA BIOS </TD
+></TR
+><TR
+><TD
+>uninstall.exe </TD
+><TD
+> uninstall program for Bochs (created by the installation wizard) </TD
+></TR
+><TR
+><TD
+>dlxlinux\ </TD
+><TD
+> directory containing DLX linux sample disk image and configuration files</TD
+></TR
+><TR
+><TD
+>dlxlinux\readme.txt </TD
+><TD
+> description of DLX linux</TD
+></TR
+><TR
+><TD
+>dlxlinux\bochsrc.txt </TD
+><TD
+> Bochs configuration file for DLX</TD
+></TR
+><TR
+><TD
+>dlxlinux/hd10meg.img </TD
+><TD
+> disk image file (10 meg) </TD
+></TR
+><TR
+><TD
+>dlxlinux\start.bat </TD
+><TD
+> Run this BAT file to try out DLX Linux inside Bochs! </TD
+></TR
+><TR
+><TD
+>dlxlinux\testform.txt </TD
+><TD
+> Form for reporting success or failure </TD
+></TR
+><TR
+><TD
+>doc\index.html</TD
+><TD
+>a local copy of all Bochs documentation (<A
+HREF="http://bochs.sourceforge.net/doc/docbook/index.html"
+TARGET="_top"
+>online copy</A
+>)</TD
+></TR
+><TR
+><TD
+>keymaps\*.map </TD
+><TD
+>keymap tables (on Windows used for the paste feature only) </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="LINUXRPM"
+>3.3.2. Linux RPM</A
+></H2
+><P
+>RPM stands for "RedHat Package Manager."  An RPM is a compressed file
+containing files to be installed on your system.  Many Linux distributions,
+not just RedHat ones, can install files from an RPM.  First, download the
+Bochs RPM for your architecture to your computer.  For example, if you have an
+Intel-compatible computer, be sure to get the RPM that says "for Linux x86
+distributions" or "i386".  Once you have the package on your local disk, you
+should become the root user and install it as follows<A
+NAME="AEN691"
+HREF="#FTN.AEN691"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+>:
+
+<DIV
+CLASS="FIGURE"
+><A
+NAME="AEN693"
+></A
+><P
+><B
+>Figure 3-2. Installing an RPM in Linux</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  user$ <B
+CLASS="COMMAND"
+>su</B
+>
+  Password: 
+  root# <B
+CLASS="COMMAND"
+>ls -l bochs-1.2.1.i386.rpm</B
+>
+  -rw-rw-r--    1 user     user      1877515 Sep 14 09:02 bochs-1.2.1.i386.rpm
+  root# <B
+CLASS="COMMAND"
+>rpm -i bochs-1.2.1.i386.rpm</B
+>
+  Looking for fonts to install... /usr/local/bochs/latest/
+  Looking for X11 Font Path... /usr/lib/X11/fonts
+  Installing vga.pcf... ok    (it was already there)
+  Running mkfontdir...
+  Done installing Bochs fonts for X11.
+  root# exit
+  user$ _</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><P
+>All RPM installations are done as the root user because they require
+permission to update system files and directories.  If you do not have root
+access you need to compile Bochs in your home directory.</P
+><P
+>RPM installation can fail for a few reasons.  It will fail if you already
+have a Bochs package installed.  In this case, try upgrading the old package
+to the new package with <B
+CLASS="COMMAND"
+>rpm --upgrade NAME.i386.rpm</B
+>.
+Another potential problem is missing RPM dependencies.  If you are getting
+errors about missing files or RPMs, then first you should try to 
+install the RPMs that provide the missing pieces.  If that cannot be done,
+download the source RPM and build a new binary RPM that is appropriate
+for your platform.  The command is <B
+CLASS="COMMAND"
+>rpmbuild --rebuild
+NAME.src.rpm</B
+>.  As a last resort, you can run rpm with the
+<B
+CLASS="COMMAND"
+>--nodeps</B
+> option to ignore dependencies and install it
+anyway, but if it is missing important pieces it may not run properly.</P
+><P
+>The Bochs RPM installs four new commands and associated manual pages: bochs,
+bochs-dlx, bximage and bxcommit.  First, let's try out the DLX Linux demo by typing
+<B
+CLASS="COMMAND"
+>bochs-dlx</B
+>.  
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  user$ bochs-dlx
+  ---------------------------------------------------------------
+	      DLX Linux Demo, for Bochs x86 Emulator
+  ---------------------------------------------------------------
+  Checking for bochs binary...ok
+  Checking for DLX linux directory...ok
+  Checking for /bin/gzip...ok
+  Checking for /usr/users/bryce/.bochsdlx directory...
+  ---------------------------------------------------------------
+  To run the DLX Linux demo, I need to create a directory called
+  /usr/users/bryce/.bochsdlx, and copy some configuration files
+  and a 10 megabyte disk image into the directory.
+  ---------------------------------------------------------------
+  Is that okay? [y/n]
+  y
+  Copying /usr/share/bochs/dlxlinux/bochsrc.txt -&#62; /usr/users/bryce/.bochsdlx/.
+  Copying /usr/share/bochs/dlxlinux/README -&#62; /usr/users/bryce/.bochsdlx/.
+  Copying /usr/share/bochs/dlxlinux/testform.txt -&#62; /usr/users/bryce/.bochsdlx/.
+  Uncompressing /usr/share/bochs/dlxlinux/hd10meg.img.gz -&#62; /usr/users/bryce/.bochsdlx/hd10meg.img
+  Entering /usr/users/bryce/.bochsdlx
+  Running bochs
+  ========================================================================
+			Bochs x86 Emulator 2.0.pre3
+		Build from CVS snapshot on December 4, 2002
+  ========================================================================</PRE
+></TD
+></TR
+></TABLE
+>
+
+Then you get a new X11 window containing the VGA display of the simulated
+machine.  First you see the VGA BIOS screen, then Linux uncompresses and
+boots, and you get a login prompt.  Type "root" and ENTER to log in to
+DLX linux.
+<DIV
+CLASS="FIGURE"
+><A
+NAME="AEN707"
+></A
+><P
+><B
+>Figure 3-3. Screenshot of Bochs running DLX Linux</B
+></P
+><P
+><IMG
+SRC="../images/dlxlinux-in-linux.png"></P
+></DIV
+></P
+><P
+>Booting is complete when you see "dlx login:" and a cursor.  At this login
+prompt, type "root".  On UNIX systems, root is the system admin user.
+There is no password for root on this sample disk image, so it lets you log 
+in without typing any password.  Now you should see a UNIX prompt, and you 
+can begin to type UNIX commands.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  Welcome to DLX V1.0 (C) 1995-96 Erich Boehm
+                      (C) 1995    Hannes Boehm
+
+  dlx login: <B
+CLASS="COMMAND"
+>root</B
+>
+  Linux 1.3.89.
+  dlx:~# <B
+CLASS="COMMAND"
+>pwd</B
+>
+  /root
+  dlx:~# <B
+CLASS="COMMAND"
+>cd /</B
+>
+  dlx:~# <B
+CLASS="COMMAND"
+>ls</B
+>
+  bin/       etc/       lost+found/       root/       usr/
+  boot/      fd/        mnt/              sbin/       var/
+  dev/       lib/       proc/             tmp/        zip/
+  dlx:/# <B
+CLASS="COMMAND"
+>df</B
+>
+  Filesystem    1024-blocks   Used  Available Capacity Mounted on
+  /dev/hda1        10060      2736      6005     29%   /
+  dlx:/# _</PRE
+></TD
+></TR
+></TABLE
+><P
+>When you get tired of playing with DLX Linux, just type "reboot" in the Bochs
+window to shut down the DLX Linux operating system, and when it starts
+to reboot again press the "Power" button at the top of the Bochs display
+to end the application.</P
+><P
+>Here is a list of the files that are installed by the RPM, and a brief
+description of each one.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN719"
+></A
+><P
+><B
+>Table 3-4. Files in RPM package</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>File</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>/usr/share/doc/bochs/CHANGES</TD
+><TD
+> what has changed between versions </TD
+></TR
+><TR
+><TD
+>/usr/share/doc/bochs/COPYING</TD
+><TD
+> copy of the LGPL license </TD
+></TR
+><TR
+><TD
+>/usr/share/doc/bochs/README</TD
+><TD
+> the read-me file from the source distribution. </TD
+></TR
+><TR
+><TD
+>/usr/share/doc/bochs/TODO</TD
+><TD
+> the TODO file from the source distribution. </TD
+></TR
+><TR
+><TD
+>/usr/bin/bochs </TD
+><TD
+> the main Bochs executable </TD
+></TR
+><TR
+><TD
+>/usr/bin/bximage </TD
+><TD
+> tool for making new disk images </TD
+></TR
+><TR
+><TD
+>/usr/bin/bxcommit </TD
+><TD
+> tool for committing redologs to flat disk images </TD
+></TR
+><TR
+><TD
+>/usr/lib/bochs/plugins/* </TD
+><TD
+> device and gui plugins for Bochs (plugin version only) </TD
+></TR
+><TR
+><TD
+>/usr/share/doc/bochs/bochsrc-sample.txt</TD
+><TD
+> sample Bochs configuration file </TD
+></TR
+><TR
+><TD
+>/usr/share/man/man1/* </TD
+><TD
+> man pages for bochs, bochs-dlx, bximage and bxcommit</TD
+></TR
+><TR
+><TD
+>/usr/share/man/man5/* </TD
+><TD
+> man page for bochsrc </TD
+></TR
+><TR
+><TD
+>/usr/share/doc/bochs/index.html</TD
+><TD
+> a local copy of all Bochs documentation ( <A
+HREF="http://bochs.sourceforge.net/doc/docbook/index.html"
+TARGET="_top"
+>Online copy</A
+> )</TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/BIOS-bochs-latest </TD
+><TD
+> default ROM BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/BIOS-bochs-legacy </TD
+><TD
+> ROM BIOS image without 32-bit init code </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-elpin-2.40 </TD
+><TD
+> VGA BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-elpin-LICENSE </TD
+><TD
+> license for VGA BIOS </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-lgpl-latest </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-lgpl-latest-debug </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with debug output to the logfile </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-lgpl-latest-cirrus </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with the Cirrus extension enabled </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-lgpl-latest-cirrus-debug </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with the Cirrus extension enabled and debug output to the logfile </TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/VGABIOS-lgpl-README </TD
+><TD
+> readme for the LGPL'd VGA BIOS </TD
+></TR
+><TR
+><TD
+>/usr/bin/bochs-dlx </TD
+><TD
+> run this script to try out DLX Linux inside Bochs!</TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/dlxlinux/ </TD
+><TD
+> directory containing DLX linux sample disk image and configuration files</TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/dlxlinux/readme.txt</TD
+><TD
+> description of DLX linux</TD
+></TR
+><TR
+><TD
+>/usr/share/bochs/keymaps/*.map </TD
+><TD
+>keymap tables for X11 and SDL </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="MACOSXDMG"
+>3.3.3. MacOS X DMG</A
+></H2
+><P
+>This was contributed by Aard Vark in January 2003</P
+><P
+>The MacOS X binary distribution is a mountable disk
+image (.dmg file). Once you've downloaded the binary 
+distribution file, just double click
+on it to automatically unpack the archive and mount
+the volume on the desktop.  An icon will appear 
+exactly as if you'd inserted a CD-ROM
+or removable storage device, and a finder window
+containing the volume should automatically open.  
+It is likely to have an odd name
+such as _dmg_top, but don't worry about that.</P
+><P
+>Copy the Bochs-2.0 (or whatever version) folder from
+the disk image onto your hard disk.  Either Home or 
+Applications would be sensible places to put it.  
+Because the disk image is mounted read only, you
+can't run the included dlxlinux guest OS until
+you've copied it to the hard disk.  </P
+><P
+>Once you've installed the binaries, it's probably a
+good idea to drag the _dmg_top volume to trash to
+unmount it, so you don't get confused and try to 
+run bochs from there.  Then open
+the bochs folder from wherever you installed it.</P
+><P
+>The MacOS X version of bochs requires a terminal
+window to run. If you just double click on the Bochs 
+icon, you'll get an error message telling you to 
+double click on "bochs.scpt" to start
+Bochs in a new terminal window.  You'll need to
+configure Bochs before you will get very far with 
+the bochs.scpt in the top folder,
+so to try out bochs open the dlxlinux folder and
+double click on the bochs.scpt icon inside.</P
+><P
+>This will open a new terminal window which will
+contain the Bochs startup messages, and a 
+configuration menu.  The default option is
+[5], which starts the simulation, so press enter to
+do so.  You will then get a new window containing 
+the VGA display of the simulated
+machine.  The new window will probably appear behind
+the current terminal window, so either click on the
+bochs icon in the dock or the simulation window to 
+bring it to the front.  If you're quick
+enough you'll then see the VGA BIOS screen, then
+Linux  uncompresses and boots, and you get a login 
+prompt.  Type "root" and ENTER to log in to DLX Linux.</P
+><P
+>Once you've finished playing with DLX Linux, just
+type "reboot" in the Bochs window to shut down the 
+DLX Linux operating system, and 
+when it starts to reboot again press the "Power"
+button in the "MacBochs Hardware Controls" window 
+(it's the circle containing a vertical bar at the 
+far right - have a look at the Linux screenshots,
+since the Mac version doesn't seem to have
+descriptions or tool-tips).</P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN691"
+HREF="install-binary.html#AEN691"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Many distributions have their own RPM installer program, often graphical, and
+they should work ok.  It is helpful to be able to see the text output from
+RPM, so if you use a fancy RPM installer, be sure to find the text output and
+check that it looks correct.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="get-src-cvs.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="compiling.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Tracking the source code with CVS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Compiling Bochs</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

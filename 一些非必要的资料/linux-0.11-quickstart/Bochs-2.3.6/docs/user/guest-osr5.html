@@ -1,0 +1,421 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>SCO OpenServer 5.0.5</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="Windows XP"
+HREF="guest-winxp.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-winxp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+>&nbsp;</TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-OSR5"
+>9.16. SCO OpenServer 5.0.5</A
+></H1
+><P
+>Contributed by Carl Sopchak</P
+><P
+>You must read the message regarding software licenses in
+<A
+HREF="thirdparty.html"
+>Section 1.6</A
+> before you install SCO OpenServer 5.0.5 as a guest operating system in Bochs.</P
+><P
+>Back in April and May of 2002, I did some work on Bochs 
+in order to get it to install and boot SCO's OpenServer 5.0.5 (OSR5).
+Since that time, I have had several e-mails asking about this error message
+or that.  The newsgroup posts done at the time had all of the information that I knew,
+so I pointed people there.  (I had not used Bochs since...) 
+In February of 2003, I got another such e-mail.
+Since the sender indicated they were willing to pay me to get this going for them,
+I agreed to spend a few hours on it (for free, which is not common :-}).  Subsequently,
+I decided to document this once and for all.  (I did not charge anyone anything, this time...)</P
+><P
+>Note: These steps were originally used with Bochs 1.4.1 (or thereabouts, 
+since I was using CVS heavily at the time).  It is possible (likely) that later versions of Bochs
+are more tolerant/bug free, and this install may be abbreviated.  However, I have not tried
+to streamline it at all.</P
+><P
+>These steps were performed and confirmed using Bochs version 2.0.2, and SCO OpenServer version 5.0.5.
+The host OS was Red Hat Linux 8.0.</P
+><P
+>First, I downloaded the tarball, and extracted the source tree.  I decided to use the tarball
+instead of the RPM so that I knew what options were compiled in, etc.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>linux-$ tar -xzvf bochs-2.0.2.tar.gz</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Next, I configured and compiled Bochs...
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>linux-$ cd bochs-2.0.2
+linux-$ ./configure --enable-cdrom --enable-ne2000 --enable-host-specific-asms
+linux-$ make</PRE
+></TD
+></TR
+></TABLE
+>
+The --enable-host-specific-asms should only be used if the host OS is an Intel x86 based OS.</P
+><P
+>I then created my disk image:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>linux-$ ./bximage
+========================================================================
+                                bximage
+                  Disk Image Creation Tool for Bochs
+========================================================================
+
+Do you want to create a floppy disk image or a hard disk image?
+Please type hd or fd. [hd] hd
+
+What kind of image should I create?
+Please type flat, sparse or growing. [flat] 
+
+Enter the hard disk size in megabytes, between 1 and 32255
+[10] 2048
+
+I will create a hard disk image with
+  cyl=4161
+  heads=16
+  sectors per track=63
+  total sectors=4194288
+  total size=2047.99 megabytes
+
+What should I name the image?
+[c.img] hd0.img
+
+Writing: [] Done.
+
+I wrote 2147475456 bytes to hd0.img.
+
+The following line should appear in your .bochsrc:
+  ata0-master: type=disk, path="hd0.img", cylinders=4161, heads=16, spt=63</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>I then created my .bochsrc file.  I did this via the interactive portion of Bochs, with the
+end result as follows:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>floppya: 1_44="/dev/fd0", status=inserted
+floppyb: 1_44="b.img", status=inserted
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0-master: type=disk, path="hd0.img", cylinders=4161, heads=16, spt=63, translation=auto, biosdetect=auto, model="Generic 1234"
+ata0-slave: type=cdrom, path="/dev/cdrom", status=inserted, biosdetect=auto, model="Generic 1234"
+ata1: enabled=0
+ata2: enabled=0
+ata3: enabled=0
+romimage: file=bios/BIOS-bochs-latest
+vgaromimage: file=bios/VGABIOS-lgpl-latest
+megs: 64
+parport1: enabled=1, file="lp.pipe"
+com1: enabled=0
+# no sb16
+boot: cdrom
+floppy_bootsig_check: disabled=0
+vga_update_interval: 300000
+keyboard_serial_delay: 250
+keyboard_paste_delay: 100000
+cpu: ips=3000000
+clock: sync=realtime, time0=0
+text_snapshot_check: 0
+mouse: enabled=0
+private_colormap: enabled=0
+i440fxsupport: enabled=0
+# no ne2k
+# no loader
+log: osr5.log
+logprefix: %t-%e-%i%d
+debugger_log: -
+panic: action=ask
+error: action=report
+info: action=report
+debug: action=ignore
+pass: action=fatal
+keyboard_mapping: enabled=0, map=
+keyboard_type: mf
+user_shortcut: keys=none
+config_interface: textconfig
+display_library: x</PRE
+></TD
+></TR
+></TABLE
+>
+Some important things to note are that you want to boot from the cdrom, and you do NOT want the ne2000
+card configured initially.  (We'll add that later...)</P
+><P
+>At this point, Bochs is ready to roll!  Insert the OSR5 install CD into the drive, and start Bochs.
+You should soon see the SCO "boot:" prompt:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>SCO OpenServer(TM) Release 5
+
+boot
+: defbootstr disable=fdi,dptr</PRE
+></TD
+></TR
+></TABLE
+>
+
+Note the disable= parameter that you need.  These two SCO drivers cause the install to fail, so they
+need to be disabled for the install boot.  You will not need this once OSR5 is installed.</P
+><P
+>During the install of OSR5, there are two default configuration answers that need to be changed.
+For the hard disk setup, you should turn bad tracking off, since it's unnecessary on an emulated disk.
+(It won't hurt to do it, it will just take a VERY long time!)
+For the network setup, change the network card to Deferred.  You can change other settings, if you so
+desire.  However, I would do the initial install with as little configured as you can get away with, then
+add whatever else is needed (one step at a time) after the initial install completes.</P
+><P
+>Let the install copy the files.  Go get lunch.  Take a nap.  Go have dinner... 
+This can take a LONG time.  On my Pentium 4 1.7GHz system, this
+step took just over eight hours!  (BTW, it was MUCH longer in version 1.4.1.  Great job, guys!)</P
+><P
+>After the install finishes, you will need to change the following lines in .bochsrc file:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>ne2k: ioaddr=0x300, irq=10, mac=b0:c4:20:00:00:00, ethmod=linux, ethdev=eth0
+boot: disk</PRE
+></TD
+></TR
+></TABLE
+>
+Obviously, if you're not using Linux, the ethmode and ethdev values on the ne2k line will be different.
+Also, since Bochs uses "raw" network card access, you'll have to "setuid root" on the Bochs executable:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>linux-$ chown root bochs
+linux-$ chmod u+s bochs</PRE
+></TD
+></TR
+></TABLE
+>
+(If there is a way to give a "normal user" CAP_NET_RAW capability, that would be an alternative.
+I don't know how to do that...)
+Restart Bochs.  Now, you can just press Enter at the OSR5 boot: prompt, because the offending
+drivers have been linked out of the kernel.</P
+><P
+>Before you configure the network card,  I'd strongly suggest getting the latest "nat" driver from SCO.  
+Version 5.0.5b of this driver, according to the SCO web site, "correct[s] possible system lockup 
+under high load due to internal buffer overflow."  The driver can be found 
+<A
+HREF="ftp://ftp.caldera.com/pub/openserver5/drivers/OSR505/network/nat"
+TARGET="_top"
+>here</A
+>.
+To get the Disk Image file into SCO, I downloaded the VOL.000.000 file to my linux box,
+and used tar to get it on to a floppy:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>linux-$ tar -cvf /dev/fd0 VOL.000.000</PRE
+></TD
+></TR
+></TABLE
+>
+I then used tar within OSR5 to move it from the floppy to the /tmp directory:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>osr5-# cd /tmp
+osr5-# tar -xvf /dev/fd0135ds18</PRE
+></TD
+></TR
+></TABLE
+>
+You can then use 'custom' to install the driver from the image file.
+You will then want to use 'scoadmin network' to configure the network card.  Choose 
+the Novell NE2000 card, and set the parameters to match the ne2k: line in the .bochsrc file.
+DO NOT have OSR5 look for the card, as Bochs may likely crash. (It did in version 1.4.1.)</P
+><P
+>You can also configure a printer, if you want.  Using the spoolpipe utility that I wrote
+(which can be found in Bochs' misc directory), you can print from OSR5 through the parallel 
+port, and you'll hardly notice
+that the printing is going through an extra layer of operating system!  
+(You could also set up a printer using network printing, if the printer is not on the host machine...)</P
+><P
+>Obviously, dont forget to apply the release supplements and other patches that are considered 
+"must haves" for OSR5: rs505a, oss600a, oss497b (others?).  </P
+><P
+>That's about as far as I have got.  I played around with OSR5 within Bochs a bit, but I 
+can by no means say that I did any kind of real testing, let alone exhaustive testing.</P
+><P
+>And of course, YMMV!  :-)</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-winxp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Windows XP</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>&nbsp;</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

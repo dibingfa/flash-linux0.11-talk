@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Docbook Basics</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Documentation Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Layout of Bochs Documentation"
+HREF="layout.html"><LINK
+REL="NEXT"
+TITLE="References and Other Tutorials"
+HREF="references.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Documentation Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="layout.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="references.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="BASICS"
+></A
+>Chapter 2. Docbook Basics</H1
+><P
+>Some of the most commonly used docbook patterns are described here
+for quick reference.  For all the details (sometimes more than you
+wanted), try <A
+HREF="http://www.docbook.org/tdg/en/html/docbook.html"
+TARGET="_top"
+>DocBook: The Definitive Guide</A
+> by Norman Walsh and Leonard Muellner, which O'Reilly
+&amp; Associates has generously placed on their web site.  In this section,
+many of the SGML tags are linked to the page of Walsh's book that describes
+that tag in detail.</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN26"
+>2.1. Small Tutorial</A
+></H1
+><P
+>Docbook files are text files containing SGML.  If you have ever looked
+at HTML, then a docbook file will look familiar.  Not the same, but familiar.
+The easiest way of getting familiar with the docbook format is by looking at
+examples such as the Bochs documentation itself.  When you compare the source
+code to the rendered documentation on the web site, it will be pretty obvious
+what all the codes are doing.  HTML is very forgiving about breaking the syntax
+rules, such as not putting &lt;/h1&gt; at then end of an &lt;h1&gt; section.
+SGML is picky; if you forget that kind of thing in SGML, it will insist that
+you fix it.  </P
+><P
+>Every paragraph must begin with the &lt;para&gt; tag and end with the
+corresponding end tag, &lt;/para&gt;.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;<A
+HREF="http://www.docbook.org/tdg/en/html/para.html"
+TARGET="_top"
+>para</A
+>&gt;
+This is a paragraph.
+&lt;/para&gt;</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>A chapter looks like this:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;<A
+HREF="http://www.docbook.org/tdg/en/html/chapter.html"
+TARGET="_top"
+>chapter</A
+>&gt;
+  &lt;title&gt;<TT
+CLASS="REPLACEABLE"
+><I
+>title of the chapter</I
+></TT
+>&lt;/title&gt;
+  <TT
+CLASS="REPLACEABLE"
+><I
+>text of the chapter</I
+></TT
+>
+&lt;/chapter&gt;</PRE
+></TD
+></TR
+></TABLE
+>
+The text of the chapter must contain at least one complete &lt;para&gt; tag,
+and it can include &lt;section&gt;s.</P
+><P
+>A section looks like this:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;<A
+HREF="http://www.docbook.org/tdg/en/html/section.html"
+TARGET="_top"
+>section</A
+>&gt;
+  &lt;title&gt;<TT
+CLASS="REPLACEABLE"
+><I
+>title of the section</I
+></TT
+>&lt;/title&gt;
+  <TT
+CLASS="REPLACEABLE"
+><I
+>text of the section</I
+></TT
+>
+&lt;/section&gt;</PRE
+></TD
+></TR
+></TABLE
+>
+The text of the section must contain at least one complete &lt;para&gt; tag,
+and it can include other &lt;section&gt;s.</P
+><P
+>To make a link to any URL, use the syntax:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;<A
+HREF="http://www.docbook.org/tdg/en/html/ulink.html"
+TARGET="_top"
+>ulink</A
+> url="<TT
+CLASS="REPLACEABLE"
+><I
+>URL</I
+></TT
+>"&gt;<TT
+CLASS="REPLACEABLE"
+><I
+>text of the hyperlink</I
+></TT
+>&lt;/ulink&gt;</PRE
+></TD
+></TR
+></TABLE
+>
+
+However, if you like to link to another target inside the same document,
+for example to a section, use something like that:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;section id="<TT
+CLASS="REPLACEABLE"
+><I
+>unique identifier</I
+></TT
+>"&gt;
+  <TT
+CLASS="REPLACEABLE"
+><I
+>All stuff that is needed here...</I
+></TT
+>
+&lt;/section&gt;
+<TT
+CLASS="REPLACEABLE"
+><I
+>...</I
+></TT
+>
+&lt;<A
+HREF="http://www.docbook.org/tdg/en/html/link.html"
+TARGET="_top"
+>link</A
+> linkend="<TT
+CLASS="REPLACEABLE"
+><I
+>unique identifier to link to</I
+></TT
+>"&gt;<TT
+CLASS="REPLACEABLE"
+><I
+>text of hyperlink</I
+></TT
+>&lt;/link&gt;</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>To include a picture in the text, use the &lt;graphic&gt; tag.  In SGML, this
+graphic tag has no closing tag.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&lt;<A
+HREF="http://www.docbook.org/tdg/en/html/graphic.html"
+TARGET="_top"
+>graphic</A
+> format="<TT
+CLASS="REPLACEABLE"
+><I
+>fmt</I
+></TT
+>" fileref="<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>"&gt;</PRE
+></TD
+></TR
+></TABLE
+>
+The <TT
+CLASS="REPLACEABLE"
+><I
+>fmt</I
+></TT
+> can be one of many formats including GIF,
+JPG, PNG, PS, and EPS.  The filename should be on the local disk.  If there is
+a pathname, it should be relative to the source file or it won't be found on
+anyone's system other than yours.</P
+><P
+>There are over 300 tags defined in the latest version of docbook, so 
+we won't try to list them all here.  Once you get the idea, you can 
+either find examples in the rest of the documentation that do what you
+need, or look at Walsh and Muellner's
+<A
+HREF="http://www.docbook.org/tdg/en/html/docbook.html"
+TARGET="_top"
+>DocBook: The Definitive Guide</A
+>
+for more details.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="layout.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="references.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Layout of Bochs Documentation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>References and Other Tutorials</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

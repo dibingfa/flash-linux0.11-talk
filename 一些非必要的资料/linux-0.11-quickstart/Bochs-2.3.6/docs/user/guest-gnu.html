@@ -1,0 +1,820 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>GNU (Also known as GNU/Hurd)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="FreeDOS Beta 8"
+HREF="guest-freedos.html"><LINK
+REL="NEXT"
+TITLE="DOS"
+HREF="guest-dos.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-freedos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-dos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-GNU"
+>9.7. GNU (Also known as GNU/Hurd)</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3774"
+>9.7.1. Installing GNU</A
+></H2
+><P
+>This has been contributed by Bruno Bonfils (asyd at debian-fr dot org) </P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3777"
+>9.7.1.1. Introduction</A
+></H3
+><P
+>Since I don't have enough computers to dedicate a box to GNU, I'm trying
+to do my own harddrive image disk. I thougt there was
+some documentation about how to do that. But since I didn't find
+anything and I decided to write a small doc. I hope this document will be
+useful for some people who wants to try the GNU/Hurd.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3780"
+>9.7.1.2. The testing box</A
+></H3
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Debian (Sid) GNU/Linux 2.4.19 
+
+ii  bochs          1.4.1.no.elpin IA-32 (x86) PC emulator
+ii  bochs-x        1.4.1.no.elpin Bochs binary with X interface.
+ii  grub           0.92+cvs200209 GRand Unified Bootloader
+ii  gcc-i386-gnu   1.7-8          Cheap cross-compiler for GNU/Hurd.
+ii  mig-i386-gnu   1.2-1          The GNU distribution of the Mach 3.0 interface</PRE
+></TD
+></TR
+></TABLE
+>
+
+If you don't have time and if you trust me, you can download here
+<A
+NAME="AEN3784"
+HREF="#FTN.AEN3784"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+>
+my own image file. (You don't need to run native-install)</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3787"
+>9.7.1.3. Creating the image</A
+></H3
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>In this example, I use a 112 MB image disk, but I think you
+can use any size without some problem.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Use createdisk command like this :
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># createdisk gnu.img 112 
+
+Disk Geometry:
+C: 227
+H: 16
+S: 63
+Total size: 117153792 bytes</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Note on a paper or on your memory the disk geometry. Then, use the
+losetup command to create a loopback on the whole disk.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># losetup /dev/loop1 gnu.img</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Now, call fdisk on /dev/loop1. Go into expert mode, and modify the
+disk geometry using the c, h, s commands. Return in normal mode, and
+create an unique primary partition which uses the whole disk. Then,
+detach the /dev/loop1 using :
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># losetup -d /dev/loop1</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3797"
+>9.7.1.4. Installing GNU</A
+></H3
+><P
+></P
+><UL
+><LI
+><P
+> Attach the partition</P
+><P
+> 
+First of all, you need to create a filesystem on the disk. Use the
+command losetup and -o &lt;offset&gt; option to attach /dev/loop1 on the first
+partition of an image disk. Offset is computed like this :</P
+><P
+> 
+offset = sector * block_size (512)
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># losetup -o 32256 /dev/loop1 gnu.img</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+> Preparing the filesystem</P
+><P
+>According to the GNU/Hurd Installation Guide
+<A
+NAME="AEN3808"
+HREF="#FTN.AEN3808"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+>
+, use mke2fs to create a filesystem.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># mke2fs -o hurd /dev/loop1</PRE
+></TD
+></TR
+></TABLE
+>
+
+Just mount /dev/loop1 like a typical dev.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># mount /dev/loop1 /mnt/gnu</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+><LI
+><P
+> Finish the installation</P
+><P
+>Download a GNU archive as indicated in the Hurd Installation Guide, and decompress it in /mnt/gnu.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># cd /mnt/gnu
+# tar --same-owner -xvzpf ~/gnu-latest.tar.gz</PRE
+></TD
+></TR
+></TABLE
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3817"
+>9.7.1.5. Bochs Configuration</A
+></H3
+><P
+>Copy default configuration (<TT
+CLASS="REPLACEABLE"
+><I
+>/usr/share/doc/bochs/examples/bochsrc.gz</I
+></TT
+> on debian) 
+on your home directory and edit it with your favorite editor (GNU Emacs, i hope ;).</P
+><P
+>For my image file I have the following configuration :
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>romimage: file=/usr/share/bochs/BIOS-bochs-latest
+megs: 128
+vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
+floppya: 1_44=/dev/fd0, status=ejected
+ata0-master: type=disk, path="/home/asyd/travail/hurd/gnu.img", cylinders=227, heads=16, spt=63 # edit me
+ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
+boot: disk
+log: /dev/stdout
+panic: action=ask
+error: action=report
+info: action=report
+debug: action=ignore
+vga_update_interval: 300000
+keyboard_serial_delay: 250
+keyboard_paste_delay: 100000
+cpu: ips=1000000
+mouse: enabled=0
+private_colormap: enabled=0
+fullscreen: enabled=0
+screenmode: name="sample"
+ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, ethmod=tap, ethdev=tap0
+keyboard_mapping: enabled=0, map=
+keyboard_type: xt
+i440fxsupport: enabled=0</PRE
+></TD
+></TR
+></TABLE
+>
+
+note most of them are actually in the default Debian example file. If you use
+these lines, don't forget to read the Networking section.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3823"
+>9.7.1.6. Note on GNU Mach</A
+></H3
+><P
+>Remember that the Hurd is not a kernel, it's just a collection of libraries
+and programs, so we can't actually boot the Hurd. We boot GNU Mach, and
+then launch the base servers.</P
+><P
+>The default GNU Mach which is provided by the default GNU archive 
+contains some modules / drivers which are not needed in bochs 
+environment. If you use it, you'll probably have some kernel panic 
+while booting. Don't be afraid and just say alwayscont.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>in my archive, I use a recompiled GNU Mach which contains only the
+drivers which are needed (--enable-floppy --enable-ide --enable-kmsg
+--enable-ne2000). If you want more informations on how to compile your own
+GNU Mach, just send me a mail and I'll add the section in this
+document.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3829"
+>9.7.1.7. Final Step</A
+></H3
+><P
+>Create a grub floppy disk or use my floppy image 
+<A
+NAME="AEN3832"
+HREF="#FTN.AEN3832"
+><SPAN
+CLASS="footnote"
+>[3]</SPAN
+></A
+>
+Adapt your bochsrc
+file according to your choice. If you want install Grub on the image disk,
+remember to copy stage1, stage2 Grub's files into /mnt/gnu/boot/grub.</P
+><P
+>Launch bochs - as root if you want networking (using sudo for example).</P
+><P
+>If you have stage1 and stage2 file, you can install Grub on the MBR.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>&lt;grub&gt; root (hd0,0)
+&lt;grub&gt; setup (hd0)</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Finally, booting GNU mach
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>&lt;grub&gt; root (hd0,0)
+&lt;grub&gt; kernel /boot/gnumach.gz root=hd0s1
+&lt;grub&gt; module /boot/serverboot.gz
+&lt;grub&gt; boot</PRE
+></TD
+></TR
+></TABLE
+>
+
+Now, you can read the official GNU/Hurd Installation Guide
+<A
+NAME="AEN3839"
+HREF="#FTN.AEN3839"
+><SPAN
+CLASS="footnote"
+>[4]</SPAN
+></A
+>
+.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3842"
+>9.7.1.8. Networking</A
+></H3
+><P
+>You can try to test networking between the GNU/Linux (host OS) and the GNU/Hurd.
+First of all, please read 
+<A
+NAME="AEN3845"
+HREF="#FTN.AEN3845"
+><SPAN
+CLASS="footnote"
+>[5]</SPAN
+></A
+>
+, I currently have the *same* problem.
+<A
+NAME="AEN3848"
+HREF="#FTN.AEN3848"
+><SPAN
+CLASS="footnote"
+>[6]</SPAN
+></A
+></P
+><P
+>Verify your kernel configuration, you need to have :
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>CONFIG_NETLINK_DEV=m
+CONFIG_ETHERTAP=m</PRE
+></TD
+></TR
+></TABLE
+>
+
+(or y instead or m). Check if /dev/tap0 file exist, else create it
+with
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># mknod /dev/tap0 c 36 16</PRE
+></TD
+></TR
+></TABLE
+>
+
+and run this command on the guest os :
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+># ifconfig tap0 192.168.100.1 netmask 255.255.255.0</PRE
+></TD
+></TR
+></TABLE
+>
+
+Use ip 196.168.100.10 on the GNU/Hurd and you can ping 192.168.100.1</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3855"
+>9.7.1.9. Thanks</A
+></H3
+><P
+><P
+></P
+><UL
+><LI
+><P
+> Mmenal</P
+></LI
+><LI
+><P
+> #hurdfr, #hurd, #bochs channels (Freenode network)</P
+></LI
+><LI
+><P
+> All people who help me everyday on IRC</P
+></LI
+></UL
+></P
+><P
+> Copyright (c) Bruno Bonfils</P
+><P
+>Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.1
+or any later version published by the Free Software Foundation.</P
+></DIV
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3784"
+HREF="guest-gnu.html#AEN3784"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+HREF="http://plouc.net/~asyd/hurd/hurd.img.gz"
+TARGET="_top"
+>My own harddisk Image File (~20Mo)</A
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3808"
+HREF="guest-gnu.html#AEN3808"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+HREF="http://web.walfield.org/papers/hurd-installation-guide/english/hurd-install-guide.html"
+TARGET="_top"
+>GNU/Hurd Installation guide</A
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3832"
+HREF="guest-gnu.html#AEN3832"
+><SPAN
+CLASS="footnote"
+>[3]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Grub Floppy image : (coming soon)</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3839"
+HREF="guest-gnu.html#AEN3839"
+><SPAN
+CLASS="footnote"
+>[4]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+HREF="http://web.walfield.org/papers/hurd-installation-guide/english/hurd-install-guide.html"
+TARGET="_top"
+>GNU/Hurd Installation guide</A
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3845"
+HREF="guest-gnu.html#AEN3845"
+><SPAN
+CLASS="footnote"
+>[5]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+><A
+HREF="http://www.geocrawler.com/archives/3/11758/2002/3/350/8049674/"
+TARGET="_top"
+>new ethertap interface for linux, by Bryce Denney</A
+></P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3848"
+HREF="guest-gnu.html#AEN3848"
+><SPAN
+CLASS="footnote"
+>[6]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>This can be solved by using the tuntap interface (see <A
+HREF="config-tuntap.html"
+>Section 8.10</A
+>)</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-freedos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-dos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FreeDOS Beta 8</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>DOS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

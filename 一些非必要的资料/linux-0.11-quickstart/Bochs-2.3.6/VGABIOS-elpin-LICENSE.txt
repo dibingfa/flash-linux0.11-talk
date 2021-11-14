@@ -1,0 +1,9 @@
+The VGA BIOS from Elpin Systems, Inc. (http://www.elpin.com/)
+is now permanently licensed for use with bochs, courtesy
+of MandrakeSoft, creators of the leading "Linux-Mandrake"
+distribution (http://www.linux-mandrake.com/).  You may
+freely use/distribute it with bochs, as long as it is used
+in bochs for the intended use as a VGA BIOS.
+
+Please check out Elpin Systems.  They make cool software games,
+educational software, and VGA development products.

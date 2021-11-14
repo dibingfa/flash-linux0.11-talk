@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Notes about Voodoo Graphics usage</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Notes about Cirrus SVGA usage"
+HREF="cirrus-notes.html"><LINK
+REL="NEXT"
+TITLE="Disk Image Modes"
+HREF="harddisk-modes.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="cirrus-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="harddisk-modes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="VOODOO-NOTES"
+>8.21. Notes about Voodoo Graphics usage</A
+></H1
+><P
+>  Bochs supports the emulation of 4 different 3dfx Voodoo Graphics adapter models.
+  The Voodoo1 and Voodoo2 models are 3D-only add-on cards and require a VGA
+  compatible primary device. The Voodoo Banshee and it's successor Voodoo3 have
+  both a VGA core and a 2D/3D core, so no other VGA card is required. The 2D/3D
+  cards can be assigned to AGP if the i440BX chipset is selected (slot #5).
+  </P
+><P
+>  To emulate the Voodoo1 or Voodoo2 device only the "model" parameter of the
+  bochsrc option "voodoo" needs to be set. If the vga extension option is set
+  to "voodoo" in that case, the primary display adapter is an ISA VGA card.
+  </P
+><P
+>  For emulating the Voodoo Banshee or Voodoo3 adapter, the vga extension option
+  must be set to "voodoo". Using a different primary display adapter and a
+  Banshee compatible device with it's VGA interface disabled is not
+  implemented yet. Both Banshee and Voodoo3 currently need a specific external
+  VGA BIOS, since a Voodoo extension for the LGPL'd VGABIOS is not written yet.
+  </P
+><P
+>  These bochsrc settings should be used for Voodoo Banshee PCI:
+  <PRE
+CLASS="SCREEN"
+>  vga: extension=voodoo
+  vgaromimage: file=Pci_sg.rom
+  voodoo: model=banshee
+  </PRE
+>
+  </P
+><P
+>  These settings are required for the Voodoo3 PCI:
+  <PRE
+CLASS="SCREEN"
+>  vga: extension=voodoo
+  vgaromimage: file=V3_2000_PCI_SG_2.15.06_LC.rom
+  voodoo: model=voodoo3
+  </PRE
+>
+  </P
+><P
+>  These settings are required for Voodoo Banshee AGP:
+  <PRE
+CLASS="SCREEN"
+>  pci: chipset=i440bx, slot5=voodoo
+  vga: extension=voodoo
+  vgaromimage: file=Agp_sg.rom
+  voodoo: model=banshee
+  </PRE
+>
+  </P
+><P
+>  These settings are required for the Voodoo3 AGP:
+  <PRE
+CLASS="SCREEN"
+>  pci: chipset=i440bx, slot5=voodoo
+  vga: extension=voodoo
+  vgaromimage: file=1k11sg.rom
+  voodoo: model=voodoo3
+  </PRE
+>
+  </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cirrus-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="harddisk-modes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Notes about Cirrus SVGA usage</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Disk Image Modes</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

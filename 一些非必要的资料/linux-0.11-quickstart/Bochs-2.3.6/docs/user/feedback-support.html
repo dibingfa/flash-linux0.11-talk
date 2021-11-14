@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Feedback and Support</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Text-mode is broken in some ancient DOS program"
+HREF="textmode-problems.html"><LINK
+REL="NEXT"
+TITLE="Mailing Lists"
+HREF="mailinglist.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="textmode-problems.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mailinglist.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="FEEDBACK-SUPPORT"
+></A
+>Chapter 7. Feedback and Support</H1
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SF-PROJECT-PAGE"
+>7.1. The Bochs project on SourceForge</A
+></H1
+><P
+>The <A
+HREF="http://sourceforge.net/projects/bochs"
+TARGET="_top"
+>Bochs project page</A
+>
+on SourceForge provides these features:
+<P
+></P
+><UL
+><LI
+><P
+>Project summary page with screenshots and download statistics</P
+></LI
+><LI
+><P
+>Download area for Bochs release packages and disk images</P
+></LI
+><LI
+><P
+><A
+HREF="mailinglist.html"
+>Mailing list</A
+> archives</P
+></LI
+><LI
+><P
+>Source code browser</P
+></LI
+><LI
+><P
+>Tickets section (bug reports, patches, feature requests etc.)</P
+></LI
+><LI
+><P
+>Discussion boards (e.g. "Help" and "Open Discussion")</P
+></LI
+><LI
+><P
+>Project news page (used for release announcements)</P
+></LI
+></UL
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="SF-TRACKERS"
+>7.1.1. SourceForge tickets section (bug and patch trackers)</A
+></H2
+><P
+>There are some requirements when submitting bug reports, patches and feature
+requests for Bochs to make it easier to reproduce bugs and test patches.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3326"
+>7.1.1.1. Reporting errors from Bochs compilation</A
+></H3
+><P
+>When reporting errors while building Bochs to the <A
+HREF="mailinglist.html#BOCHS-DEVELOPERS"
+>bochs-developers mailing list</A
+> or the SF bug
+tracker for the Bochs project, this information is required to fix the issue:
+<P
+></P
+><UL
+><LI
+><P
+>host platorm / build environment</P
+></LI
+><LI
+><P
+>Bochs release version or SVN revision</P
+></LI
+><LI
+><P
+>configure options used</P
+></LI
+><LI
+><P
+>full error message</P
+></LI
+><LI
+><P
+>config.log output if configure failure</P
+></LI
+><LI
+><P
+>source file name and line number if compile error</P
+></LI
+></UL
+></P
+><P
+>Before reporting us the issue, make sure that a similar one hasn't been already
+reported or someone created a patch to fix it. If you are familiar with C++
+and you can write some code to fix your problem, you can post it in the <A
+HREF="mailinglist.html#BOCHS-DEVELOPERS"
+>bochs-developers mailing list</A
+>
+or submit the patch in SF patch tracker for Bochs.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3345"
+>7.1.1.2. Reporting Bochs runtime issues</A
+></H3
+><P
+>If Bochs does not work properly (e.g. panic, segfault, malfunction of emulated device)
+we need some information to find out what's going on:
+<P
+></P
+><UL
+><LI
+><P
+>Bochs version used (version number if binary release / SVN revision
+  if self-compiled)</P
+></LI
+><LI
+><P
+>host platorm / build environment (if self-compiled)</P
+></LI
+><LI
+><P
+>bochsrc options used</P
+></LI
+><LI
+><P
+>error message (if panic or program termination)</P
+></LI
+><LI
+><P
+>log file output (related section only if too big)</P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3359"
+>7.1.1.3. Submitting a patch for Bochs</A
+></H3
+><P
+>Patches for Bochs should be provided in the "unified diff" format. In addition
+to the patch file and a detailed description this information is required:
+<P
+></P
+><UL
+><LI
+><P
+>patch applies to Bochs release version / SVN revision</P
+></LI
+><LI
+><P
+>test case (if required)</P
+></LI
+></UL
+></P
+><P
+>When you are are interested in writing a patch to fix bugs or add new features,
+you should have a look at the <A
+HREF="../development/about-the-code.html"
+TARGET="_top"
+>developer documentation</A
+>.
+For some parts of the Bochs code we have already written some basic information.</P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="textmode-problems.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mailinglist.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Text-mode is broken in some ancient DOS program</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mailing Lists</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
