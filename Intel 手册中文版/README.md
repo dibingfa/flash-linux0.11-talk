@@ -1,6 +1,6 @@
 # Intel 手册中文版
 
-### Intel® 64 and IA-32 ArchitecturesSoftware Developer’s Manual
+### [Intel® 64 and IA-32 ArchitecturesSoftware Developer’s Manual](https://www.intel.cn/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-vol-1-manual.pdf)
 
 大家一起来翻译，选择好想翻译的小节后，可以先用 [@翻译人：GitHub账号名] 来占位，以免重复翻译。翻译源请以[这里](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E4%B8%80%E4%BA%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E8%B5%84%E6%96%99/Intel%E6%89%8B%E5%86%8C)为准。
 
