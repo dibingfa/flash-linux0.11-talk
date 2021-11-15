@@ -1,0 +1,310 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>DOS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="GNU (Also known as GNU/Hurd)"
+HREF="guest-gnu.html"><LINK
+REL="NEXT"
+TITLE="Windows 95"
+HREF="guest-win95.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-gnu.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-win95.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-DOS"
+>9.8. DOS</A
+></H1
+><P
+>You must read the message regarding software licenses in 
+<A
+HREF="thirdparty.html"
+>Section 1.6</A
+> before you install or use MS-DOS, OS/2, DR-DOS, or any other DOS as a guest operating system in Bochs.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3871"
+>9.8.1. Accessing your CDROM</A
+></H2
+><P
+>To access your CDROM in DOS, you must download an IDE CDROM driver.  
+Bochs emulates a very generic CDROM drive, and several drivers are known to
+work.  Others don't.  This section describes how to set up your
+<TT
+CLASS="FILENAME"
+>config.sys</TT
+> and <TT
+CLASS="FILENAME"
+>autoexec.bat</TT
+> to enable
+the CDROM.</P
+><P
+>The drivers that have been reported to work are
+<TT
+CLASS="FILENAME"
+>OAKCDROM.SYS</TT
+> that comes with several versions of Windows
+and <TT
+CLASS="FILENAME"
+>SBIDE.SYS</TT
+> version 1.21 from Creative
+Labs<A
+NAME="AEN3879"
+HREF="#FTN.AEN3879"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+> and OAKCDROM.SYS that comes with several versions of Windows.
+Copy the driver to your boot disk, and then set up the startup files as follows.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>config.sys:
+  device=himem.sys
+  device=oakcdrom.sys /D:CD001
+      -or-
+  device=sbide.sys /D:CD001 /P:1f0,14,3f6
+
+autoexec.bat:
+  mscdex.exe /M:10 /D:CD001</PRE
+></TD
+></TR
+></TABLE
+><P
+>If the files mentioned in <TT
+CLASS="FILENAME"
+>config.sys</TT
+> and
+<TT
+CLASS="FILENAME"
+>autoexec.bat</TT
+> are not in the root directory, give the full
+pathname, like <TT
+CLASS="FILENAME"
+>c:\windows\himem.sys</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3888"
+>9.8.2. SB16 driver for DOS</A
+></H2
+><P
+>To use the SB16 device in DOS you need to load a driver for it. The file <TT
+CLASS="FILENAME"
+>SBBASIC.EXE</TT
+> contains a self-extracting archive with all required file.
+After unpacking it to <CODE
+CLASS="VARNAME"
+>C:\SB16</CODE
+> you can execute <TT
+CLASS="FILENAME"
+>INSTALL.EXE</TT
+>
+to install the driver. The file <TT
+CLASS="FILENAME"
+>DISK.ID</TT
+> should contain the version
+string <CODE
+CLASS="VARNAME"
+>SDR-31STD-1-US (Revision 1)</CODE
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3896"
+>9.8.3. Bootdisks of early DOS versions</A
+></H2
+><P
+>On the Web there are bootdisks available for most of the DOS versions ever released,
+but some of them have been reported to fail in Bochs. The bootdisk for MS-DOS 1.25
+contains a boot sector of a newer DOS version, so it would fail on real hardware,
+too. The floppy image for MS-DOS 2.11 has a boot sector that tries to boot from
+hard disk instead of the floppy.</P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN3879"
+HREF="guest-dos.html#AEN3879"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>To get it, go to <A
+HREF="http://creative.com"
+TARGET="_top"
+>Creative Labs web
+site</A
+>, click on Support, then click Download Files.  You get to a screen
+where you must select the operating system and the product for which you want
+the driver.  Choose DOS as the operating system, and "CD-ROM: 4x and above" as
+the product.  There are several choices, but you want
+<TT
+CLASS="FILENAME"
+>sbide121.exe</TT
+> from April 15, 1997.  Version 2.0 does not
+work.  The download file is a self-extracting ZIP file, so on
+DOS or Windows you just run it; on other platforms you can try using
+the unzip command.  The driver is called SBIDE.SYS.  </P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-gnu.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-win95.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>GNU (Also known as GNU/Hurd)</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Windows 95</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

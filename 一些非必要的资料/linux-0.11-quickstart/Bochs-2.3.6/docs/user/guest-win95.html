@@ -1,0 +1,1049 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Windows 95</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="DOS"
+HREF="guest-dos.html"><LINK
+REL="NEXT"
+TITLE="Windows NT 4.0"
+HREF="guest-winnt4.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-dos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-winnt4.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-WIN95"
+>9.9. Windows 95</A
+></H1
+><P
+>    You must read the message regarding software licenses in <A
+HREF="thirdparty.html"
+>Section 1.6</A
+>
+    before you install Windows 95 as a guest operating system in Bochs.
+  </P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>    If you want to use higher screen resolutions than 640x480 with more than 16 colours,
+    you should enable the Cirrus video card, see <A
+HREF="cirrus-notes.html"
+>Section 8.17</A
+>, as Windows 95
+    comes with drivers for that video card.
+  </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3906"
+>9.9.1. How to Install Windows 95 with floppies</A
+></H2
+><P
+>Using Windows95 for PCs without Windows, 1.44M floppy distribution</P
+><P
+>Preparing for the install</P
+><P
+>Copy the floppies to files on your workstation.  Keep in mind,
+they are of 2 formats - 1.44M &#38; 1.680M.  The boot disk and
+disk#1 are 1.44M.  The rest of them (disk#2..disk#13) are
+1.680M format.  You may need a Linux workstation to do this
+part, though it should be possible on others if the OS provides
+a way to specify alternate floppy media geometries.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  format   tracks   heads  sectors/track
+  1.44M:     80       2        18
+  1.680M:    80       2        21
+
+
++- On linux, you achieve this, via the 'setfdprm' command, and
+|  associated parameters in the '/etc/fdprm' file.  Here's an
+|  excerpt from that file:
+|
+|    # /etc/fdprm  -  floppy disk parameter table
+|    1440/1440	2880    18   2  80    0 0x1B 0x00 0xCF     0x6C
+|    1680/1440	3360	21   2  80    0 0x0C 0x00 0xCF     0x6C # ?????
+|
+|  To copy the floppies, you would do something like:
+|
+|    linux-&#62; cp /dev/fd0 win95_boot (after inserting the boot diskette)
+|    linux-&#62; cp /dev/fd0 win95_d1   (after inserting disk #1)
+|
+|  Then switch to the alternate 1.680M geometry:
+|
+|    linux-&#62; setfdprm -p /dev/fd0 1680/1440
+|    linux-&#62; cp /dev/fd0 win95_d2   (after inserting disk #2)
+|    linux-&#62; cp /dev/fd0 win95_d3   (after inserting disk #3)
+|    ...
+|    linux-&#62; cp /dev/fd0 win95_d13  (after inserting disk #13)
+|
+|  And revert back to the default 1.44M geometry if desired
+|
++-   linux-&#62; setfdprm -p /dev/fd0 1440/1440&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>You should end up with something similar to the following listing:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  -rw-r--r--   1 user     group    1474560 Oct 31 12:04 win95_boot
+  -rw-r--r--   1 user     group    1474560 Jul 15  1997 win95_d1
+
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d2
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d3
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d4
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d5
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d6
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d7
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d8
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d9
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d10
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d11
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d12
+  -rw-r--r--   1 user     group    1720320 Jul 15  1997 win95_d13</PRE
+></TD
+></TR
+></TABLE
+><P
+>Create a hard disk image file.  For example, for a 62M disk with
+the following settings in <TT
+CLASS="FILENAME"
+>bochsrc</TT
+>:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  ata0-master: type=disk, path=62M.img, cylinders=940, heads=8, spt=17
+
+use (940 * 8 * 17 * 512bytes-per-sector = 127840):
+
+  unix-&#62; dd if=/dev/zero of=62M.img bs=512 count=127840</PRE
+></TD
+></TR
+></TABLE
+><P
+>Setup your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> file. For example:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  megs: 16
+  boot: disk
+  ata0-master: type=disk, path=62M.img, cylinders=940, heads=8, spt=17
+  floppya: 1_44=1.44, status=inserted
+  vgaromimage: file=bios/VGABIOS-lgpl-latest
+  romimage: file=bios/BIOS-bochs-latest
+  log: ./bochs.out
+  vga_update_interval: 300000
+  keyboard_serial_delay: 200</PRE
+></TD
+></TR
+></TABLE
+><P
+>You'll also need a floppy image file, sort of a working file,
+which you copy the distribution files into, one by one, as
+they are needed.  This is the file you point the 'floppya:'
+directive in the <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> file to.  Copy the Win'95 boot disk
+to your floppy working file ('1.44' in the <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> example):</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; /bin/cp -f win95_boot 1.44</PRE
+></TD
+></TR
+></TABLE
+><P
+> Beginning the install</P
+><P
+>Fire up bochs and boot the Win'95 boot diskette:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; bochs boot:floppy
+
+  Microsoft Windows 95 Setup</PRE
+></TD
+></TR
+></TABLE
+><P
+>Quit Setup to DOS to use FDISK.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[F3]', '[F3]'</PRE
+></TD
+></TR
+></TABLE
+><P
+>FDISK C: to use the whole disk for the primary partition.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  A:\&#62; fdisk
+  '[Return]'
+  '[Return]'
+  '[Return]'</PRE
+></TD
+></TR
+></TABLE
+><P
+>Power down Bochs - click the mouse on the 'Power' button
+in the GUI toolbar.  Fire up bochs again.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; bochs boot:floppy
+
+  Microsoft Windows 95 Setup&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>Quit Setup to DOS to use FORMAT.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[F3]', '[F3]'
+  A:\&#62; format /u c:</PRE
+></TD
+></TR
+></TABLE
+><P
+>  (answer 'Y' and enter a volume label as desired)</P
+><P
+>Click on the floppy A icon in the GUI toolbar.  You should
+see an 'X' through it signifying it's logically ejected.
+Now we're ready for Disk1:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; /bin/cp -f win95_d1 1.44</PRE
+></TD
+></TR
+></TABLE
+><P
+>Click on the floppy A icon again to logically insert
+disk1.  The 'X' should go away.  Now run SETUP.EXE which is
+on disk1.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  A:\&#62; setup /C
+  To continue ...
+  '[Return]'
+  Welcome to Windows 95 Setup!...
+  '[Return]'  (to select Continue button)
+  Please insert "Disk2"...</PRE
+></TD
+></TR
+></TABLE
+><P
+>From now on, keep in mind that you must click the floppy A
+icon to tell bochs you're ejecting the floppy (in theory)
+BEFORE you copy over your floppy working file on your
+workstation, and click on it again AFTERWARDS, to insert it.
+This is most critical, if you transition from images of
+floppies with different format. (disk1=1.44M, disk2=1.680M)
+You're giving bochs a chance to look at the size of the
+image file, and switch to a different sectors-per-track.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  (Click the floppyA icon to eject)
+  unix-&#62; /bin/cp -f win95_d2 1.44
+  (Click the floppyA icon to insert)
+
+  '[Return]'  (select OK button)
+  Software License Agreement
+  '[Tab]'
+  '[Return]'  (select Yes button)
+  Windows 95 Setup Wizard
+  '[Return]'  (select Next button)
+  Choose Directory
+  '[Return]'  (select Next button)
+  Setup Options
+  '[Down-Arrow]', '[Down-Arrow]', '[Down-Arrow]' (selects custom)
+  '[Return]'  (select Next button)
+  User Information
+  Name:
+  "Your name here"
+  '[Tab]'
+  Company:
+  "Your company here"
+  '[Return]'
+  Key Identification
+  Key:
+  "123-4567890"  (from your Certificate of Authenticity)
+  '[Return]'  (select Next button)
+  Product Identification
+  '[Return]'  (select Next button)
+  Analyzing Your Computer
+  '[Down-Arrow]'  (No, I want to modify the hardware list)
+  '[Return]'  (select Next button)
+  Analyzing Your Computer</PRE
+></TD
+></TR
+></TABLE
+><P
+>Let me just note that you can get around in this screen,
+by the Down-Arrow key, Tab to move to a different area,
+and space to toggle selection.  For some options, it's
+much easier to first unselect every device of that
+type, than select the one you want.</P
+><P
+>The ultimate selection you're trying to achieve is:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  CD-ROM Drive                    (none)
+  Display                         Default Standard VGA Display Adapter
+  Floppy Disk Controllers         Standard Floppy Controller
+  Hard Disk Controllers           Standard IDE/ESDI Hard Disk Controller
+  Keyboard                        Keyboard
+  Mouse                           (none)
+  Network Adapter                 (none)
+  PCMCIA Socket                   (none)
+  Ports                           (none)
+  SCSI Controllers                (none)
+  Sound, MIDI, or Video...        (none)</PRE
+></TD
+></TR
+></TABLE
+><P
+>The exact sequence I used was:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  [Space]  (unselect all CD-ROMs)
+  [Down-Arrow]
+  [Space]  (unselect all Displays)
+  [Tab]  (move to Manufacturer and model section)
+  13 [Down-Arrows] (Default Standard VGA Display Adapter)
+  [Space] (to select this adapter)
+  4 [Tabs] (get back to Hardware types section)
+  2 [Down-Arrows] (get to Hard Disk Controllers)
+  [Space] (to unselect all Hard Disk Controllers)
+  [Tab]   (to get to Manufacturer and model section)
+  3 [Down-Arrows] (get to Standard IDE/...)
+  [Space] (to select this device)
+  4 [Tabs] (get back to Hardware types section)
+  2 [Down-Arrows] (get to Mouse)
+  [Space] (to unselect all Mouse types)
+  [Down-Arrow] (get to Network Adapter)
+  [Space] (to unselect all Network Adapters)
+  [Down-Arrow] (get to PCMCIA Socket)
+  [Space] (to unselect all PCMCIA Socket types)
+  [Down-Arrow] (get to Ports)
+  [Space] (to unselect all Ports)
+  [Down-Arrow] (get to SCSI Controllers)
+  [Space] (to unselect all SCSI Controllers)
+  [Down-Arrow] (get to Sound, MIDI...)
+  [Space] (to unselect all Sound, MIDI...)
+  3 [Tabs] (get to Next button)
+  [Return]  (select Next button)
+
+  Analyzing Your Computer
+  [Return] (select Next button)
+
+  Get Connected
+  [Return] (select Next button)
+
+  Select Components</PRE
+></TD
+></TR
+></TABLE
+><P
+>Well, you have to decide this one.  Remember, use [Down-Arrow],
+[Tab], and [Space].  [Tab] to the Next button when you're done
+and type [Return].</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  Network Configuration
+  '[Return]' (to take default config, or change it as you want)
+
+  Computer Settings
+  '[Return]' (to take current settings)
+
+  Startup Disk</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you do NOT want to create a Startup Disk, you could type</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[Down-Arrow]'  (select No, I do not want a startup disk)
+  '[Return]'      (select Next button)</PRE
+></TD
+></TR
+></TABLE
+><P
+>If you DO want to create a Startup disk.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[Return]'      (select Next button)</PRE
+></TD
+></TR
+></TABLE
+><P
+>It is possible to create a startup disk after the installation, so you may skip the creation of a startup disk if it becomes problematic.</P
+><P
+>Either way, the following appears,</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  Start Copying Files
+  '[Return]'
+
++- If you optioned to create a Startup Disk, the following appears:
+|
+|    Label a disk "Windows 95 Startup Disk"...
+|
+|  Click the floppyA icon to eject.  Now copy any floppy image file
+|  which has a 1.44M format on it, onto your floppy working file.
+|  Win '95 will erase any files on it.  Use the 'win95_boot' file,
+|  since it's a 1.44M format.
+|
+|    unix-&#62; /bin/cp -f win95_boot 1.44
+|
+|  Click on floppyA to insert.
+|
+|    '[Return]'
+|    Setup has finished creating your startup disk...
+|    '[Return]'  (select OK button)
+|
+|    Please insert the disk labeled 'Windows 95 Disk 2'...
+|
+|  Click the floppyA icon to eject.
+|  Copy the working floppy disk image file to something signifying
+|  it's the startup disk.  Then copy the disk#2 image file onto the
+|  working file.
+|
+|    unix-&#62; cp 1.44 win95_startup
+|    unix-&#62; /bin/cp -f win95_d2 1.44
+|
+|  Click on floppyA to insert.
+|
++-   '[Return]'  (select OK button)
+
+In any case (startup disk or not), the rest is very methodical.
+
++-&#62;  Please insert the disk labeled 'Windows 95 Disk 3'...
+|
+|    (Click the floppyA icon to eject.)
+|      unix-&#62; /bin/cp -f win95_d3 1.44
+|    (Click the floppyA icon to insert.)
+|
+|    '[Return]'  (select OK button)
+|
+|  Just repeat this process, until SETUP has asked for all
++- 13 floppies in the distribution.  Of course, change
+   'win95_d3' to each number in the succession; win95_d4,
+   win95_d4, ... , win95_d13.</PRE
+></TD
+></TR
+></TABLE
+><P
+>After asking for all the floppy disks in the distribution,
+Windows '95 will let you know it's going to restart your
+computer.  Acknowledge this, and then bochs will bomb upon
+attempt to reboot.</P
+><P
+>Fire up bochs again.  The 'boot:disk' is not necessary if
+you have the 'boot: disk' directive in your '.bochsrc' file.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; bochs boot:disk</PRE
+></TD
+></TR
+></TABLE
+><P
+>You'll get a screen full of garbage text for a while Win '95
+updates your configuration files.  I'm not handling that
+text screen mode correctly.  Then the window switches to
+a blank graphics screen (say 2 to 5 minutes).</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  Windows 95 is now setting up your hardware and any Plug
+  and Play devices you may have.</PRE
+></TD
+></TR
+></TABLE
+><P
+>You'll see the magnifying glass circulating about the
+picture (icon) representing your computer for quite
+awhile.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  Windows is now setting up the following items...
+
+  Setting up Control Panel
+  Programs on the Start menu
+  Windows Help
+  MS-DOS program settings
+  Time zone</PRE
+></TD
+></TR
+></TABLE
+><P
+>You can play with the Time Zone if you want.  I just
+accept the one that comes up.  I like being on Tijuana
+time anyhow!</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[Return]'
+
+  Set up printer</PRE
+></TD
+></TR
+></TABLE
+><P
+>Bochs printing support varies from host OS to host OS.  Parallel port emulation was added in Bochs 1.3 for Unix platforms.  Check to see if printing is supported for your host OS in <A
+HREF="features.html"
+>Section 1.7</A
+> or the forums.  You can skip this part during installation and set up printing features later.  Cancel print setup in this manner:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[Tab]'
+  '[Return]'  (select Cancel button)
+
+  Windows 95 is now finalizing settings for your computer</PRE
+></TD
+></TR
+></TABLE
+><P
+>Windows '95 should now display the 'Welcome to Windows 95'
+screen, and give you one of it's helpful 'Did you know' tips.
+My suggestion, is for you to shutdown Win '95 at this point,
+and make a backup copy of your hard drive image file.
+Otherwise, you are done, though you may want to check
+out the section on getting rid of the 'splash' screen upon
+boot.  In that case, shutdown is necessary also.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  '[Return]'  (selects Close button)
+  '[Ctrl]', '[Esc]', '[^Esc]', '[^Ctrl]'</PRE
+></TD
+></TR
+></TABLE
+><P
+>It's helpful to give slight intentional delays when typing
+multi-key sequences like the one above.  The '^' means a
+release of that key.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  'u'  (shortcut for Shut Down)
+
+  Shut down Windows...
+  '[Return]'  (select Yes button)</PRE
+></TD
+></TR
+></TABLE
+><P
+>Your window changes to a different size graphics mode.  The
+message 'It is now safe to shutdown your computer' will be
+displayed briefly, but then the screen goes blank due to
+bochs not handling something in that graphics mode correctly.
+
+Power down by clicking on the 'Power' button in the bochs
+GUI toolbar.  The bochs window disappears as bochs stops
+execution.  Make a backup copy.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; cp 62M.img 62M.win95.installedOK</PRE
+></TD
+></TR
+></TABLE
+><P
+>Getting rid of Win '95 'splash' screen upon bootup.</P
+><P
+>When Win '95 boots up, it typically displays the intro
+screen while it boots (splash screen).  It uses a graphics
+mode I don't handle well, mostly because it's not important
+enough to spend the time on it.  You can tell Win '95
+not to display this screen anyways, which I prefer.</P
+><P
+>Using the MTOOLS package, if you have a drive letter
+associated with your hard disk image file, for example:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  ~/.mtoolsrc: drive c: file="/path/62M.img" partition=1</PRE
+></TD
+></TR
+></TABLE
+><P
+>You can look at and modify the contents of your drive
+image file, using commands on your workstation.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>WARNING: You MUST power down bochs if you are running any software that does any kind of disk caching!!!  Yes, Windows '95 does disk caching.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Look at the attributes associated with c:/MSDOS.SYS.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; mattrib c:/MSDOS.SYS</PRE
+></TD
+></TR
+></TABLE
+><P
+>Copy it to your workstation, with the text mode translation
+flag.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; mcopy -t c:/MSDOS.SYS .</PRE
+></TD
+></TR
+></TABLE
+><P
+>Edit the file, adding "Logo=0" under the Options section.  Save the file.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  [Options]
+  BootMulti=1
+  BootGUI=1
+  Network=0
+  Logo=0      &#60;------- add this line</PRE
+></TD
+></TR
+></TABLE
+><P
+>Copy it back to your disk image.  Restore proper
+attributes to what they were before.  For example.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; mcopy -t MSDOS.SYS c:/
+  unix-&#62; mattrib -a +s +h +r c:/MSDOS.SYS</PRE
+></TD
+></TR
+></TABLE
+><P
+>Finishing up after the install</P
+><P
+>You should now delete any temporary copies of the floppy disk
+image files, used to facilitate installation.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; /bin/rm -i win95_boot win95_d*</PRE
+></TD
+></TR
+></TABLE
+><P
+>OK, you're done!!!  Make sure you tell bochs to boot the
+hard drive either in '.bochsrc' or by the 'boot:disk' option,
+and fire it up.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  unix-&#62; bochs</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3994"
+>9.9.2. Installing a Japanese version of Windows 95</A
+></H2
+><P
+>The following has been contributed by  dohzono at hf dot rim dot or dot jpa :
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Here is a tip for installing Japanese win95.
+
+                    *
+
+I made a boot floppy and installed the W95 disk image. I used "CD for
+new machines" (not an upgrade version). Host OS is FreeBSD-4.0R. It
+seems working.
+
+When you make a boot floppy with W95(J), there is a line containing
+
+  DEVICE=JDISP.SYS /HS=LC
+
+in the config.sys (Highspeed Scroll?). jdisp.sys can have options:
+
+        /HS=ON
+        /HS=LC
+        /HS=OFF
+
+and bochs runs with /HS=OFF option (I've heard that VMware requires
+/HS=LC option).
+
+# If you choose /HS=ON, you can read usual Japanese messages on the
+# screen, but it doesn't scroll (the cursor goes downward and out of
+# the screen). If you choose /HS=LC, you can see some images
+# (corrupted messages), and also it doesn't scroll.
+
+Here is my boot floppy's config.sys. I just changed the option like
+above (/HS=OFF), and added a line for the CD driver.
+
+  DEVICE=BILING.SYS
+  DEVICE=JFONT.SYS /MSG=OFF
+  DEVICE=JDISP.SYS /HS=OFF
+  DEVICE=JKEYB.SYS
+  device=gscdrom.sys /d:mscd000 /v
+
+After installing to the HD image, I made a change to the line of
+c:/config.sys
+
+  DEVICE=JDISP.SYS
+
+to
+
+  DEVICE=JDISP.SYS /HS=OFF
+                   ^^^^^^^</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-dos.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-winnt4.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>DOS</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Windows NT 4.0</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

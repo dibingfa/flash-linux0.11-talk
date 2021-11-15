@@ -1,0 +1,629 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Configuring and using a tuntap network interface</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Setting Up Networking in DLX Linux"
+HREF="dlxlinux-networking.html"><LINK
+REL="NEXT"
+TITLE="Using Bochs internal debugger"
+HREF="internal-debugger.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="dlxlinux-networking.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="internal-debugger.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="CONFIG-TUNTAP"
+>8.10. Configuring and using a tuntap network interface</A
+></H1
+><P
+>If you use linux (optionally FreeBSD and Solaris, not tested), 
+you may want to access the network through a tuntap interface. The main
+advantage of this interface, is that the guest has access to the host. The guest can even
+have access to the whole network if the host routes or masquerades the guest requests.
+No extra IP address is needed, all can be done using private IP addresses.</P
+><P
+>You'll find here instructions to set up Linux/Bochs to provide network access to the guest OS
+through a tuntap interface and private IP network. We're going to see howto :
+<P
+></P
+><UL
+><LI
+><P
+>enable the tuntap interface in the Linux Kernel </P
+></LI
+><LI
+><P
+>configure Bochs to use the tuntap interface </P
+></LI
+><LI
+><P
+>set up the private network between the host and the guest </P
+></LI
+><LI
+><P
+>set up the host to masquerade the guest network accesses </P
+></LI
+></UL
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2925"
+>8.10.1. Tuntap description</A
+></H2
+><P
+>From the <A
+HREF="http://www.kernel.org/pub/linux/kernel/people/marcelo/linux-2.4/Documentation/networking/tuntap.txt"
+TARGET="_top"
+>tuntap.txt</A
+> file in the Linux kernel tree :
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  TUN/TAP provides packet reception and transmission for user space programs. 
+  It can be viewed as a simple Point-to-Point or Ethernet device, which 
+  instead of receiving packets from a physical media, receives them from 
+  user space program and instead of sending packets via physical media 
+  writes them to the user space program. 
+
+  When a program opens /dev/net/tun, driver creates and registers corresponding
+  net device tunX or tapX. After a program closed above devices, driver will 
+  automatically delete tunXX or tapXX device and all routes corresponding to it.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2930"
+>8.10.2. Set up the linux Kernel
+        <A
+NAME="AEN2932"
+HREF="#FTN.AEN2932"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></A
+></H2
+><P
+>First make sure the tuntap module is included in the kernel :
+<P
+></P
+><UL
+><LI
+><P
+>if you use a recent distribution, chances are that the needed modules are already build</P
+><P
+>Make sure that "Kernel module loader" - module auto-loading support is enabled in your kernel.</P
+><P
+>Add following line to the /etc/modules.conf: <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> alias char-major-10-200 tun </PRE
+></TD
+></TR
+></TABLE
+> </P
+><P
+>Run: <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> depmod -a</PRE
+></TD
+></TR
+></TABLE
+> The driver will be automatically loaded when application access /dev/net/tun.</P
+></LI
+><LI
+><P
+>Otherwise, recompile the kernel, including the configuration option
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> CONFIG_TUN (Network device support -&#62; Universal TUN/TAP device driver support) </PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+></LI
+></UL
+>
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Make sure there is a /dev/net/tun device.
+(Can be created with '<B
+CLASS="COMMAND"
+>mkdir /dev/net ; mknod /dev/net/tun c 10 200'</B
+>).</P
+></BLOCKQUOTE
+></DIV
+></P
+><P
+>In the same way, to use masquerading, you need a kernel with the following options :
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> CONFIG_IP_NF_CONNTRACK (Connection tracking)
+ CONFIG_IP_NF_IPTABLES (IP tables support)
+ CONFIG_IP_NF_NAT (Full NAT)</PRE
+></TD
+></TR
+></TABLE
+>
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Some of the other options in this group is probably also needed,
+(but the default setting should be OK).</P
+></BLOCKQUOTE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2954"
+>8.10.3. Configure Bochs to use the tuntap interface</A
+></H2
+><P
+>Make sure Bochs has ne2000 support. If you have to recompile Bochs, 
+                <B
+CLASS="COMMAND"
+>--enable-ne2000</B
+> when running <B
+CLASS="COMMAND"
+>./configure</B
+> 
+                (see <A
+HREF="compiling.html"
+>Section 3.4</A
+>)
+        </P
+><P
+>edit your <TT
+CLASS="REPLACEABLE"
+><I
+>.bochsrc</I
+></TT
+> configuration file and add something like :
+                <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, 
+                          ethmod=tuntap, ethdev=/dev/net/tun0, script=<TT
+CLASS="REPLACEABLE"
+><I
+>/path/to/tunconfig</I
+></TT
+>
+                </PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+><P
+>                Since the tuntap interface cannot be configured until a process opens it,
+                Bochs may run a script file for you. In this case 
+                <TT
+CLASS="REPLACEABLE"
+><I
+>/path/to/tunconfig</I
+></TT
+> should be changed to match
+                the actual place where you'll create this script.
+        </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2966"
+>8.10.4. Set up the private network between the host and the guest</A
+></H2
+><P
+>        We'll set up a private network between the host and the guest with the following parameters:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>                Host IP : 192.168.1.1
+                Guest IP : 192.168.1.2
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        If your parameters are different, adapt the rest of the section to suit your needs.
+        </P
+><P
+>        Create the <TT
+CLASS="REPLACEABLE"
+><I
+>/path/to/tunconfig</I
+></TT
+> script :
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>        #!/bin/bash
+        /sbin/ifconfig ${1##/*/} 192.168.1.1
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        The script get the interface name as the first parameter. Linux
+        will forward incoming packets between interfaces.
+        </P
+><P
+>        Make it executable :<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>chmod 755 <TT
+CLASS="REPLACEABLE"
+><I
+>/path/to/tunconfig</I
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+><P
+>        Run Bochs, install the guest OS, and set the following network parameters in the guest OS:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>        IP: 192.168.1.2
+        netmask: 255.255.255.0
+        gateway: 192.168.1.1
+        nameserver: whatever is used in linux
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>        Bochs must be started by root (at least for now - the
+        script won't have root privileges otherwise).
+        </P
+></BLOCKQUOTE
+></DIV
+>
+        You may also have to edit /etc/hosts.allow in the host OS and add :
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>        ALL: 192.168.1.2
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        Don't forget to set up the route on the guest.
+        </P
+><P
+>        At this point, you should be able to ping/telnet/ftp/ssh the guest from the host
+        and vice-versa.
+        </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2982"
+>8.10.5. Set up the host to masquerade the guest network accesses</A
+></H2
+><P
+>        We are going to set up standard masquerading configuration. Edit
+        the  <TT
+CLASS="REPLACEABLE"
+><I
+>/path/to/tunconfig</I
+></TT
+> script ans add :
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>        /sbin/iptables -D POSTROUTING -t nat -s 192.168.1.0/24 -d ! 192.168.1.0/24 -j MASQUERADE &#62;&#38; /dev/null
+        /sbin/iptables -t nat -s 192.168.1.0/24 -d ! 192.168.1.0/24 -A POSTROUTING -j MASQUERADE
+        echo 1 &#62; /proc/sys/net/ipv4/ip_forward
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>        The configuration assumes the default policy is
+        ACCEPT (can be examined by doing '<B
+CLASS="COMMAND"
+>/sbin/iptables -L</B
+>')
+        </P
+></BLOCKQUOTE
+></DIV
+>
+        <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+> The iptables package must be installed. </P
+></BLOCKQUOTE
+></DIV
+>
+        And voila... The host should forward the packets of the guest to the rest of your network.
+        You could even have acces to the internet...
+        <IMG
+SRC="../images/undercon.png"> add nice screenshot
+        <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>        You may need to load other modules if you want to use other fancy protocols (ftp,etc...)
+        </P
+></BLOCKQUOTE
+></DIV
+>
+        </P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN2932"
+HREF="config-tuntap.html#AEN2932"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>much of the information of the following section is taken from 
+        <A
+HREF="http://maconlinux.org/lists/mol-general/August01/0056.html"
+TARGET="_top"
+>        this email from Samuel Rydh of the Mac-On-Linux list</A
+></P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="dlxlinux-networking.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="internal-debugger.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Setting Up Networking in DLX Linux</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using Bochs internal debugger</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

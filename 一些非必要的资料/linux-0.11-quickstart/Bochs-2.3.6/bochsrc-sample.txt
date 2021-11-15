@@ -1,0 +1,763 @@
+# You may now use double quotes around pathnames, in case
+# your pathname includes spaces.
+
+#=======================================================================
+# CONFIG_INTERFACE
+#
+# The configuration interface is a series of menus or dialog boxes that
+# allows you to change all the settings that control Bochs's behavior.
+# There are two choices of configuration interface: a text mode version
+# called "textconfig" and a graphical version called "wx".  The text
+# mode version uses stdin/stdout and is always compiled in.  The graphical
+# version is only available when you use "--with-wx" on the configure 
+# command.  If you do not write a config_interface line, Bochs will 
+# choose a default for you.
+#
+# NOTE: if you use the "wx" configuration interface, you must also use
+# the "wx" display library.
+#=======================================================================
+#config_interface: textconfig
+#config_interface: wx
+
+#=======================================================================
+# DISPLAY_LIBRARY
+#
+# The display library is the code that displays the Bochs VGA screen.  Bochs 
+# has a selection of about 10 different display library implementations for 
+# different platforms.  If you run configure with multiple --with-* options, 
+# the display_library command lets you choose which one you want to run with.
+# If you do not write a display_library line, Bochs will choose a default for
+# you.
+#
+# The choices are: 
+#   x              use X windows interface, cross platform
+#   win32          use native win32 libraries
+#   carbon         use Carbon library (for MacOS X)
+#   beos           use native BeOS libraries
+#   macintosh      use MacOS pre-10
+#   amigaos        use native AmigaOS libraries
+#   sdl            use SDL library, cross platform
+#   svga           use SVGALIB library for Linux, allows graphics without X11
+#   term           text only, uses curses/ncurses library, cross platform
+#   rfb            provides an interface to AT&T's VNC viewer, cross platform
+#   wx             use wxWidgets library, cross platform
+#   nogui          no display at all
+#
+# NOTE: if you use the "wx" configuration interface, you must also use
+# the "wx" display library.
+#
+# Specific options:
+# Some display libraries now support specific option to control their
+# behaviour. See the examples below for currently supported options.
+#=======================================================================
+#display_library: amigaos
+#display_library: beos
+#display_library: carbon
+#display_library: macintosh
+#display_library: nogui
+#display_library: rfb, options="timeout=60" # time to wait for client
+#display_library: sdl, options="fullscreen" # startup in fullscreen mode
+#display_library: term
+#display_library: win32, options="legacyF12" # use F12 to toggle mouse
+#display_library: win32, options="windebug" # use experimental debugger gui
+#display_library: wx
+#display_library: x
+
+#=======================================================================
+# ROMIMAGE:
+# The ROM BIOS controls what the PC does when it first powers on.
+# Normally, you can use a precompiled BIOS in the source or binary
+# distribution called BIOS-bochs-latest. The ROM BIOS is usually loaded
+# starting at address 0xf0000, and it is exactly 64k long. Another option
+# is 128k BIOS which is loaded at address 0xe0000.
+# You can also use the environment variable $BXSHARE to specify the
+# location of the BIOS.
+# The usage of external large BIOS images (up to 512k) at memory top is
+# now supported, but we still recommend to use the BIOS distributed with
+# Bochs. Now the start address can be calculated from image size.
+#=======================================================================
+romimage: file=$BXSHARE/BIOS-bochs-latest 
+#romimage: file=mybios.bin, address=0xfff80000 # 512k at memory top
+
+#=======================================================================
+# CPU:
+# This defines cpu-related parameters inside Bochs:
+#
+#  COUNT:
+#  Set the number of processors:cores per processor:threads per core 
+#  when Bochs is compiled for SMP emulation.
+#  Bochs currently supports up to 8 threads running simultaniosly. 
+#  If Bochs is compiled without SMP support, it won't accept values 
+#  different from 1.
+#
+#  QUANTUM:
+#  Maximum amount of instructions allowed to execute by processor before
+#  returning control to another cpu. This option exists only in Bochs 
+#  binary compiled with SMP support.
+#
+#  RESET_ON_TRIPLE_FAULT:
+#  Reset the CPU when triple fault occur (highly recommended) rather than
+#  PANIC. Remember that if you trying to continue after triple fault the 
+#  simulation will be completely bogus !
+#
+#  IPS:
+#  Emulated Instructions Per Second.  This is the number of IPS that bochs
+#  is capable of running on your machine. You can recompile Bochs with
+#  --enable-show-ips option enabled, to find your workstation's capability.
+#  Measured IPS value will then be logged into your log file or status bar
+#  (if supported by the gui).
+#
+#  IPS is used to calibrate many time-dependent events within the bochs 
+#  simulation.  For example, changing IPS affects the frequency of VGA
+#  updates, the duration of time before a key starts to autorepeat, and
+#  the measurement of BogoMips and other benchmarks.
+#
+#  Examples:
+#
+#  Bochs Machine/Compiler                                 Mips
+# ____________________________________________________________________
+#  2.2.6 2.6Ghz Intel Core 2 Duo with WinXP/g++ 3.4      21 to 25 Mips
+#  2.2.6 2.1Ghz Athlon XP with Linux 2.6/g++ 3.4         12 to 15 Mips
+#  2.0.1 1.6Ghz Intel P4 with Win2000/g++ 3.3             5 to  7 Mips
+#  1.4   650Mhz Athlon K-7 with Linux 2.4.4/egcs-2.91.66  2 to  2.5 Mips
+#  1.4   400Mhz Pentium II with Linux 2.0.36/egcs-1.0.3   1 to  1.8 Mips
+#=======================================================================
+cpu: count=1, ips=10000000, reset_on_triple_fault=1
+
+#=======================================================================
+# MEGS
+# Set the number of Megabytes of physical memory you want to emulate. 
+# The default is 32MB, most OS's won't need more than that.
+# The maximum amount of memory supported is 2048Mb.
+#=======================================================================
+#megs: 256
+#megs: 128
+#megs: 64
+megs: 32
+#megs: 16
+#megs: 8
+
+#=======================================================================
+# OPTROMIMAGE[1-4]:
+# You may now load up to 4 optional ROM images. Be sure to use a 
+# read-only area, typically between C8000 and EFFFF. These optional
+# ROM images should not overwrite the rombios (located at
+# F0000-FFFFF) and the videobios (located at C0000-C7FFF).
+# Those ROM images will be initialized by the bios if they contain 
+# the right signature (0x55AA) and a valid checksum.
+# It can also be a convenient way to upload some arbitrary code/data
+# in the simulation, that can be retrieved by the boot loader
+#=======================================================================
+#optromimage1: file=optionalrom.bin, address=0xd0000
+#optromimage2: file=optionalrom.bin, address=0xd1000
+#optromimage3: file=optionalrom.bin, address=0xd2000
+#optromimage4: file=optionalrom.bin, address=0xd3000
+
+#optramimage1: file=/path/file1.img, address=0x0010000
+#optramimage2: file=/path/file2.img, address=0x0020000
+#optramimage3: file=/path/file3.img, address=0x0030000
+#optramimage4: file=/path/file4.img, address=0x0040000
+
+#=======================================================================
+# VGAROMIMAGE
+# You now need to load a VGA ROM BIOS into C0000.
+#=======================================================================
+#vgaromimage: file=bios/VGABIOS-elpin-2.40
+vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+#vgaromimage: file=bios/VGABIOS-lgpl-latest-cirrus
+
+#=======================================================================
+# VGA:
+# Here you can specify the display extension to be used. With the value
+# 'none' you can use standard VGA with no extension. Other supported
+# values are 'vbe' for Bochs VBE and 'cirrus' for Cirrus SVGA support.
+#=======================================================================
+#vga: extension=cirrus
+vga: extension=vbe
+
+#=======================================================================
+# FLOPPYA:
+# Point this to pathname of floppy image file or device
+# This should be of a bootable floppy(image/device) if you're
+# booting from 'a' (or 'floppy').
+#
+# You can set the initial status of the media to 'ejected' or 'inserted'.
+#   floppya: 2_88=path, status=ejected             (2.88M 3.5" floppy)
+#   floppya: 1_44=path, status=inserted            (1.44M 3.5" floppy)
+#   floppya: 1_2=path, status=ejected              (1.2M  5.25" floppy)
+#   floppya: 720k=path, status=inserted            (720K  3.5" floppy)
+#   floppya: 360k=path, status=inserted            (360K  5.25" floppy)
+#   floppya: 320k=path, status=inserted            (320K  5.25" floppy)
+#   floppya: 180k=path, status=inserted            (180K  5.25" floppy)
+#   floppya: 160k=path, status=inserted            (160K  5.25" floppy)
+#   floppya: image=path, status=inserted           (guess type from image size)
+#
+# The path should be the name of a disk image file.  On Unix, you can use a raw
+# device name such as /dev/fd0 on Linux.  On win32 platforms, use drive letters
+# such as a: or b: as the path.  The parameter 'image' works with image files
+# only. In that case the size must match one of the supported types.
+#=======================================================================
+floppya: 1_44=/dev/fd0, status=inserted
+#floppya: image=../1.44, status=inserted
+#floppya: 1_44=/dev/fd0H1440, status=inserted
+#floppya: 1_2=../1_2, status=inserted
+#floppya: 1_44=a:, status=inserted
+#floppya: 1_44=a.img, status=inserted
+#floppya: 1_44=/dev/rfd0a, status=inserted
+
+#=======================================================================
+# FLOPPYB:
+# See FLOPPYA above for syntax
+#=======================================================================
+#floppyb: 1_44=b:, status=inserted
+#floppyb: 1_44=b.img, status=inserted
+
+#=======================================================================
+# ATA0, ATA1, ATA2, ATA3
+# ATA controller for hard disks and cdroms
+#
+# ata[0-3]: enabled=[0|1], ioaddr1=addr, ioaddr2=addr, irq=number
+# 
+# These options enables up to 4 ata channels. For each channel
+# the two base io addresses and the irq must be specified.
+# 
+# ata0 and ata1 are enabled by default with the values shown below
+#
+# Examples:
+#   ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+#   ata1: enabled=1, ioaddr1=0x170, ioaddr2=0x370, irq=15
+#   ata2: enabled=1, ioaddr1=0x1e8, ioaddr2=0x3e0, irq=11
+#   ata3: enabled=1, ioaddr1=0x168, ioaddr2=0x360, irq=9
+#=======================================================================
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata1: enabled=1, ioaddr1=0x170, ioaddr2=0x370, irq=15
+ata2: enabled=0, ioaddr1=0x1e8, ioaddr2=0x3e0, irq=11
+ata3: enabled=0, ioaddr1=0x168, ioaddr2=0x360, irq=9
+
+#=======================================================================
+# ATA[0-3]-MASTER, ATA[0-3]-SLAVE
+#
+# This defines the type and characteristics of all attached ata devices:
+#   type=       type of attached device [disk|cdrom] 
+#   mode=       only valid for disks [flat|concat|external|dll|sparse|vmware3]
+#   mode=       only valid for disks [undoable|growing|volatile]
+#   path=       path of the image
+#   cylinders=  only valid for disks
+#   heads=      only valid for disks
+#   spt=        only valid for disks
+#   status=     only valid for cdroms [inserted|ejected]
+#   biosdetect= type of biosdetection [none|auto], only for disks on ata0 [cmos]
+#   translation=type of translation of the bios, only for disks [none|lba|large|rechs|auto]
+#   model=      string returned by identify device command
+#   journal=    optional filename of the redolog for undoable and volatile disks
+#   
+# Point this at a hard disk image file, cdrom iso file, or physical cdrom
+# device.  To create a hard disk image, try running bximage.  It will help you
+# choose the size and then suggest a line that works with it.
+#
+# In UNIX it may be possible to use a raw device as a Bochs hard disk, 
+# but WE DON'T RECOMMEND IT.  In Windows there is no easy way.
+#
+# In windows, the drive letter + colon notation should be used for cdroms.
+# Depending on versions of windows and drivers, you may only be able to 
+# access the "first" cdrom in the system.  On MacOSX, use path="drive"
+# to access the physical drive.
+#
+# The path is always mandatory. Disk geometry autodetection works with images
+# created by bximage if CHS is set to 0/0/0 (cylinders are calculated using
+# heads=16 and spt=63). For other hard disk images and modes the cylinders,
+# heads, and spt are mandatory.
+#
+# Default values are:
+#   mode=flat, biosdetect=auto, translation=auto, model="Generic 1234"
+#
+# The biosdetect option has currently no effect on the bios
+#
+# Examples:
+#   ata0-master: type=disk, mode=flat, path=10M.sample, cylinders=306, heads=4, spt=17
+#   ata0-slave:  type=disk, mode=flat, path=20M.sample, cylinders=615, heads=4, spt=17
+#   ata1-master: type=disk, mode=flat, path=30M.sample, cylinders=615, heads=6, spt=17
+#   ata1-slave:  type=disk, mode=flat, path=46M.sample, cylinders=940, heads=6, spt=17
+#   ata2-master: type=disk, mode=flat, path=62M.sample, cylinders=940, heads=8, spt=17
+#   ata2-slave:  type=disk, mode=flat, path=112M.sample, cylinders=900, heads=15, spt=17
+#   ata3-master: type=disk, mode=flat, path=483M.sample, cylinders=1024, heads=15, spt=63
+#   ata3-slave:  type=cdrom, path=iso.sample, status=inserted
+#=======================================================================
+ata0-master: type=disk, mode=flat, path="30M.sample"
+#ata0-master: type=disk, mode=flat, path="30M.sample", cylinders=615, heads=6, spt=17
+#ata0-master: type=disk, mode=flat, path="c.img", cylinders=0 # autodetect
+#ata0-slave: type=cdrom, path=D:, status=inserted
+#ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
+#ata0-slave: type=cdrom, path="drive", status=inserted
+#ata0-slave: type=cdrom, path=/dev/rcd0d, status=inserted 
+
+#=======================================================================
+# BOOT:
+# This defines the boot sequence. Now you can specify up to 3 boot drives,
+# which can be 'floppy', 'disk', 'cdrom' or 'network' (boot ROM).
+# Legacy 'a' and 'c' are also supported.
+# Examples:
+#   boot: floppy
+#   boot: cdrom, disk
+#   boot: network, disk
+#   boot: cdrom, floppy, disk
+#=======================================================================
+#boot: floppy
+boot: disk
+
+#=======================================================================
+# CLOCK:
+# This defines the parameters of the clock inside Bochs:
+#
+#  SYNC:
+#  TO BE COMPLETED (see Greg explanation in feature request #536329)
+#
+#  TIME0:
+#  Specifies the start (boot) time of the virtual machine. Use a time 
+#  value as returned by the time(2) system call. If no time0 value is 
+#  set or if time0 equal to 1 (special case) or if time0 equal 'local', 
+#  the simulation will be started at the current local host time.
+#  If time0 equal to 2 (special case) or if time0 equal 'utc',
+#  the simulation will be started at the current utc time.
+#
+# Syntax:
+#  clock: sync=[none|slowdown|realtime|both], time0=[timeValue|local|utc]
+#
+# Example:
+#   clock: sync=none,     time0=local       # Now (localtime)
+#   clock: sync=slowdown, time0=315529200   # Tue Jan  1 00:00:00 1980
+#   clock: sync=none,     time0=631148400   # Mon Jan  1 00:00:00 1990
+#   clock: sync=realtime, time0=938581955   # Wed Sep 29 07:12:35 1999
+#   clock: sync=realtime, time0=946681200   # Sat Jan  1 00:00:00 2000
+#   clock: sync=none,     time0=1           # Now (localtime)
+#   clock: sync=none,     time0=utc         # Now (utc/gmt)
+# 
+# Default value are sync=none, time0=local
+#=======================================================================
+#clock: sync=none, time0=local
+
+
+#=======================================================================
+# FLOPPY_BOOTSIG_CHECK: disabled=[0|1]
+# Enables or disables the 0xaa55 signature check on boot floppies
+# Defaults to disabled=0
+# Examples:
+#   floppy_bootsig_check: disabled=0
+#   floppy_bootsig_check: disabled=1
+#=======================================================================
+floppy_bootsig_check: disabled=0
+
+#=======================================================================
+# LOG:
+# Give the path of the log file you'd like Bochs debug and misc. verbiage
+# to be written to. If you don't use this option or set the filename to
+# '-' the output is written to the console. If you really don't want it,
+# make it "/dev/null" (Unix) or "nul" (win32). :^(
+#
+# Examples:
+#   log: ./bochs.out
+#   log: /dev/tty
+#=======================================================================
+#log: /dev/null
+log: bochsout.txt
+
+#=======================================================================
+# LOGPREFIX:
+# This handles the format of the string prepended to each log line.
+# You may use those special tokens :
+#   %t : 11 decimal digits timer tick
+#   %i : 8 hexadecimal digits of cpu current eip (ignored in SMP configuration)
+#   %e : 1 character event type ('i'nfo, 'd'ebug, 'p'anic, 'e'rror)
+#   %d : 5 characters string of the device, between brackets
+# 
+# Default : %t%e%d
+# Examples:
+#   logprefix: %t-%e-@%i-%d
+#   logprefix: %i%e%d
+#=======================================================================
+#logprefix: %t%e%d
+
+#=======================================================================
+# LOG CONTROLS
+#
+# Bochs now has four severity levels for event logging.
+#   panic: cannot proceed.  If you choose to continue after a panic, 
+#          don't be surprised if you get strange behavior or crashes.
+#   error: something went wrong, but it is probably safe to continue the
+#          simulation.
+#   info: interesting or useful messages.
+#   debug: messages useful only when debugging the code.  This may
+#          spit out thousands per second.
+#
+# For events of each level, you can choose to crash, report, or ignore.
+# TODO: allow choice based on the facility: e.g. crash on panics from
+#       everything except the cdrom, and only report those.
+#
+# If you are experiencing many panics, it can be helpful to change
+# the panic action to report instead of fatal.  However, be aware
+# that anything executed after a panic is uncharted territory and can 
+# cause bochs to become unstable.  The panic is a "graceful exit," so
+# if you disable it you may get a spectacular disaster instead.
+#=======================================================================
+panic: action=ask
+error: action=report
+info: action=report
+debug: action=ignore
+#pass: action=fatal
+
+#=======================================================================
+# DEBUGGER_LOG:
+# Give the path of the log file you'd like Bochs to log debugger output.
+# If you really don't want it, make it /dev/null or '-'. :^(
+#
+# Examples:
+#   debugger_log: ./debugger.out
+#=======================================================================
+#debugger_log: /dev/null
+#debugger_log: debugger.out
+debugger_log: -
+
+#=======================================================================
+# COM1, COM2, COM3, COM4:
+# This defines a serial port (UART type 16550A). In the 'term' you can specify
+# a device to use as com1. This can be a real serial line, or a pty.  To use
+# a pty (under X/Unix), create two windows (xterms, usually).  One of them will
+# run bochs, and the other will act as com1. Find out the tty the com1
+# window using the `tty' command, and use that as the `dev' parameter.
+# Then do `sleep 1000000' in the com1 window to keep the shell from
+# messing with things, and run bochs in the other window.  Serial I/O to
+# com1 (port 0x3f8) will all go to the other window.
+# Other serial modes are 'null' (no input/output), 'file' (output to a file
+# specified as the 'dev' parameter), 'raw' (use the real serial port - under
+# construction for win32), 'mouse' (standard serial mouse - requires
+# mouse option setting 'type=serial', 'type=serial_wheel' or 'type=serial_msys')
+# and 'socket' (connect a networking socket).
+#
+# Examples:
+#   com1: enabled=1, mode=null
+#   com1: enabled=1, mode=mouse
+#   com2: enabled=1, mode=file, dev=serial.out
+#   com3: enabled=1, mode=raw, dev=com1
+#   com3: enabled=1, mode=socket, dev=localhost:8888
+#=======================================================================
+#com1: enabled=1, mode=term, dev=/dev/ttyp9
+
+
+#=======================================================================
+# PARPORT1, PARPORT2:
+# This defines a parallel (printer) port. When turned on and an output file is
+# defined the emulated printer port sends characters printed by the guest OS
+# into the output file. On some platforms a device filename can be used to
+# send the data to the real parallel port (e.g. "/dev/lp0" on Linux, "lpt1" on
+# win32 platforms).
+#
+# Examples:
+#   parport1: enabled=1, file="parport.out"
+#   parport2: enabled=1, file="/dev/lp0"
+#   parport1: enabled=0
+#=======================================================================
+parport1: enabled=1, file="parport.out"
+
+#=======================================================================
+# SB16:
+# This defines the SB16 sound emulation. It can have several of the
+# following properties.
+# All properties are in the format sb16: property=value
+# midi: The filename is where the midi data is sent. This can be a
+#       device or just a file if you want to record the midi data.
+# midimode:
+#      0=no data
+#      1=output to device (system dependent. midi denotes the device driver)
+#      2=SMF file output, including headers
+#      3=output the midi data stream to the file (no midi headers and no
+#        delta times, just command and data bytes)
+# wave: This is the device/file where wave output is stored
+# wavemode:
+#      0=no data
+#      1=output to device (system dependent. wave denotes the device driver)
+#      2=VOC file output, incl. headers
+#      3=output the raw wave stream to the file
+# log:  The file to write the sb16 emulator messages to.
+# loglevel:
+#      0=no log
+#      1=resource changes, midi program and bank changes
+#      2=severe errors
+#      3=all errors
+#      4=all errors plus all port accesses
+#      5=all errors and port accesses plus a lot of extra info
+# dmatimer:
+#      microseconds per second for a DMA cycle.  Make it smaller to fix
+#      non-continuous sound.  750000 is usually a good value.  This needs a
+#      reasonably correct setting for the IPS parameter of the CPU option.
+#
+# For an example look at the next line:
+#=======================================================================
+
+#sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, dmatimer=600000
+
+#=======================================================================
+# VGA_UPDATE_INTERVAL:
+# Video memory is scanned for updates and screen updated every so many
+# virtual seconds.  The default is 40000, about 25Hz. Keep in mind that
+# you must tweak the 'cpu: ips=N' directive to be as close to the number
+# of emulated instructions-per-second your workstation can do, for this
+# to be accurate.
+#
+# Examples:
+#   vga_update_interval: 250000
+#=======================================================================
+vga_update_interval: 300000
+
+# using for Winstone '98 tests
+#vga_update_interval:  100000
+
+#=======================================================================
+# KEYBOARD_SERIAL_DELAY:
+# Approximate time in microseconds that it takes one character to
+# be transfered from the keyboard to controller over the serial path.
+# Examples:
+#   keyboard_serial_delay: 200
+#=======================================================================
+keyboard_serial_delay: 250
+
+#=======================================================================
+# KEYBOARD_PASTE_DELAY:
+# Approximate time in microseconds between attempts to paste
+# characters to the keyboard controller. This leaves time for the
+# guest os to deal with the flow of characters.  The ideal setting
+# depends on how your operating system processes characters.  The
+# default of 100000 usec (.1 seconds) was chosen because it works 
+# consistently in Windows.
+#
+# If your OS is losing characters during a paste, increase the paste
+# delay until it stops losing characters.
+#
+# Examples:
+#   keyboard_paste_delay: 100000
+#=======================================================================
+keyboard_paste_delay: 100000
+
+#=======================================================================
+# MOUSE: 
+# This option prevents Bochs from creating mouse "events" unless a mouse
+# is  enabled. The hardware emulation itself is not disabled by this.
+# You can turn the mouse on by setting enabled to 1, or turn it off by
+# setting enabled to 0. Unless you have a particular reason for enabling
+# the mouse by default, it is recommended that you leave it off.
+# You can also toggle the mouse usage at runtime (control key + middle
+# mouse button on X11, SDL, wxWidgets and Win32).
+# With the mouse type option you can select the type of mouse to emulate.
+# The default value is 'ps2'. The other choices are 'imps2' (wheel mouse
+# on PS/2), 'serial', 'serial_wheel' and 'serial_msys' (one com port requires
+# setting 'mode=mouse'). To connect a mouse to an USB port, see the 'usb1'
+# option (requires PCI and USB support).
+#
+# Examples:
+#   mouse: enabled=1
+#   mouse: enabled=1, type=imps2
+#   mouse: enabled=1, type=serial
+#   mouse: enabled=0
+#=======================================================================
+mouse: enabled=0
+
+#=======================================================================
+# private_colormap: Request that the GUI create and use it's own
+#                   non-shared colormap.  This colormap will be used
+#                   when in the bochs window.  If not enabled, a
+#                   shared colormap scheme may be used.  Not implemented
+#                   on all GUI's.
+#
+# Examples:
+#   private_colormap: enabled=1
+#   private_colormap: enabled=0
+#=======================================================================
+private_colormap: enabled=0
+
+#=======================================================================
+# fullscreen: ONLY IMPLEMENTED ON AMIGA
+#             Request that Bochs occupy the entire screen instead of a 
+#             window.
+#
+# Examples:
+#   fullscreen: enabled=0
+#   fullscreen: enabled=1
+#=======================================================================
+#fullscreen: enabled=0
+#screenmode: name="sample"
+
+#=======================================================================
+# ne2k: NE2000 compatible ethernet adapter
+#
+# Examples:
+# ne2k: ioaddr=IOADDR, irq=IRQ, mac=MACADDR, ethmod=MODULE, ethdev=DEVICE, script=SCRIPT
+#
+# ioaddr, irq: You probably won't need to change ioaddr and irq, unless there
+# are IRQ conflicts.
+#
+# mac: The MAC address MUST NOT match the address of any machine on the net.
+# Also, the first byte must be an even number (bit 0 set means a multicast
+# address), and you cannot use ff:ff:ff:ff:ff:ff because that's the broadcast
+# address.  For the ethertap module, you must use fe:fd:00:00:00:01.  There may
+# be other restrictions too.  To be safe, just use the b0:c4... address.
+#
+# ethdev: The ethdev value is the name of the network interface on your host
+# platform.  On UNIX machines, you can get the name by running ifconfig.  On
+# Windows machines, you must run niclist to get the name of the ethdev.
+# Niclist source code is in misc/niclist.c and it is included in Windows 
+# binary releases.
+#
+# script: The script value is optional, and is the name of a script that 
+# is executed after bochs initialize the network interface. You can use 
+# this script to configure this network interface, or enable masquerading.
+# This is mainly useful for the tun/tap devices that only exist during
+# Bochs execution. The network interface name is supplied to the script
+# as first parameter
+#
+# If you don't want to make connections to any physical networks,
+# you can use the following 'ethmod's to simulate a virtual network.
+#   null: All packets are discarded, but logged to a few files.
+#   arpback: ARP is simulated. Disabled by default.
+#   vde:  Virtual Distributed Ethernet
+#   vnet: ARP, ICMP-echo(ping), DHCP and read/write TFTP are simulated.
+#         The virtual host uses 192.168.10.1.
+#         DHCP assigns 192.168.10.2 to the guest.
+#         TFTP uses the ethdev value for the root directory and doesn't
+#         overwrite files.
+#
+#=======================================================================
+# ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, ethmod=fbsd, ethdev=en0 #macosx
+# ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=xl0
+# ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=linux, ethdev=eth0
+# ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=win32, ethdev=MYCARD
+# ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, ethmod=tap, ethdev=tap0
+# ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, ethmod=tuntap, ethdev=/dev/net/tun0, script=./tunconfig
+# ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=null, ethdev=eth0
+# ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=vde, ethdev="/tmp/vde.ctl"
+# ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=vnet, ethdev="c:/temp"
+
+#=======================================================================
+# KEYBOARD_MAPPING:
+# This enables a remap of a physical localized keyboard to a 
+# virtualized us keyboard, as the PC architecture expects.
+# If enabled, the keymap file must be specified.
+# 
+# Examples:
+#   keyboard_mapping: enabled=1, map=gui/keymaps/x11-pc-de.map
+#=======================================================================
+keyboard_mapping: enabled=0, map=
+
+#=======================================================================
+# KEYBOARD_TYPE:
+# Type of keyboard return by a "identify keyboard" command to the
+# keyboard controler. It must be one of "xt", "at" or "mf".
+# Defaults to "mf". It should be ok for almost everybody. A known
+# exception is french macs, that do have a "at"-like keyboard.
+#
+# Examples:
+#   keyboard_type: mf
+#=======================================================================
+#keyboard_type: mf
+
+#=======================================================================
+# USER_SHORTCUT:
+# This defines the keyboard shortcut to be sent when you press the "user"
+# button in the headerbar. The shortcut string is a combination of maximum
+# 3 key names (listed below) separated with a '-' character. The old-style
+# syntax (without the '-') still works for the key combinations supported
+# in Bochs 2.2.1.
+# Valid key names:
+# "alt", "bksl", "bksp", "ctrl", "del", "down", "end", "enter", "esc",
+# "f1", ... "f12", "home", "ins", "left", "menu", "minus", "pgdwn", "pgup",
+# "plus", "right", "shift", "space", "tab", "up", "win" and "print".
+#
+# Example:
+#   user_shortcut: keys=ctrl-alt-del
+#=======================================================================
+#user_shortcut: keys=ctrl-alt-del
+
+#=======================================================================
+# I440FXSUPPORT:
+# This option controls the presence of the i440FX PCI chipset. You can
+# also specify the devices connected to PCI slots. Up to 5 slots are
+# available now. These devices are currently supported: ne2k, pcivga,
+# pcidev and pcipnic. If Bochs is compiled with Cirrus SVGA support
+# you'll have the additional choice 'cirrus'.
+#
+# Example:
+#   i440fxsupport: enabled=1, slot1=pcivga, slot2=ne2k
+#=======================================================================
+i440fxsupport: enabled=1
+
+#=======================================================================
+# USB1:
+# This option controls the presence of the USB root hub which is a part
+# of the i440FX PCI chipset. With the portX option you can connect devices
+# to the hub (currently supported: 'mouse', 'tablet', 'keypad' and 'disk').
+# If you connect the mouse or tablet to one of the ports, Bochs forwards the
+# mouse movement data to the USB device instead of the selected mouse type.
+# When connecting the keypad to one of the ports, Bochs forwards the input of
+# the numeric keypad to the USB device instead of the PS/2 keyboard.
+# To connect a flat image as an USB hardisk you can use the 'disk' device with
+# the path to the image separated with a colon (see below).
+#=======================================================================
+#usb1: enabled=1
+#usb1: enabled=1, port1=mouse, port2=disk:usbdisk.img
+
+#=======================================================================
+# CMOSIMAGE:
+# This defines image file that can be loaded into the CMOS RAM at startup.
+# The rtc_init parameter controls whether initialize the RTC with values stored
+# in the image. By default the time0 argument given to the clock option is used.
+# With 'rtc_init=image' the image is the source for the initial time.
+#
+# Example:
+#   cmosimage: file=cmos.img, rtc_init=image
+#=======================================================================
+#cmosimage: file=cmos.img, rtc_init=time0
+
+#=======================================================================
+# MAGIC_BREAK:
+# This enables the "magic breakpoint" feature when using the debugger.
+# The useless cpu instruction XCHG BX, BX causes Bochs to enter the
+# debugger mode. This might be useful for software development.
+#
+# Example:
+#   magic_break: enabled=1
+#=======================================================================
+#magic_break: enabled=1
+
+#=======================================================================
+# other stuff
+#=======================================================================
+#load32bitOSImage: os=nullkernel, path=../kernel.img, iolog=../vga_io.log
+#load32bitOSImage: os=linux, path=../linux.img, iolog=../vga_io.log, initrd=../initrd.img
+#text_snapshot_check: enabled=1
+#print_timestamps: enabled=1
+
+#-------------------------
+# PCI host device mapping
+#-------------------------
+#pcidev: vendor=0x1234, device=0x5678
+
+#=======================================================================
+# GDBSTUB:
+# Enable GDB stub. See user documentation for details.
+# Default value is enabled=0.
+#=======================================================================
+#gdbstub: enabled=0, port=1234, text_base=0, data_base=0, bss_base=0
+
+#=======================================================================
+# IPS:
+# The IPS directive is DEPRECATED. Use the parameter IPS of the CPU
+# directive instead.
+#=======================================================================
+#ips: 10000000
+
+#=======================================================================
+# for Macintosh, use the style of pathnames in the following
+# examples.
+#
+# vgaromimage: :bios:VGABIOS-elpin-2.40
+# romimage: file=:bios:BIOS-bochs-latest, address=0xf0000
+# floppya: 1_44=[fd:], status=inserted
+#=======================================================================

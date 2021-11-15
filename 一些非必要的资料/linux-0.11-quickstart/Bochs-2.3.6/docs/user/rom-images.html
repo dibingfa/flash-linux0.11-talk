@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>ROM images</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Setup"
+HREF="setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Setup"
+HREF="setup.html"><LINK
+REL="NEXT"
+TITLE="The configuration file bochsrc"
+HREF="bochsrc.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="bochsrc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="ROM-IMAGES"
+>4.2. ROM images</A
+></H1
+><P
+>Just like a real PC, Bochs needs a system BIOS and VGA BIOS to initialize the
+machine when it powers on or after a hardware reset. Bochs needs to load them
+from image file into the emulated memory. The Bochs package contains a set of
+system BIOS and VGA BIOS images.
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN1608"
+></A
+><P
+><B
+>Table 4-1. System and VGA BIOS images</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>File</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>BIOS-bochs-latest </TD
+><TD
+> default ROM BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>BIOS-bochs-legacy </TD
+><TD
+> ROM BIOS image without 32-bit init code (for i386 and ISA graphics card emulation) </TD
+></TR
+><TR
+><TD
+>bios.bin-1.7.5 </TD
+><TD
+> SeaBIOS ROM image </TD
+></TR
+><TR
+><TD
+>VGABIOS-elpin-2.40 </TD
+><TD
+> legacy VGA BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest-debug </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with debug output to the logfile </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest-cirrus </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with the Cirrus extension enabled </TD
+></TR
+><TR
+><TD
+>VGABIOS-lgpl-latest-cirrus-debug </TD
+><TD
+> LGPL'd VGA BIOS image for Bochs with the Cirrus extension enabled and debug output to the logfile </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+><P
+>Bochs must be set up to use system and VGA BIOS like this:
+<PRE
+CLASS="SCREEN"
+>  romimage: file=BIOS-bochs-latest, address=0xfffe0000
+  vgaromimage: file=VGABIOS-lgpl-latest</PRE
+>
+We recommend to use the ROM images distributed with Bochs or one of the latest
+<A
+HREF="http://www.seabios.org/"
+TARGET="_top"
+>SeaBIOS</A
+> images. BIOS images designed
+for real hardware mostly do not work properly. Please see the <A
+HREF="bochsrc.html#BOCHSOPT-ROMIMAGE"
+>Section 4.3.8</A
+>
+for more information.</P
+><P
+>Bochs supports optional ROM images to be loaded into the ISA ROM space,
+typically between C8000 and EFFFF (see <A
+HREF="bochsrc.html#BOCHSOPT-OPTROM"
+>Section 4.3.10</A
+>). The PCI
+versions of the Bochs network adapter emulations support loading a boot ROM into
+the PCI ROM space (see <A
+HREF="bochsrc.html#BOCHSOPT-NE2K"
+>Section 4.3.34</A
+>).</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bochsrc.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>The configuration file <TT
+CLASS="FILENAME"
+>bochsrc</TT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

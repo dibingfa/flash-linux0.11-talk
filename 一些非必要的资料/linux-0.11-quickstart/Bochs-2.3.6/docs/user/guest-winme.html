@@ -1,0 +1,407 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Windows ME</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="Windows 98"
+HREF="guest-win98.html"><LINK
+REL="NEXT"
+TITLE="Windows 2000"
+HREF="guest-win2k.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-win98.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-win2k.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-WINME"
+>9.12. Windows ME</A
+></H1
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4308"
+>9.12.1. Installing Windows ME</A
+></H2
+><P
+>You must read the message regarding software licenses in 
+<A
+HREF="thirdparty.html"
+>Section 1.6</A
+> before you install Windows ME as a guest operating system in Bochs.</P
+><P
+>This has been contributed by Sancho Roberto :</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Date: Sun, 21 Oct 2001 02:24:22 -0700 (PDT)
+From: Sancho Roberto (rsanchov at yahoo dot com)
+To: bochs-developers@lists.sourceforge.net
+Subject: [Bochs-developers] WinMe install tips
+Parts/Attachments:
+
+1) Install Win98 
+
+   My Windows Me is an update version, that is, it upgrades over Win98.
+   So the first think I have to do is to install on a HD image a
+   Win98
+
+   It is not necessary to do the full install. What I've done is
+     - Create a HD image (Win98.img) with 500MB
+     - Format It, install MSDOS6 on it so I can boot from c
+     - Make a W98 directory.
+     - Copy using mtools the instalation directory from the original
+       Win98 CD
+     - Run bochs
+     - run the setup program into the W98 directory
+     - Select WIN98 as Windows directory. All other setup options
+       are left by default.
+     - I don't care about HW detection, etc. Just uncompressing
+       the cab files to the WIN98 directory es enought for WinMe.
+       (Note that Win98 is not functional and cannot boot)
+       
+2) Copy the WinMe install files to the HD
+
+   In Win98.img, with mtools, I create a directory called WinMe.
+   Again, I copy the contents of the Win9x directory from the original
+   WinMe CD. Note that I copy the CD to my HD, and then with mtools
+   from my HD to win98.img. I also delete then W98 directory.
+
+3) Create WinMe.img   
+
+   Now, I created another blank HD called WinMe.img with 500MB.
+   I format it and install MSDOS6 so I an boot using it.
+
+4) Prepare the instalation Bochs
+
+   I edit the bochsrc.txt file so
+   - WinMe.img is ata0-master
+   - Win98.img is ata0-slave
+
+5) Running setup
+
+   I start bochs: the C: drive is empty (it only contains the
+   MSDOS6 command.com, IO.SYS, etc). The D: drive has: 
+      D:\W98 - The "installed" Windows 98
+      D:\WINME - Windows Me setup files
+
+   I go to the WINME directory and run:
+
+      SETUP xxxx 
+
+   The description of the setup options can be found in the Microsoft Knowledge page as
+   Q186111 - Description of the Windows 95, Windows 98, and Windows Me Setup Switches
+
+   I've done a lot of trials with this setup options until I finally
+   found a correct way to finnish the installation. These are the setup
+   options I used. I've copied a brief description (from the KB) and added
+   my comments.
+
+   /m - bypass the playing of the Setup sound (.wav) files.
+        Not necessary as my Bochs has no sound device activated 
+
+   /nf - Do not prompt to remove the floppy disk from the drive
+         Maybe not necessary. Just in case
+
+   /nh - This switch bypasses running the Hwinfo.exe program at 0 
+         percent files and RunOnce.
+
+         If not present, freezes on HW detection
+
+   /ie - This switch bypasses the Windows 98 Startup Disk wizard screens. 
+         To speed things up - I allways can create a Statup disk latter
+
+   /iv - This switch bypasses displaying the Setup screens during 
+         an upgrade within Windows.
+         To speed things up 
+
+   /c - This switch bypasses running SMARTDrive.
+        Maybe not necessary. Just in case
+
+   /im - Causes setup to ignore the conventional memory check.
+         Maybe not necessary. Just in case
+
+   /is - This switch causes Setup not to run ScanDisk.
+         Very important as SCANDISK freezed bochs
+
+   /iq - If you use the /is switch to bypass ScanDisk or if ScanDisk 
+         does not complete successfully, Setup checks your drive for cross-linked files. 
+         The /iq switch prevents Setup from doing this.
+
+         Very important. If not used, Setup stop the installation 
+         with a message "error found in C:, run scandisk and setup again"
+         (or something like this). Of course, there is no errors in C:
+         because is an empty, just formatted disk, but the WinMe setup
+         thinks so. The only way to progress from this point is
+         with this switch
+
+   /it - This switch bypasses checking for the presence of "dirty" or "deadly" 
+         terminate-and-stay-resident programs (TSRs) that are known to 
+         cause problems with Windows Setup.
+         Maybe not necessary. Just in case
+
+   /p b;g=3
+
+      b: This switch enables Prompt Before mode. It prompts 
+         you before a detection module is called so that you can 
+         step through each detection module manually and decide 
+         if you want to skip it. 
+
+         Very important. See bellow
+
+      g: This switch controls how verbose the built-in progress bar is
+
+
+   There is another main issue that must be handled
+
+   WinMe requires a 150MHz computer as a minimum. If you try to run
+   the WinMe setup, you will receive a message telling you so, and the
+   installation will stop.
+
+   The only way I found to solve this problem is to change the IPS
+   value in bochsrc.txt. I raised the IPS value until setup stop
+   complaining. In my machine (P3 @ 450MHz), I achieved this with
+
+      cpu: ips=500000000
+
+   This this IPS value, the keyboard and mouse are updated each
+   100 seconds. This makes very difficult to type the CD-KEY numbers,
+   select type of instalation, etc.
+
+   One way to solve this is to lower the vga_update_interval and
+   the keyboard_serial_delay. I lower the value until 
+      - I have a minimum response from keyboard and mouse (say 
+        1 second delay between keypress/mousemove and the
+        screen update)
+      - I still pass the 150 MHz check 
+   
+   The values I used are    
+   
+      vga_update_interval: 10000
+      keyboard_serial_delay: 200
+
+   They may be diferent for other computers.
+   Note that bochs, on starting up complains about vga_update_interval
+   with the message "bochsrc.txt: vga_update_interval not big enough!":
+   ignore it.
+
+6) Follow the Windows Me setup instruction ...
+
+   Just a warning: it is very, very, very, *VERY* (very) slow ...
+   Two days running non stop on my PC.
+   Don't wait ... enjoy yourself during the process ... you that the time.
+
+7) Hardware nightmare
+
+   At a given moment, you are prompted to detect the hardware.
+   There is a prompt for each type of device: Bus, keyboard, mouse, 
+   HD, CDROM, etc. 
+
+   Say NO to everything.
+
+   If you say YES, sometimes setup will detect your HW, but normaly
+   it will crash with GPF on COMMCTRL.DLL (setup crash, but bochs 
+   still alive. Nice!).
+
+   If you sat CANCEL, setup will stay in this screen forever (ok, ok,
+   I have just wait 10 hours).
+
+8) Configuring 
+
+   Setup will configure you PC. You can set your timezone, etc.
+
+   Then Setup will create the Statup menu icons. Here, time to time,
+   you will get a GPF in PIFMGR.DLL. Just press Ok and continue.
+
+   Again this procedure is very very very very very very slow.
+   Worse of all, you cannot leave it running by night. You must
+   press Ok a lot of times to clean the GPF.
+
+9) Restart.
+
+   At last, setup will restart the PC. Exit Bochs. I recomend to make
+   a copy of WinMe.img just to save all your time.
+
+10) Run bochs again
+
+   Setup will do some stuff ... just wait
+
+   After a while, the Start button appearch on the lower left corner
+   of the screen!
+
+   Just for safe, I executed within WinMe msconfig.exe, and in the
+   advanced tab set the Disk Compatibility mode". Also, I've turned 
+   of the menu and windows animations, to speed thinks up a bit. Also
+   it may be a good idea to turn off scandisk on setup.
+
+   Do not forget to exit from Windows with the Shutdown menu ...
+
+11) That's all
+
+   Now you can comment out the ata0-slave line in the bochsrc.txt. WinMe.img
+   contains a working WinMe.
+
+   NOTE: if you lower the IPS, WinMe will be unstable ... surelly 
+         a timing issue. But even if IPS is high, lowering 
+         vga_update_interval and keyboard_serial_delay will help
+         on getting an acceptable usability.
+
+         DO not forget to use your Pentium 10 at 500 GHz to get a
+         good speed within Windows.
+
+Some bugs i've found
+
+- MSDOS Scandisk freeze
+- Hw detection is very problematic
+- If bochs is visible when it switchs from text mode to graphic mode,
+  the size of the window is correct. But if Bochs is minimized when
+  doing so, the size of the Bochs window is incorrect. It does not
+  take into account the height of the top banner (the one with the 
+  disk icons, mouse, snapshot, etc), so the botton of the screen 
+  is clipped.
+- Dont expect to run WinMe at full speed unless you use your Pentium10 at 1500 GHz
+- (not a bug, but a comment) The splash screen when booting/shutdown 
+  WinMe is double height. I personally prefer to see the full image
+  as it was time ago.</PRE
+></TD
+></TR
+></TABLE
+>
+
+                </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-win98.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-win2k.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Windows 98</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Windows 2000</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,506 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Building a Bochs release</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Coding"
+HREF="coding.html"><LINK
+REL="PREVIOUS"
+TITLE="patches:"
+HREF="patches.html"><LINK
+REL="NEXT"
+TITLE="Webmastering"
+HREF="webmastering.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="patches.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Coding</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="webmastering.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="CVS-RELEASE"
+>4.3. Building a Bochs release</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1138"
+>4.3.1. Preparing source files and CVS</A
+></H2
+><P
+>Update version number and strings in configure.in.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>VERSION="2.2.pre2"
+VER_STRING="2.2.pre2"
+REL_STRING="Build from CVS snapshot on March 25, 2005"</PRE
+></TD
+></TR
+></TABLE
+>
+In the README file you have to update version number and date. Add some
+information about new features if necessary.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Bochs x86 Pentium+ Emulator
+Updated: Fri Mar 25 10:33:15 CET 2005
+Version: 2.2.pre2</PRE
+></TD
+></TR
+></TABLE
+>
+Check date, update/sumup info in CHANGES. Run autoconf to regenerate configure and check them in.
+Create a CVS tag to mark which revision of each file was used in the release.
+For prereleases I make a normal CVS tag like this:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  cvs tag REL_2_2_pre2_FINAL</PRE
+></TD
+></TR
+></TABLE
+>
+But for a real release, I make a CVS branch tag AND a normal tag.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  cvs tag REL_2_2_BASE
+  cvs tag -b REL_2_2</PRE
+></TD
+></TR
+></TABLE
+>
+The base tag marks where the branch split off of the main trunk.
+This is very useful in maintaining the branch since you can do diffs
+against it.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   cvs diff -r REL_2_2_BASE -r HEAD
+   cvs diff -r REL_2_2_BASE -r REL_2_0
+   cvs upd -j REL_2_2_BASE -j HEAD file
+   etc.</PRE
+></TD
+></TR
+></TABLE
+>
+The release and all bugfix releases after it are on the REL_2_2 branch.
+When the release is actually finalized, you can do this:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  cvs tag REL_2_2_FINAL</PRE
+></TD
+></TR
+></TABLE
+>
+Now you can start building packages based on the created release tag.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1147"
+>4.3.2. Building the release on win32</A
+></H2
+><P
+>These instructions require cygwin and MSVC++.</P
+><P
+>In Cygwin:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  sh .conf.win32-vcpp         # runs configure 
+  make win32_snap             # unzip workspace, make a win32 source ZIP</PRE
+></TD
+></TR
+></TABLE
+>
+Copy the source ZIP to a windows machine, if necessary.</P
+><P
+>Open up Visual C++ and load the workspace file Bochs.dsw.  Check
+the Build:Set Active Project Configuration is set the way you want it.
+For releases I use "Win32 Release".</P
+><P
+>To create "bochsdbg.exe" with Bochs debugger support, manually change two
+lines in config.h to turn on the debugger.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>#define BX_DEBUGGER 1
+#define BX_DISASM 1</PRE
+></TD
+></TR
+></TABLE
+>
+VC++ will rebuild Bochs with debugger and overwrite bochs.exe.  To avoid
+trashing the non-debug version, move it out of the way while the debugger
+version is being built.  Then rename the debugger version to bochsdbg.exe.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>cd obj-release
+mv bochs.exe bochs-normal.exe
+(build again with BX_DEBUGGER=1 this time)
+mv bochs.exe bochsdbg.exe
+mv bochs-normal.exe bochs.exe</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>To get the docbook installed, you need to do something like this:
+<P
+></P
+><UL
+><LI
+><P
+> make dl_docbook </P
+></LI
+><LI
+><P
+> copy up to date doc files </P
+></LI
+></UL
+>
+Then you can do
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>cd doc/docbook; touch */*.html</PRE
+></TD
+></TR
+></TABLE
+>
+Do make install_win32 into /tmp or someplace:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>make install_win32 prefix=/tmp/bochs-2.2.pre2</PRE
+></TD
+></TR
+></TABLE
+>
+This copies all the files into /tmp/bochs-2.2.pre2 and then creates a
+binary ZIP at /tmp/bochs-2.2.pre2.zip. Rename that bochs-2.2.pre2.win32-bin.zip.</P
+><P
+>Now make the NSIS installer package (the current script is known to work with NSIS 2.03)
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>cd build/win32/nsis</PRE
+></TD
+></TR
+></TABLE
+>
+Unzip the binary ZIP file into bochs-$VERSION (must match Makefile) and 
+then run make.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>unzip ~/bochs-2.2.pre2.zip
+make</PRE
+></TD
+></TR
+></TABLE
+>
+That gives an installer called <TT
+CLASS="FILENAME"
+>Bochs-2.2.pre2.exe</TT
+>. Test and upload it.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1168"
+>4.3.3. Building the release on Linux</A
+></H2
+><P
+>Do a clean checkout using anonymous cvs, so that the source tarball
+will be all set up for anonymous cvs.  First I'll create a clean
+directory called "clean-anon".
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>cvs -d:pserver:anonymous@bochs.cvs.sourceforge.net:/cvsroot/bochs login
+cvs -z3 -d:pserver:anonymous@bochs.cvs.sourceforge.net:/cvsroot/bochs \
+  checkout -d clean-anon bochs</PRE
+></TD
+></TR
+></TABLE
+>
+Start with clean-anon which tracks the CVS head.  Change its sticky tag
+so that it sticks to the release tag.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>cp -a clean-anon bochs-2.2.pre2
+cd bochs-2.2.pre2
+cvs upd -P -r REL_2_2_pre2_FINAL
+cd ..
+tar czvf bochs-2.2.pre2.tar.gz --exclude CVS --exclude .cvsignore bochs-2.2.pre2</PRE
+></TD
+></TR
+></TABLE
+>
+The source TAR file bochs-2.2.pre2.tar.gz is ready to upload.</P
+><P
+>The RPM will be building using the configuration in .conf.linux with
+a few parameters from build/redhat/make-rpm.  Make any last minute changes
+to .conf.linux.  Any changes will go into the source RPM.
+WARNING : do not build in /tmp/bochs-XXX...
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>./build/redhat/make-rpm | tee ../build.txt</PRE
+></TD
+></TR
+></TABLE
+>
+This produces two rpm files in the current directory.  Test and upload.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1175"
+>4.3.4. Uploading files and creating a file release on SF</A
+></H2
+><P
+>When you are ready with creating release packages you have to upload them to SF
+using anonymous FTP using this location:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>upload.sourceforge.net/incoming</PRE
+></TD
+></TR
+></TABLE
+>
+Note that you cannot modify or delete files after uploading them. If you don't do
+anything with the uploaded files, they will be deleted by SF after 24 hours.</P
+><P
+>To create or edit a file release you have to log in to the <B
+CLASS="COMMAND"
+>Admin</B
+>
+section on the SF project page of Bochs. Then you have to go to the
+<B
+CLASS="COMMAND"
+>File Releases</B
+> page and follow the instructions there.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="patches.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="webmastering.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>patches:</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="coding.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Webmastering</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\init",
+    "\\kernel",
+    "\\kernel\\blk_drv",
+    "\\lib"
+  ],
+  "SelectedNode": "\\kernel\\sched.c",
+  "PreviewInSolutionExplorer": false
+}

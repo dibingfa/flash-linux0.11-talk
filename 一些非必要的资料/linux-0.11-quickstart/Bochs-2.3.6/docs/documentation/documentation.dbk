@@ -1,0 +1,529 @@
+<!--
+================================================================
+doc/docbook/documentation/documentation.dbk
+$Id: documentation.dbk 10918 2012-01-01 17:32:36Z vruppert $
+
+This is the top level file for the Bochs Documentation Manual.
+================================================================
+-->
+
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+
+<!-- include definitions that are common to all bochs documentation -->
+<!ENTITY % bochsdefs SYSTEM "../include/defs.sgm">
+%bochsdefs;
+
+]>
+
+<book>
+<bookinfo>
+   <title>Bochs Documentation Manual</title>
+   <authorgroup>
+   <author><firstname>Bryce</firstname><surname>Denney</surname></author>
+   <author><firstname>Michael</firstname><surname>Calabrese</surname></author>
+   </authorgroup>
+</bookinfo>
+<chapter id="layout"><title>Layout of Bochs Documentation</title>
+
+<para>
+The Bochs documentation is divided into three major divisions:
+<itemizedlist>
+  <listitem>
+    <para>
+    The User's Guide introduces the Bochs Emulator, and covers installation and use.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+    Developer's Guide: Describes the internals of the Bochs Emulator for developers.
+    </para>
+  </listitem>
+  <listitem>
+    <para>
+    Documentation Guide: Describes how the documentation is organized, and how to render it, and how to add to it.  This section is in the documentation guide.
+    </para>
+  </listitem>
+</itemizedlist>
+   </para>
+
+<para>
+In docbook terminology, each of the three divisions is a book.  Inside each
+book are a series of chapters.  A chapter may be divided into sections, and
+each section is divided into more sections.  Eventually we will add fancy
+things like a table of contents, index, and glossary, when we learn how.
+</para>
+
+</chapter>
+
+<chapter id="basics"><title>Docbook Basics</title>
+<para>
+Some of the most commonly used docbook patterns are described here
+for quick reference.  For all the details (sometimes more than you
+wanted), try &docbookTDG; by Norman Walsh and Leonard Muellner, which O'Reilly
+&amp; Associates has generously placed on their web site.  In this section,
+many of the SGML tags are linked to the page of Walsh's book that describes
+that tag in detail.
+</para>
+
+<section><title>Small Tutorial</title>
+
+<para>
+Docbook files are text files containing SGML.  If you have ever looked
+at HTML, then a docbook file will look familiar.  Not the same, but familiar.
+The easiest way of getting familiar with the docbook format is by looking at
+examples such as the Bochs documentation itself.  When you compare the source
+code to the rendered documentation on the web site, it will be pretty obvious
+what all the codes are doing.  HTML is very forgiving about breaking the syntax
+rules, such as not putting &lt;/h1&gt; at then end of an &lt;h1&gt; section.
+SGML is picky; if you forget that kind of thing in SGML, it will insist that
+you fix it.
+</para>
+
+<para>
+Every paragraph must begin with the &lt;para&gt; tag and end with the
+corresponding end tag, &lt;/para&gt;.
+<programlisting>
+&lt;<ulink url="http://www.docbook.org/tdg/en/html/para.html">para</ulink>&gt;
+This is a paragraph.
+&lt;/para&gt;
+</programlisting>
+</para>
+
+<para>
+A chapter looks like this:
+<programlisting>
+&lt;<ulink url="http://www.docbook.org/tdg/en/html/chapter.html">chapter</ulink>&gt;
+  &lt;title&gt;<replaceable>title of the chapter</replaceable>&lt;/title&gt;
+  <replaceable>text of the chapter</replaceable>
+&lt;/chapter&gt;
+</programlisting>
+The text of the chapter must contain at least one complete &lt;para&gt; tag,
+and it can include &lt;section&gt;s.
+</para>
+
+<para>
+A section looks like this:
+<programlisting>
+&lt;<ulink url="http://www.docbook.org/tdg/en/html/section.html">section</ulink>&gt;
+  &lt;title&gt;<replaceable>title of the section</replaceable>&lt;/title&gt;
+  <replaceable>text of the section</replaceable>
+&lt;/section&gt;
+</programlisting>
+The text of the section must contain at least one complete &lt;para&gt; tag,
+and it can include other &lt;section&gt;s.
+</para>
+
+<para>
+To make a link to any URL, use the syntax:
+<programlisting>
+&lt;<ulink url="http://www.docbook.org/tdg/en/html/ulink.html">ulink</ulink> url="<replaceable>URL</replaceable>"&gt;<replaceable>text of the hyperlink</replaceable>&lt;/ulink&gt;
+</programlisting>
+
+However, if you like to link to another target inside the same document,
+for example to a section, use something like that:
+<programlisting>
+&lt;section id="<replaceable>unique identifier</replaceable>"&gt;
+  <replaceable>All stuff that is needed here...</replaceable>
+&lt;/section&gt;
+<replaceable>...</replaceable>
+&lt;<ulink url="http://www.docbook.org/tdg/en/html/link.html">link</ulink> linkend="<replaceable>unique identifier to link to</replaceable>"&gt;<replaceable>text of hyperlink</replaceable>&lt;/link&gt;
+</programlisting>
+</para>
+
+<para>
+To include a picture in the text, use the &lt;graphic&gt; tag.  In SGML, this
+graphic tag has no closing tag.
+<programlisting>
+&lt;<ulink url="http://www.docbook.org/tdg/en/html/graphic.html">graphic</ulink> format="<replaceable>fmt</replaceable>" fileref="<replaceable>filename</replaceable>"&gt;
+</programlisting>
+The <replaceable>fmt</replaceable> can be one of many formats including GIF,
+JPG, PNG, PS, and EPS.  The filename should be on the local disk.  If there is
+a pathname, it should be relative to the source file or it won't be found on
+anyone's system other than yours.
+</para>
+
+<para>
+There are over 300 tags defined in the latest version of docbook, so
+we won't try to list them all here.  Once you get the idea, you can
+either find examples in the rest of the documentation that do what you
+need, or look at Walsh and Muellner's
+<ulink url="http://www.docbook.org/tdg/en/html/docbook.html">DocBook: The Definitive Guide</ulink>
+for more details.
+</para>
+
+</section>   <!-- end of Docbook Basics:Small Tutorial section -->
+
+<section id="references"><title>References and Other Tutorials</title>
+
+<para>
+Docbook was created more than 10 years ago, but since 1999, Docbook has been
+under the guidance of the DocBook Technical Committee at OASIS.  The
+<ulink url="http://www.oasis-open.org/committees/docbook">OASIS website</ulink>
+distributes the official DocBook DTDs, and has pages on Docbook history,
+samples, tools, and runs a few docbook mailing lists.
+</para>
+
+<para>
+Since the Linux Documentation Project uses docbook, they have written some
+good tutorial material.  In particular the <ulink url="http://www.linuxdoc.org/LDP/LDP-Author-Guide/index.html">LDP Author Guide</ulink>, by Jorge Godoy
+is very good.
+</para>
+
+<para>
+O'Reilly &amp; Associates publishes a book called <ulink
+url="http://www.docbook.org/tdg/en/html/docbook.html">DocBook: The Definitive
+Guide</ulink> by Norman Walsh and Leonard Muellner.  You can buy it or read it
+online.  Norman Walsh knows what he's talking about, since he is the chair of
+the DocBook Technical Committee.  This is good for reference, since it has a
+complete list of tags and their grammar.
+</para>
+
+<para>
+<ulink url="http://www.ibiblio.org/godoy/sgml/docbook/howto/index.html">DocBook
+HOWTO, also by Jorge Godoy</ulink>
+</para>
+
+<para>
+An article on lwn.net called <ulink
+url="http://lwn.net/2000/features/DocBook">Exploring SGML Docbook</ulink>
+focuses mostly on installation of tools from scratch: openjade, Norman Walsh's
+DSSSL stylesheets, and jade2tex.  If you can get the tools from RPMs or
+whatever package your OS uses, use that instead.
+</para>
+
+</section>  <!-- end of Docbook Basics:References and Other Tutorials -->
+
+</chapter>
+
+<chapter id="conventions"><title>Conventions</title>
+<para>
+Put a &amp;FIXME; near things that need to be fixed up.  A &amp;FIXME; causes
+the under construction symbol to appear, like this &FIXME;.
+</para>
+
+<para>
+A &amp;NEEDHELP; indicates, that you need someone's help in order to document
+something, you don't know for sure. This is mostly the case if you need inside
+information from a developer. The symbol looks like this: &NEEDHELP;.
+</para>
+
+<para>
+Don't get confused because &amp;FIXME; looks the same as &amp;NEEDHELP; -
+this is just for the moment. When you like to use one of them, think of what
+it should mean, instead of how it looks like: Take &amp;FIXME; if you have
+great ideas of what to document, but have no time or no knowledge about it, or
+just noticed something wrong or outdated. &amp;NEEDHELP; instead should be used
+to request help on something (see above).
+</para>
+
+<para>
+This is just a first try to clearify the difference between
+&amp;NEEDHELP; and &amp;FIXME;.
+</para>
+
+<para>
+To maintain a consistent spelling, some "problem words" are mentioned here,
+along with a hint on how to spell them.
+<table>
+  <title>list of problem words</title>
+  <tgroup cols="2">
+  <tbody>
+    <row>
+      <entry>Bochs</entry>
+      <entry>Bochs is written with a leading capital letter.</entry>
+    </row>
+    <row>
+      <entry><filename>bochsrc</filename></entry>
+      <entry>
+        This is what the Bochs configuration file should be refered as. It is a good
+        compromise between what is common on Unix and what is possible on Windows
+        (file names starting with a dot aren't easy to create). Remember to use
+        &lt;<ulink url="http://www.docbook.org/tdg/en/html/filename.html">filename</ulink>&gt;bochsrc&lt;/filename&gt;.
+       </entry>
+    </row>
+    <row>
+      <entry>CD-ROM</entry>
+      <entry>This abbreviation is written in all capital letters, with a hyphen in between.</entry>
+    </row>
+    <row>
+      <entry>Unix</entry>
+      <entry>
+        Unix is written using a leading capital letter, followed by all lower-case letters.
+        See the <ulink url="http://en.wikipedia.org/wiki/Unix#Branding">Unix entry in Wikipedia</ulink>.
+      </entry>
+    </row>
+  </tbody>
+  </tgroup>
+</table>
+</para>
+
+<para>
+&FIXME; SGML docbook...lower case elements...indentation...remarks...master document/include files
+</para>
+</chapter>
+
+<chapter id="reading-writing"><title>Reading and Writing</title>
+
+<para>
+The DocBook source code -- user.dbk, for example -- is a plain text file that
+can be directly edited and saved with any text editor such as emacs or vi.
+</para>
+
+<tip>
+<para>
+If you just want to read the documentation, you should not
+need to read and understand this section, and render the docs yourself.  The
+&bochswebsite; has all this information in readable form already.
+</para>
+</tip>
+
+<para>
+To render DocBook source code into the nice readable form the end-user will
+require, several tools are needed.  These tools allow the .dbk file to be
+rendered into such formats as HTML, PDF, and PostScript.  This section
+describes the tools you need and the steps you take to render the Bochs
+documentation.
+</para>
+
+<tip>
+<para>
+The rendering process is one-way.  That is, the DocBook source files will be
+downloaded from SVN, edited, and uploaded to SVN as .dbk files.  Along the
+way, it will probably be necessary to render them into HTML, but only to
+check one's work or to post them as part of a web page.  (I hope I'm not the
+only person to spend nine minutes trying to figure out how to 'compile' HTML
+into DocBook format.)
+</para>
+</tip>
+
+<sect1>
+<title>Jade and DSSSL</title>
+<para>
+Here is what the Linux Documentation Project says about jade:
+
+  <blockquote>
+  <attribution>
+  LDP author's guide
+  </attribution>
+  <para>
+  Jade is the front-end processor for SGML and XML. It uses the DSSSL and
+  DocBook DTD to perform the verification and rendering from SGML and XML into
+  the target format.
+  </para>
+  </blockquote>
+</para>
+
+<para>
+What does all this mean?
+For purposes of Bochs documentation, jade reads the docbook source file and
+writes out a HTML/PDF/PS file.  Bochs documentation is in SGML format, though
+apparantly jade can handle XML Docbooks as well.  DSSSL stands for
+<quote>Document Style Semantics and Specification Language</quote>, and it
+tells jade how to translate the docbook tags into the target format.  DSSSL
+files are written in the Scheme programming language, which is a variant of
+LISP.  Learn more about DSSSL at <ulink
+url="http://www.jclark.com/dsssl">Jim Clark's DSSSL page</ulink>.
+The DocBook DTD is the formal description of what elements and attributes can
+be used in a docbook.
+</para>
+
+<sect2>
+<title>Installation</title>
+
+<para>
+The easiest way to get jade working in Linux is to install packages.  The
+recent RedHat, Suse, and Mandrake Linux distributions all include
+openjade and SGML tools.  If you can get the right packages installed,
+you may save yourself a few hours of compiling and configuring from scratch.
+For plex86, which also uses docbook, Kevin Lawton listed the packages that
+he installed on Mandrake to get jade working:
+
+<programlisting>
+  jadetex-3.5-2mdk
+  openjade-1.3-10mdk
+  docbook-dtd31-sgml-1.0-3mdk
+  docbook-utils-0.6-1mdk
+  docbook-style-dsssl-1.62-4mdk
+  docbook-dtd412-xml-1.0-3mdk
+  sgml-common-0.2-4mdk
+  xml-common-0.1-3mdk
+</programlisting>
+
+Under Debian, the following packages seem to be a bare minimum to install
+DocBook and get it to render Bochs documentation into reader-friendly formats:
+
+<programlisting>
+  jade
+  docbook
+  docbook-dsssl
+</programlisting>
+
+It's worth mentioning that, at the time of this writing, at least some of
+the above-mentioned packages were in the testing or unstable branches of
+Debian.
+</para>
+
+<para>
+Under FreeBSD, just install the following ports:
+
+<programlisting>
+  textproc/jade
+  textproc/dsssl-docbook-modular
+  textproc/docbook-410
+</programlisting>
+
+</para>
+
+<para>
+Hopefully, the required packages on other Linux distributions have
+similar names.  If you have jade working, please tell a documentation
+writer the package names that you used so that we can include it in the docs.
+&NEEDHELP;
+</para>
+
+<para>
+If you cannot get jade to work using packages, you need to find and install
+three things: the DocBook DTD version 4.1 from &OASIS;, the program
+<ulink url="http://www.jclark.com/jade/">jade</ulink>
+(or <ulink url="http://openjade.sourceforge.net/">openjade</ulink>), and the
+<ulink url="http://sourceforge.net/projects/docbook/">Docbook DSSSL
+stylesheets</ulink> for the formats that you want to render to.  The whole
+process is described in &docbookTDG; in Appendix III section A.  If you want
+to render to PostScript or Adobe PDF, you also need to install TeX and
+and some associated tools.  It is a nontrivial process.
+</para>
+
+<tip>
+<para>
+Just use the packages.
+</para>
+</tip>
+
+<para>
+For now, building the Bochs documentation also depends on some scripts called
+docbook2html, docbook2pdf, and docbook2ps.  These come from the docbook-tools
+project at <ulink url="http://sources.redhat.com/docbook-tools">http://sources.redhat.com/docbook-tools</ulink>.
+</para>
+
+</sect2>
+
+<sect2>
+<title>Using jade with docbook2x scripts</title>
+
+<para>
+Check to see if you have the docbook2ps, docbook2pdf, and docbook2html
+scripts.  If so, you can probably use the Bochs Makefile.  Just do
+<programlisting>
+  cd $BOCHS/doc/docbook
+  make
+</programlisting>
+It should render three docbook books, one in user, one in development, and one
+in and documentation.  If there are no errors, look for the user guide
+in <filename>$BOCHS/doc/docbook/user/user.pdf</filename>,
+<filename>$BOCHS/doc/docbook/users/user.ps</filename>, and
+<filename>$BOCHS/doc/docbook/users/book1.html</filename>.  The HTML is broken
+into lots of little chunks that link to each other, but book1.html is the first
+one.
+</para>
+</sect2>
+
+<sect2>
+<title>Using jade directly</title>
+<para>
+If you don't have docbook2<replaceable>format</replaceable> scripts, you
+can also run jade manually.  The command is long, so you may want to make
+your own script or edit your copy of the makefile.  These commands assume that
+you installed Norman Walsh's DSSSL stylesheets in <varname>$DSSSL</varname>.
+To render the user's guide into HTML, type:
+<programlisting>
+  cd $BOCHS/doc/docbook/user
+  jade -t sgml -d <varname>$DSSSL</varname>/html/docbook.dsl user.dbk
+</programlisting>
+Or, if you want to render the developer's guide into TeX format,
+<programlisting>
+  cd $BOCHS/doc/docbook/developer
+  jade -t tex -d <varname>$DSSSL</varname>/print/docbook.dsl developer.dbk
+</programlisting>
+Or, if you want to render the documentation guide into Rich Text Format,
+<programlisting>
+  cd $BOCHS/doc/docbook/documentation
+  jade -t rtf -d <varname>$DSSSL</varname>/print/docbook.dsl documentation.dbk
+</programlisting>
+I believe that the HTML stylesheet must have "-t sgml" but the print
+stylesheet in the second example can have "-t rtf" for Rich Text Format,
+"-t tex" for TeX, or "-t mif" for MIF.
+</para>
+
+<para>
+Bochs has the convention of calling the docbook files
+<replaceable>name</replaceable>.dbk, but any file name would work.  Some
+other people call them <replaceable>NAME</replaceable>.sgm for SGML.
+</para>
+
+</sect2>
+
+<sect2>
+<title>Configuration</title>
+<para>
+If the generated HTML files do not have the same names as the Bochs documentation
+on the web, some kind of configuration is required. You need to edit the DSL file
+to make sure the following settings are used.
+<screen>
+(define %root-filename% "index")        ;; name for the root html file
+(define %html-ext% ".html")             ;; default extension for html output files
+(define %html-prefix% "")               ;; prefix for all filenames generated (except root)
+(define %use-id-as-filename% #t)        ;; if #t uses ID value, if present, as filename
+                                        ;;   otherwise a code is used to indicate level
+                                        ;;   of chunk, and general element number
+                                        ;;   (nth element in the document)
+(define use-output-dir #f)              ;; output in separate directory?
+</screen>
+</para>
+<para>
+If you like to have the screen sections shaded, this setting should help.
+<screen>
+(define %shade-verbatim% #t)
+</screen>
+</para>
+
+</sect2>
+</sect1>
+
+<sect1 id="nsgmls"> <title>Nsgmls</title>
+
+<para>
+The Bochs documentation is written in SGML docbook style, so any tool which can
+check SGML syntax can be used to check the docbook.  The DTD (data type
+description) for docbook tells exactly which elements can be used and where.
+It says which attributes are required and which are optional, and how elements
+should be nested.  The term "validate" has a specific meaning in SGML.  When
+you validate a SGML document, it means that you read the DTD and then check
+that the document conforms to all the rules of the DTD.
+</para>
+
+<para>
+A program called nsgmls, written by James Clark <email>jjc@jclark.com</email>,
+can validate an SGML document such as our docbook.  Although nsgmls can do many
+other things, this command will validate the docbook against the DTD which
+defines the syntax:
+<cmdsynopsis>
+  <command>nsgmls</command>
+  <arg choice="plain">-s</arg>
+  <arg choice="plain"><replaceable>filename</replaceable></arg>
+</cmdsynopsis>
+</para>
+
+<para>
+Nsgmls is part of SP, a "free object-oriented toolkit for SGML parsing and
+entity management" by James Clark <email>jjc@jclark.com</email>.  SP can be
+found at
+<ulink url="http://www.jclark.com/sp">http://www.jclark.com/sp</ulink>.
+There is a complete man page for nsgmls
+<ulink url="http://www.jclark.com/sp/nsgmls.htm">here</ulink>.
+</para>
+
+</sect1>
+
+</chapter>   <!-- end Rendering chapter -->
+
+</book>

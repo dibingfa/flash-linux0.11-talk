@@ -1,0 +1,978 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using Bochs internal debugger</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Configuring and using a tuntap network interface"
+HREF="config-tuntap.html"><LINK
+REL="NEXT"
+TITLE="Using Bochs and the remote GDB stub"
+HREF="debugging-with-gdb.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-tuntap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="debugging-with-gdb.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="INTERNAL-DEBUGGER"
+>8.11. Using Bochs internal debugger</A
+></H1
+><P
+>Note, if you are looking for a graphical front-end for the
+bochs debugger, you may want to check out
+<A
+HREF="http://bfe.sourceforge.net/"
+TARGET="_top"
+>BFE</A
+>. This is a
+package written by a Bochs user which can interface with
+the text based Bochs debugger.  No linking is necessary.
+It's not part of Bochs, but you may find it useful.</P
+><P
+>You can now conditionally compile in a GDB like command line debugger, that
+allows you to set breakpoints, step through instructions, and other
+useful functions.  If there isn't a command for something you believe
+is generally useful for the debugger, let me know and I'll implement
+it if possible.</P
+><P
+>To use the debugger, you must configure Bochs with the
+<CODE
+CLASS="OPTION"
+>--enable-debugger</CODE
+> and <CODE
+CLASS="OPTION"
+>--enable-disasm</CODE
+> flags.
+For example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ./configure --enable-debugger --enable-disasm</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>You must use flex version 2.5.4 or greater.  I have heard that
+version 2.5.2 will not work.</P
+></BLOCKQUOTE
+></DIV
+><P
+>When you first start up Bochs, you will see the command line prompt
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  bochs:1&#62;</PRE
+></TD
+></TR
+></TABLE
+>
+
+From here, you may use the following commands:</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3008"
+>8.11.1. Execution Control</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  c                           continue executing
+  continue
+
+  s     [count]               execute count instructions, default is 1
+  step  [count]
+  stepi [count]
+
+  Ctrl-C                      stop execution, and return to command line prompt
+  Ctrl-D                      if at empty line on command line, exit
+
+  q                           quit debugger and execution
+  quit
+  exit</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3012"
+>8.11.2. BreakPoints</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  NOTE: The format of 'seg', 'off', and 'addr' in these descriptions,
+        are as follows.  I don't have any way to set the current radix.
+
+        hexidecimal:    0xcdef0123
+        decimal:        123456789
+        octal:          01234567
+
+  vbreak seg:off              Set a virtual address instruction breakpoint
+  vb     seg:off
+
+  lbreak addr                 Set a linear address instruction breakpoint
+  lb     addr
+
+  pbreak [*] addr             Set a physical address instruction breakpoint
+  pb     [*] addr             (the '*' is optional for GDB compatibility)
+  break  [*] addr
+  b      [*] addr
+
+  info break                  Display state of all current breakpoints
+  bpe    n                    Enable a breakpoint
+  bpd    n                    Disable a breakpoint
+  delete n                    Delete a breakpoint
+  del    n
+  d      n&#13;</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3016"
+>8.11.3. Manipulating Memory</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  x  /nuf addr      Examine memory at linear address addr
+  xp /nuf addr      Examine memory at physical address addr
+     n              Count of how many units to display
+     u              Unit size; one of
+                      b Individual bytes
+                      h Halfwords (2 bytes)
+                      w Words (4 bytes)
+                      g Giant words (8 bytes)
+                      NOTE: these are *not* typical Intel nomenclature sizes,
+                            but they are consistent with GDB convention.
+     f              Printing format.  one of
+                      x Print in hexadecimal
+                      d Print in decimal
+                      u Print in unsigned decimal
+                      o Print in octal
+                      t Print in binary
+
+    n, f, and u are optional parameters.  u and f default to the last values
+    you used, or to w(words) and x(hex) if none have been supplied.
+    n currently defaults to 1.  If none of these optional parameters are
+    used, no slash should be typed.  addr is also optional.  If you don't
+    specify it, it will be the value the next address (as if you had
+    specified n+1 in the last x command).
+
+  setpmem addr datasize val    Set physical memory location of size
+                               datasize to value val.
+
+  crc  addr1  addr2            Show CRC32 for physical memory range addr1..addr2
+  info dirty                   Show physical pages dirtied (written to) since last display
+                               Values displayed are the top 20 bits only (page addresses)&#13;</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3020"
+>8.11.4. Info commands</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  info r|reg|regs|registers    List of CPU integer registers and their contents
+  info cpu                     List of all CPU registers and their contents
+  info fpu                     List of all FPU registers and their contents
+  info sse                     List of all SSE registers and their contents
+  info mmx                     List of all MMX registers and their contents
+  info creg                    Show CR0-CR4 registers and their contents
+  info sreg                    Show segment registers and their contents
+  info eflags                  Show decoded EFLAGS register
+  info break                   Information about current breakpoint status
+  info tab                     Show paging address translation</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3024"
+>8.11.5. Manipulating CPU Registers</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  set reg = expr    Change a CPU register to value of expression.
+                    Currently only general purpose registers are supported,
+                    you may not change:
+                      eflags, eip, cs, ss, ds, es, fs, gs.
+
+    Examples: set eax = 2+2/2
+              set esi = 2*eax+ebx
+
+  registers         List of CPU registers and their contents
+  regs
+  reg
+  r</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3028"
+>8.11.6. Disassembly commands</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  disassemble start end       Disassemble instructions in given linear address
+                              range, inclusive of start, exclusive of end.
+                              Use "set $disassemble_size =" to tell
+                              debugger desired segment size.  Use a value for
+                              end of less than start (or zero) if you only
+                              want the first instruction disassembled.
+
+  disassemble switch-mode     Switch between Intel and AT&amp;T disassebly styles
+                              for debugger disassembler.
+
+  disassemble size = n        Tell debugger what segment size to use when
+                              the "disassemble" command is used.  Use values
+                              of 0, 16 or 32 for n.  Value of 0 means
+			      "use segment size specified by current CS
+			      segment". Default is 0.
+
+  set $auto_disassemble = n   Cause debugger to disassemble current instruction
+                              every time execution stops if n=1.  Default is 0.
+                              Segment size of current CPU context is used for
+                              disassembly, so the "disassemble size" variable is
+                              ignored.
+
+  set disassemble on          The same as 'set $auto_disassemble = 1'
+  set disassemble off         The same as 'set $auto_disassemble = 0'</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3032"
+>8.11.7. Instruction tracing</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  trace on                    Disassemble every executed instruction. Note
+                              that instructions which caused exceptions are
+                              not really executed, and therefore not traced.
+
+  trace off                   Disable instruction tracing.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3036"
+>8.11.8. Instrumentation</A
+></H2
+><P
+>&#13;To use instrumentation features in bochs, you must compile in support for it.
+You should build a custom instrumentation library in a separate directory in
+the "instrument/" directory.  To tell configure which instrumentation library
+you want to use, use the "--enable-instrumentation" option.
+
+The default library consists of a set of stubs, and the following are
+equivalent:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ./configure [...] --enable-instrumentation
+  ./configure [...] --enable-instrumentation="instrument/stubs"</PRE
+></TD
+></TR
+></TABLE
+>
+
+You could make a separate directory with your custom library,
+for example "instrument/myinstrument", copy the contents of
+the "instrument/stubs" directory to it, then customize it.  Use:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ./configure [...] --enable-instrumentation="instrument/myinstrument"</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3041"
+>8.11.9. Instrumentation commands</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  instrument start            calls bx_instr_start()
+  instrument stop             calls bx_instr_stop()
+  instrument reset            calls bx_instr_reset()
+  instrument print            calls bx_instr_print()</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3045"
+>8.11.10. Other Commands</A
+></H2
+><P
+>&#13;<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ptime</PRE
+></TD
+></TR
+></TABLE
+>
+
+Print the current time (number of ticks since start of simulation).
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>sb <CODE
+CLASS="VARNAME"
+>delta</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Insert a time break point "delta" instructions into the future ("delta" is a 64-bit integer followed by "L", for example 1000L).
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>sba <CODE
+CLASS="VARNAME"
+>time</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Insert a time break point at "time" ("time" is a 64-bit integer followed by "L", for example 1000L).
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>record <CODE
+CLASS="VARNAME"
+>filename</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Record console input to file <CODE
+CLASS="VARNAME"
+>filename</CODE
+>. The file consists of
+zero or more lines of the form "%s %d %x", where the first word is the
+event type, the second is a time stamp and the third is event specific
+data.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>playback <CODE
+CLASS="VARNAME"
+>filename</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Playback console input from file <CODE
+CLASS="VARNAME"
+>filename</CODE
+>. Additional input can
+be given directly in the console window. Events in the file will be
+played back at times relative to the time when the playback command
+was executed.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>print-stack [<CODE
+CLASS="VARNAME"
+>num words</CODE
+>]</PRE
+></TD
+></TR
+></TABLE
+>
+
+Print the <CODE
+CLASS="VARNAME"
+>num words</CODE
+> top 16-bit words on the stack. <CODE
+CLASS="VARNAME"
+>Num
+words</CODE
+> defaults to 16. Only works reliably in protected mode when
+the base address of the stack segment is zero.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>watch stop</PRE
+></TD
+></TR
+></TABLE
+>
+
+Stop the simulation (and return to prompt) when a watch point is
+encountered.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>watch continue</PRE
+></TD
+></TR
+></TABLE
+>
+
+Do not stop the simulation when watch points are encountered. They will
+still be logged.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>watch</PRE
+></TD
+></TR
+></TABLE
+>
+
+Print current watch point status.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>unwatch</PRE
+></TD
+></TR
+></TABLE
+>
+
+Remove all watch points.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>watch read <CODE
+CLASS="VARNAME"
+>address</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Insert a read watch point at physical address <CODE
+CLASS="VARNAME"
+>address</CODE
+>.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>watch write address</PRE
+></TD
+></TR
+></TABLE
+>
+
+Insert a write watch point at physical address <CODE
+CLASS="VARNAME"
+>address</CODE
+>.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>unwatch read <CODE
+CLASS="VARNAME"
+>address</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Remove read watch point from physical address <CODE
+CLASS="VARNAME"
+>address</CODE
+>.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>unwatch write <CODE
+CLASS="VARNAME"
+>address</CODE
+></PRE
+></TD
+></TR
+></TABLE
+>
+
+Remove write watch point from physical address <CODE
+CLASS="VARNAME"
+>address</CODE
+>.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>modebp</PRE
+></TD
+></TR
+></TABLE
+>
+
+Toggles CPU mode switch breakpoint.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>load-symbols [global] <CODE
+CLASS="VARNAME"
+>filename</CODE
+> [<CODE
+CLASS="VARNAME"
+>offset</CODE
+>]</PRE
+></TD
+></TR
+></TABLE
+>
+
+Load symbols from file <CODE
+CLASS="VARNAME"
+>filename</CODE
+>. If the global keyword is
+added, then the the symbols will be visible in all contexts for which
+symbols have not been loaded. <CODE
+CLASS="VARNAME"
+>Offset</CODE
+> (default is 0) is added to
+every symbol entry. The symbols are loaded in the current (executing)
+context.</P
+><P
+>The symbol file consists of zero or more lines of the format <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>"%x %s"</PRE
+></TD
+></TR
+></TABLE
+>.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>show [<CODE
+CLASS="VARNAME"
+>string</CODE
+>]</PRE
+></TD
+></TR
+></TABLE
+>
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  Toggles show symbolic info (calls to begin with).
+  show - shows current show mode
+  show mode     - show, when processor switch mode
+  show int      - show, when interrupt is happens
+  show call     - show, when call is happens
+  show ret      - show, when iret is happens
+  show off      - toggles off symbolic info
+  show dbg-all  - turn on all show flags
+  show dbg-none - turn off all show flags</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3089"
+>8.11.11. Related links</A
+></H2
+><P
+><IMG
+SRC="../images/undercon.png"> add links
+<P
+></P
+><UL
+><LI
+><P
+> Cosimulation </P
+></LI
+><LI
+><P
+> Instrumentation </P
+></LI
+></UL
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-tuntap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="debugging-with-gdb.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Configuring and using a tuntap network interface</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using Bochs and the remote GDB stub</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

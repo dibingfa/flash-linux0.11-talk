@@ -1,0 +1,136 @@
+*asm:
+--traditional-format 
+
+*asm_debug:
+%{g*:--gstabs}
+
+*asm_final:
+
+
+*asm_options:
+%a %Y %{c:%W{o*}%{!o*:-o %w%b%O}}%{!c:-o %d%w%u%O}
+
+*invoke_as:
+%{!S:-o %{|!pipe:%g.s} |
+ as %(asm_options) %{!pipe:%g.s} %A }
+
+*cpp:
+%(cpp_cpu) %{posix:-D_POSIX_SOURCE} %{mthreads:-D_MT}   -D__stdcall=__attribute__((__stdcall__))   -D__cdecl=__attribute__((__cdecl__))   -D__fastcall=__attribute__((__fastcall__))   %{!ansi:-D_stdcall=__attribute__((__stdcall__))     -D_cdecl=__attribute__((__cdecl__))     -D_fastcall=__attribute__((__fastcall__))}   -D__declspec(x)=__attribute__((x))
+
+*cpp_options:
+%(cpp_unique_options) %{std*} %{d*} %{W*} %{w} %{pedantic*} %{fshow-column} %{fno-show-column} %{fsigned-char&funsigned-char} %{fleading-underscore} %{fno-leading-underscore} %{fno-operator-names} %{ftabstop=*}
+
+*cpp_unique_options:
+%{C:%{!E:%eGNU C does not support -C without using -E}} %{nostdinc*} %{C} %{v} %{I*} %{P} %{$} %I %{MD:-MD %{!o:%b.d}%{o*:%.d%*}} %{MMD:-MMD %{!o:%b.d}%{o*:%.d%*}} %{M} %{MM} %{MF*} %{MG} %{MP} %{MQ*} %{MT*} %{!E:%{!M:%{!MM:%{MD|MMD:%{o*:-MQ %*}}}}} %{!no-gcc:-D__GNUC__=%v1 -D__GNUC_MINOR__=%v2 -D__GNUC_PATCHLEVEL__=%v3 -D__GXX_ABI_VERSION=102} %{!undef:%{!ansi:%{!std=*:%p}%{std=gnu*:%p}} %P} %{trigraphs} %{Os:-D__OPTIMIZE_SIZE__} %{O*:%{!O0:-D__OPTIMIZE__}} %{fno-inline|O0|!O*:-D__NO_INLINE__} %{ffast-math:-D__FAST_MATH__} %{ffreestanding:-D__STDC_HOSTED__=0} %{fno-hosted:-D__STDC_HOSTED__=0} %{!ffreestanding:%{!fno-hosted:-D__STDC_HOSTED__=1}} %{remap} %{g3:-dD} %{H} %C %{fshort-wchar:-U__WCHAR_TYPE__ -D__WCHAR_TYPE__=short\ unsigned\ int} %{D*&U*&A*} %{i*} %Z %i %{E|M|MM:%W{o*}}
+
+*trad_capable_cpp:
+%{traditional|ftraditional|traditional-cpp:trad}cpp0
+
+*cc1:
+%(cc1_cpu) 
+
+*cc1_options:
+%{pg:%{fomit-frame-pointer:%e-pg and -fomit-frame-pointer are incompatible}} %1 %{!Q:-quiet} -dumpbase %B %{d*} %{m*} %{a*} %{g*} %{O*} %{W*} %{w} %{pedantic*} %{std*} %{ansi} %{traditional} %{v:-version} %{pg:-p} %{p} %{f*} %{Qn:-fno-ident} %{--help:--help} %{--target-help:--target-help} %{!fsyntax-only:%{S:%W{o*}%{!o*:-o %b.s}}} %{fsyntax-only:-o %j} %{-param*}
+
+*cc1plus:
+
+
+*link_gcc_c_sequence:
+%G %L %G
+
+*endfile:
+crtend%O%s
+
+*link:
+%{mwindows:--subsystem windows}   %{mconsole:--subsystem console}   %{shared: %{mdll: %eshared and mdll are not compatible}}   %{shared: --shared --enable-auto-image-base}   %{mdll:--dll}   %{static:-Bstatic} %{!static:-Bdynamic}   %{shared|mdll: -e _DllMainCRTStartup@12}
+
+*lib:
+%{pg:-lgmon} %{mwindows:-lgdi32 -lcomdlg32}                   -luser32 -lkernel32 -ladvapi32 -lshell32
+
+*libgcc:
+%{mthreads:-lmingwthrd} -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt
+
+*startfile:
+%{shared|mdll:dllcrt2%O%s}   %{!shared:%{!mdll:crt2%O%s}} %{pg:gcrt2%O%s}   crtbegin%O%s
+
+*switches_need_spaces:
+
+
+*predefines:
+-D_WIN32 -D__WIN32 -D__WIN32__ -DWIN32   -D__MINGW32__ -D__MSVCRT__ -DWINNT -D_X86_=1   -Asystem=winnt
+
+*cross_compile:
+0
+
+*version:
+3.2.3
+
+*multilib:
+. ;
+
+*multilib_defaults:
+
+
+*multilib_extra:
+
+
+*multilib_matches:
+
+
+*multilib_exclusions:
+
+
+*multilib_options:
+
+
+*linker:
+collect2
+
+*link_libgcc:
+%D
+
+*md_exec_prefix:
+
+
+*md_startfile_prefix:
+
+
+*md_startfile_prefix_1:
+
+
+*cpp_cpu_default:
+-D__tune_i586__ -D__tune_pentium__
+
+*cpp_cpu:
+%(cpp_cpu32) %(cpp_cpucommon)
+
+*cpp_cpu32:
+-Acpu=i386 -Amachine=i386 %{!ansi:%{!std=c*:%{!std=i*:-Di386}}} -D__i386 -D__i386__ %(cpp_cpu32sizet)
+
+*cpp_cpu64:
+-Acpu=x86_64 -Amachine=x86_64 -D__x86_64 -D__x86_64__ %(cpp_cpu64sizet)
+
+*cpp_cpu32sizet:
+
+
+*cpp_cpu64sizet:
+
+
+*cpp_cpucommon:
+%{march=i386:%{!mcpu*:-D__tune_i386__ }}%{march=i486:-D__i486 -D__i486__ %{!mcpu*:-D__tune_i486__ }}%{march=pentium|march=i586:-D__i586 -D__i586__ -D__pentium -D__pentium__   %{!mcpu*:-D__tune_i586__ -D__tune_pentium__ }}%{march=pentium-mmx:-D__i586 -D__i586__ -D__pentium -D__pentium__   -D__pentium__mmx__   %{!mcpu*:-D__tune_i586__ -D__tune_pentium__ -D__tune_pentium_mmx__}}%{march=pentiumpro|march=i686|march=pentium2|march=pentium3:-D__i686 -D__i686__   -D__pentiumpro -D__pentiumpro__   %{!mcpu*:-D__tune_i686__ -D__tune_pentiumpro__ }}%{march=pentium2|march=pentium3: -D__pentium2 -D__pentium2__  %{!mcpu*:-D__tune_pentium2__ }}%{march=pentium3: -D__pentium3 -D__pentium3__   %{!mcpu*:-D__tune_pentium3__ }}%{march=k6:-D__k6 -D__k6__ %{!mcpu*:-D__tune_k6__ }}%{march=k6-2:-D__k6 -D__k6__ -D__k6_2__   %{!mcpu*:-D__tune_k6__ -D__tune_k6_2__ }}%{march=k6-3:-D__k6 -D__k6__ -D__k6_3__   %{!mcpu*:-D__tune_k6__ -D__tune_k6_3__ }}%{march=athlon|march=athlon-tbird:-D__athlon -D__athlon__   %{!mcpu*:-D__tune_athlon__ }}%{march=athlon-4|march=athlon-xp|march=athlon-mp:-D__athlon -D__athlon__   -D__athlon_sse__   %{!mcpu*:-D__tune_athlon__ -D__tune_athlon_sse__ }}%{march=pentium4:-D__pentium4 -D__pentium4__ %{!mcpu*:-D__tune_pentium4__ }}%{m386|mcpu=i386:-D__tune_i386__ }%{m486|mcpu=i486:-D__tune_i486__ }%{mpentium|mcpu=pentium|mcpu=i586|mcpu=pentium-mmx:-D__tune_i586__ -D__tune_pentium__ }%{mpentiumpro|mcpu=pentiumpro|mcpu=i686|mcpu=pentium2|mcpu=pentium3:-D__tune_i686__ -D__tune_pentiumpro__ }%{mcpu=k6|mcpu=k6-2|mcpu=k6-3:-D__tune_k6__ }%{mcpu=athlon|mcpu=athlon-tbird|mcpu=athlon-4|mcpu=athlon-xp|mcpu=athlon-mp:-D__tune_athlon__ }%{mcpu=athlon-4|mcpu=athlon-xp|mcpu=athlon-mp:-D__tune_athlon_sse__ }%{mcpu=pentium4:-D__tune_pentium4__ }%{march=athlon-xp|march=athlon-mp|march=pentium3|march=pentium4|msse|msse2:-D__SSE__ }%{march=pentium-mmx|march=k6|march=k6-2|march=k6-3|march=athlon|march=athlon-tbird|march=athlon-4|march=athlon-xp|march=athlon-mp|march=pentium2|march=pentium3|march=pentium4|mmx|msse|m3dnow: -D__MMX__ }%{march=k6-2|march=k6-3|march=athlon|march=athlon-tbird|march=athlon-4|march=athlon-xp|march=athlon-mp|m3dnow: -D__3dNOW__ }%{march=athlon|march=athlon-tbird|march=athlon-4|march=athlon-xp|march=athlon-mp: -D__3dNOW_A__ }%{march=pentium4|msse2: -D__SSE2__ }%{!march*:%{!mcpu*:%{!m386:%{!m486:%{!mpentium*:%(cpp_cpu_default)}}}}}
+
+*cc1_cpu:
+%{!mcpu*: %{m386:-mcpu=i386 %n`-m386' is deprecated. Use `-march=i386' or `-mcpu=i386' instead.
+} %{m486:-mcpu=i486 %n`-m486' is deprecated. Use `-march=i486' or `-mcpu=i486' instead.
+} %{mpentium:-mcpu=pentium %n`-mpentium' is deprecated. Use `-march=pentium' or `-mcpu=pentium' instead.
+} %{mpentiumpro:-mcpu=pentiumpro %n`-mpentiumpro' is deprecated. Use `-march=pentiumpro' or `-mcpu=pentiumpro' instead.
+}} %{mintel-syntax:-masm=intel %n`-mintel-syntax' is deprecated. Use `-masm=intel' instead.
+} %{mno-intel-syntax:-masm=att %n`-mno-intel-syntax' is deprecated. Use `-masm=att' instead.
+}
+
+*mingw_include_path:
+mingw32
+
+*link_command:
+%{!fsyntax-only:%{!c:%{!M:%{!MM:%{!E:%{!S:    %(linker) %l %X %{o*} %{A} %{d} %{e*} %{m} %{N} %{n} %{r} %{s} %{t}    %{u*} %{x} %{z} %{Z} %{!A:%{!nostdlib:%{!nostartfiles:%S}}}    %{static:} %{L*} %(link_libgcc) %o %{!nostdlib:%{!nodefaultlibs:%(link_gcc_c_sequence)}}    %{!A:%{!nostdlib:%{!nostartfiles:%E}}} %{T*} }}}}}}
+
