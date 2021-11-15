@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Resources for developers</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="NEXT"
+TITLE="Using CVS write access"
+HREF="using-cvs-write-access.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="index.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-cvs-write-access.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="RESOURCES"
+></A
+>Chapter 1. Resources for developers</H1
+><P
+>The development guide describes resources that are intended for developers
+in particular.  Many Bochs resources are also covered in the User Guide,
+including compile instructions, bochsrc options, how to find the mailing
+lists, etc.</P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN20"
+>1.1. Setting up CVS write access</A
+></H1
+><P
+>If you are an official SourceForge developer, then you can use CVS with write
+access.  The CVS contains the most recent copy of the source code, and with
+write access you can upload any changes you make to the CVS server for others
+to use.  A few extra steps are required the first time you use CVS write
+access.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN23"
+>1.1.1. Install ssh and cvs</A
+></H2
+><P
+>First you need to install both cvs (Concurrent Version System) and ssh (Secure
+Shell).  These are already installed on many UNIX systems and also Cygwin
+(win32 platform).  If not, you can install binaries or compile cvs and ssh
+yourself.  The links below should help you get going.</P
+><P
+></P
+><UL
+><LI
+><P
+> CVS software and instructions are available at <A
+HREF="http://www.cvshome.org"
+TARGET="_top"
+>www.cvshome.org</A
+>. </P
+></LI
+><LI
+><P
+> A free version of secure shell called OpenSSH is at <A
+HREF="http://www.openssh.org"
+TARGET="_top"
+>www.openssh.org</A
+>. </P
+></LI
+><LI
+><P
+> OpenSSH requires a library called OpenSSL from <A
+HREF="http://www.openssl.org"
+TARGET="_top"
+>www.openssl.org</A
+>.  Be sure to install OpenSSL before trying to compile OpenSSH. </P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN36"
+>1.1.2. ssh to cvs.sf.net</A
+></H2
+><P
+>Next, you need to use secure shell to connect to cvs.sf.net.  This step is a
+little strange, because you can't actually log in and get a shell prompt.  All
+that will happen, when you get the username and password right, is that it
+will create a home directory on that machine for you.  That's it!  If you try
+it again, it will say "This is a restricted Shell Account.  You cannot execute
+anything here."   At this point, you've succeeded and you never have to do
+this step again, ever.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ssh <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sf.net</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Replace <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+> with your Source Forge username,
+of course.  The first time, you will probably get a message like 
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>The authenticity of host 'cvs.sf.net' can't be established.
+Are you sure you want to continue?</PRE
+></TD
+></TR
+></TABLE
+>
+
+Just type yes.  When it asks for a password, be sure to type your source 
+forge password.  If you have trouble logging in, be sure to use your SOURCE
+FORGE username and password in the ssh line, which isn't necessarily the same
+as your local username and password.  Add the "-v" option to ssh to see more
+information about what is failing.  If you have ssh version 2, it is possible
+that you might need to add "-1" to the ssh command to force it to use the
+version 1 protocol.  </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN44"
+>1.1.3. Set CVS_RSH environment variable to ssh</A
+></H2
+><P
+>Every time you connect to the Source Forge CVS server (including cvs update,
+stat, commit, etc.), you must set the CVS_RSH environment variable to ssh.  So
+just take the time now to add one of these lines to your .bashrc/.cshrc, so
+that the CVS_RSH setting will be there every time you log in.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  export CVS_RSH=ssh           (bash syntax)
+  setenv CVS_RSH ssh           (csh syntax)</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN48"
+>1.1.4. cvs checkout</A
+></H2
+><P
+>Finally, you should be able to do the checkout!  If you already have a Bochs
+subdirectory directory, move it out of the way because the checkout will
+overwrite it.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  export CVSROOT=":ext:<TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sourceforge.net:/cvsroot/bochs"
+  cvs -z3 checkout bochs
+  <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sourceforge.net's password:        <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;--type your password</I
+></TT
+></PRE
+></TD
+></TR
+></TABLE
+><P
+>In the CVSROOT variable, replace <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+> with your SF username.  There's
+no need to add CVSROOT to your rc files because CVS will remember it
+after the checkout.  The -z3 (optional) just adds some compression to make 
+the checkout go faster.  Once all the files have been downloaded, you will
+have a Bochs directory which is checked out with write access!</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-cvs-write-access.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Bochs Developers Guide</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using CVS write access</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,248 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using Bochs</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="How to write your own keymap table"
+HREF="keymap.html"><LINK
+REL="NEXT"
+TITLE="Search order for the configuration file"
+HREF="search-order.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="keymap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="search-order.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="USING-BOCHS"
+></A
+>Chapter 5. Using Bochs</H1
+><P
+><IMG
+SRC="../images/undercon.png">
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>- using plugins?
+- Resources for users
+testing status page: tells what has been tried and who got it working
+search on bochs web site
+SourceForge
+  - look for bug reports
+  - how to report problems (present as FIXME request in chapter 6 as well)
+  - How to make feature requests?</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="COMMANDLINE"
+>5.1. Command line arguments</A
+></H1
+><P
+>The following table shows the arguments that can be used on the command line.
+For other arguments, see section <A
+HREF="bochsrc.html"
+>bochsrc</A
+>.
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN2430"
+></A
+><P
+><B
+>Table 5-1. command line arguments</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Argument</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>-q</TD
+><TD
+>quick start (skip configuration interface)</TD
+></TR
+><TR
+><TD
+>-f <TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+></TD
+><TD
+>specify configuration file</TD
+></TR
+><TR
+><TD
+>-n</TD
+><TD
+>don't try to load a configuration file</TD
+></TR
+><TR
+><TD
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>path</I
+></TT
+></TD
+><TD
+>specify path for restoring state (if save/restore support is compiled in)</TD
+></TR
+><TR
+><TD
+>--help</TD
+><TD
+>display help message and exit</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+><P
+>These arguments are handled directly after starting Bochs. The next step is to load
+a default or specified configuration file (unless disabled with -n). Then the rest
+of the command line (<TT
+CLASS="FILENAME"
+>bochsrc</TT
+> options) is parsed. This is done after reading the
+configuration file so that the command line arguments can override the settings
+from the file.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="keymap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="search-order.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>How to write your own keymap table</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Search order for the configuration file</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

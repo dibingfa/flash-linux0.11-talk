@@ -1,0 +1,610 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>BIOS Tips</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Using the serial port"
+HREF="serial-port.html"><LINK
+REL="NEXT"
+TITLE="How to enter special key combination"
+HREF="enter-special-keys.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="serial-port.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="enter-special-keys.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="BIOS-TIPS"
+>8.14. BIOS Tips</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3150"
+>8.14.1. Booting from CD-ROMs</A
+></H2
+><P
+>A bootable CD-ROM has a special layout that is detected by the
+BIOS boot loader code, and executed if it conforms the specifications.
+This layout is called "El Torito Bootable CD-ROM Format Specification"
+and has been published by Phoenix and IBM. A copy of this spec is on
+<A
+HREF="http://bochs.sourceforge.net/techdata.html"
+TARGET="_top"
+>Bochs tech specs page</A
+>.
+        </P
+><P
+>El Torito specifies 3 ways to have a bootable CD:
+<P
+></P
+><UL
+><LI
+><P
+>floppy emulation boot: A standard floppy image is burnt on the CD.
+In this case the BIOS has to redirect all first floppy accesses to this
+image and the real floppy drive becomes the second one.</P
+></LI
+><LI
+><P
+>a "no emulation" boot: In this case the BIOS is instructed to load an
+arbitrary number of sectors straight into memory, and execute it.</P
+></LI
+><LI
+><P
+>hard disk emulation: A hard disk image is burnt on the CD. The
+BIOS has to redirect all hard disk accesses to that image. The real hard disks
+are still available, with BIOS numbers 81h and up.</P
+></LI
+></UL
+>
+
+In Bochs 2.0, hard disk emulation is not implemented in the BIOS.
+There are also subtilities about multiple boot-images CD-ROMs, that are
+not handled by Bochs.
+        </P
+><P
+>However, our BIOS may be more strict than real PC BIOSes, I don't know.
+But I would definitely be interested to know of any CD that can boot
+on real hardware, but does not in Bochs.
+        </P
+><P
+>When failing to boot from CD-ROM, the BIOS outputs
+the reason of the failure as
+an error code, in the log file, and on the screen.
+        </P
+><P
+>Here is a summary of what can happen when booting from the CD.
+        </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN3165"
+></A
+><P
+><B
+>Table 8-1. CD Boot error codes</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Error code</TH
+><TH
+>Reason</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+> 0x01 </TD
+><TD
+> no atapi device found </TD
+></TR
+><TR
+><TD
+> 0x02 </TD
+><TD
+> no atapi cdrom found </TD
+></TR
+><TR
+><TD
+> 0x03 </TD
+><TD
+> can not read cd - BRVD </TD
+></TR
+><TR
+><TD
+> 0x04 </TD
+><TD
+> cd is not eltorito (BRVD) </TD
+></TR
+><TR
+><TD
+> 0x05 </TD
+><TD
+> cd is not eltorito (ISO TAG) </TD
+></TR
+><TR
+><TD
+> 0x06 </TD
+><TD
+> cd is not eltorito (ELTORITO TAG) </TD
+></TR
+><TR
+><TD
+> 0x07 </TD
+><TD
+> can not read cd - boot catalog </TD
+></TR
+><TR
+><TD
+> 0x08 </TD
+><TD
+> boot catalog : bad header </TD
+></TR
+><TR
+><TD
+> 0x09 </TD
+><TD
+> boot catalog : bad platform </TD
+></TR
+><TR
+><TD
+> 0x0A </TD
+><TD
+> boot catalog : bad signature </TD
+></TR
+><TR
+><TD
+> 0x0B </TD
+><TD
+> boot catalog : bootable flag not set </TD
+></TR
+><TR
+><TD
+> 0x0C </TD
+><TD
+> can not read cd - boot image </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>0x01 no atapi device found
+0x02 no atapi cdrom found</PRE
+></TD
+></TR
+></TABLE
+>
+
+For the first two errors, an ata-*: type=cdrom is probably missing
+from the configuration file. This is what you get if no cdrom has
+been defined in Bochs conf file.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>0x03 can not read cd - BRVD</PRE
+></TD
+></TR
+></TABLE
+>
+
+For this error, the cdrom support has not been compiled in Bochs, 
+or Bochs could not open the file or device. This is what you get if
+Bochs is not able to read the cd.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>0x04 cd is not eltorito (BRVD)
+0x05 cd is not eltorito (ISO TAG)
+0x06 cd is not eltorito (ELTORITO TAG)</PRE
+></TD
+></TR
+></TABLE
+>
+
+For these errors, the data has been read from the cd, but
+the cd does not conform to the El Torito specification. This
+is what you get if the cd is not bootable.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>0x08 boot catalog : bad header
+0x09 boot catalog : bad platform
+0x0A boot catalog : bad signature
+0x0B boot catalog : bootable flag not set</PRE
+></TD
+></TR
+></TABLE
+>
+
+now the cd is eltorito, but the boot catalog is currupt, or
+the cd was made to boot on a ppc system. This should not happen
+for a x86 bootable cd.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>0x07 can not read cd - boot catalog
+0x0C can not read cd - boot image</PRE
+></TD
+></TR
+></TABLE
+>
+here, specific part of the cd could not be read. This should
+definitely not happen.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BIOS-DISK-TRANSLATION"
+>8.14.2. Disk translation</A
+></H2
+><P
+>Since the beginning of the PC era, disks have grown in size by a factor of 10000. Due to 
+differences between the ATA specification and BIOSes implementations, when disks reached
+critical sizes, it
+became necessary to translate the CHS geometry (cylinders, heads, sectors per track)
+between the BIOS (int 13h) and the ATA interface. Please refer to the 
+<A
+HREF="http://burks.brighton.ac.uk/burks/pcinfo/hardware/atafaq/atafq.htm"
+TARGET="_top"
+>ATA-FAQ</A
+> 
+and 
+<A
+HREF="http://www.ata-atapi.com/hiwchs.htm"
+TARGET="_top"
+>Hale Landis' document</A
+> 
+for a complete discussion of the problem.
+        </P
+><P
+>Unfortunately, there has never been any standard on the translation algorithms. 
+        </P
+><P
+>Bochs implements 4 well-known algorithms, selectable in the configuration file
+in the "<B
+CLASS="COMMAND"
+>ataX-xxxx: ..., translation='algorithm'</B
+>" section.
+        </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN3227"
+></A
+><P
+><B
+>Table 8-2. Disk translation algorithms</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL><THEAD
+><TR
+><TH
+>Algorithm</TH
+><TH
+>Maximum disk size</TH
+><TH
+>Maximum logical and physical geometry (CHS)</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>none</TD
+><TD
+>528MB (1032192 sectors)</TD
+><TD
+>    LCHS:1024/16/63
+    PCHS:1024/16/63
+    </TD
+><TD
+>    no translation is done. The CHS received at the int13h interface 
+    is sent as is to the ATA interface. 
+    </TD
+></TR
+><TR
+><TD
+>large</TD
+><TD
+>4.2GB (8257536 sectors)</TD
+><TD
+>    LCHS:1024/128/63
+    PCHS:8192/16/63
+    </TD
+><TD
+>    a standard bitshift algorithm (named Extended-CHS)
+    is used to translate the CHS between 
+    the int13h interface 
+    and the ATA interface. The translation is acheived by 
+    multiplying/dividing the cylinder/head count by a power of 2
+    (2, 4 or 8).
+    (a factor of 16 could not be used because the
+    head count would become 256, and MS-DOS thought this was 0)
+    Note that the number of sectors per track is not changed, so
+    a lower spt value will lead to a lower maximum disk size.
+    </TD
+></TR
+><TR
+><TD
+>echs</TD
+><TD
+>&nbsp;</TD
+><TD
+>&nbsp;</TD
+><TD
+>synonym for large</TD
+></TR
+><TR
+><TD
+>rechs</TD
+><TD
+>7.9GB (15482880 sectors)</TD
+><TD
+>    LCHS:1024/240/63
+    PCHS:15360/16/63
+    </TD
+><TD
+>    a revised bitshift algorithm (called Revised Extended-CHS)
+    is used to translate the CHS between 
+    the int13h interface 
+    and the ATA interface. First the number of physical heads is forced to
+    15, and the number of cylinders is adjusted accordingly.
+    Then, as in the simple extended CHS algorithm, the translation 
+    is acheived by 
+    multiplying/dividing the cylinder/head count by a power of 2
+    (2, 4, 8 or 16).
+    The head count being forced to 15, it can safely be multiplied by 16 
+    without crashing dos.
+    Note that the number of sectors per track is not changed, so
+    a lower spt value will lead to a lower maximum disk size.
+    </TD
+></TR
+><TR
+><TD
+>lba</TD
+><TD
+>8.4GB (16450560 sectors)</TD
+><TD
+>    LCHS:1024/255/63
+    PCHS:16320/16/63
+    </TD
+><TD
+>    a LBA-assisted algorithm
+    is used to translate the CHS between 
+    the int13h interface 
+    and the ATA interface. The translation is acheived by 
+    first computing the physical size of the disk (LBA=C*H*S).
+    Then the sectors per track is forced to 63, and the head count
+    to 255. Then the cylinder count is computed (C=LBA/(63*255))
+    Note that the number of sectors per track is forced to 63
+    in the logical geometry, regardless of the actual geometry
+    reported by the disk.
+    Also note that the LBA-assisted algorithm has nothing to do with
+    LBA access at the ATA interface.
+    </TD
+></TR
+><TR
+><TD
+>auto</TD
+><TD
+>&nbsp;</TD
+><TD
+>&nbsp;</TD
+><TD
+>the best suited algorithm between none, large and lba is used</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>Setting a specific CHS translation should be done if you use a disk dump
+of an actual disk, or use a real disk as a block device. You need to
+know which geometry was used to format the disk, and which translation 
+was used. You must not set the translation to 'auto'.
+        </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>rechs translation should only be useful for compaq users who wants to
+use a disk as a block device. Please report if you know any other
+system that use such translation.
+        </P
+></BLOCKQUOTE
+></DIV
+><P
+>If you plan to create a new disk image (for example with bximage),
+format it and install an OS on it, select the "auto" translation
+for an automatic selection
+of the best algorithm based on the disk image size. Be warned that an image created
+with the "auto" translation might not be readable with previous versions of Bochs.
+Upward compatibility will be maintained.
+        </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>This translation applies only to int13h BIOS disk accesses. Older OSes (e.g. MS-DOS)
+tend to use them a lot.  On modern OSes, disk accesses through BIOS int13h are 
+limited to boot loaders.
+The usual rules and tricks of the installed OS still apply (ie 1024 cylinders boot limit).</P
+></BLOCKQUOTE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="serial-port.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="enter-special-keys.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using the serial port</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How to enter special key combination</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,833 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Tracking the source code with CVS</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Installation"
+HREF="installation.html"><LINK
+REL="PREVIOUS"
+TITLE="Installation"
+HREF="installation.html"><LINK
+REL="NEXT"
+TITLE="Installing a Binary"
+HREF="install-binary.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="installation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Installation</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="install-binary.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GET-SRC-CVS"
+>3.2. Tracking the source code with CVS</A
+></H1
+><P
+>CVS, or Concurrent Version System, is a software development tool that helps
+to keep track of the different revisions of each file.  It is used by many
+open source (and commercial) projects to allow multiple developers to share
+their changes to the source code.  The Bochs source code and documentation 
+are available using CVS<A
+NAME="AEN402"
+HREF="#FTN.AEN402"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+>.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN405"
+>3.2.1. Checking out Bochs</A
+></H2
+><P
+>When you have CVS installed, the first step is to do a login and checkout.  The
+initial checkout command is long and ugly, but usually you only have to do it
+once.  The example below shows the CVS checkout process in Unix.  On the
+Windows platform, you can download a CVS client from cvshome.com, or
+use CVS within Cygwin<A
+NAME="AEN408"
+HREF="#FTN.AEN408"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+>.
+
+<DIV
+CLASS="FIGURE"
+><A
+NAME="AEN411"
+></A
+><P
+><B
+>Figure 3-1. Checking out Bochs in CVS</B
+></P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  user$ <B
+CLASS="COMMAND"
+>cvs -d:pserver:anonymous@bochs.cvs.sourceforge.net:/cvsroot/bochs login</B
+>
+  (Logging in to anonymous@bochs.cvs.sourceforge.net)
+  CVS password:    <TT
+CLASS="REPLACEABLE"
+><I
+>(there is no password, just press Enter)</I
+></TT
+>
+  user$ <B
+CLASS="COMMAND"
+>cvs -z3 -d:pserver:anonymous@bochs.cvs.sourceforge.net:/cvsroot/bochs checkout bochs</B
+>
+  cvs server: Updating bochs
+  U bochs/.bochsrc
+  U bochs/.conf.AIX.4.3.1
+  U bochs/.conf.beos-x86-R4
+  U bochs/.conf.macos
+     .
+     .   (This might take a few minutes, depending on your network connection.)
+     .
+  U bochs/patches/patch.seg-limit-real
+  user$ <B
+CLASS="COMMAND"
+>cd bochs</B
+>
+  user$ <B
+CLASS="COMMAND"
+>ls</B
+>
+  Bochs.proj.hqx  bxversion.h   fpu/                osdep.cc
+  CHANGES         config.h.in   gui/                osdep.h
+  COPYING         configure*    install-x11-fonts*  patches/
+  CVS/            configure.in  instrument/         pc_system.cc
+  Makefile.in     cpu/          iodev/              pc_system.h
+  README          bx_debug/     load32bitOShack.cc  state_file.cc
+  TESTFORM.txt    disasm/       logio.cc            state_file.h
+  bios/           doc/          macintosh.txt       win32.txt
+  bochs.h         docs-html/    main.cc
+  bochs.rsrc.hqx  dynamic/      memory/
+  build/          font/         misc/
+  user$ _</PRE
+></TD
+></TR
+></TABLE
+></DIV
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>  This is just an example output of a checkout of an older version of Bochs.
+  You most likely will see more/other files.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If you have write access to the Bochs CVS tree, the checkout
+command is different for you.  See the Developers Guide<A
+NAME="AEN424"
+HREF="#FTN.AEN424"
+><SPAN
+CLASS="footnote"
+>[3]</SPAN
+></A
+> for details.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If you use remote CVS for other projects, you might have already set
+the environment variable <CODE
+CLASS="VARNAME"
+>CVS_RSH</CODE
+> in your configuration
+files.  For the CVS checkout to work as shown above, the
+<CODE
+CLASS="VARNAME"
+>CVS_RSH</CODE
+> variable should either be empty or set to
+<CODE
+CLASS="CONSTANT"
+>rsh</CODE
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+>The CVS checkout process (above) gives you a directory called bochs that
+contains the very latest source code.  I will refer to this directory
+as <CODE
+CLASS="VARNAME"
+>$BOCHS</CODE
+>.  In each subdirectory directory there's also a
+directory called "CVS" which tells the cvs software where the code was checked
+out, what version you have, and where to go for future updates.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN435"
+>3.2.2. Getting the Latest Version</A
+></H2
+><P
+>Most developers use CVS to always give them the latest source code.  The minute
+that any developer checks in a change, they are available to everyone else
+through  CVS.  You just have to type <B
+CLASS="COMMAND"
+>cvs update -d -A</B
+> in the
+<CODE
+CLASS="VARNAME"
+>$BOCHS</CODE
+> directory, and CVS will retrieve any files and directories that have
+been changed since you did a checkout.  If you update regularly, each update
+takes a short time because it downloads only the files that changed.  The
+<B
+CLASS="COMMAND"
+>-d</B
+> option tells cvs to download new directories that
+have been checked in, not just files.  The <B
+CLASS="COMMAND"
+>-A</B
+> option means
+to get the most recent version of each file, as opposed to a release version.
+See <A
+HREF="get-src-cvs.html#CVS-RELEASE-VERSION"
+>Getting a release version</A
+>
+Both <B
+CLASS="COMMAND"
+>-d</B
+> and <B
+CLASS="COMMAND"
+>-A</B
+> can be omitted in many
+cases, once you are familiar with the process.  </P
+><P
+>The <B
+CLASS="COMMAND"
+>cvs update -A -d</B
+> command tells you if any new files have
+been downloaded from the server, and it also tells you if you have modified any
+of the CVS-controlled files.  As it checks through the source directories, it
+will list files that have changed, with a single letter before the name that
+tells the status of that file.  The most common status letters are listed
+below.
+
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN447"
+></A
+><P
+><B
+>Table 3-1. Status letters in a CVS update</B
+></P
+><TABLE
+BORDER="1"
+FRAME="border"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Letter</TH
+><TH
+>Meaning</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>?</TD
+><TD
+>unknown</TD
+><TD
+>        This file is in your bochs directory, but CVS does not know anything
+        about it.  For example, when you compile Bochs, any files created
+        during the build process appear as ?.
+        </TD
+></TR
+><TR
+><TD
+>U</TD
+><TD
+>update</TD
+><TD
+>        cvs downloaded a new version of this file because it changed on the
+        server, usually because someone else did a checkin.
+        </TD
+></TR
+><TR
+><TD
+>P</TD
+><TD
+>patch</TD
+><TD
+>        This does the same as U, but instead of sending the whole file
+        (update), only a diff/patch is sent, thus, less bandwidth is used.
+        </TD
+></TR
+><TR
+><TD
+>M</TD
+><TD
+>modified</TD
+><TD
+>        You have changed this file on your disk, so it no longer matches the
+        version on the server.  This is not a problem; it's just for your 
+        information.  If you want, you can discard your changes and
+        get a fresh copy by deleting the file and running cvs update again.
+        </TD
+></TR
+><TR
+><TD
+>C</TD
+><TD
+>conflict</TD
+><TD
+>        You have changed this file on your disk, but this change conflicts with
+        a change that was checked in.  Conflicts occur when two people change
+        the same line of code in different ways.  You need to edit the
+        conflicting file(s) and clean it up by hand.  Or, sometimes it's
+        easiest to discard your own edits and download a fresh copy, by
+        deleting the conflicting file and running cvs update again.
+        </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+><P
+>If you have been using <B
+CLASS="COMMAND"
+>cvs update</B
+> with "sticky tags" to
+retrieve other versions, as described later, cvs will remember which version
+you were looking at.  In this case, a <B
+CLASS="COMMAND"
+>cvs update</B
+> will keep
+your sources consistent with that version.  If you want to get back to looking
+at the latest code again, be sure to use the <B
+CLASS="COMMAND"
+>-A</B
+> option to
+clears the sticky tags.  </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="CVS-RELEASE-VERSION"
+>3.2.3. Getting a Release Version</A
+></H2
+><P
+>Once you have a CVS checkout, you can also use the update command to
+get the Bochs source code for any release since March 2000.  The command
+is <B
+CLASS="COMMAND"
+>cvs update -d -r <TT
+CLASS="REPLACEABLE"
+><I
+>tagname</I
+></TT
+></B
+>.
+The tag tells which release you want, and it can be one of the following:
+
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN485"
+></A
+><P
+><B
+>Table 3-2. CVS Release Tags</B
+></P
+><TABLE
+BORDER="1"
+FRAME="border"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Bochs version</TH
+><TH
+>Release tag for CVS</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>2.3.5</TD
+><TD
+>REL_2_3_5_FINAL</TD
+></TR
+><TR
+><TD
+>2.3</TD
+><TD
+>REL_2_3_FINAL</TD
+></TR
+><TR
+><TD
+>2.2.6 (intermediate2)</TD
+><TD
+>REL_2_2_6_FINAL</TD
+></TR
+><TR
+><TD
+>2.2.5 (intermediate1)</TD
+><TD
+>REL_2_2_5_FINAL</TD
+></TR
+><TR
+><TD
+>2.2.1 (bugfix1)</TD
+><TD
+>REL_2_2_1_FINAL</TD
+></TR
+><TR
+><TD
+>2.2</TD
+><TD
+>REL_2_2_FINAL</TD
+></TR
+><TR
+><TD
+>2.1.1 (bugfix1)</TD
+><TD
+>REL_2_1_1_FINAL</TD
+></TR
+><TR
+><TD
+>2.1</TD
+><TD
+>REL_2_1_FINAL</TD
+></TR
+><TR
+><TD
+>2.0.2 (bugfix2)</TD
+><TD
+>REL_2_0_2_FINAL</TD
+></TR
+><TR
+><TD
+>2.0.1 (bugfix1)</TD
+><TD
+>REL_2_0_1_FINAL</TD
+></TR
+><TR
+><TD
+>2.0</TD
+><TD
+>REL_2_0_FINAL</TD
+></TR
+><TR
+><TD
+>1.4.1 (bugfix1)</TD
+><TD
+>REL_1_4_1_FINAL</TD
+></TR
+><TR
+><TD
+>1.4</TD
+><TD
+>REL_1_4_FINAL</TD
+></TR
+><TR
+><TD
+>1.3</TD
+><TD
+>REL_1_3_FINAL</TD
+></TR
+><TR
+><TD
+>1.2.1 (bugfix1)</TD
+><TD
+>REL_1_2_1_FINAL</TD
+></TR
+><TR
+><TD
+>1.2</TD
+><TD
+>REL_1_2_FINAL</TD
+></TR
+><TR
+><TD
+>1.1.2 (bugfix3)</TD
+><TD
+>REL_1_1_2_BASE</TD
+></TR
+><TR
+><TD
+>1.1.1 (bugfix2)</TD
+><TD
+>REL_1_1_1_BASE</TD
+></TR
+><TR
+><TD
+>1.1 (bugfix1)</TD
+><TD
+>REL_1_1_BASE</TD
+></TR
+><TR
+><TD
+>March 25, 2000</TD
+><TD
+>REL-bochs-2000-03-25</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+
+<DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>To get a complete list of allowed tags, type <B
+CLASS="COMMAND"
+>cvs stat -v README</B
+>.  Many of the tags are not generally useful.</P
+></BLOCKQUOTE
+></DIV
+>
+
+Once you have done an update with <B
+CLASS="COMMAND"
+>-r <TT
+CLASS="REPLACEABLE"
+><I
+>tagname</I
+></TT
+></B
+>, you have made a "sticky tag."  The stickiness refers to the fact
+that CVS remembers which tag you have used most recently.  The tag is stored
+in the CVS subdirectory, so it stays around even if you log off and
+return later.  After creating a sticky tag, any future cvs updates will
+try to keep your directory in sync with the version you chose.  In other
+words, when developers check in changes you will not
+see them because your directory is "stuck" looking at an old version.
+To clear the sticky tag, use <B
+CLASS="COMMAND"
+>cvs update -A</B
+>.</P
+><P
+>A variation on the sticky tag concept is a sticky date<A
+NAME="AEN560"
+HREF="#FTN.AEN560"
+><SPAN
+CLASS="footnote"
+>[4]</SPAN
+></A
+>.  If some feature was working at some time in the past, but
+is no longer working, you can ask CVS to give you the sources from any
+date.  <B
+CLASS="COMMAND"
+>cvs update -D 2001-06-14</B
+> will download the
+Bochs source as they were on June 14, 2001.  Again, use <B
+CLASS="COMMAND"
+>-A</B
+>
+to clear the sticky date and track the current sources.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN564"
+>3.2.4. More about CVS</A
+></H2
+><P
+>Entire books have been written on CVS, so there's no sense in duplicating
+it all here in the Bochs documentation.  Some sources of additional
+information are listed below.</P
+><P
+></P
+><UL
+><LI
+><P
+>The <A
+HREF="http://www.cvshome.org"
+TARGET="_top"
+>cvshome.com
+site</A
+> has tons of CVS FAQs and documentation, including the official CVS
+manual by Per Cederqvist.</P
+></LI
+><LI
+><P
+>Another <A
+HREF="http://www.cs.utah.edu/dept/old/texinfo/cvs/FAQ.txt"
+TARGET="_top"
+>CVS FAQ</A
+> is available at University of Utah.</P
+></LI
+></UL
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN402"
+HREF="get-src-cvs.html#AEN402"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>You can download CVS software and documentation from 
+<A
+HREF="http://www.cvshome.org"
+TARGET="_top"
+>www.cvshome.org</A
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN408"
+HREF="get-src-cvs.html#AEN408"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>Cygwin is an open source Unix-like environment for Windows platforms,
+available at <A
+HREF="http://www.cygwin.com"
+TARGET="_top"
+>www.cygwin.com</A
+>.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN424"
+HREF="get-src-cvs.html#AEN424"
+><SPAN
+CLASS="footnote"
+>[3]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>See the <A
+HREF="../development/resources.html"
+TARGET="_top"
+>Developers Guide</A
+>
+and/or look at <A
+HREF="http://sourceforge.net/cvs/?group_id=12580"
+TARGET="_top"
+>CVS repository information</A
+>,
+section "Developer CVS Access via SSH", for instructions.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN560"
+HREF="get-src-cvs.html#AEN560"
+><SPAN
+CLASS="footnote"
+>[4]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>According to some sources, this is when you eat dinner with someone, and
+accidentally spill a drink on him/her.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="install-binary.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="installation.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Installing a Binary</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

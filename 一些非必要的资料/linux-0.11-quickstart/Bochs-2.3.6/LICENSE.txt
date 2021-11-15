@@ -1,0 +1,7 @@
+The following points clarify the Bochs license:
+
+1) Bochs as a whole is released under the GNU Lesser General Public License
+
+2) Parts of Bochs have specific licenses which are compatible with the
+   GNU Lesser General Public License. Hence each source file contains its
+   own licensing information.

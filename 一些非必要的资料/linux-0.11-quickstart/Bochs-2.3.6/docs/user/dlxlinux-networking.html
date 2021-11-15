@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Setting Up Networking in DLX Linux</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Simulating a Symmetric Multiprocessor (SMP) Machine"
+HREF="smp.html"><LINK
+REL="NEXT"
+TITLE="Configuring and using a tuntap network interface"
+HREF="config-tuntap.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="smp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="config-tuntap.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DLXLINUX-NETWORKING"
+>8.9. Setting Up Networking in DLX Linux</A
+></H1
+><P
+>All Bochs binaries come with a working version of DLX Linux.  This section
+describes how to configure networking in Bochs and enable it within
+DLX Linux.  First you must add a <CODE
+CLASS="VARNAME"
+>ne2k</CODE
+> line in your bochsrc
+file.  Then, when you boot the DLX Linux image, you need to type some Linux
+commands to set up an IP address, a network route, and a name server.</P
+><P
+>When you have an <CODE
+CLASS="VARNAME"
+>ne2k</CODE
+> line in your bochsrc file, Bochs 
+will emulate a network card called an NE2000.  Below are some examples of valid
+<CODE
+CLASS="VARNAME"
+>ne2k</CODE
+> lines for various operating systems.  Choose the
+one that's closest to what you need, add it to your bochsrc file, and 
+edit the values if necessary.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  # sample for Mac OS X
+  ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=en0
+  # sample for FreeBSD
+  ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=xl0
+  # sample for Linux
+  ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=linux, ethdev=eth0
+  # sample for Windows
+  ne2k: ioaddr=0x300, irq=9, mac=00:c4:3B:00:C3:00, ethmod=win32, ethdev=NE2000</PRE
+></TD
+></TR
+></TABLE
+>
+You see the pattern.  Usually you won't need to change the I/O address, IRQ
+number, or MAC address.  The <CODE
+CLASS="VARNAME"
+>ethmod</CODE
+> value depends on your
+host operating system, and it must be either <CODE
+CLASS="CONSTANT"
+>null</CODE
+>,
+<CODE
+CLASS="CONSTANT"
+>fbsd</CODE
+> (for FreeBSD or OpenBSD), <CODE
+CLASS="CONSTANT"
+>linux</CODE
+>,
+or <CODE
+CLASS="CONSTANT"
+>win32</CODE
+>.  The <CODE
+CLASS="VARNAME"
+>ethdev</CODE
+> setting is the
+name of the network interface on your system, and is also OS-dependent.  On
+UNIX systems you can get the name of the network interface by running
+<B
+CLASS="COMMAND"
+>ifconfig</B
+>.  (Don't choose the loopback interface.)  On
+Windows systems, the correct ethdev setting is not always obvious, so we
+provide a utility called <B
+CLASS="COMMAND"
+>niclist</B
+> to list the names of
+network interfaces to use.  When you run <B
+CLASS="COMMAND"
+>niclist</B
+>, it will
+suggest an <CODE
+CLASS="VARNAME"
+>ne2k</CODE
+> line which is a very good first try.</P
+><P
+>Next, if you are on a UNIX machine you will need to become the root user.
+Since bochs is sending and receiving raw network packets, you need to be root
+to use the network device.  To allow normal users to do this would be a
+security problem.</P
+><P
+>Now run Bochs to boot DLX Linux.  Press enter a few times to accept the default
+configuration choices.  This tells Bochs read the configuration file and then
+begin.  DLX Linux should boot in the Bochs window, and you should see
+that Linux detects the NE2000 card.  Eventually it gets to a login prompt.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ne.c:v1.10 9/23/94 Donald Becker (becker@cesdis.gsfc.nasa.gov)
+  NE*000 ethercard probe at 0x300: b0 c4 20 00 00 00
+  eth0: NE2000 found at 0x300, using IRQ 9.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>At the login prompt, type "root" to log in as root. Then type the ifconfig and
+route commands to set up networking.  The exact IP numbers in the example won't
+work for you; you must choose an IP configuration that is legal on your
+network.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  dlx login: root
+  Linux 1.3.89.
+  dlx:~# ifconfig eth0 192.168.0.99         # set bochs IP address
+  dlx:~# route add -net 192.168.0.0         # first 3 numbers match IP
+  dlx:~# route add default gw 192.168.0.1   # your gateway to the net
+  dlx:~# _</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The bochs IP address must be an unused IP address on your
+network.  If you duplicate someone else's IP address, your network will
+become very confused.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Finally, the network is ready and you can test it out with ping, telnet, or ftp
+to various machines by their numerical IP address.  Keep in mind that for all
+UNIX host platforms, Bochs networking cannot talk to the host machine.  That
+means the host machine can't be the gateway either.  You need another physical
+machine on the network that bochs can talk to.  On Win32 this restriction does
+not apply.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>When you have a working network configuration, you can make DLX Linux recreate
+the same settings the next time you boot.  Just add the ifconfig and route
+commands to the end of /etc/rc.d/rc.inet1.  I won't try to describe how
+to use the <B
+CLASS="COMMAND"
+>vi</B
+> editor in this limited amount of space...</P
+></BLOCKQUOTE
+></DIV
+><P
+>To configure a name 
+server, set up <TT
+CLASS="FILENAME"
+>/etc/resolv.conf</TT
+> with the IP address of
+your name server as shown.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   dlx:~# echo 'nameserver 192.168.0.1' &#62; /etc/resolv.conf</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="smp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="config-tuntap.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Simulating a Symmetric Multiprocessor (SMP) Machine</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configuring and using a tuntap network interface</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

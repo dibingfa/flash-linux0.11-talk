@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Common problems and what to do about them (Troubleshooting)</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Save and restore simulation"
+HREF="using-save-restore.html"><LINK
+REL="NEXT"
+TITLE="Mouse behavior, enabling and disabling"
+HREF="mouse-toggle.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="using-save-restore.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="mouse-toggle.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="COMMON-PROBLEMS"
+></A
+>Chapter 6. Common problems and what to do about them (Troubleshooting)</H1
+><P
+>    <IMG
+SRC="../images/undercon.png">
+    <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>      How to report a panic to the bug tracker?
+      Keyboard mapping problems
+      [...]
+    </PRE
+></TD
+></TR
+></TABLE
+>
+  </P
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="AEN2555"
+>6.1. Bochs panics! What can I do?</A
+></H1
+><P
+>      Bochs does a very good job in emulating an x86 compatible computer, however,
+      it does not (yet) include a full (100%) emulation of every possible instruction,
+      (BIOS) function call or (hardware) device. Thus, in case something unusual
+      happens, either a not-so-common call to some (BIOS) function or device by
+      some software running inside of it, Bochs has two possibilities to react:
+      If the command doesn't look important (mainly happens only to non-implemented
+      functions in the BIOS), a notice is logged to the <A
+HREF="bochsrc.html#BOCHSOPT-LOG"
+>log file</A
+>
+      and the emulation continues. If, however, the command looks important, Bochs
+      panics, because the software being emulated might depend on the successful
+      execution of the given instruction or behaviour of the device.
+    </P
+><P
+>      A panic does not always mean that the software won't run inside of Bochs,
+      as the software might just be probing the computer for the presence of some
+      instruction/device, and in case it is not found, it simply won't be used at
+      all, by the software.
+    </P
+><P
+>      You can tell Bochs what to do in case of a panic, by re-configuring the
+      <A
+HREF="bochsrc.html#BOCHSOPT-DEBUG-INFO-ERROR-PANIC"
+>panic option</A
+>. If
+      you change the action to "ask", Bochs reports what has happened and asks
+      you what to do. The appearance of the "ask" feature depends on the display
+      library used and the platform. Some display libraries don't support it at all.
+    </P
+><P
+>      Some of the device names reported in the panic message are abbreviations,
+      since the length of the names is limited to 5 characters. This small list
+      may help you finding out the name of the device that caused the panic.
+    </P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN2563"
+></A
+><P
+><B
+>Table 6-1. Device prefixes</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Prefix</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>CLVGA</TD
+><TD
+>Cirrus SVGA</TD
+></TR
+><TR
+><TD
+>EFIRQ</TD
+><TD
+>External FPU IRQ</TD
+></TR
+><TR
+><TD
+>IOAP</TD
+><TD
+>I/O APIC</TD
+></TR
+><TR
+><TD
+>KMAP</TD
+><TD
+>Keyboard mapping</TD
+></TR
+><TR
+><TD
+>P2I</TD
+><TD
+>PCI-to-ISA bridge</TD
+></TR
+><TR
+><TD
+>PIDE</TD
+><TD
+>PCI IDE controller</TD
+></TR
+><TR
+><TD
+>PLGIN</TD
+><TD
+>Plugin interface</TD
+></TR
+><TR
+><TD
+>STIME</TD
+><TD
+>Slowdown timer</TD
+></TR
+><TR
+><TD
+>UNMP</TD
+><TD
+>Unmapped I/O handler</TD
+></TR
+><TR
+><TD
+>VTIME</TD
+><TD
+>Virtual timer</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="using-save-restore.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="mouse-toggle.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Save and restore simulation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mouse behavior, enabling and disabling</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1806 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Windows 98</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="Windows NT 4.0"
+HREF="guest-winnt4.html"><LINK
+REL="NEXT"
+TITLE="Windows ME"
+HREF="guest-winme.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-winnt4.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-winme.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-WIN98"
+>9.11. Windows 98</A
+></H1
+><P
+>You must read the message regarding software licenses in
+<A
+HREF="thirdparty.html"
+>Section 1.6</A
+> before you install Windows 98 as a guest operating system in Bochs.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If you want to use higher screen resolutions than 640x480 with more than 16 colours,
+you should enable the Cirrus video card, see <A
+HREF="cirrus-notes.html"
+>Section 8.17</A
+>, as Windows 98
+comes with drivers for that video card.</P
+></BLOCKQUOTE
+></DIV
+><P
+>There are two ways to get Windows 98 running as a guest operating system in Bochs:</P
+><P
+></P
+><UL
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+><A
+HREF="guest-win98.html#WIN98METHOD1"
+>mcopy Windows 98</A
+></I
+></SPAN
+> - The first method is to copy files from a functional
+Windows 98 installation partition.  This initially will be less time consuming, as you will
+not have to install the OS or the applications running on it.  On the other
+hand, you do not have the benefit of having an new installation especially
+geared for Bochs.  You will need mtools and your Windows 98 CD-ROM.</P
+></LI
+><LI
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+><A
+HREF="guest-win98.html#WIN98METHOD2"
+>Classic Install</A
+></I
+></SPAN
+> - The second method is to do a fresh installation of Windows 98 on your virtual
+hardware.  This is a slow, tedious process.  You will have the benefits,
+however, of having a clean registry and a slimmer installation running only the
+components you need.  All you need for this method is your Windows 98 CD-ROM
+and your license key.</P
+></LI
+></UL
+><P
+>You should <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>NOT</I
+></SPAN
+> use your existing Windows 98 installation
+for both your real hardware and as a guest OS in Bochs.  When Windows 98
+detects changes in hardware, it will make changes in the installation.  It will
+deactivate certain drivers and devices and activate or install others.  This is
+what happens when you run an existing installation for the first time in Bochs.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="WIN98METHOD1"
+>9.11.1. Windows 98 Method 1: mcopy Windows 98 into Hard Disk Image (Linux Host)</A
+></H2
+><P
+>In this method, files will simply be copied from a functional Windows
+98 partition. For the impatient, here is a short summary:</P
+><P
+></P
+><UL
+><LI
+><P
+>Remove unnecessary files from your Windows partition.</P
+></LI
+><LI
+><P
+>Create a disk image with <B
+CLASS="COMMAND"
+>bximage</B
+>.</P
+></LI
+><LI
+><P
+>Update your <TT
+CLASS="FILENAME"
+>.bochsrc</TT
+> configuration file for the diskimage.</P
+></LI
+><LI
+><P
+>Use <B
+CLASS="COMMAND"
+>mtools</B
+> to partition and format the image; the 
+copy all the windows files to the image.</P
+></LI
+><LI
+><P
+>Finally, start the simulation and let Windows reconfigure itself.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4046"
+>9.11.2. Locating Your Partitions</A
+></H2
+><P
+>Make sure that your MS Windows partition is mounted.  Check
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/etc/fstab</I
+></SPAN
+> to see if and where it is mounted.  For more
+information on fstab, type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>man fstab</I
+></SPAN
+> at the command
+prompt.  You may also very carefully type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fdisk -l</I
+></SPAN
+> and
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>df</I
+></SPAN
+> as root for more information on the partitions of your
+computer.  For example:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># cat /etc/fstab
+/dev/hda7       /              reiserfs     defaults 1 1
+/dev/hda5       /boot          ext2         defaults 1 2
+/dev/cdrom      /media/cdrom   auto         ro,noauto,user,exec 0 0
+devpts          /dev/pts       devpts       defaults 0 0
+/dev/hda3       /home          reiserfs     defaults 1 2
+/dev/hda1       /home2         ext2         defaults 1 2
+/dev/fd0        /media/floppy  auto         noauto,user,sync 0 0
+proc            /proc          proc         defaults 0 0
+usbdevfs        /proc/bus/usb  usbdevfs     defaults,noauto 0 0
+/dev/hda6       swap           swap         pri=42 0 0
+
+# fdisk -l
+Disk /dev/hda: 255 heads, 63 sectors, 1247 cylinders
+Units = cylinders of 16065 * 512 bytes
+
+   Device Boot    Start       End    Blocks   Id  System
+/dev/hda1   *         1       510   4096543+   b  Win95 FAT32
+/dev/hda2           511       794   2281230    5  Extended
+/dev/hda3           795      1247   3638722+  83  Linux
+/dev/hda5           511       513     24066   83  Linux
+/dev/hda6           514       539    208813+  82  Linux swap
+/dev/hda7           540       794   2048256   83  Linux
+
+# df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/hda7              2048188   1844552    203636  91% /
+/dev/hda5                23302      3584     18515  17% /boot
+/dev/hda3              3638604    549220   3089384  16% /home
+shmfs                    63240         0     63240   0% /dev/shm
+//server/C$            4096512   3808000    288512  93% /shares/SERVER1/c
+//server/D$           13823744   3854848   9968896  28% /shares/SERVER1/d
+/dev/hda1              4032092   1897220   3794432  50% /windows/c</PRE
+></TD
+></TR
+></TABLE
+><P
+>In this example, the Windows partition is on
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/dev/hda1</I
+></SPAN
+>.  It is mounted as
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/windows/c</I
+></SPAN
+> and is it taking up 1,897,220 bytes, or roughly 2 gigabytes.  This
+means that the disk image you would need to create in this instance would need to be
+at least that size if you plan to put all the files from your Windows
+partition there.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4057"
+>9.11.3. Cleaning Up Your MS Windows Partition</A
+></H2
+><P
+>You will save some space if you omit what is in your <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>My Documents</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Windows Update</I
+></SPAN
+> directory.  You may also want to use the Windows <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Disk Cleanup</I
+></SPAN
+> to delete all your temporary files:</P
+><P
+></P
+><UL
+><LI
+><P
+>Reboot into Windows 98</P
+></LI
+><LI
+><P
+>Double click on "My Computer"</P
+></LI
+><LI
+><P
+>Right click on your "C" drive.  A small menu should appear.</P
+></LI
+><LI
+><P
+>Click on "Properties"</P
+></LI
+><LI
+><P
+>Click on "Disk Cleanup"</P
+></LI
+><LI
+><P
+>Make sure "Temporary Internet Files", "Temporary Files", "Downloaded Program Files", and "Recycle Bin" are all selected.</P
+></LI
+><LI
+><P
+>Click on the "OK" button.</P
+></LI
+><LI
+><P
+>When it says "Are you sure you want to delete files?", click "Yes"</P
+></LI
+></UL
+><P
+>You will want to minimize the amount of files you will have to transfer to your new disk image.
+Before you reboot into Linux, you may want to do a search for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>*.tiff,
+*.jpg, *.avi, *.mov, *.mpg, *.mp3, *.wav, *.ra, *.rm, *.ram, and *.wmf</I
+></SPAN
+> files.
+Move these somewhere under the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>My
+Documents</I
+></SPAN
+> hierarchy.  Do so only if it does not disrupt your setup,
+ and if the files are not already there:</P
+><P
+></P
+><UL
+><LI
+><P
+>Open up <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>My Documents</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>From the File Menu, click on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>File =&#62; New =&#62;
+Folder</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>Type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>big_files</I
+></SPAN
+> in the folder name box.</P
+></LI
+><LI
+><P
+>Double Click on the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>big_files</I
+></SPAN
+> folder.
+Leave this window open.</P
+></LI
+><LI
+><P
+>Click on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Start =&#62; Find =&#62; Files or Folders</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>In the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Named:</I
+></SPAN
+> input box, type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>*.tiff, *.jpg, *.avi, *.mov, *.mpg, *.mp3 *.wav *.ra *.rm *.ram *.wmf</I
+></SPAN
+></P
+></LI
+><LI
+><P
+>The <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Look In</I
+></SPAN
+> field should be <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>C:\</I
+></SPAN
+>, and the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Inlcude Subfolders</I
+></SPAN
+> checkbox should be checked.</P
+></LI
+><LI
+><P
+>Press <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Enter</I
+></SPAN
+>.</P
+></LI
+><LI
+><P
+>Drag and drop files that are NOT part of a program, NOT in the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Program Files Directory</I
+></SPAN
+>, and NOT in the
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Windows</I
+></SPAN
+> directory into an empty space in your
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>big_files</I
+></SPAN
+> folder.  Be sure you know what you are
+moving.</P
+></LI
+><LI
+><P
+>When the files are done moving, reboot into Linux:
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Start =&#62; Shutdown =&#62; OK</I
+></SPAN
+></P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4119"
+>9.11.4. Mounting Your Windows Partition</A
+></H2
+><P
+>If you have a Network File System (NFS) mounted, you
+could also use these files as source files.  In example shown in the previous
+section, the filesystem
+mounted on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/share/SERVER1/c</I
+></SPAN
+> is from a Windows 2000 server.</P
+><P
+>If your Windows 98 partition is not mounted, and it lives on 
+/dev/hda1, type the following as root:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>mkdir /windows
+mkdir /windows/c
+mount -t vfat /dev/hda1 /windows/c/
+ls /windows/c/</PRE
+></TD
+></TR
+></TABLE
+><P
+>You should now see the Windows 98 partition's directories, to include <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Windows</I
+></SPAN
+> and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Program Files</I
+></SPAN
+> these two directories are key to your new guest installation.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4128"
+>9.11.5. Choosing the Size of Your Disk Image</A
+></H2
+><P
+>You are going to prepare two disk images,
+the primary hard disk image, and the backup image.  The backup image will save you from
+disaster when you make a change that makes your first image unusable.  This 
+backup image is not required, but it is highly recommended.  The primary disk image will
+be called <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>c.img</I
+></SPAN
+>
+The backup image will be called
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>c.img.bak</I
+></SPAN
+> .
+  You must consider several things when
+choosing the size of the disk image:&#13;</P
+><P
+></P
+><UL
+><LI
+><P
+>The size of your Windows installation.</P
+></LI
+><LI
+><P
+>The amount of free space you have available in your home
+directory.  If you do not have enough free space in your home directory, find
+another partition to put this image on, and ensure that you have the proper
+permissions for this file (type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>man
+chmod</I
+></SPAN
+>).</P
+></LI
+><LI
+><P
+>Whether or not you choose to have a concurrent backup image in your home
+directory (<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>c.img.bak</I
+></SPAN
+>).  If you do this, you will need
+twice as much space.</P
+></LI
+></UL
+><P
+>It is important to keep your guest OS image independent of your office files so that you can easily restore your setup to a previous state without changing your office files, in case something did not go right.  I cannot stress enough the importance of doing this.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4143"
+>9.11.6. Setting Up the Disk Image</A
+></H2
+><P
+>Once you have decided on the size of your hard disk image, follow
+the instructions in 
+<A
+HREF="howto.html#DISKIMAGEHOWTO"
+>Section 8.1</A
+> using the mtools method. Start by making a
+directory called ~/win98 . </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>[david@domain]$ mkdir ~/win98
+[david@domain]$ cd ~/win98
+[david@domain]$ bximage
+========================================================================
+                                bximage
+                  Disk Image Creation Tool for Bochs
+========================================================================
+
+Do you want to create a floppy disk image or a hard disk image?
+Please type hd or fd. [hd] hd
+
+What kind of image should I create?
+Please type flat, sparse or growing. [flat] 
+
+Enter the hard disk size in megabytes, between 1 and 32255
+[10] 1
+
+I will create a hard disk image with
+  cyl=2
+  heads=16
+  sectors per track=63
+  total sectors=2016
+  total size=0.98 megabytes
+
+What should I name the image?
+[c.img]
+
+Writing: [] Done.
+
+I wrote 1032192 bytes to c.img.
+
+The following line should appear in your bochsrc:
+  ata0-master: type=disk, path="c.img", cylinders=2, heads=16, spt=63
+[david@domain]$  </PRE
+></TD
+></TR
+></TABLE
+><P
+>If you are creating a 2 gig image, you will want to type
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>2000</I
+></SPAN
+> when it asks you for the size, instead of
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>1</I
+></SPAN
+>, as I did in this example.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4151"
+>9.11.7. Create the .bochsrc Configuration File</A
+></H2
+><P
+>Now that you have the disk image information, it is time to create the
+~/win98/.bochsrc file.  In the following example, you will need to replace all
+instances of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/home/david/</I
+></SPAN
+> with your own home directory.
+All paths in the ~/win98/.bochsrc file must be absolute.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># .bochsrc FILE FOR WINDOWS 98 AS GUEST OS IN LINUX
+
+# Set aside the RAM for bochs and make sure you have enough RAM left over for your system.
+# Type "cat /proc/meminfo" at the prompt to find out how much RAM you have.
+megs: 64
+
+# Filename of ROM images go here.  Be sure to check your installation for the location
+# of these two files (type: man find).  Paths must be absolute.
+romimage: file=/usr/local/etc/bochs/bios/BIOS-bochs-latest
+vgaromimage: file=/usr/local/etc/bochs/bios/VGABIOS-lgpl-latest
+
+# Floppies are commented out, but you may need them later.
+# floppya: 1_44=/dev/fd0, status=inserted
+# floppyb: 1_44=/home/david/win98/floppyb.img, status=inserted
+
+# Cylinder, head, and spt info taken from bximage program output
+ata0-master: type=disk, path="/home/david/win98/c.img", cylinders=3657, heads=16, spt=63
+
+# Have your Windows 98 CD in the drive, but always boot from hard disk.
+# Comment this line out if you are using a disk image for the CD-ROM
+# (See next comment).
+ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
+
+# You can optionally run the following command:
+# dd if=/dev/cdrom of=/home/david/win98/win98.iso
+# and uncomment the next line
+# ata0-slave: type=cdrom, path=/home/david/win98/win98.iso, status=inserted
+
+# choose the boot disk.
+boot: disk
+
+# where do we send log messages?
+log: bochsout.txt
+
+# enable mouse
+mouse: enabled=1
+
+# enable SB16
+sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, dmatimer=600000</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4156"
+>9.11.8. Make Hard Disk Image Acessible by Mtools</A
+></H2
+><P
+>Now that you have your disk image, you want to make it accessible by mtools.
+Add the following line to the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>~/.mtoolsrc</I
+></SPAN
+> file:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>drive c: file="/home/david/win98/c.img" partition=1</PRE
+></TD
+></TR
+></TABLE
+><P
+>Replace <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/home/david</I
+></SPAN
+> with your home directory.</P
+><P
+>Save and close .mtoolsrc.  Next, execute the following commands to
+create a partition table for the drive image:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>mpartition -I -s <TT
+CLASS="REPLACEABLE"
+><I
+>spt</I
+></TT
+> -t <TT
+CLASS="REPLACEABLE"
+><I
+>cyl</I
+></TT
+> -h <TT
+CLASS="REPLACEABLE"
+><I
+>heads</I
+></TT
+> c:
+mpartition -cpv -s <TT
+CLASS="REPLACEABLE"
+><I
+>spt</I
+></TT
+> -t <TT
+CLASS="REPLACEABLE"
+><I
+>cyl</I
+></TT
+> -h <TT
+CLASS="REPLACEABLE"
+><I
+>heads</I
+></TT
+> c:</PRE
+></TD
+></TR
+></TABLE
+><P
+>For example, for my 2 gig virtual drive, I used:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>mpartition -I -s 63 -t 3657 -h 16 c:
+mpartition -cpv -s 63 -t 3657 -h 16 c:</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4173"
+>9.11.9. Format Partition and Copy Files</A
+></H2
+><P
+>Next, format the partition you just created using the mformat command:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>mformat c:</PRE
+></TD
+></TR
+></TABLE
+><P
+>You may want to set your <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>My Documents</I
+></SPAN
+> directory aside:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>mkdir ~/mydocsbak
+cd ~/mydocsbak
+tar cfvz mydocs.tar.gz '/windows/d/My Documents'
+mv '/windows/d/My Documents' .</PRE
+></TD
+></TR
+></TABLE
+><P
+>Now you are ready to copy the files!</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cd ~/win98
+mcopy -s /windows/d/* c:
+mmd "c:/My Documents"</PRE
+></TD
+></TR
+></TABLE
+><P
+>Put your <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>My Documents</I
+></SPAN
+> folder back where it belongs:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cd /windows/d
+mv '/home/david/mydocsbak/My Documents' .</PRE
+></TD
+></TR
+></TABLE
+><P
+>Make a backup copy of your c.img:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cd ~/win98
+cp c.img c.img.bak</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4187"
+>9.11.10. The Fun Begins</A
+></H2
+><P
+>Now it is time to fire up Bochs.  Windows will initially freak out when it notices its environment has changed completely (and wouldn't you?).  You may have to reboot your guest OS a few times as Windows deactivates certain devices and drivers and installs others.  Since installations vary, there are no step-by-step instructions for this process.  Just remember that you can always restore with your backup image if things go wrong:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cd ~/win98
+cp -f c.img.bak c.img</PRE
+></TD
+></TR
+></TABLE
+><P
+>Make sure you get the order right.  When you boot Bochs again, you will see everything as it was when you last did a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>cp c.img c.img.bak</I
+></SPAN
+>.  If you have a large disk image, such as two Gigs, it might take a few minutes for the file to copy.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="WIN98METHOD2"
+>9.11.11. Windows 98 Method 2: Classic Install (Linux Host)</A
+></H2
+><P
+>In this method, Windows 98 is installed using the CD-ROM, much the same way one
+would install Windows 98 into a real computer with no operating system.  This
+process could take up to 12 hours, so I recommended that you begin at the end of
+your day.  You could check on it once or twice when you get up for the midnight
+snack, and continue in the morning.</P
+><P
+>Here's a summary for the impatient:</P
+><P
+></P
+><UL
+><LI
+><P
+>Copy the cdimage to harddisk to increase speed.</P
+></LI
+><LI
+><P
+>Create a disk image with <B
+CLASS="COMMAND"
+>bximage</B
+>.</P
+></LI
+><LI
+><P
+>Update your <TT
+CLASS="FILENAME"
+>.bochsrc</TT
+> configuration file for the 
+diskimage and the cdimage. Make sure that to disable the 
+<B
+CLASS="COMMAND"
+>IPS</B
+> parameter for full speed, unless you really need
+it to slow down the boot prompts.</P
+></LI
+><LI
+><P
+>Boot from CD, then use <B
+CLASS="COMMAND"
+>fdisk</B
+> to partition the image
+and <B
+CLASS="COMMAND"
+>format c: /s</B
+> to format it.</P
+></LI
+><LI
+><P
+>Start the installation with <B
+CLASS="COMMAND"
+>setup</B
+> from the commandline.
+Enter information as necessary.</P
+></LI
+><LI
+><P
+>You can either use the keyboard only to give information, or enable and
+disable the mouse with the middle button or <SPAN
+CLASS="KEYSYM"
+>F12</SPAN
+>.</P
+></LI
+><LI
+><P
+>When there are CPU panics, choose <B
+CLASS="COMMAND"
+>alwayscont</B
+> to ignore
+them. Amazingly, the install will work in spite of them.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="MAKEWIN98IMAGE"
+>9.11.12. Saving Your Windows 98 CD as a Disk
+Image</A
+></H2
+><P
+>Since this second method involves installing from the Windows 98
+CD-ROM, you will speed things up considerably if you put an image of this
+disc on you hard drive.  These days, some computers are shipped with "Recovery
+Disks" that have the Original Equipment Manufacturer (OEM) label on the MS
+Windows 98 disk.  In these cases, it is not always easy to tell which CD-ROM
+contains the operating system.  These types of disks may or may not work for
+this purpose; more than likely it will be problematic.  Make sure you have a
+disk that is labeled "Windows 98" with the Microsoft logo.  You will find the
+product key on the "Certificate of Authenticity" provided to you by Microsoft.
+This can be either on the aqua/purle/white book titled <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Microsoft
+Windows 98: Getting Started</I
+></SPAN
+>, or on your PC.  You may also find it in
+the CD-ROM packaging.  The product key is in squarish typeset next to a bar code.</P
+><P
+>Under Linux, insert your Windows 98 CD in your CD-ROM drive.  Make a directory called <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>win98</I
+></SPAN
+> under your home directory.  Copy the image using the <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>dd</I
+></SPAN
+> command:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>[david@host david]$ mkdir ~/win98
+[david@host david]$ dd if=/dev/cdrom of=~/win98/win98.iso</PRE
+></TD
+></TR
+></TABLE
+><P
+>The appropriate line to the configuration file will be added after the hard disk image is made.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4229"
+>9.11.13. Making the Windows 98 Hard Disk Image</A
+></H2
+><P
+>Since you can select what components you want with MS Windows and which ones
+you do not, you have the option of having a slim installation that requires  
+less disk space.  The actual Windows portion can be as little as 150 megabytes.
+If you only plan to run Microsoft Word plus a couple of programs,
+one Gigabyte will be more than sufficient.</P
+><P
+>It is recommended that you put your office and personal files on a separate image.
+This allows for easier backup and restoration of your installation as you go along.</P
+><P
+>Type "df" at the command prompt to see how much disk space you have:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>[david@host david]$ df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/hda6              5580848   3328772   1968580  63% /
+/dev/hda2                21958      5763     15061  28% /boot
+/dev/hda5              4464560   1350568   2887200  32% /home
+none                    192272         0    192272   0% /dev/shm
+/dev/hda1              7054136   3037024   3658772  46% /home2
+/dev/hda3              4142332   1843132   2299200  45% /windows/d
+[david@192 user]$</PRE
+></TD
+></TR
+></TABLE
+><P
+>In this case, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/home</I
+></SPAN
+> is mounted on <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/dev/hda5</I
+></SPAN
+>.  There is 2,887,200 bytes, or roughly 2.8 Gigabytes available.  There is enough space for the primary 1 Gigabyte image (c.img) and the backup image (c.img.bak).  You will now create the image using bximage:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>[david@host david]$ bximage
+========================================================================
+                                bximage
+                  Disk Image Creation Tool for Bochs
+========================================================================
+
+Do you want to create a floppy disk image or a hard disk image?
+Please type hd or fd. [hd] hd
+
+What kind of image should I create?
+Please type flat, sparse or growing. [flat] 
+
+Enter the hard disk size in megabytes, between 1 and 32255
+[10] 1000
+
+I will create a hard disk image with
+  cyl=2031
+  heads=16
+  sectors per track=63
+  total sectors=2047248
+  total size=999.63 megabytes
+
+What should I name the image?
+[c.img] c.img
+
+Writing: [] Done.
+
+I wrote 1048190976 bytes to c.img.
+
+The following line should appear in your bochsrc:
+  ata0-master: type=disk, path="c.img", cylinders=2031, heads=16, spt=63</PRE
+></TD
+></TR
+></TABLE
+><P
+>You will need the output of bximage for your ~/win98/.bochsrc file.  Be sure to
+copy down the line that begins with <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ata0-master</I
+></SPAN
+>, etc. onto
+a piece of paper or onto your desktop clibpoard.  See the example provided below
+for details on the syntax.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4241"
+>9.11.14. Create the .bochsrc Configuration File</A
+></H2
+><P
+>Now that you have the disk image information, it is time to create the
+~/win98/.bochsrc file.  In the following example, you will need to replace all
+instances of <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>/home/david/</I
+></SPAN
+> with your own home directory.
+All paths in the ~/win98/.bochsrc file must be absolute.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+># .bochsrc FILE FOR WINDOWS 98 AS GUEST OS IN LINUX
+
+# Set aside the RAM for bochs and make sure you have enough RAM left over for your system.
+# Type "cat /proc/meminfo" at the prompt to find out how much RAM you have.
+megs: 64
+
+# Filename of ROM images go here.  Be sure to check your installation for the location
+# of these two files (type: man find).  Paths must be absolute.
+romimage: file=/usr/local/etc/bochs/bios/BIOS-bochs-latest
+vgaromimage: file=/usr/local/etc/bochs/bios/VGABIOS-lgpl-latest
+
+# Floppies are commented out, but you may need them later.
+# floppya: 1_44=/dev/fd0, status=inserted
+# floppyb: 1_44=/home/david/win98/floppyb.img, status=inserted
+
+# Cylinder, head, and spt info taken from bximage program output
+ata0-master: type=disk, path="/home/david/win98/c.img", cylinders=2031, heads=16, spt=63
+
+# If you ran the following command:
+#      dd if=/dev/cdrom of=/home/david/win98/win98.iso
+#   you can use the CD-ROM image on your hard drive:
+ata0-slave: type=cdrom, path=/home/david/win98/win98.iso, status=inserted
+
+# Optionally, if you have your Windows 98 CD in the drive
+#   you can uncomment the next line, but the installation
+#   process will be slower.
+# ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
+
+# choose the boot disk.
+boot: cdrom
+
+# where do we send log messages?
+log: bochsout.txt
+
+# enable mouse
+mouse: enabled=1
+
+# enable SB16
+sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, dmatimer=600000</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4246"
+>9.11.15. Create the Primary DOS Partition and set it Active</A
+></H2
+><P
+>Change into the ~/win98 directory.  Fire up Bochs.  (If Bochs does not
+start, double check your .bochsrc file and make sure there are no mispellings).
+Choose "CD-ROM" when Windows prompts you to choose hard disk or CD-ROM.  You
+can use your arrow keys to select your option, or type the number "2".</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Microsoft Windows 98 CD-ROM Startu Menu
+============================================
+
+1.  Boot From Hard Disk
+2.  Boot From CD-ROM
+
+Enter your choice: _</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If you are not given enough time to make this choice, close Bochs, and
+add the following line to your <TT
+CLASS="FILENAME"
+>.bochsrc</TT
+>:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>cpu: ips=1000000</PRE
+></TD
+></TR
+></TABLE
+><P
+>Fire up Bochs again.  If you have a 1 Gigahertz processor, an ips setting of 1 million
+will keep you on your toes when it comes time to select the CD-ROM.
+Just be sure to comment this line out or delete it before you begin the actual
+installation, otherwise it will take too long to complete this project.</P
+><P
+>However, if you can manage to press quickly any key before the time is up,
+you don't need to do use this trick.</P
+></BLOCKQUOTE
+></DIV
+><P
+>After you select the CD-ROM as your boot method, you will now see a menu with three choices:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>&#13;Microsoft Windows 98 CD-ROM Startu Menu
+============================================
+
+1.  Start Windows 98 setup from CD-ROM.
+2.  Start computer with CD-ROM support.
+3.  Start computer without CD-ROM support.
+
+Enter a choice: _</PRE
+></TD
+></TR
+></TABLE
+><P
+>Type "2" and press "Enter" to <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Start computer with CD-ROM support</I
+></SPAN
+>.  This will take you to a DOS prompt.  At the DOS prompt, type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>fdisk</I
+></SPAN
+> and press "Enter".</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>A:\&#62;fdisk</PRE
+></TD
+></TR
+></TABLE
+><P
+>You will now be taken to a screen asking you if you would like to enable large disk support.  Type "Y" and press "Enter".  You will now see the following menu: </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                            Microsoft Windows 98
+                          Fixed Disk Setup Program
+
+                                 FDISK Options
+
+Current fixed disk drive: 1
+
+Choose one of the following:
+
+1. Create DOS partition or Logical DOS Drive
+2. Set active partition
+3. Delete partition or Logical DOS Drive
+4. Display partition information
+
+
+Enter choice: [1]
+
+
+
+
+Press Esc to exit FDISK</PRE
+></TD
+></TR
+></TABLE
+><P
+>Type "1" and press "Enter" to select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Create DOS partition or Logical DOS Drive</I
+></SPAN
+>.  You will be taken to another menu:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                 Create DOS Partition or Logical DOS Drive
+
+Current fixed disk drive: 1
+
+Choose one of the following:
+
+1.  Create Primary DOS Partition
+2.  Create Extended DOS Partition
+3.  Create Logical DOS Drive(s) in the Extended DOS Partition
+
+
+Enter choice: [1]
+
+
+
+
+Press Esc to return to FDISK Options</PRE
+></TD
+></TR
+></TABLE
+><P
+>Type "1" and press enter to select <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>Create Primary DOS Partition</I
+></SPAN
+>.  You will then be asked the following:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Do you wish to use the maximum available size for a Primary DOS partition
+and make the partition active (Y/N).................? [Y]</PRE
+></TD
+></TR
+></TABLE
+><P
+>Type "Y" and press "Enter".  You should then see the following message:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>You MUST restart your system for your changes to take effect.
+Any drives you have created or changed must be formatted
+AFTER you restart.
+
+Shut down Windows before restarting.
+
+
+
+
+Pres Esc to exit FDISK_</PRE
+></TD
+></TR
+></TABLE
+><P
+>Type "Esc" to exit FDISK.  You should be back at the DOS prompt.  Click
+on the Bochs "Power" button.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4273"
+>9.11.16. Formatting the Disk Image</A
+></H2
+><P
+>We now need to format the virtual "C" drive for your guest OS.</P
+><P
+>Fire up Bochs from the ~/win98 directory.  Type "2" and press "Enter" to
+select booting from the Windows 98 CD-ROM.  Then Type "2" and press "Enter" to select
+booting with CD-ROM support.  You should be at the DOS prompt once again.  Select the "D" drive, change to the "WIN98" directory, and type "format c:".  You will then be asked the following:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>A:/&#62;D:
+
+D:/&#62;cd WIN98
+
+D:/WIN98&#62;format c: /s
+
+WARNING, ALL DATA ON NON-REMOVABLE DISK
+DRIVE C: WILL BE LOST!
+Proceed with Format (Y/N)?_</PRE
+></TD
+></TR
+></TABLE
+><P
+>Type "Y" and press "Enter" to format.  The process should take no more
+than a minute on a modern computer.  You will then be asked for the disk
+label.  Hit "Enter".  If you are successful, you should see output
+similar to the following:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>Formatting 999.1M
+Format complete.
+Writing out file allocation table
+Complete.
+Calculating free space (this may take several minutes)...
+Complete.
+
+Volume label (11 characters, ENTER for none)?
+
+1,045,577,728 bytes total disk space
+1,045,577,728 bytes available on disk
+
+        4,096 bytes in each allocation unit.
+      255,267 allocation units available on disk.
+
+Volume Serial Number is 555D-1F23
+
+
+D:\WIN98&#62;</PRE
+></TD
+></TR
+></TABLE
+><P
+>It is now time to comment out the "cpu: ips=1000000" line in your ~/win98/.bochsrc file.
+Close Bochs by clicking the Bochs power button with your mouse. Open up ~/win98/.bochsrc
+with your favorite editor and put a hash (#) mark in front of the cpu line.</P
+><P
+>You are now ready to begin the installation.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4282"
+>9.11.17. Starting the Installation</A
+></H2
+><P
+>Fire up Bochs from the ~/win98 directory.  Type "2" and press "Enter" to
+select booting from the Windows 98 CD-ROM.  Then Type "2" and press "Enter" to select
+booting with CD-ROM support.  You should be at the DOS prompt once again.  Select the "D" drive, change to the "WIN98" directory, and type "setup":</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>A:\&#62;D:
+D:\&#62;cd WIN98
+D:\WIN98&#62;setup</PRE
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>You can also use <B
+CLASS="COMMAND"
+>setup /is</B
+> to bypass scandisk.</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If Windows 98 setup complains about the (emulated) computer being too slow or about
+a missing co-processor (in case you compiled Bochs without support for that), you can
+use the undocumented <CODE
+CLASS="OPTION"
+>/nm</CODE
+> switch to bypass the hardware check:
+<B
+CLASS="COMMAND"
+>setup /nm</B
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Answer the question of the Windows 98 installer. You can either supply
+answers with the keyboard including the arrow keys, or activate the 
+mouse with the middle mouse button or <SPAN
+CLASS="KEYSYM"
+>F12</SPAN
+>.</P
+><P
+>I choose a minimal installation to save space on the harddisk image,
+but others should probably also work.</P
+><P
+><IMG
+SRC="../images/undercon.png"> (Add additional detailed step-by-step information here if really
+necessary)</P
+><P
+>At some stage during the installation, the simulation will stop with
+an audible beep and notify you about a CPU panic. Don't worry, choose
+<B
+CLASS="COMMAND"
+>alwayscont</B
+> to ignore all such future panics (there
+will be several others). Windows will install properly in spite of those
+errors.</P
+><P
+>If you want, you can create checkpoints of your harddisk image at 
+apropriate times (before a reboot, for example). Stop the simulation
+by clicking on the <B
+CLASS="COMMAND"
+>Tool</B
+> icon, copy the image file,
+and continue by pressing return in the bochs terminal window.
+Optionally, <B
+CLASS="COMMAND"
+>gzip</B
+> the copied disk image to conserve
+some space.</P
+><P
+><IMG
+SRC="../images/undercon.png"> Add more details, if needed.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-winnt4.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-winme.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Windows NT 4.0</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Windows ME</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

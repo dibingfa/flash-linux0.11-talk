@@ -1,0 +1,2558 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>bochsrc</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Setup"
+HREF="setup.html"><LINK
+REL="PREVIOUS"
+TITLE="Setup"
+HREF="setup.html"><LINK
+REL="NEXT"
+TITLE="Sound Blaster 16 Emulation"
+HREF="sb16-emulation.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="setup.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="sb16-emulation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="BOCHSRC"
+>4.2. bochsrc</A
+></H1
+><P
+>Bochs uses a configuration file called <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> to know
+where to look for disk images, how the Bochs emulation layer should work, etc.
+When you first start up Bochs, it looks around for its configuration file
+(see <A
+HREF="search-order.html"
+>Section 5.2</A
+>), and parses it.
+Here are a few lines from a sample file:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ata0-master: type=disk, path="30M.sample", cylinders=615, heads=6, spt=17
+  boot: disk</PRE
+></TD
+></TR
+></TABLE
+>
+The format is very strict, so be sure to put the right number of spaces and
+use lowercase letters.  As you can see, most lines have a keyword telling what
+is being configured, followed by a colon, followed by a few
+<CODE
+CLASS="VARNAME"
+>variable</CODE
+>=<CODE
+CLASS="VARNAME"
+>value</CODE
+> pairs, separated by
+commas.  For very simple options, sometimes just a single value is needed.  
+The source and binary distributions come with a sample
+<TT
+CLASS="FILENAME"
+>bochsrc</TT
+>, so you can just copy the sample file and edit the
+settings you need to change.</P
+><P
+>The syntax used for <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> can also be used as command line arguments for Bochs.
+If you have any spaces in your command line arguments, they should be enclosed
+in single quotes, for example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  bochs 'boot:floppy' 'floppya: 1_44=a.img, status=inserted'</PRE
+></TD
+></TR
+></TABLE
+>
+For other arguments, see section <A
+HREF="using-bochs.html#COMMANDLINE"
+>Command line arguments</A
+>.</P
+><P
+>Starting with version 1.3, you can use environment variables in
+the <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> file, for example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  floppya: 1_44="$IMAGES/bootdisk.img", status=inserted
+  boot: floppy</PRE
+></TD
+></TR
+></TABLE
+>
+Starting with version 2.0, two environment variables have a built-in
+default value which is set at compile time.  $BXSHARE points to the
+"share" directory which is typically /usr/local/share/bochs on UNIX
+machines.  See the $(sharedir) variable in the Makefile for the exact
+value.  $BXSHARE is used by disk images to locate the directory where 
+the BIOS images and keymaps can be found.  If $BXSHARE is not defined, Bochs
+will supply the default value.  Also, $LTDL_LIBRARY_PATH points to a list of
+directories (separated by colons if more than one) to search in for Bochs
+plugins.  A compile-time default is provided if this variable is not defined
+by the user.  On Win32 and MacOSX, the default for the share directory is
+determined by a platform-specific specific algorithm.  On Win32, we use the
+registry to see what directory Bochs and its support files were installed in.
+On MacOSX, the share directory is the directory where the application is
+located.</P
+><P
+>Starting with version 2.0, you can can use #include in the bochsrc to read the
+configuration from other files. Now it is possible to put platform or
+installation defaults in a global config file (e.g. location of rom images).
+Put this on top of your config file if the global configuration is stored in /etc:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+> #include /etc/bochsrc</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The section below lists all the supported <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> options.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-MEGS"
+>4.2.1. megs</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  megs: 32
+  megs: 128</PRE
+></TD
+></TR
+></TABLE
+>
+Set the number of megabytes of physical memory you want to emulate. The default
+is 32MB; most OS's won't need more than that. The maximum amount of memory
+supported is 2048MB.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>Due to limitations in the host OS, Bochs fails to allocated even 1024MB on most systems.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-CPU"
+>4.2.2. cpu</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  cpu: count=2, ips=10000000</PRE
+></TD
+></TR
+></TABLE
+>
+This defines the parameters of the cpu inside Bochs:</P
+><P
+><B
+CLASS="COMMAND"
+>count</B
+></P
+><P
+>Set the number of processors:cores per processor:threads per core when Bochs
+is compiled for SMP emulation. Bochs currently supports up to 8 processors.
+If Bochs is compiled without SMP support, it won't accept values different from 1.
+For more information on SMP see <A
+HREF="smp.html"
+>Section 8.8</A
+>.</P
+><P
+><B
+CLASS="COMMAND"
+>quantum</B
+></P
+><P
+>Maximum amount of instructions allowed to execute by processor before
+returning control to another cpu. This option exists only in Bochs 
+binary compiled with SMP support.</P
+><P
+><B
+CLASS="COMMAND"
+>reset-on-triple-fault</B
+></P
+><P
+>Reset the CPU when triple fault occur (highly recommended) rather than PANIC.
+Remember that if you are trying to continue after triple fault the simulation 
+will be completely bogus !</P
+><P
+><B
+CLASS="COMMAND"
+>ips</B
+></P
+><P
+>Emulated Instructions Per Second.  This is the number of IPS that Bochs is
+capable of running on your machine.  You can recompile Bochs with
+<CODE
+CLASS="OPTION"
+>--enable-show-ips</CODE
+> option enabled, to find your workstation's capability.
+Measured IPS value will then be logged into your <A
+HREF="bochsrc.html#BOCHSOPT-LOG"
+>log file</A
+>
+or in the status bar (if supported by the gui).</P
+><P
+>IPS is used to calibrate many time-dependent events within the Bochs
+simulation.  For example, changing IPS affects the frequency of VGA updates,
+the duration of time before a key starts to autorepeat, and the measurement
+of BogoMips and other benchmarks.  The table below lists some typical
+IPS settings for different machines<A
+NAME="AEN1450"
+HREF="#FTN.AEN1450"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+>.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1452"
+></A
+><P
+><B
+>Table 4-1. Example IPS Settings</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Bochs</TH
+><TH
+>Speed</TH
+><TH
+>Machine/Compiler</TH
+><TH
+>Typical IPS</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>2.2.6</TD
+><TD
+>2.6Ghz</TD
+><TD
+>Intel Core 2 Duo with WinXP/g++ 3.4 </TD
+><TD
+> 21 to 25 million</TD
+></TR
+><TR
+><TD
+>2.2.6</TD
+><TD
+>2.1Ghz</TD
+><TD
+>Athlon XP with Linux 2.6/g++ 3.4 </TD
+><TD
+> 12 to 15 million</TD
+></TR
+><TR
+><TD
+>2.0.1</TD
+><TD
+>1.6Ghz</TD
+><TD
+>Intel P4 with Win2000/g++ 3.3 </TD
+><TD
+> 5 to  7 million</TD
+></TR
+><TR
+><TD
+>1.4  </TD
+><TD
+>650MHz</TD
+><TD
+>Athlon K-7 with Linux 2.4.x  </TD
+><TD
+> 2 to 2.5 million</TD
+></TR
+><TR
+><TD
+>1.4  </TD
+><TD
+>400MHz</TD
+><TD
+>Pentium II with Linux 2.0.x  </TD
+><TD
+> 1 to 1.8 million</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1487"
+>4.2.3. romimage</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  romimage: file=bios/BIOS-bochs-latest, address=0xe0000
+  romimage: file=$BXSHARE/BIOS-bochs-legacy, address=0xf0000
+  romimage: file=mybios.bin, address=0xfff80000
+  romimage: file=mybios.bin</PRE
+></TD
+></TR
+></TABLE
+>
+The ROM BIOS controls what the PC does when it first powers on.  Normally, you
+can use a precompiled BIOS in the source or binary distribution called
+<TT
+CLASS="FILENAME"
+>BIOS-bochs-latest</TT
+>. The default ROM BIOS is usually loaded
+starting at address 0xe0000, and it is exactly 128k long. The legacy version of
+the Bochs BIOS is usually loaded starting at address 0xf0000, and it is exactly
+64k long.
+You can also use the environment variable $BXSHARE to specify the location of the BIOS.
+The usage of external large BIOS images (up to 512k) at memory top is
+now supported, but we still recommend to use the BIOS distributed with Bochs.
+The start address is now optional, since it can be calculated from image size.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1492"
+>4.2.4. optromimage1, optromimage2, optromimage3 or optromimage4</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   optromimage1: file=optionalrom.bin, address=0xd0000</PRE
+></TD
+></TR
+></TABLE
+>
+
+This enables Bochs to load up to 4 optional ROM images.</P
+><P
+>Be sure to use a
+read-only area, typically between C8000 and EFFFF. These optional
+ROM images should not overwrite the rombios (located at
+F0000-FFFFF) and the videobios (located at C0000-C7FFF).</P
+><P
+>Those ROM images will be initialized by the BIOS if they contain
+the right signature (0x55AA).</P
+><P
+>It can also be a convenient way to upload some arbitrary code/data
+in the simulation, that can be retrieved by the boot loader</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-VGAROMIMAGE"
+>4.2.5. vgaromimage</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  vgaromimage: file=bios/VGABIOS-elpin-2.40
+  vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+  vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest-cirrus</PRE
+></TD
+></TR
+></TABLE
+>
+This tells Bochs what VGA ROM BIOS to load (at 0xC0000).</P
+><P
+>A VGA BIOS from Elpin Systems, Inc. as well as a free LGPL'd VGA BIOS 
+are provided in the source and binary distributions.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>  Please check with the <A
+HREF="bochsrc.html#BOCHSOPT-VGA"
+>vga option</A
+> to decide
+  what VGA BIOS to use.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-VGA"
+>4.2.6. vga</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  vga: extension=cirrus
+  vga: extension=vbe</PRE
+></TD
+></TR
+></TABLE
+>
+Here you can specify the display extension to be used. With the value
+'none' you can use standard VGA with no extension. Other supported
+values are 'vbe' for Bochs VBE (needs <TT
+CLASS="FILENAME"
+>VGABIOS-lgpl-latest</TT
+> as
+VGA BIOS, see <A
+HREF="bochsrc.html#BOCHSOPT-VGAROMIMAGE"
+>vgaromimage option</A
+>)
+and 'cirrus' for Cirrus SVGA support (needs
+<TT
+CLASS="FILENAME"
+>VGABIOS-lgpl-latest-cirrus</TT
+> as VGA BIOS).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-FLOPPYAB"
+>4.2.7. floppya/floppyb</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>2.88M 3.5" Floppy:
+  floppya: 2_88=a:, status=inserted
+1.44M 3.5" Floppy:
+  floppya: 1_44=floppya.img, status=inserted
+1.2M  5.25" Floppy:
+  floppyb: 1_2=/dev/fd0, status=inserted
+720K  3.5" Floppy:
+  floppya: 720k=/usr/local/bochs/images/win95.img, status=inserted
+auto-detect:
+  floppya: image=floppy.img, status=inserted</PRE
+></TD
+></TR
+></TABLE
+>
+Floppya is the first drive, and floppyb is the second drive. If you're booting
+from a floppy, floppya should point to a bootable disk.  To read from a disk
+image, write the name of the image file.  In many operating systems Bochs can
+read directly from a raw floppy drive.  For raw disk access, use the device
+name (Unix systems) or the drive letter and a colon (Windows systems).</P
+><P
+>Following floppy disk types are supported: 2_88, 1_44, 1_2, 720k, 360k, 320k, 180k,
+160k, as well as "image" to let Bochs auto-detect the type of floppy disk (does only
+work with images, not with raw floppy drives).</P
+><P
+>You can set the initial status of the media to <CODE
+CLASS="CONSTANT"
+>ejected</CODE
+> 
+or <CODE
+CLASS="CONSTANT"
+>inserted</CODE
+>.  Usually you will want to use 
+<CODE
+CLASS="CONSTANT"
+>inserted</CODE
+>.  In fact Bryce can't think of any reason
+to ever write <CODE
+CLASS="CONSTANT"
+>ejected</CODE
+> in your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-ATA"
+>4.2.8. ata0, ata1, ata2, ata3</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata1: enabled=1, ioaddr1=0x170, ioaddr2=0x370, irq=15
+ata2: enabled=1, ioaddr1=0x1e8, ioaddr2=0x3e0, irq=11
+ata3: enabled=1, ioaddr1=0x168, ioaddr2=0x360, irq=9</PRE
+></TD
+></TR
+></TABLE
+>
+
+These options enables up to 4 ata channels. For each channel
+the two base io addresses and the irq must be specified.
+ata0 and ata1 areenabled by default, with the values shown above.&#13;</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-ATA-MASTER-SLAVE"
+>4.2.9. ata0-master, ata0-slave, ata1-*, ata2-*, ata3-*</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ata0-master: type=disk, path=10M.img, mode=flat, cylinders=306, heads=4, spt=17, translation=none
+ata1-master: type=disk, path=2GB.cow, mode=vmware3, cylinders=5242, heads=16, spt=50, translation=echs
+ata1-slave:  type=disk, path=3GB.img, mode=sparse, cylinders=6541, heads=16, spt=63, translation=auto
+ata2-master: type=disk, path=7GB.img, mode=undoable, cylinders=14563, heads=16, spt=63, translation=lba
+ata2-slave:  type=cdrom, path=iso.sample, status=inserted</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>&#13;This defines the type and characteristics of all attached ata devices:
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN1534"
+></A
+><P
+><B
+>Table 4-2. ata devices configuration options</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Option</TH
+><TH
+>Comments</TH
+><TH
+>Possible values</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+> type </TD
+><TD
+> type of attached device </TD
+><TD
+> [disk | cdrom] </TD
+></TR
+><TR
+><TD
+> path  </TD
+><TD
+> path of the image </TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> mode  </TD
+><TD
+> image type, only valid for disks </TD
+><TD
+> [flat | concat | external | dll | sparse | vmware3 | vmware4 | undoable | growing | volatile ]</TD
+></TR
+><TR
+><TD
+> cylinders </TD
+><TD
+> only valid for disks </TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> heads </TD
+><TD
+> only valid for disks </TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> spt </TD
+><TD
+> only valid for disks </TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> status </TD
+><TD
+> only valid for cdroms </TD
+><TD
+> [inserted | ejected] </TD
+></TR
+><TR
+><TD
+> biosdetect </TD
+><TD
+> type of biosdetection </TD
+><TD
+> [none | auto], only for disks on ata0 [cmos] </TD
+></TR
+><TR
+><TD
+> translation </TD
+><TD
+> type of translation done by the BIOS (legacy int13), only for disks </TD
+><TD
+> [none | lba | large | rechs | auto] </TD
+></TR
+><TR
+><TD
+> model </TD
+><TD
+> string returned by identify device ATA command </TD
+><TD
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+><P
+>  You have to tell the type of the attached device. For Bochs 2.0 or later, it can be
+  <CODE
+CLASS="PARAMETER"
+>disk</CODE
+> or <CODE
+CLASS="PARAMETER"
+>cdrom</CODE
+>.</P
+><P
+>You have to point the "path" at a hard disk image file, cdrom iso file,
+or physical cdrom device.
+To create a hard disk image, try running bximage (see
+<A
+HREF="howto.html#DISKIMAGEHOWTO"
+>Section 8.1</A
+>). It will help you choose the size and
+then suggest a line that works with it.</P
+><P
+>In Unix it is possible to use a raw device as a Bochs hard disk,
+but <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>we don't recommend it</I
+></SPAN
+> for safety reasons. In Windows, there is no easy way.</P
+><P
+>Disk geometry autodetection works with images created by bximage if CHS is set
+to 0/0/0 (cylinders are calculated using heads=16 and spt=63). For other hard
+disk images and modes the cylinders, heads, and spt are mandatory.</P
+><P
+>The disk translation scheme 
+(implemented in legacy int13 BIOS functions, and used by
+older operating systems like MS-DOS), can be defined as:
+<P
+></P
+><UL
+><LI
+><P
+>none : no translation, for disks up to 528MB (1032192 sectors)</P
+></LI
+><LI
+><P
+>large : a standard bitshift algorithm, for disks up to 4.2GB (8257536 sectors)</P
+></LI
+><LI
+><P
+>rechs : a revised bitshift algorithm, using a 15 heads fake physical geometry, for disks up to 7.9GB (15482880 sectors). (don't use this unless you understand what you're doing)</P
+></LI
+><LI
+><P
+>lba : a standard lba-assisted algorithm, for disks up to 8.4GB (16450560 sectors)</P
+></LI
+><LI
+><P
+>auto : autoselection of best translation scheme. (it should be changed if system does not boot)</P
+></LI
+></UL
+>
+Please see <A
+HREF="bios-tips.html#BIOS-DISK-TRANSLATION"
+>Section 8.14.2</A
+> for a discussion on translation scheme.</P
+><P
+>The mode option defines how the disk image is handled. Disks can be defined as:
+<P
+></P
+><UL
+><LI
+><P
+>flat : one file flat layout</P
+></LI
+><LI
+><P
+>concat : multiple files layout</P
+></LI
+><LI
+><P
+>external : developer's specific, through a C++ class</P
+></LI
+><LI
+><P
+>dll : developer's specific, through a DLL</P
+></LI
+><LI
+><P
+>sparse : stackable, commitable, rollbackable</P
+></LI
+><LI
+><P
+>vmware3 : vmware version 3 disk support</P
+></LI
+><LI
+><P
+>vmware4 : vmware version 4 disk support</P
+></LI
+><LI
+><P
+>undoable : flat file with commitable redolog</P
+></LI
+><LI
+><P
+>growing : growing file</P
+></LI
+><LI
+><P
+>volatile : flat file with volatile redolog</P
+></LI
+></UL
+>
+Please see <A
+HREF="harddisk-modes.html"
+>Section 8.18</A
+> for a discussion on disk modes.</P
+><P
+>Default values are:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   mode=flat, biosdetect=auto, translation=auto, model="Generic 1234"</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>  The <CODE
+CLASS="PARAMETER"
+>biosdetect</CODE
+> option has currently no effect on the BIOS.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>  Make sure the proper <A
+HREF="bochsrc.html#BOCHSOPT-ATA"
+>ata option</A
+> is enabled when
+  using a device on that ata channel.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-BOOT"
+>4.2.10. boot</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  boot: floppy
+  boot: cdrom, disk
+  boot: network, disk
+  boot: cdrom, floppy, disk</PRE
+></TD
+></TR
+></TABLE
+>
+This defines the boot sequence. You can specify up to 3 boot drives,
+which can be 'floppy', 'disk', 'cdrom' or 'network' (boot ROM).
+Legacy 'a' and 'c' are also supported.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1633"
+>4.2.11. floppy_bootsig_check</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  floppy_bootsig_check: disabled=1</PRE
+></TD
+></TR
+></TABLE
+>
+This disables the 0xaa55 signature check on boot floppies
+The check is enabled by default.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-CONFIGINTERFACE"
+>4.2.12. config_interface</A
+></H2
+><P
+>The configuration interface is a series of menus or dialog boxes that
+allows you to edit all the settings that control Bochs' behavior.
+There are two choices of configuration interface: a text mode version
+called "textconfig" and a graphical version called "wx".  The text
+mode version uses stdin/stdout and is always available while the graphical
+version is only available when Bochs is compiled with wxWidgets support, see
+<A
+HREF="compiling.html#COMPILE-WX"
+>Section 3.4.12</A
+>. If you do not use a config_interface line, Bochs
+will choose a default for you (usually textconfig).</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>wxWidgets provides both a configuration interface and a display library.
+So if you use the "wx" configuration interface, you must also use
+the "wx" display library, see
+<A
+HREF="bochsrc.html#BOCHSOPT-DISPLAYLIBRARY"
+>display_library option</A
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  config_interface: textconfig
+  config_interface: wx</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-DISPLAYLIBRARY"
+>4.2.13. display_library</A
+></H2
+><P
+>The display library is the code that displays the Bochs VGA screen.  Bochs 
+has a selection of about 10 different display library implementations for 
+different platforms.  If you run configure with multiple --with-* options, 
+the display_library option lets you choose which one you want to run with.
+If you do not use a display_library line, Bochs will choose a default for
+you.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>wxWidgets provides both a configuration interface and a display library.
+So if you use the "wx" display library, you must also use
+the "wx" configuration interface, see
+<A
+HREF="bochsrc.html#BOCHSOPT-CONFIGINTERFACE"
+>config_interface option</A
+>.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  display_library: x
+  display_library: sdl</PRE
+></TD
+></TR
+></TABLE
+>
+Starting with version 2.2, some display libraries support specific options:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  display_library: rfb, options="timeout=60"  # time to wait for client
+  display_library: sdl, options="fullscreen"  # startup in fullscreen mode
+  display_library: win32, options="legacyF12" # use F12 to toggle mouse
+  display_library: win32, options="windebug" # use experimental debugger gui</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1655"
+></A
+><P
+><B
+>Table 4-3. display_library values</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Option</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>x</TD
+><TD
+>use X windows interface, cross platform</TD
+></TR
+><TR
+><TD
+>win32</TD
+><TD
+>use native win32 libraries</TD
+></TR
+><TR
+><TD
+>carbon</TD
+><TD
+>use Carbon library (for MacOS X)</TD
+></TR
+><TR
+><TD
+>beos</TD
+><TD
+>use native BeOS libraries</TD
+></TR
+><TR
+><TD
+>macintosh</TD
+><TD
+>use MacOS pre-10</TD
+></TR
+><TR
+><TD
+>amigaos</TD
+><TD
+>use native AmigaOS libraries</TD
+></TR
+><TR
+><TD
+>sdl</TD
+><TD
+>use SDL library, cross platform,
+    details in <A
+HREF="compiling.html#COMPILE-SDL"
+>Section 3.4.11</A
+></TD
+></TR
+><TR
+><TD
+>svga</TD
+><TD
+>use SVGALIB library for Linux, allows graphics without X windows</TD
+></TR
+><TR
+><TD
+>term</TD
+><TD
+>text only, uses curses/ncurses library, cross platform</TD
+></TR
+><TR
+><TD
+>rfb</TD
+><TD
+>provides an interface to AT&amp;T's VNC viewer, cross platform,
+    details in <A
+HREF="compiling.html#COMPILE-RFB"
+>Section 3.4.10</A
+></TD
+></TR
+><TR
+><TD
+>wx</TD
+><TD
+>use wxWidgets library, cross platform,
+    details in <A
+HREF="compiling.html#COMPILE-WX"
+>Section 3.4.12</A
+></TD
+></TR
+><TR
+><TD
+>nogui</TD
+><TD
+>no display at all</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-LOG"
+>4.2.14. log</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  log: bochsout.txt
+  log: -
+  log: /dev/tty               (Unix only)
+  log: /dev/null              (Unix only)
+  log: nul                    (win32 only)</PRE
+></TD
+></TR
+></TABLE
+>
+Give the path of the log file you'd like Bochs debug and misc. verbiage to be
+to be written to. If you don't use this option or set the filename to '-'
+the output is written to the console. If you really don't want it,
+make it "/dev/null" (Unix) or "nul" (win32). :^(</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1706"
+>4.2.15. logprefix</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   logprefix: %t-%e-@%i-%d
+   logprefix: %i%e%d</PRE
+></TD
+></TR
+></TABLE
+>
+This handles the format of the string prepended to each log line.
+You may use those special tokens :
+  <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  %t : 11 decimal digits timer tick
+  %i : 8 hexadecimal digits of current cpu eip (ignored in SMP configuration)
+  %e : 1 character event type ('i'nfo, 'd'ebug, 'p'anic, 'e'rror)
+  %d : 5 characters string of the device, between brackets
+  </PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Default is %t%e%d</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-DEBUG-INFO-ERROR-PANIC"
+>4.2.16. debug/info/error/panic</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  debug: action=ignore
+  info: action=report
+  error: action=report
+  panic: action=ask</PRE
+></TD
+></TR
+></TABLE
+>
+
+During simulation, Bochs encounters certain events that the user might want to
+know about.  These events are divided into four levels of importance: debug,
+info, error, and panic.  Debug messages are usually only useful when writing
+Bochs code or when trying to locate a problem.  There may be thousands of debug
+messages per second, so be careful before turning them on.  Info messages tell
+about interesting events that don't happen that frequently.  Bochs produces an
+"error" message when it  finds a condition that really shouldn't happen,  but
+doesn't endanger the simulation.  An example of an error  might be  if the
+emulated  software produces an illegal disk command.  Panic messages mean that
+Bochs cannot simulate correctly and should probably shut down.
+A panic can be a configuration problem (like a misspelled bochsrc line) or an
+emulation problem (like an unsupported video mode).  </P
+><P
+>The debug, info, error, and panic lines in the bochsrc control what Bochs will
+do when it encounters each type of event.  The allowed actions are: fatal
+(terminate bochs), ask (ask the user what to do), report (print information to
+the console or log file), or ignore (do nothing).  The recommended settings are
+listed in the sample above.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>The safest action for panics is "fatal" or "ask".  If you are getting lots of
+panics and get tired of telling it to continue each time, you can try
+action=report instead.  If you allow Bochs to continue after a panic, don't
+be surprised if you get strange behavior or crashes after a panic occurs.
+Please report panic messages to the bochs-developers mailing list unless it is
+just a configuration problem like "could not find hard drive image."</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1719"
+>4.2.17. debugger_log</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  debugger_log: debugger.out
+  debugger_log: /dev/null              (Unix only)
+  debugger_log: -</PRE
+></TD
+></TR
+></TABLE
+>
+Give the path of the log file you'd like Bochs to log debugger output.
+If you really don't want it, make it '/dev/null', or '-'.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-COM"
+>4.2.18. com[1-4]</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  com1: enabled=1, mode=null
+  com1: enabled=1, mode=mouse
+  com1: enabled=1, mode=term, dev=/dev/ttyp9
+  com2: enabled=1, mode=file, dev=serial.out
+  com3: enabled=1, mode=raw, dev=com1
+  com3: enabled=1, mode=socket, dev=localhost:8888</PRE
+></TD
+></TR
+></TABLE
+>
+  This defines a serial port (UART type 16550A).</P
+><P
+>  When using the mode 'term', you can specify a device to use as com1.
+  This can be a real serial line, or a pty.  To use a pty (under X/Unix),
+  create two windows (xterms, usually).  One of them will run Bochs, and
+  the other will act as com1. Find out the tty of the com1 window using
+  the `tty' command, and use that as the `dev' parameter.  Then do
+  `sleep 1000000' in the com1 window to keep the shell from messing with
+  things, and run Bochs in the other window. Serial I/O to com1 (port 0x3f8)
+  will all go to the other window.</P
+><P
+>  Other serial modes are 'null' (no input/output), 'file' (output to a file
+  specified as the 'dev' parameter), 'raw' (use the real serial port - under
+  construction for win32), 'mouse' (standard serial mouse - requires
+  <A
+HREF="bochsrc.html#BOCHSOPT-MOUSE"
+>mouse option</A
+> setting 'type=serial'
+  or 'type=serial_wheel') and 'socket' (connect a networking socket).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1730"
+>4.2.19. parport[1-2]</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  parport1: enabled=1, file="parport.out"
+  parport2: enabled=1, file="/dev/lp0"
+  parport1: enabled=0</PRE
+></TD
+></TR
+></TABLE
+>
+This defines a parallel (printer) port. When turned on and an output file is
+defined, the emulated printer port sends characters printed by the guest OS
+into the output file. On some platforms, a device filename can be used to
+send the data to the real parallel port (e.g. "/dev/lp0" on Linux, "lpt1" on
+win32 platforms).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="SB16LINE"
+>4.2.20. sb16</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, 
+        loglevel=2, log=sb16.log, dmatimer=600000</PRE
+></TD
+></TR
+></TABLE
+>
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The example is wrapped onto several lines for formatting reasons, but it
+should all be on one line in the actual <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> file.</P
+></BLOCKQUOTE
+></DIV
+>
+
+This defines the Sound Blaster 16 emulation, see <A
+HREF="sb16-emulation.html"
+>Section 4.3</A
+>
+for more information. It can have several of the following properties. All properties
+are in the usual "property=value" format.
+
+ <P
+></P
+><UL
+><LI
+><P
+>   midi: The filename is where the midi data is sent to. This
+   can be a device or just a file if you want to record the midi data.
+   On a Windows host this parameter is ignored when using output to the sound
+   device.
+   </P
+></LI
+><LI
+><P
+>   midimode:
+   <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   0 = No data should be output.
+   1 = output to device (system dependent - midi denotes the device driver).
+   2 = SMF file output, including headers.
+   3 = Output the midi data stream to the file (no midi headers and no
+       delta times, just command and data bytes).
+   </PRE
+></TD
+></TR
+></TABLE
+>
+   </P
+></LI
+><LI
+><P
+>   wave: This is the device/file where wave output is stored.
+   On a Windows host this parameter is ignored when using output to the sound
+   device.
+   </P
+></LI
+><LI
+><P
+>   wavemode:
+   <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   0 = no data
+   1 = output to device (system dependent - wave denotes the device driver).
+   2 = VOC file output, including headers.
+   3 = Output the raw wave stream to the file.
+   </PRE
+></TD
+></TR
+></TABLE
+>
+   </P
+></LI
+><LI
+><P
+>   log: The file to write the sb16 emulator messages to.
+   </P
+></LI
+><LI
+><P
+>   loglevel: 
+   <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>   0 = No log.
+   1 = Resource changes, midi program and bank changes.
+   2 = Severe errors.
+   3 = All errors.
+   4 = All errors plus all port accesses.
+   5 = All errors and port accesses plus a lot of extra information.
+   </PRE
+></TD
+></TR
+></TABLE
+>
+   It is possible to change the loglevel at runtime.
+   </P
+></LI
+><LI
+><P
+>   dmatimer: Microseconds per second for a DMA cycle. Make it smaller to fix
+   non-continuous sound. 750000 is usually a good value. This needs a reasonably
+   correct setting for the <B
+CLASS="COMMAND"
+>ips</B
+> paramter of the
+   <A
+HREF="bochsrc.html#BOCHSOPT-CPU"
+>cpu option</A
+>. It is possible to adjust the
+   dmatimer value at runtime.
+   </P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1762"
+>4.2.21. vga_update_interval</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  vga_update_interval: 40000 # default
+  vga_update_interval: 250000</PRE
+></TD
+></TR
+></TABLE
+>
+Video memory is scanned for updates and screen updated every so many virtual
+microseconds. Keep in mind that you must tweak the <B
+CLASS="COMMAND"
+>ips</B
+>
+parameter of the <A
+HREF="bochsrc.html#BOCHSOPT-CPU"
+>cpu option</A
+> to be as close
+to the number of emulated instructions-per-second your workstation can do,
+for this to be accurate.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1768"
+>4.2.22. keyboard_serial_delay</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  keyboard_serial_delay: 250 # default</PRE
+></TD
+></TR
+></TABLE
+>
+Approximate time in microseconds that it takes one character to be
+transfered from the keyboard to controller over the serial path.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1772"
+>4.2.23. keyboard_paste_delay</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  keyboard_paste_delay: 100000 # default</PRE
+></TD
+></TR
+></TABLE
+>
+Approximate time in microseconds between attempts to paste
+characters to the keyboard controller. This leaves time for the
+guest os to deal with the flow of characters.  The ideal setting
+depends on how your operating system processes characters.  The
+default of 100000 usec (.1 seconds) was chosen because it works
+consistently in Windows.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1776"
+>4.2.24. ips</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  ips: 2000000 # default
+  ips: 10000000</PRE
+></TD
+></TR
+></TABLE
+>
+Emulated Instructions Per Second.  This option is deprecated. Use the <B
+CLASS="COMMAND"
+>ips</B
+>
+parameter of the <A
+HREF="bochsrc.html#BOCHSOPT-CPU"
+>cpu option</A
+> instead.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-CLOCK"
+>4.2.25. clock</A
+></H2
+><P
+>This defines the parameters of the clock inside Bochs:</P
+><P
+><B
+CLASS="COMMAND"
+>sync</B
+></P
+><P
+>TO BE COMPLETED (see Greg's explanation in <A
+HREF="http://sourceforge.net/tracker/?group_id=12580&#38;atid=362580&#38;func=detail&#38;aid=536329"
+TARGET="_top"
+>feature request #536329</A
+>)</P
+><P
+><B
+CLASS="COMMAND"
+>time0</B
+></P
+><P
+>Specifies the start (boot) time of the virtual machine. Use a time 
+value as returned by the time(2) system call. If no time0 value is 
+set or if time0 equal to 1 (special case) or if time0 equal 'local', 
+the simulation will be started at the current local host time.
+If time0 equal to 2 (special case) or if time0 equal 'utc',
+the simulation will be started at the current utc time.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Syntax:
+  clock: sync=[none|slowdown|realtime|both], time0=[timeValue|local|utc]
+
+Examples:
+  clock: sync=none,     time0=local       # Now (localtime)
+  clock: sync=slowdown, time0=315529200   # Tue Jan  1 00:00:00 1980
+  clock: sync=none,     time0=631148400   # Mon Jan  1 00:00:00 1990
+  clock: sync=realtime, time0=938581955   # Wed Sep 29 07:12:35 1999
+  clock: sync=realtime, time0=946681200   # Sat Jan  1 00:00:00 2000
+  clock: sync=none,     time0=1           # Now (localtime)
+  clock: sync=none,     time0=utc         # Now (utc/gmt)
+
+Default value are sync=none, time0=local</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-MOUSE"
+>4.2.26. mouse</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  mouse: enabled=1
+  mouse: enabled=1, type=imps2
+  mouse: enabled=1, type=serial
+  mouse: enabled=0</PRE
+></TD
+></TR
+></TABLE
+>
+This option prevents Bochs from creating mouse "events" unless a mouse is
+enabled. The hardware emulation itself is not disabled by this. You can
+turn the mouse on by setting enabled to 1, or turn it off by setting
+enabled to 0. Unless you have a particular reason for enabling the mouse
+by default, it is recommended that you leave it off. You can also toggle the
+mouse usage at runtime (see <A
+HREF="textconfig.html#HEADERBAR"
+>headerbar</A
+>).</P
+><P
+>  With the mouse type option you can select the type of mouse to emulate.
+  The default value is 'ps2'. The other choices are 'imps2' (wheel mouse
+  on PS/2), 'serial', 'serial_wheel' and 'serial_msys' (one com port requires
+  setting 'mode=mouse', see <A
+HREF="bochsrc.html#BOCHSOPT-COM"
+>com option</A
+>).
+  To connect a mouse to an USB port, see the <A
+HREF="bochsrc.html#BOCHSOPT-USB1"
+>usb1 option</A
+>
+  (requires PCI and USB support).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-PRIVATE-COLORMAP"
+>4.2.27. private_colormap</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  private_colormap: enabled=1</PRE
+></TD
+></TR
+></TABLE
+>
+Requests that the GUI creates and uses its own non-shared colormap. This
+colormap will be used when in the Bochs window. If not enabled, a shared
+colormap scheme may be used. Once again, <CODE
+CLASS="VARNAME"
+>enabled=1</CODE
+>
+turns on this feature and 0 turns it off.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1807"
+>4.2.28. i440fxsupport</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  i440fxsupport: enabled=1 # default if compiled with PCI support
+  i440fxsupport: enabled=1, slot1=pcivga, slot2=ne2k</PRE
+></TD
+></TR
+></TABLE
+>
+This option controls the presence of the i440FX PCI chipset. You can also
+specify the devices connected to PCI slots. Up to 5 slots are available.
+These devices are currently supported: ne2k, pcivga, pcidev and pcipnic.
+If Bochs is compiled with Cirrus SVGA support you'll have the additional
+choice 'cirrus'.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1811"
+>4.2.29. pcidev</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  pcidev: vendor=0xbabe, device=0x2bad</PRE
+></TD
+></TR
+></TABLE
+>
+Enables the mapping of a host PCI hardware device within the virtual PCI
+subsystem of the Bochs x86 emulator. The arguments
+<CODE
+CLASS="VARNAME"
+>vendor</CODE
+> and <CODE
+CLASS="VARNAME"
+>device</CODE
+>
+should contain the PCI vendor ID respectively the PCI
+device ID of the host PCI device you want to map within Bochs.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>The PCI device mapping is still in a very early stage of development and thus it is very experimental.
+This feature requires Linux as a host operating system.</P
+></BLOCKQUOTE
+></DIV
+><P
+>Besides the <CODE
+CLASS="VARNAME"
+>pcidev</CODE
+> config line you will need to load
+a pcidev kernel module within your Linux host OS. This kernel module is
+located in the <CODE
+CLASS="CONSTANT"
+>bochs/host/linux/pcidev/</CODE
+> directory.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-USB1"
+>4.2.30. usb1</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  usb1: enabled=1, port1=mouse, port2=keypad
+  usb1: enabled=1, port1=tablet, port2=disk:usbdisk.img</PRE
+></TD
+></TR
+></TABLE
+>
+This option controls the presence of the USB root hub which is a part of the
+i440FX PCI chipset.</P
+><P
+>With the port<TT
+CLASS="REPLACEABLE"
+><I
+>X</I
+></TT
+> option you can connect devices
+to the hub (currently supported: 'mouse', 'tablet', 'keypad' and 'disk').
+If you connect the mouse or tablet to one of the ports, Bochs forwards the
+mouse movement data to the USB device instead of the selected mouse type.
+When connecting the keypad to one of the ports, Bochs forwards the input of
+the numeric keypad to the USB device instead of the PS/2 keyboard.
+To connect a flat image as an USB hardisk you can use the 'disk' device with
+the path to the image separated with a colon (see above).</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>PCI support must be enabled.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-GDBSTUB"
+>4.2.31. gdbstub</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  gdbstub: enabled=1, port=1234, text_base=0, data_base=0, bss_base=0</PRE
+></TD
+></TR
+></TABLE
+>
+Default:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  gdbstub: enabled=0</PRE
+></TD
+></TR
+></TABLE
+>
+This enables the GDB stub. See <A
+HREF="debugging-with-gdb.html"
+>Section 8.12</A
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1836"
+>4.2.32. ne2k</A
+></H2
+><P
+>The ne2k line configures an emulated NE2000-compatible Ethernet adapter,
+which allows the guest machine to communicate on the network.  To disable
+the NE2000 just comment out the ne2k line.</P
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=xl0
+ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=en0 #macosx
+ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:00, ethmod=linux, ethdev=eth0
+ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=win32, ethdev=<TT
+CLASS="REPLACEABLE"
+><I
+>MYCARD</I
+></TT
+>
+ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=vde, ethdev="/tmp/vde.ctl"
+ne2k: ioaddr=0x300, irq=9, mac=b0:c4:20:00:00:01, ethmod=vnet, ethdev="c:/temp"
+ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, ethmod=tap, ethdev=tap0
+ne2k: ioaddr=0x300, irq=9, mac=fe:fd:00:00:00:01, ethmod=tuntap, ethdev=/dev/net/tun0, script=./tunconfig
+
+ioaddr, irq: You probably won't need to change ioaddr and irq, unless there
+are IRQ conflicts. These parameters are ignored if the NE2000 is assigned to
+a PCI slot.
+
+mac: The MAC address MUST NOT match the address of any machine on the net.
+Also, the first byte must be an even number (bit 0 set means a multicast
+address), and you cannot use ff:ff:ff:ff:ff:ff because that's the broadcast
+address.  For the ethertap module, you must use fe:fd:00:00:00:01.  There may
+be other restrictions too.  To be safe, just use the b0:c4... address.
+
+ethmod: The ethmod value defines which low level OS specific module to be 
+used to access physical ethernet interface. You can also specify a network
+simulator or a module with no input/output ("null"). See the table below for
+currently supported values.
+
+ethdev: The ethdev value is the name of the network interface on your host
+platform.  On UNIX machines, you can get the name by running ifconfig.  On
+Windows machines, you must run niclist to get the name of the ethdev.
+Niclist source code is in misc/niclist.c and it is included in Windows 
+binary releases.
+
+script: The script value is optional, and is the name of a script that
+is executed after bochs initialize the network interface. You can use
+this script to configure this network interface, or enable masquerading.
+This is mainly useful for the tun/tap devices that only exist during
+Bochs execution. The network interface name is supplied to the script
+as first parameter</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The following table shows the available ethernet modules with description,
+whether the "ethdev" and "script" parameters are used or not and the Bochs
+version where this module was added.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1843"
+></A
+><P
+><B
+>Table 4-4. Ethernet modules</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL><COL><THEAD
+><TR
+><TH
+>Module</TH
+><TH
+>Description</TH
+><TH
+>ethdev</TH
+><TH
+>script</TH
+><TH
+>Bochs version</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>arpback</TD
+><TD
+>ARP simulator - disabled by default.
+    </TD
+><TD
+>No</TD
+><TD
+>No</TD
+><TD
+>1.3</TD
+></TR
+><TR
+><TD
+>fbsd</TD
+><TD
+>FreeBSD / OpenBSD packetmover.
+    </TD
+><TD
+>Yes</TD
+><TD
+>No</TD
+><TD
+>1.0</TD
+></TR
+><TR
+><TD
+>linux</TD
+><TD
+>Linux packetmover - 'root' privileges required,
+    no connection to the host machine.
+    </TD
+><TD
+>Yes</TD
+><TD
+>No</TD
+><TD
+>1.3</TD
+></TR
+><TR
+><TD
+>null</TD
+><TD
+>Null packetmover. All packets are discarded, but logged to a
+    few files.
+    </TD
+><TD
+>No</TD
+><TD
+>No</TD
+><TD
+>1.0</TD
+></TR
+><TR
+><TD
+>tap</TD
+><TD
+>TAP packetmover.
+    </TD
+><TD
+>Yes</TD
+><TD
+>Yes</TD
+><TD
+>1.4</TD
+></TR
+><TR
+><TD
+>tuntap</TD
+><TD
+>TUN/TAP packetmover - see <A
+HREF="config-tuntap.html"
+>    Configuring and using a tuntap network interface</A
+>.
+    </TD
+><TD
+>Yes</TD
+><TD
+>Yes</TD
+><TD
+>2.0</TD
+></TR
+><TR
+><TD
+>vde</TD
+><TD
+>Virtual Distributed Ethernet packetmover.
+    </TD
+><TD
+>Yes</TD
+><TD
+>Yes</TD
+><TD
+>2.2</TD
+></TR
+><TR
+><TD
+>vnet</TD
+><TD
+>ARP, ping (ICMP-echo), DHCP and read/write TFTP simulation. The virtual
+    host uses 192.168.10.1. DHCP assigns 192.168.10.2 to the guest. The TFTP server
+    uses the ethdev value for the root directory and doesn't overwrite files.
+    </TD
+><TD
+>Yes, for TFTP</TD
+><TD
+>No</TD
+><TD
+>2.2</TD
+></TR
+><TR
+><TD
+>win32</TD
+><TD
+>Win32 packetmover - WinPCap driver required.
+    </TD
+><TD
+>Yes</TD
+><TD
+>No</TD
+><TD
+>1.3</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1909"
+>4.2.33. keyboard_mapping</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  keyboard_mapping: enabled=0, map=
+  keyboard_mapping: enabled=1, map=gui/keymaps/x11-pc-de.map</PRE
+></TD
+></TR
+></TABLE
+>
+This enables a remap of a physical localized keyboard to a
+virtualized U.S. keyboard, as the PC architecture expects.
+If enabled, the keymap file must be specified. Keyboard mapping is 
+available for X windows, SDL (Linux port) and wxWidgets (GTK port).
+For SDL you have to use keymaps designed for SDL, the wxWidgets GUI
+uses the keymaps for X windows.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1913"
+>4.2.34. keyboard_type</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  keyboard_type: xt
+  keyboard_type: at
+  keyboard_type: mf</PRE
+></TD
+></TR
+></TABLE
+>
+Type of keyboard returned by a "identify keyboard" command to the
+keyboard controller. It must be one of "xt", "at" or "mf".
+Defaults to "mf". It should be ok for almost everybody. A known
+exception is French macs, that do have a "at"-like keyboard.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="BOCHSOPT-USER-SHORTCUT"
+>4.2.35. user_shortcut</A
+></H2
+><P
+>Examples:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  user_shortcut: keys=ctrl-alt-del
+  user_shortcut: keys=ctrl-alt-esc</PRE
+></TD
+></TR
+></TABLE
+>
+This defines the keyboard shortcut to be sent when you press the "user" button
+in the <A
+HREF="textconfig.html#HEADERBAR"
+>headerbar</A
+>. The shortcut string is a
+combination of maximum 3 key names (listed below) separated with a '-' character.
+The old-style syntax (without the '-') still works for the key combinations
+supported in Bochs 2.2.1.</P
+><P
+>Valid key names:</P
+><P
+>"alt", "bksl", "bksp", "ctrl", "del", "down", "end", "enter", "esc",
+"f1", ... "f12", "home", "ins", "left", "menu", "minus", "pgdwn", "pgup", "plus",
+"right", "shift", "space", "tab", "up", "win" and "print".</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1924"
+>4.2.36. cmosimage</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  cmosimage: file=cmos.img, rtc_init=time0</PRE
+></TD
+></TR
+></TABLE
+>
+This defines image file that can be loaded into the CMOS RAM at startup.
+The rtc_init parameter controls whether initialize the RTC with values stored
+in the image. By default the time0 argument given to the
+<A
+HREF="bochsrc.html#BOCHSOPT-CLOCK"
+>clock option</A
+> is used. With 'rtc_init=image'
+the image is the source for the initial time.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1929"
+>4.2.37. magic_break</A
+></H2
+><P
+>Example:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  magic_break: enabled=1</PRE
+></TD
+></TR
+></TABLE
+>
+This enables the "magic breakpoint" feature when using the debugger.
+The useless cpu instruction XCHG BX, BX causes Bochs to enter the
+debugger mode. This might be useful for software development.</P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN1450"
+HREF="bochsrc.html#AEN1450"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>IPS measurements depend on
+OS and compiler configuration in addition to processor clock
+speed.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="setup.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sb16-emulation.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Setup</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Sound Blaster 16 Emulation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
