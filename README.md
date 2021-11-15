@@ -1,4 +1,4 @@
-## 你管这破玩意叫操作系统源码 —— 像小说一样品读 Linux 0.11 核心代码
+## 品读 Linux 0.11 核心代码
 
 <p align='center'>
 <a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客sun-2277cc.svg?style=flat-square&logo=GitHub"></a>
@@ -32,6 +32,8 @@
 ---
 
 ### 已发布文章：
+
+[开篇词](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
 
 * **第一部分：进入内核前的苦力活**
 
