@@ -23,6 +23,7 @@
 
 - Intel 64
 - IA-32
+- Words, Doublewords, Quadwords, Double Quadwords
 
 ### 规范化翻译词库
 
