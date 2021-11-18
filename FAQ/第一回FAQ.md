@@ -16,3 +16,6 @@
 这个问题本身错了，在于不清楚 ds 寄存器只是数据访问的基地址，而不是代码。具体见 Intel 手册 Volume-1 3.4.2 Segment Registers，里面清晰表达了访问代码、数据、栈用的都是哪个段寄存器。
 
 ![image](https://user-images.githubusercontent.com/25787738/141405471-44a45263-df37-418a-bc47-3bf1f3729f64.png)
+
+### CPU 刚启动时为什么能直接访问 BIOS 的代码？
+@解答人：ShengHui
