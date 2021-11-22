@@ -1,0 +1,149 @@
+
+From hjd(brace)
+
+
+Intel Defined CPU Exception Table (see notes)
+
+	Interrupt	  Function
+
+	 0	Divide by zero
+	 1	Single step
+	 2	Non-maskable  (NMI)
+	 3	Breakpoint
+	 4	Overflow trap
+	 5	BOUND range exceeded (186,286,386)
+	 6	Invalid opcode (186,286,386)
+	 7	Coprocessor not available (286,386)
+	 8	Double fault exception (286,386)
+	 9	Coprocessor segment overrun (286,386)
+	 A	Invalid task state segment (286,386)
+	 B	Segment not present (286,386)
+	 C	Stack exception (286,386)
+	 D	General protection exception (286,386)
+	 E	Page fault (286,386)
+	 F	Reserved
+	10	Coprocessor error (286,386)
+
+IBM PC Hardware Interrupt Table (in order of priority)
+
+	IRQ#  Interrupt 	Function
+
+	IRQ0	 8	timer (55ms intervals, 18.2 per second)
+	IRQ1	 9	keyboard service required
+	IRQ2	 A	slave 8259 or EGA/VGA vertical retrace
+	IRQ8	70	real time clock  (AT,XT286,PS50+)
+	IRQ9	71	software redirected to IRQ2  (AT,XT286,PS50+)
+	IRQ10	72	reserved  (AT,XT286,PS50+)
+	IRQ11	73	reserved  (AT,XT286,PS50+)
+	IRQ12	74	mouse interrupt  (PS50+)
+	IRQ13	75	numeric coprocessor error  (AT,XT286,PS50+)
+	IRQ14	76	fixed disk controller (AT,XT286,PS50+)
+	IRQ15	77	reserved  (AT,XT286,PS50+)
+	IRQ3	 B	COM2 or COM4 service required, (COM3-COM8 on MCA PS/2)
+	IRQ4	 C	COM1 or COM3 service required
+	IRQ5	 D	fixed disk or data request from LPT2
+	IRQ6	 E	floppy disk service required
+	IRQ7	 F	data request from LPT1 (unreliable on IBM mono)
+
+
+Interrupt Table as Implemented by System BIOS/DOS
+
+      INT #   Locus		Function
+
+	 0	CPU	divide by zero
+	 1	CPU	single step
+	 2	CPU	non-maskable
+	 3	CPU	breakpoint
+	 4	CPU	overflow trap
+	 5	BIOS	print screen
+	 6	CPU	Invalid opcode (186,286,386)
+	 7	CPU	coprocessor not available (286,386)
+	 8	IRQ0	timer (55ms intervals, 18.21590 per second)
+	 9	IRQ1	keyboard service required (see INT 9)
+	 A	IRQ2	slave 8259 or EGA/VGA vertical retrace
+	 B	IRQ3	COM2 service required (PS/2 MCA COM3-COM8)
+	 C	IRQ4	COM1 service required
+	 D	IRQ5	fixed disk or data request from LPT2
+	 E	IRQ6	floppy disk service required
+	 F	IRQ7	data request from LPT1 (unreliable on IBM mono)
+	10	BIOS	video (see INT 10)
+	11	BIOS	Equipment determination (see INT 11)
+	12	BIOS	memory size (see INT 12)
+	13	BIOS	disk I/O service  (see INT 13)
+	14	BIOS	serial communications (see INT 14)
+	15	BIOS	system services, cassette (see INT 15)
+	16	BIOS	keyboard services (see INT 16)
+	17	BIOS	parallel printer (see INT 17)
+	18	BIOS	ROM BASIC loader
+	19	BIOS	bootstrap loader (unreliable, see INT 19)
+	1A	BIOS	time of day	(see INT 1A)
+	1B	BIOS	user defined ctrl-break handler (see INT 1B)
+	1C	BIOS	user defined clock tick handler (see INT 1C)
+	1D	BIOS	6845 video parameter pointer
+	1E	BIOS	diskette parameter pointer (base table)
+	1F	BIOS	graphics character table
+	20	DOS	general program termination
+	21	DOS	function request services (see INT 21)
+	22	DOS	terminate address (see INT 22)
+	23	DOS	control break termination address (see INT 23)
+	24	DOS	critical error handler (see INT 24)
+	25	DOS	absolute disk read (see INT 25)
+	26	DOS	absolute disk write (see INT 26)
+	27	DOS	terminate and stay resident (see INT 27)
+	28	DOS	idle loop, issued by DOS when idle (see INT 28)
+	29	DOS	fast TTY console I/O (see INT 29)
+	2A	DOS	critical section and NETBIOS (see INT 2A)
+	2B	DOS	internal, simple IRET in DOS 2.0-5.0
+	2C	DOS	internal, simple IRET in DOS 2.0-5.0
+	2D	DOS	internal, simple IRET in DOS 2.0-5.0
+	2E	DOS	exec command from base level command
+			interpreter	(see INT 2E)
+	2F	DOS	multiplexer (see INT 2F)
+	30-31	CPM	far jump vector for CPM (not an interrupt)
+	31	DPMI	DOS Protected Mode Interface (for DOS extenders)
+	32		reserved
+	33		mouse support (see INT 33)
+	34-3E		Microsoft/Borland floating point emulation
+	3F		overlay manager
+	40	BIOS	hard disk
+	41	BIOS	fixed disk 0 parameters pointer (see INT 13,9)
+	42	BIOS	relocated video handler (EGA/VGA/PS)
+	43	BIOS	user font table (EGA/VGA/PS)
+	44	BIOS	first 128 graphics characters (also Netware)
+	45	BIOS	reserved for BIOS
+	46	BIOS	fixed disk 1 parameters ptr (see INT 13,9/INT 41)
+	47	BIOS	reserved for BIOS
+	48	BIOS	PCjr cordless keyboard translation
+	49	BIOS	PCjr non-keyboard scancode translation table
+	4A	BIOS	user alarm  (AT,CONV,PS/2) (see INT 4A)
+	4B-4F	BIOS	reserved
+	50	BIOS	periodic alarm from timer (PS/2)
+	51-58	BIOS	reserved
+	59	BIOS	GSS Computer Graphics Interface
+	5A	BIOS	cluster adapter BIOS entry point
+	5B	BIOS	cluster adapter boot
+	5C	NETBIOS	NETBIOS interface, TOPS interface
+	5D-5F	BIOS	reserved for BIOS
+	60-67		reserved for user software interrupts
+	67	EMS	LIM/EMS specification (see INT 67)
+	68		APPC
+	69-6B		reserved by IBM
+	6C	DOS	DOS 3.2 real time clock update
+		BIOS	system resume vector
+	6D-6F		reserved
+	70	IRQ8	real time clock  (AT,XT286,PS50+, see INT 15)
+	71	IRQ9	software redirected to IRQ2	(AT,XT286,PS50+)
+	72	IRQ10	reserved  (AT,XT286,PS50+)
+	73	IRQ11	reserved  (AT,XT286,PS50+)
+	74	IRQ12	mouse interrupt  (PS50+)
+	75	IRQ13	numeric coprocessor NMI error  (AT,XT286,PS50+)
+	76	IRQ14	fixed disk controller (AT,XT286,PS50+)
+	77	IRQ15	reserved  (AT,XT286,PS50+)
+	78-79		unused
+	80-85		ROM BASIC
+	86-F0	DOS	reserved for BASIC interpreter use
+	86	NETBIOS	NETBIOS relocated INT 18
+	E0	CPM	CP/M 86 function calls
+	F1-FF		reserved by IBM
+	FE-FF		may be destroyed by return from protected
+			mode using VDISK on 286 machines (Apr 86, DDJ)
