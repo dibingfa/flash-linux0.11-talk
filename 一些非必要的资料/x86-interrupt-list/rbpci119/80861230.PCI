@@ -1,0 +1,28 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80861230.PCI = Vendor 8086h, Device 1230h   Intel 82371FB IDE Ctrlr
+%! Last Edit 1/10/99 by Craig Hart
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+Intel 82371FB IDE Controller registers in detail:	[by Craig Hart & RB]
+  Bus Master Interface Base Address: %[20:31-0]8x
+  IDE timing modes
+	primary channel:
+	   %[40:15]|dis;en|abled
+	   IORDY sampled %[40:13-12]{5432} clocks after DIOx#
+	   recovery time after IORDY is %[40:9-8]{4321} clock(s)
+	   drive 0 enable: %[40:7]/DMA/ %[40:6]/prefetch,post/ %[40:5]/IORDY sampling/ %[40:4]/fast-timing/
+	   drive 1 enable: %[40:3]/DMA/ %[40:2]/prefetch,post/ %[40:1]/IORDY sampling/ %[40:0]/fast-timing/
+	secondary channel:
+	   %[42:15]|dis;en|abled
+	   IORDY sampled %[42:13-12]{5432} clocks after DIOx#
+	   recovery time after IORDY is %[42:9-8]{4321} clock(s)
+	   drive 0 enable: %[42:7]/DMA/ %[42:6]/prefetch,post/ %[42:5]/IORDY sampling/ %[42:4]/fast-timing/
+	   drive 1 enable: %[42:3]/DMA/ %[42:2]/prefetch,post/ %[42:1]/IORDY sampling/ %[42:0]/fast-timing/
+!end
+
+%! end of file

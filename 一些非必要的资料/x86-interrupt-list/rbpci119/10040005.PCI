@@ -1,0 +1,17 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 10040005.PCI = Vendor 1004h, Device 0005h
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+VLSI VL82C591 Host/PCI Bridge registers in detail:
+ Bus Number:      %[40]2d
+ Subordinate Bus: %[41]2d
+ Device-Specific: %[54]2x %[55]2x %[58]2x %[59]2x %[5C]2x %[5D]2x %[5E]2x %[5F]2x %[60]2x %[FF]2x
+!end
+
+%! end of file

@@ -1,0 +1,487 @@
+Public Domain/Freeware/Shareware by Ralf Brown:
+
+(URLs for use with your favorite WWW browser are at the end of this file)
+
+The x86/MSDOS Interrupt List
+	A comprehensive listing of more than 8500 functions available through
+	interrupt calls on IBM PCs and compatibles.  Includes both
+	documented and undocumented functions, plus lists of I/O port, CMOS,
+	and memory locations, far-call entry points, model-specific
+	registers, and system-management mode state save areas.
+	Current version: INTER61A (release 61, 16jul00)
+			 INTER61B
+			 INTER61C
+			 INTER61D
+			 INTER61E (utility programs)
+			 INTER61F (hypertext conversion programs)
+
+DVINT
+	An extract of the MSDOS Interrupt List containing the DESQview
+	and QEMM API calls.  Updated whenever there have been significant
+ 	additions to the DESQview/QEMM calls in the Interrupt List.
+	Current version: DVINT43 (06jun94)
+
+RBcomm
+	A DESQview-aware communications program which sports seamless DSZ,
+	PCZ, or PUMA/MPt integration for file transfers; ANSI/VT102, VT52, 
+ 	and AVATAR emulation (including 132 columns); speeds to 115200 bps;
+	a powerful macro language; dialing directory; ANSI music; and
+	more.  Runs in 65K with DSZ, 47K without.  While it works under
+	plain DOS, additional features are available under DESQview.
+	Current version: RBCOM346 (v3.46 29jan95)
+
+RBdualVGA
+	Use two color displays on one PC.
+	Current version: RBDUAL09 (v0.9 02jun96)
+			 DUAL093S (v0.93 source code, 11sep98)
+
+RBkeyswap
+	Exchange left control and CapsLock keys, as well as Esc and `/~.
+	Loads itself high, using just 64 bytes; needs only 128 bytes low
+	if no high memory is available.
+	Current version: RBKEYSWP (v2.0 22jun91; v3.0 included in AMISLIB)
+
+RBpci
+	Print out more than you ever wanted to know about the devices
+	on the PCI bus inside your computer.  All device-specific data
+	files are plain text, to let you update/customize them yourself
+	(updates for new chips which are sent to the author will be
+	included in the following release).  Includes full source code
+	for the program.
+	Current version: RBPCI119 (v1.19, 10jan99)
+
+SPAWNO
+	A replacement for the Turbo C and Microsoft C spawn..() functions
+	which swaps the current program to disk, EMS, XMS, or raw extended
+	memory while the spawned program executes, leaving less than 300
+	bytes in memory.  Also includes a variant for Turbo Pascal v4.0 or
+	higher.
+	Current version: SPWNO413 (v4.13 12dec92)
+	Price: libraries free, full source code $100.
+
+AMISLIB
+	Public Domain library (with full source code and five sample TSRs)
+	for creating self-highloading TSRs which may be unloaded in any
+	order.	Up to 256 TSRs created with AMISLIB may be installed
+	simultaneously, and TSRs can be as small as 128 bytes resident,
+	1.4K on disk.  One of the sample TSRs is a popup which accesses
+	DOS.
+	Current version: AMISL092 (v0.92 24sep95)
+
+DV-GLUE
+	DESQview API bindings for Turbo/Borland C (also mostly compatible
+	with MS C).
+	Current version: DVGLU172 (source & compiled) (v1.72 01oct95)
+
+DVKPOLL
+	"Poor man's version" of TAME.  Makes programs give up CPU time when
+	they are in an idle loop polling the keyboard for keystrokes.
+	Current version: DVKPOLL2 (18jun88)
+	Note: This program has been superseded by DVPTAME.
+
+DVPTAME
+	"Not-so-poor man's version" of TAME.  Tells DESQview to give the
+	remainder of a time slice away if the program is in an idle loop
+	polling the keyboard for keystrokes.  Uses 0 bytes of memory.
+	Current version: DVPTAME (04jun91)
+
+DVdevload
+	Load device drivers only in those DESQview windows which need the
+	services of the driver, reducing the pre-DESQview overhead and thus
+	permitting larger DESQview windows.
+	Current version: DVDEVL12 (v1.20 03jan93)
+	Note: as of DESQview 2.40, Quarterdeck's DEVICE.COM is able to install
+	  drivers into the device chain in the same manner as DVdevload;
+	  however, DEVICE uses eight times as much memory as DVdevload and
+	  has a serious interaction with 4DOS/NDOS that can lead to system
+	  crashes.
+
+RBspeed
+	Switch the CPU speed of an Intel Pentium motherboard using the
+	"Neptune" chipset.  Public Domain.
+	Current version: RBSPEED1 (v1.00 08sep94)
+
+SPTURBO
+	An integrated environment for Borland's Sprint word processor and
+	Turbo C, Turbo Pascal, Turbo Assembler, Turbo Debugger, and CDECL.
+	Knows which compiler to invoke based on the file's extension, and
+	can run MAKE for multi-file projects.
+        Current version: SPTURBO (v2.3 Aug 1,1989)
+	Note: There will be no further updates of this package.
+
+PURGEMSG
+	Delete or copy *.MSG files such that you only see those messages
+	from a Fidonet echomail area which interest you.
+	Current version: PURGEMSG (v1.00, 04aug91)
+
+--------------
+Authentication
+--------------
+
+Beginning 1/1/91, all packages are distributed in PKZIP archives with
+authenticity verification (v1.1 before 4/1/93, v2.0 after).  Please
+redistribute only the original archives to preserve the authenticity
+information.  If you receive an archive dated after 1/1/91 which fails
+the authenticity check, you should treat it with caution.  If you
+receive an archive which passes the PKZIP check but displays an
+authenticity code other than NWS235, then the archive has been
+deliberately tampered with and should be deleted IMMEDIATELY.
+
+Beginning 9/24/95, all packages additionally include detached PGP
+signatures in an enclosed archive named PGP-SIGS.ZIP.  My PGP keys
+are available from http://pobox.com/~ralf/ralf.asc or
+ftp://ftp.cs.cmu.edu/afs/cs/user/ralf/pub/WWW/ralf.asc
+
+
+-------------
+Availability:
+-------------
+
+On the Internet, by standard anonymous FTP from FTP.CS.CMU.EDU [128.2.206.173].
+	Change directly to directory /afs/cs.cmu.edu/user/ralf/pub with a
+	single command (directories above this are not accessible via
+	anonymous FTP). [DV-GLUE is not available here]
+	Don't forget to set "binary" mode!  If you are refused access to
+	the directory, try again later; a fileserver may have been down.
+
+If connected to AFS, you can simply perform standard Unix/VMS/whatever
+	directory listing and file copies from the above directory.
+
+Or visit my home page, and grab the files with your favorite web browser:
+     http://www.pobox.com/~ralf
+
+On FIDOnet, from Soundingboard BBS 1:129/26 1-412-621-4604 28.8k HST, file req.
+	My programs are kept in file area 8 for those wishing to download
+	manually.
+
+Alternate Distribution Points (new versions will be available here
+usually within 24 hours of release):
+Internet:  SimTel Software Repository mirrors in directories /SimTel/msdos/X.
+	X is 'info' for the Interrupt List, 'modem' for RBcomm, 'c' for
+	SPAWNO, 'asmutl' for AMISLIB, 'desqview' for DV-GLUE/DVKPOLL/DVPTAME,
+	and 'sprint' for SPTURBO. Note that you must use mode "binary" to
+	successfully FTP the files. The SimTel mirror sites include
+	oak.oakland.edu [141.210.10.117], wuarchive.wustl.edu [128.252.135.4],
+	ftp.uu.net [137.39.1.9], nic.funet.fi [128.214.6.100],
+	src.doc.ic.ac.uk [146.169.3.7] and archie.au [139.130.4.6].
+     Some packages are also on GARBO.UWASA.FI in /pc/programming.
+
+Bitnet users may also retrieve items on SimTel via the following automated
+mail servers:
+	(in the US) LISTSERV@RPITSVM (alias VM.ITS.RPI.EDU)
+		    LISTSERV@NDSUVM1 (alias VM1.NODAK.EDU)
+	(in Europe) TRICKLE@AWIWUW11 (Austria)
+		    TRICKLE@BANUFS11 (Belgium)
+		    TRICKLE@DKTC11   (Denmark)
+		    TRICKLE@FRMOP11  (France)
+		    BITFTP@BITFTP.BITNET (Germany)
+		    TRICKLE@IMIPOLI  (Italy)
+		    TRICKLE@HEARN    (Netherlands)
+		    TRICKLE@EB0UB011 (Spain)
+		    TRICKLE@SEARN    (Sweden)
+		    TRICKLE@TREARN   (Turkey)
+	(elsewhere) TRICKLE@UNALCOL  (Colombia)
+		    TRICKLE@TAUNIVM  (Israel)
+Send a mail message containing the line
+	/HELP
+in the body for instructions.
+
+DV-GLUE, DVKPOLL, DVINT, DVPTAME, DVdevload, and RBcomm are also available on
+Fidonet BBSs belonging to DVNet (listed below).
+
+The Interrupt List and SPAWNO are also available on Fidonet BBSs belonging
+to the Programmer's Distribution Network.  Selected PDN member boards as of
+March, 1998:
+
+ 1:232/16   Martin Belcke   Peoria, IL (http://www.filegate.org) 1-309-672-4430
+ 1:270/101  George Peace    Harrisburg, PA      -paonline.com (Internet)
+ 1:3615/50  Planet Connect Satellite Systems
+ 1:154/280  EXEC-PC BBS     Elm Grove, WI
+ 1:124/3210 Glenn O'Gorman  Garland, TX
+ 1:167/132  Roland Larocque Canada
+ 1:115/10   Tom Huber       Crystal Lake, IL
+ 1:2320/38  Janis Kracht    Louisville, KY (PDN,MISSING,UTIL,PAS,PCB,HAM,STN)
+            (http://jkracht.aye.net)  BBS: 1-502-245-6778
+ 1:272/125  Thomas Gabrinowiz   Montgomery, NY
+ 1:140/53   Frank Cox           Melville Sask. Canada
+ 1:285/85   Richard Rasmussen   Omaha, Nebraska
+ 1:153/9117 Darrell Harder      Whiterock, BC  
+ 1:321/212  Vern Pero           Dalton MA    
+ 1:342/52   Vincent Danen       Edmonton_AB   
+ 1:2605/638 Douglas Vogt        Bridewater NJ
+ 1:3803/7   Ben Ritchey         Lafayette, LA
+ 2:20/11    Peter Bygden        Stockholm, Sweden 
+ 2:341/68   Juan Enrique Gomez  Madrid, Spain 
+ 2:5032/5   Dmitry Maevsky      Novgorod, Russia
+ 3:774/605  Barry Blackford     Hamilton, NZ 
+ 1:133/2    Chuck Robinson      Lawrenceville, GA  (ftp://ftp.ftbbs.com/fdn)
+ 2:25/75    Graham Print        (RAR, T-MAIL, FSFAN)
+ 2:254/61   Dave Carter		Croydon, Surrey
+ 2:254/211  Bill Hayles		Foots Cray, Kent
+ 2:254/212  Bill Hayles		Foots Cray, Kent
+ 2:254/233  Peter Friedlos	London
+ 2:254/620  Michael Mehmet	London
+ 2:251/21   Mike Forbes		Southsea
+ 2:251/50   Jim Reeves		Gosport, Hampshire
+ 2:251/101  Roy Arnold		Bournemouth
+ 2:251/203  Robert Leach	Fareham, Hampshire
+ 2:252/7    Andrew Eaves	Princes Risborough, Buckinghamshire
+ 2:252/314  Dwayne Heaton	Binfield, Hants
+ 2:252/555  Andrew Chant	Farnborough
+ 2:255/1    John Burden		Exeter. MNL
+ 2:257/71   Darren Parker	Hitchin, Herts
+ 2:443/13   Colin Turner	Bangor, Co. Down, N.Ireland
+ 2:481/56   Rafel Slimakowski	Poland
+ 2:281/506  Ron Huiskes         (SDC,LUX,NOVL,PAS)
+ 2:245/5530 Michael Bauer	Mainz, Germany   
+ 2:205/498  Bo Jakobsen		Alta, Sweeden    
+ 2:235/200  Brian Vinberg	Copenhagen, Denmark
+ 2:236/64   Richard Hansen	Glumsoe, Denmark 
+ 2:236/1111 JÅrgen llgrd	Slangerup, Denmark
+ 2:244/1530 Edgar Schaettle	Schwalbach, Germany 
+ 2:291/709  Pierre-Claude Demanet  Brussels, Belgium      
+ 2:292/826  Gerry Van Steerteghem  Zoersel, Belgium        
+ 2:301/714  Rolf Taschler	Zuerich, Switzerland
+ 2:310/700  Sascha Vogt		Vienna, Austria
+ 2:333/304  Enzo Gasparini	Padova, Italy 
+ 2:403/138  Nemrod Kedem	Rishon le Zion, Israel
+ 2:2480/220 Uwe Schirm		Muenchen, Germany
+ 3:633/2    Malcolm Miles	Melbourne Victoria Australia
+ 4:823/1    Adolfo Justiniano	Bolivia, South America
+ 4:806/7    Brazil		Marcio Gordiano
+ 4:901/148  Argentina		Fernando Bertuccelli
+ 4:840/1    Peru		Daniel Pizarro
+ 4:851/1    Uruguay		Alejandro Hernandez
+ 5:7104/2   Henk Wolsink	Port Elizabeth, Rep. of South Africa
+ 6:751/321  Terry Roati		Makati City, Philippines
+ 6:750/213  Manila		(Albert Godinez)
+ 6:750/401  Kalookan City	(Albert Uy)
+ 6:751/15   San Fernando	(Jun Martin)
+ 6:751/2    Quezon City		(William Villanueva)
+ 6:751/20   Olongapo City	(Rudy Ordiz)
+ 6:751/101  Pasig		(Victor Reyes)
+ 6:751/222  Greenhills		(Stewart Buckingham)
+ 6:751/417  Paranaque		(Marco Antonio Cabrazal)
+ 6:754/10   Cebu City		(Jojo Sybico)
+ 6:754/201  Bacolod City	(Eduardo M Joven)
+
+------------------------------------------------------------------------
+
+DVNet nodes as of August 1994:
+ 
+               DVNet node listing as of AUG 03, 1994
+
+           USA
+  ------------------------------     ---------  ------------  --------
+AK  65'North, Fairbanks              1:355/38   907-452-1460  VFCV32b
+AR  Phil's BBS, Walnut Ridge         1:389/10   501-886-1701  HSTV32b
+AR  CrossFire, N Little Rock         1:3821/2   501-791-2993  H16V32b
+AR  MinnTelligence, Little Rock      1:3821/6   501-664-2237  V32b
+AZ  Analog Gate, Sierra Vista        1:309/9    602-458-0451  HSTV32
+CA  Carl's Corner, San Jose          1:10/1     408-248-9704  HSTV32
+CA  Central Computer Banks, LA       1:102/851  213-256-0871  HSTV32b
+CA  Gandalf's, El Cajon              1:202/302  619-466-9505  HSTV32
+CA  Stingray!, Clovis                1:205/12   209-298-9461  HST
+CA  Bertha Board, Manteca            1:208/1    209-823-0093  HST
+CO  Hole in the Wall, Parker         1:104/651  303-841-5515  HSTV32b
+CO  Prgrmmrs Playhouse, Colo Springs 1:128/60   719-380-8813  HST
+CT  Treasure Island, Danbury         1:141/730  203-791-8532  HSTV32b
+CT  Ascii Neighborhood, W Haven      1:141/333  203-934-9852  HST
+CT  Death's Domain, Enfield          1:142/629  203-749-6103  HSTV32
+CT  Plainfield News, Plainfield      1:327/452  203-564-8579  HST
+DE  KnowledgeBase BBS, Wilmington    1:150/360  302-633-4797  HSTV32
+FL  Stan's Shack, Jacksonville       1:112/5    904-768-3854  HSTV32
+FL  Silicon Dreams, Bradenton        1:137/200  813-746-7788  V32
+FL  Jos' Lounge, Naples              1:3630/40  813-592-1535  HSTV32
+FL  Other World, Tallahassee         1:3605/56  904-668-1092  HST
+FL  The Dog House, Tamarac           1:369/54   305-720-3637  HSTV32
+FL  archonRAINBOW, Ft Myers          1:371/13   813-939-3394  HST
+FL  Strat's Asylum, Cape Canaveral   1:374/12   407-799-0390  HSTV32b
+FL  E.I.L.C. BBS, Palm Bay           1:374/60   407-676-2998  HSTV32b
+FL  Southern Systems, Tampa          1:377/9    813-977-7065  HSTV32
+GA  Galaxy Info System, Atlanta      1:133/411  404-671-1024  V32
+GA  Code Plus, Warner Robins         1:3611/15  912-953-1053  HSTV32b
+GA  Combat Override, Albany          1:3617/3   912-883-1421  HST
+HI  CocoNuts BBS Service, Honolulu   1:345/2    808-845-7054  HSTV32
+IA  Icarus, Iowa City                1:283/657  319-337-9878  HSTV32
+IL  Midrange System, Mt Prospect     1:115/439  708-439-9679  HSTV32
+IL  Buzzard's Roost, Peoria          1:232/17   309-691-5469  HSTV32b
+IN  Someplace BBS, Indianapolis      1:231/120  317-353-9981  HST
+IN  Joker's Wild, Indianapolis       1:231/510  317-843-1371  HSTV32
+IN  The Jokerman BBS, Bluffton       1:236/12   219-824-5628  ZYXV32b
+LA  My Secret Garden, Shreveport     1:380/5    318-865-4503  H16V32b
+LA  *Silver Streak RBBS, New Orleans 1:396/15   504-888-6515  HSTV32b
+MA  Rainbow's Edge, Westwood         1:101/1    617-551-0495  HSTV32
+MA  Pioneer Valley PCUG1, Amherst    1:321/109  413-256-1037  HST
+MA  Denis's Opus, Ayer               1:322/2    508-772-6373  HSTV32
+MA  Waystar BBS, Marlborough         1:322/14   508-481-7147  HST
+MA  The Business Card, Lawrence      1:324/121  508-682-5329  HSTV32b
+MD  Addict's Attic, Germantown       1:109/423  301-428-8998  V32
+MD  AviTechnic ,Lutherville          1:261/662  301-252-0717  HSTV32
+MI  The Red Eye BBS, Westland        1:2410/213 313-728-0213  V32b
+MI  Fast Eddies BBS, Monroe          1:2380/101 313-243-0944  ZYXV32b
+MN  Riverside BBS, Elk River         1:282/1008 612-241-9963  V32
+MO  Cheswick's, St Louis             1:100/375  314-965-5296  HSTV32
+MO  Summit Forum, Holt's Summit      1:289/13   314-896-5393  HSTV32
+MO  Cmos, St Joseph                  1:294/1    816-233-1357  HSTV32b
+NC  Crossed Wires, Dudley            1:3660/809 919-580-7194  H16V32b
+NC  Psychotronic BBS, Durham         1:3641/1   919-286-7738  HSTV32
+NC  Programmer's Asstnt, Charlotte   1:379/4    704-544-0010  HST
+NH  Our BBS Yours and Mine, Derry    1:132/193  603-432-5287  HSTV32b
+NJ  University BBS, Eatontown        1:107/411  908-544-8193  HSTV32b
+NJ  Maple Shade Opus, Maple Shade    1:266/12   609-482-8604  HSTV32b
+NJ  APFL- The BBS, Tenafly           1:2604/306 201-567-6994  HSTV32b
+NJ  Fleet Street, Somerville         1:2605/625 908-722-8962  V32
+NJ  Atrium Way, Morris Plains        1:2606/583 201-984-5555  HSTV32
+NM  Construction Net #6, Los Alamos  1:15/20    505-662-0659  HST
+NV  $in City Bit Pit, Las Vegas      1:209/711  702-647-4427  HSTV32
+NV  Danger Zone, Reno                1:213/720  702-828-4907  HSTV32
+NY  Rivendell * TAP/1, Syracuse      1:260/1    716-646-0227  HSTV32
+OH  The Mountain Top, Cincinnati     1:108/107  513-921-5568  HST
+OH  Blue Byte BBS, Enon              1:110/270  513-864-1143  HST
+OH  Nerd's Nook, Rocky River         1:157/3    216-356-1882  HSTV32b
+OH  NHampton Data, Cuyahoga Falls    1:157/533  216-928-8565  HSTV32
+OH  Computer Room, Pickerington      1:226/110  614-861-8377  HSTV32
+OH  Steel Valley BBS, Girard         1:237/500  216-545-2318  HSTV32
+OH  The Outer Limits, Chillicothe    1:2220/10  614-772-5520  H16VFC
+OH  South of the Bauder, Chillicothe 1:2220/70  614-773-2423  H16V32b
+OK  Ascension, Norman                1:147/46   405-360-4261  HST
+OR  Bink of an Aye, Portland         1:105/42   503-297-9043  PEPV32
+OR  Atarian BBS, Portland            1:105/10   503-245-9730  HSTV32
+OR  Busker's Boneyard, Portland      1:105/14   503-771-4773  PEP
+OR  Dimension 7, Eugene              1:152/7    503-461-2219  HST
+PA  The Other BBS, Harrisburg        1:270/101  717-657-2223  HST
+PA  Walsh Microsys, Philadelphia     1:273/917  215-725-9134  HST
+PA  Optical Illusion, Allentown      1:273/603  215-797-7409  HSTV32
+PA  U.S.S. Intrepid, Spring House    1:273/703  215-641-0270  HST
+PA Programmer's Haven, Allentown     1:2607/103 610-797-9378  V32BVFC
+PA  Cheyenne BBS, Upper Darby        1:2614/409 215-544-0819  HSTV32b
+PR  Island Sun, Caparra Heights      1:367/15   809-783-9542  HST
+SC  Dreadnaught BBS, Columbia        1:376/50   803-731-3884  V32
+SC  Special Projects, Beech Island   1:360/13   803-827-1725  HSTV32b
+SC  Carolina Collections, Sumter     1:3647/1   803-499-4316  HSTV32b
+TN  EET BBS, Nashville               1:116/24   615-353-3476  HSTV32
+TX  Conch Opus, Houston              1:106/357  713-667-7213  HSTPCP
+TX  Inns of Court, Dallas            1:124/6101 214-458-2620  HSTV32
+TX  Spare Parts, Bedford             1:130/38   817-540-3527  HST
+TX  Southern Crossroads, Dallas      1:124/4115 817-481-8984  ZYXV32b
+TX  The Gas Company, Arlington       8:930/201  817-265-8938  HST
+TX  Wireline, Corpus Christi         1:160/40   512-241-1120  HST
+TX  Middle Earth, San Antonio        1:382/19   512-835-4848  HST
+TX  Hair of the Dog, Austin          1:382/44   512-219-9446  V32b
+TX  Last Chance TBBS, San Antonio    1:387/800  512-822-7519  HST
+TX  TSTI INFO NET, Waco              1:388/1000 817-799-1570  HST
+TX  Direct Connect!, Victoria        1:3802/213 512-573-0245  HSTV32b
+VA  Diving Board, Richmond           1:264/180  804-965-9082  HST
+VA  Host D, Newport News             1:271/295  804-887-0577  V32b
+VA  Host D, Newport News             1:271/296  804-887-2490  ZYXV32b
+VA  Host D, Newport News             1:271/294  804-887-8235  HST
+VA  ThunderBolt BBS, Fredericksburg  1:274/13   703-373-9289  HST
+VA  Terrapin Station, Norfolk        1:275/13   804-489-7450  HSTV32b
+VT  The Ozone Layer, Williston       1:325/118  802-862-5058  HSTV32b
+WA  Pacifier BBS, Vancouver          1:105/103  206-253-9770  HSTV32
+WA  Seattle/Everett Hub, Seattle     1:343/300  206-244-8860  HST
+WA  Sno-Valley SW Exchange, N Bend   1:343/108  206-888-9249  HSTV32
+WA  Sleepy Hollow BBS, Wenatchee     1:344/78   509-664-4021  V32b
+WA  Gecko Control, Fairchild AFB     1:346/26   509-244-0944  V32
+WA  SunDial BBS, Pasco               1:347/7    509-545-1789  HST
+WI  County Line BBS, W Allis         1:154/100  414-476-8468  HSTV32b
+WI  The Inn, Chippewa Falls          1:2300/10  715-723-3552  HSTV32b
+WY  Oregon Trail XRoads, Casper      1:303/5    307-472-3615  H96V32
+WY  Black Diamond, Greybull          1:15/24    307-682-6944  H14V32b
+
+           CANADA
+  ------------------------------     ---------  ------------  ----------
+AB  Logical Solutions, Calgary       1:134/10   403-299-9917  HST
+AB  Information Corner, Edmonton     1:342/20   403-483-1896  HST
+BC  Kiwi-Land, Surrey                1:153/909  604-536-0831  H16V32b
+MB  Polar Bear Heaven Winnipeg       1:348/405  204-837-9704  HST
+NB  Atlantic Access, St John W       1:255/2    506-635-1964  HST
+ON  AFI Comm, Nepean                 1:163/115  613-829-0282  HST
+ON  Ned's Opus HST Ottawa            1:163/211  613-523-8965  HST
+ON  Alpha City BBS, Oshawa           1:229/2    416-579-6302  H14V32b
+ON  The Aardvark, Burlington         1:259/110  905-332-4127  H16V32b
+PQ  Arcane BBS, Laval                1:167/116  514-687-9586  HST
+SK  The DataForce, Regina            1:140/72   306-585-1958  HST
+
+           ZONE 2
+ ---------------------------------   ---------  -------------- -------
+AU  ZAP #3/Cuckoo's Nest             2:310/3     43-1-454330    HSTV32b
+
+BE  The Optimist, Antwerpen          2:292/856   32-3-2811450   ZYXV32b
+
+DE  The 49er's, Wuppertal            2:243/7801  49-202-305803  HST
+DE  Median, Berlin                   2:2410/305  49-30-735148   H16V32Terbo
+DE  BoersenBox, Friedrichshafen      2:246/8501  49-7541-53191  HSTV32b
+
+FR  The Lys Valley, Comines          2:322/2     33-20631262    HSTV32Terbo
+
+GB  Enigma Variations, Worcester     2:2/544     44-905-795002  HST
+GB  GABBS, Gosport Hants             2:251/16    44-705-524805  HSTV32b
+GB  Komputer Knowledge, Cheddington  2:252/7     44-296-668148  HSTV32
+GB  Aureal, Market Harborough        2:254/153   44-858-466594  HST
+GB  Trinity I, Exeter                2:255/112   44-392-495899  HSTV32b
+GB  Dog & Duck, Hull                 2:2503/3    44-482-444650  HSTV32
+GB  Power BBS, Wrexham Clwyd         2:442/78    44-978-824278  HSTV32b
+GB  Piston Popper's, Hastings        2:441/80    44-424-853361  HSTV32
+
+IL  Small BBS, Jerusalem             2:402/777                  V32b
+
+IT  Venus, Pavia PV                  2:331/318   39-382-575369  V32bZYX
+IT  Genova 2000, Genova              2:332/201   39-10-3770080  V32b
+IT  SUBALPINA's_Hub, Torino          2:334/300   39-11-6624400  HSTV32
+
+NL  TouchDown, Hoofddorp             2:280/414   31-2503-52030  H14V32b
+NL  Interface HQ, Den Haag           2:281/506   31-70-3360698  V32b
+NL  Kiss Software, Almelo            2:283/314   31-5490-13932  ZYXV32b
+NL  Programmers Support, Helmond     2:2802/108  31-4920-13558  H14V32b
+NL  Byteline! Systems, Hardinxveld   2:285/101   31-1846-17611  H14V32b
+NL  DOSSBoss Twente, Delden          2:500/149   31-5407-64701  ZYXV32b
+NL  The HEKOM Board                  2:500/223   31-3483-4072   V32b
+NL  MotherBoard                      2:512/197   31-50-187669   H14V32b
+
+SE  Capital City BBS,Haninge         2:201/111   46-8-53043088  H14V32
+SE  Fenix, Viksjî                    2:201/298   46-8-58011629  V32b
+
+           ZONE 3
+ ------------------------------      ---------  ------------- -------
+AU Marwick's MadHouse, Brisbane      3:640/820  61-7-3870-2972  PEPV32
+AU Sentry, Lane Cove NSW             3:711/401  61-2-9428-4687  PEPV32
+AU Sentry's Shadow, Lane Cove NSW    3:711/501  61-2-9418-6682  V32bTerbo
+AU Revelstone BBS, Doveton Vic       3:632/348  61-3-9741-2353  PEP
+AU Southern Mail CBCS Croyton Vic    3:632/386  61-3-9725-1621  PEP
+AU COMPUlink, Perth WA               3:690/628  61-8-9451-7288  2400
+AU Phone Box,Inglewood SA            3:800/854  61-8-8380-5505  V32
+
+ The following phone number will come into effect in November 1997
+AU OZ-Board, Townsville Qsnlnd       3:640/715  61-7-4721-3592  PEPV32RE
+
+           ZONE 6
+ ------------------------------      ---------  ------------- -------
+HK TAIC Maximus Kowloon              6:700/1    85-2-789-1267  PEPV32
+
+
+======================================================================
+
+URLs:
+
+Home page:  http://www.pobox.com/~ralf
+
+Files in my FTP area:
+	http://www.pobox.com/~ralf/files.html
+	ftp://ftp.cs.cmu.edu/afs/cs.cmu.edu/user/ralf/pub/
+
+Files on SimTel and mirrors:
+	ftp://ftp.simtel.net/pub/simtelnet/msdos/info/  [look for inter???.zip]
+	ftp://ftp.simtel.net/pub/simtelnet/msdos/c/spwno413.zip
+	ftp://ftp.simtel.net/pub/simtelnet/msdos/desqview/dvint43.zip
+	ftp://ftp.simtel.net/pub/simtelnet/msdos/desqview/dvglu172.zip
+	ftp://ftp.simtel.net/pub/simtelnet/msdos/modem/rbcom346.zip
+
+Files at Garbo:
+	ftp://garbo.uwasa.fi/pc/programming/inter61a.zip
+	ftp://garbo.uwasa.fi/pc/programming/inter61b.zip
+	ftp://garbo.uwasa.fi/pc/programming/inter61c.zip
+	ftp://garbo.uwasa.fi/pc/programming/inter61d.zip
+	ftp://garbo.uwasa.fi/pc/programming/inter61e.zip
+	ftp://garbo.uwasa.fi/pc/programming/inter61f.zip

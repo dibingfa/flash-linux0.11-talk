@@ -1,0 +1,70 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 808604A3.PCI = Vendor 8086h, Device 04A3h -- Intel 82434
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+82434%[08:4]|LX (Mercury);NX (Neptune)| registers in detail:
+ Host CPU:         type: %[50:7-5]3b  bus speed: %[50:1-0](Bus)  L1 cache %[50:2]ed
+ L2 cache:         %[52:7-6](L2)  %[52:5]|async;burst| SRAM (%[52:0]ed)  %[52:4]|;cache all reads|
+		   cache %[52:3]|write;byte| select  %[52:2]|LX-compatible;enhanced| connectivity
+		   LX only: write-%[52:1]|through;back|
+ Deturbo control:  %[51]2x
+ CPU Buf Control:  read-around-write %[53:3]ed
+                   CPU-PCI posted writes %[53:1]ed, CPU-mem posted writes %[53:0]ed
+ PCI Control:      LBXs %[54:2]|not ;|connected to TRDY#
+                   PCI-memory posted writes %[54:0]ed, PCI burst %[54:1]ed
+ DRAM Control:     parity errors %[57:5]|not ;|masked  SMRAM %[57:3]|not ;|enabled
+                   DRAM bursts: %[57:7-6](Dburst)
+		   0-Active RAS# Mode: %[57:4]y  Burst-of-Four Refresh: %[57:2]y
+		   Refresh Type: %[57:1]|RAS#-only;CAS#-before-RAS#| (%[57:0]ed)
+ DRAM Timing:      RAS# Wait State: %[58:1]y   CAS# Wait State: %[58:0]y
+ DRAM Boundaries: %[68:3-0|60]3dM %[68:7-4|61]3dM %[69:3-0|62]3dM %[69:7-4|63]3dM %[6A:3-0|64]3dM %[6A:7-4|65]3dM %[6B:3-0|66]3dM %[6B:7-4|67]3dM
+ Memory Size:	  %[6B:7-4|67]3dM
+ Programmable Attribute Map
+\tC000-C3FF: %[5A:2]{-C}%[5A:1]{-W}%[5A:0]{-R}\tD000-D3FF: %[5C:2]{-C}%[5C:1]{-W}%[5C:0]{-R}\tE000-E3FF: %[5E:2]{-C}%[5E:1]{-W}%[5E:0]{-R}%
+\tF000-FFFF: %[59:6]{-C}%[59:5]{-W}%[59:4]{-R}
+\tC400-C7FF: %[5A:6]{-C}%[5A:5]{-W}%[5A:4]{-R}\tD400-D7FF: %[5C:6]{-C}%[5C:5]{-W}%[5C:4]{-R}\tE400-E7FF: %[5E:6]{-C}%[5E:5]{-W}%[5E:4]{-R}
+\tC800-CBFF: %[5B:2]{-C}%[5B:1]{-W}%[5B:0]{-R}\tD800-DBFF: %[5D:2]{-C}%[5D:1]{-W}%[5D:0]{-R}\tE800-EBFF: %[5F:2]{-C}%[5F:1]{-W}%[5F:0]{-R}
+\tCC00-CFFF: %[5B:6]{-C}%[5B:5]{-W}%[5B:4]{-R}\tDC00-DFFF: %[5D:6]{-C}%[5D:5]{-W}%[5D:4]{-R}\tEC00-EFFF: %[5F:6]{-C}%[5F:5]{-W}%[5F:4]{-R}%
+\t8000-9FFF: %[59:2]{-C}%[59:1]{-W}%[59:0]{-R}
+ Error Control:    %[70]2x = SERR# on: %[70:7]/trg abort/ %[70:6]/PCI-write parity/ %[70:5]/PCI-read parity/
+		   SERR# on %[70:4]/PCI-address parity/ %[70:3]/DRAM|L2 parity/
+		   PERR# on %[70:3]/data parity/   %[70:0]|do not ;|assert PEN# on reads
+		   L2 cache parity %[70:2]ed
+ Error Status:     %[71]2x = %[71:6]/PCI-write parity/ %[71:5]/PCI-read parity/ %[71:4]/PCI-address parity/
+			%[71:3]/DRAM parity/ %[71:2]/L2 cache parity/ %[71:0]/SHUTDOWN/
+ SMRAM control:    SMM Space at segment %[72:2-0+8]1x000 is %[72:6]/open/ %[72:5]/closed/ %[72:4]/locked/
+ ISA memory hole:  at %[78:7-4]dM, size %[78:14-12+1]dM (%[78:15]ed)
+ Frame Buffer:	   %[7C:3-0+1]dM at %[7C:31-20]dM (%[7C:31-20<20]8x)	byte merging %[7C:13]ed
+		   lock requests %[7C:9]Ed  transparent buffer writes %[7C:7]ed
+                   %[7C:13]|not ;|applied to VGA-range
+!end
+
+!enum Bus
+reserved
+50 MHz
+60 MHz
+66 MHz
+!end
+
+!enum L2
+none
+reserved
+256K
+512K
+!end
+
+!enum Dburst
+X-4-4-4
+X-4-4-4 read/X-3-3-3 write
+reserved
+X-3-3-3
+!end
+
+
+%! end of file

@@ -1,0 +1,31 @@
+Frequently-Asked Questions	Release 61		Last Edit 16jul00
+Copyright 2000 Ralf Brown
+
+Have a frequently-asked question about interrupts or ports and its answer?
+Mail them to me for inclusion in this file (with credit to you).
+	ralf@pobox.com
+
+---------------------------------------------
+Index:
+  1.	Is there an interrupt to get the BIOS serial number as shown on the
+	power-up screen?
+
+
+---------------------------------------------
+Q1: Is there an interrupt to get the BIOS serial number as shown on the
+   power-up screen?
+A: (Ralf Brown)
+   There is no general way to get the serial number.  In most cases, you
+   need to know the proper offset in the BIOS image for that particular
+   make, model, and revision of the BIOS (and that offset may not even
+   be present in the real-mode image loaded into shadow RAM!).
+
+   Further, with a flashable BIOS, it is quite likely that every single
+   machine that has been updated with a downloadable upgrade from the
+   Web will have identical serial numbers, assuming they weren't already
+   identical as shipped from the factory with the original BIOS version.
+   Because of this, the BIOS serial number is essentially useless for
+   any identification purposes.
+
+---------------------------------------------
+End of File

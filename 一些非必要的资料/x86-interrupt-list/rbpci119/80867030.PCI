@@ -1,0 +1,34 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867030.PCI = Vendor 8086h, Device 7030h -- Intel 82437VX
+%! Last Edit 10jan99 by Ralf Brown
+%!
+
+!begin
+82437VX registers in detail:
+ Programmable Attribute Map
+	C000-C3FF: %[5A:2]{-C}%[5A:1]{-W}%[5A:0]{-R}\tD000-D3FF: %[5C:2]{-C}%[5C:1]{-W}%[5C:0]{-R}\tE000-E3FF: %[5E:2]{-C}%[5E:1]{-W}%[5E:0]{-R}%
+	F000-FFFF: %[59:6]{-C}%[59:5]{-W}%[59:4]{-R}
+	C400-C7FF: %[5A:6]{-C}%[5A:5]{-W}%[5A:4]{-R}\tD400-D7FF: %[5C:6]{-C}%[5C:5]{-W}%[5C:4]{-R}\tE400-E7FF: %[5E:6]{-C}%[5E:5]{-W}%[5E:4]{-R}
+	C800-CBFF: %[5B:2]{-C}%[5B:1]{-W}%[5B:0]{-R}\tD800-DBFF: %[5D:2]{-C}%[5D:1]{-W}%[5D:0]{-R}\tE800-EBFF: %[5F:2]{-C}%[5F:1]{-W}%[5F:0]{-R}
+	CC00-CFFF: %[5B:6]{-C}%[5B:5]{-W}%[5B:4]{-R}\tDC00-DFFF: %[5D:6]{-C}%[5D:5]{-W}%[5D:4]{-R}\tEC00-EFFF: %[5F:6]{-C}%[5F:5]{-W}%[5F:4]{-R}
+ DRAM Boundaries: %[60]3dM %[61]3dM %[62]3dM %[63]3dM
+ DRAM Row Type:   %[68:4]b%[68:0]b   %[68:5]b%[68:1]b   %[68:6]b%[68:2]b   %[68:7]b%[68:3]b
+ DRAM control:    refresh   = %[57:2-0]|disabled;50MHz;60MHz;66MHz;reserved|
+		  DRAM hole = %[57:7-6]|none;512K-640K;15M-16M;14M-16M|
+		  EDO Detect mode is %[57:3]ed; Symmetry Detect mode is %[56:0]ed
+		  Fast EDO Path %[56:5]|not;| selected
+		  RAS# asserted for %[56:6+4] clocks on refresh
+		  Speculative Leadoff %[56:4]Ed
+		  Memory Address drive strength is %[56:2-1]|reserved;10mA;16mA;reserved|
+ DRAM timing:     read burst   = %[58:6-5]|x444/x444;x333/x444;x222/x333;x322/x333|
+		  write burst  = %[58:4-3]|x444;x333;x222;reserved|
+		  RAS-to-CAS   = %[58:2]|3;2| clocks
+		  DRAM leadoff = %[58:1-0]|11/7/3;10/6/3;11/7/4;10/6/4| (read/write/precharge)
+		  MA-to-RAS# delay is %[58:7]|one clock;two clocks|
+
+  %! insert rest of device description here
+
+!end
+
+%! end of file

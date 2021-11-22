@@ -1,0 +1,2178 @@
+FAR CALL Interface List		Release 61		Last change 16jul00
+Copyright (c) 1989-1999,2000 Ralf Brown
+
+=============================================
+>CALL 0000h:0000h - Sample Entry
+>Program: description of the program(s) providing the API
+>InstallCheck:	how to determine CALL address if variable, whether it is
+>	  available if address is fixed
+>Note:	any notes related to the API
+>SeeAlso: related APIs, and interrupt entries for this API in INTERRUP.*
+>
+>Call entry point with:
+>	input registers
+>Return: result registers
+>
+>Format of data:
+>Offset	Size	Description
+> 00h	...	...
+=============================================
+
+--------D-@00600000--------------------------
+CALL 0060h:0000h - Eagle MS-DOS v1.25 IO.SYS - INITIALIZE
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	this function should only be called by MSDOS.SYS
+SeeAlso: @0060h:0003h,@0060h:0039h
+--------D-@00600003--------------------------
+CALL 0060h:0003h - Eagle MS-DOS v1.25 IO.SYS - CHECK FOR KEYSTROKE
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	does not return extended keystrokes
+SeeAlso: @0060h:0000h,@0060h:0006h,@0060h:0027h
+
+(Table F0001)
+Call Eagle MS-DOS entry point 0003h with:
+	nothing
+Return: ZF set if no key
+	ZF clear if keystroke available
+	    AL = keystroke
+--------D-@00600006--------------------------
+CALL 0060h:0006h - Eagle MS-DOS v1.25 IO.SYS - WAIT FOR KEYSTROKE
+InstallCheck:	MS-DOS v1.25 must be installed
+Notes:	if an extended keystroke is available, only the low byte is returned,
+	  and this function must be called again to get the high byte
+	the BIOS keycode 0000h (Ctrl-Break) is returned as 00h+FFh to avoid
+	  the ambiguity that might be caused by returning the 00h high byte
+SeeAlso: @0060h:0000h,@0060h:0003h,@0060h:0027h
+
+(Table F0002)
+Call Eagle MS-DOS entry point 0006h with:
+	nothing
+Return: AL = keystroke
+	flags modified
+--------D-@00600009--------------------------
+CALL 0060h:0009h - Eagle MS-DOS v1.25 IO.SYS - OUTPUT CHARACTER TO SCREEN
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	this entry point supports most of the ANSI.SYS control sequences,
+	  plus several additional escape sequences
+SeeAlso: @0060h:0000h,@0060h:0003h,@0060h:000Ch
+
+(Table F0003)
+Call Eagle MS-DOS entry point 0009h with:
+	AL = character to output
+Return: flags modified
+--------D-@0060000C--------------------------
+CALL 0060h:000Ch - Eagle MS-DOS v1.25 IO.SYS - OUTPUT CHARACTER TO PRINTER
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	this entry point is able, if set by configuration (see @0060h:0039h),
+	  to strip linefeed characters following carriage returns
+SeeAlso: @0060h:0000h,@0060h:0009h
+
+(Table F0004)
+Call Eagle MS-DOS entry point 000Ch with:
+	AL = character to be printed
+Return: flags modified
+--------D-@0060000F--------------------------
+CALL 0060h:000Fh - Eagle MS-DOS v1.25 IO.SYS - INPUT CHAR FROM AUX: DEVICE
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	if the configured AUX: device is a parallel port, this call always
+	  returns a Ctrl-Z as the "read" character; Ctrl-Z is also returned
+	  if the user presses Esc or Ctrl-Break while waiting for a character
+	  to arrive on a serial port
+SeeAlso: @0060h:0000h
+
+(Table F0005)
+Call Eagle MS-DOS entry point 000Fh with:
+	nothing
+Return: AL = received character
+--------D-@00600012--------------------------
+CALL 0060h:0012h - Eagle MS-DOS v1.25 IO.SYS - OUTPUT CHAR TO AUX: DEVICE
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	if the port is busy, this function waits until the port becomes
+	  available or the user presses Esc or Ctrl-Break
+SeeAlso: @0060h:0000h
+
+(Table F0006)
+Call Eagle MS-DOS entry point 0012h with:
+	AL = character to output
+Return: flags modified
+--------D-@00600015--------------------------
+CALL 0060h:0015h - Eagle MS-DOS v1.25 IO.SYS - READ ABSOLUTE SECTOR(S)
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:0018h,@0060h:001Bh
+
+(Table F0007)
+Call Eagle MS-DOS entry point 0015h with:
+	AL = drive table number
+	ES:BX -> buffer
+	CX = number of sectors to read
+	DX = logical sector number of first sector
+	AH = verify flag
+Return: CF clear if successful
+	CF set on error
+	    AL = error code
+		0Ch drive table number out of range
+Note:	the drive number in AL is *not* the logical DOS drive number, but
+	  the number of an internal data table; multiple data tables, each
+	  describing a distinct disk format, may be shared by one logical
+	  drive
+--------D-@00600018--------------------------
+CALL 0060h:0018h - Eagle MS-DOS v1.25 IO.SYS - WRITE ABSOLUTE SECTOR(S)
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:0015h,@0060h:001Bh
+
+(Table F0008)
+Call Eagle MS-DOS entry point 0018h with:
+	AL = drive table number
+	ES:BX -> data to be written
+	CX = number of sectors to write
+	DX = logical sector number of first sector
+	AH = verify flag
+Return: CF clear if successful
+	CF set on error
+	    AL = error code
+		0Ch drive table number out of range
+Note:	the drive number in AL is *not* the logical DOS drive number, but
+	  the number of an internal data table; multiple data tables, each
+	  describing a distinct disk format, may be shared by one logical
+	  drive
+--------D-@0060001B--------------------------
+CALL 0060h:001Bh - Eagle MS-DOS v1.25 IO.SYS - DETERMINE DISK FORMAT
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:0015h,@0060h:002Ah
+
+(Table F0009)
+Call Eagle MS-DOS entry point 001Bh with:
+	AL = DOS drive number
+Return: CF clear if successful
+	    AL = drive table number
+	    AH = ??? flag
+		00h ???
+		FFh ???
+	CF set on error
+	    AL = error code
+		02h ???
+		0Ch unrecognized format
+--------D-@0060001E--------------------------
+CALL 0060h:001Eh - Eagle MS-DOS v1.25 IO.SYS - SET DAY COUNT
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:0021h,@0060h:0024h
+
+(Table F0010)
+Call Eagle MS-DOS entry point 001Eh with:
+	AX = day count
+Return: nothing
+--------D-@00600021--------------------------
+CALL 0060h:0021h - Eagle MS-DOS v1.25 IO.SYS - SET SYSTEM TIME
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:001Eh,@0060h:0024h
+
+(Table F0011)
+Call Eagle MS-DOS entry point 0021h with:
+	CH = hours
+	CL = minutes
+	DH = seconds
+	DL = hundredths
+Return: flags modified
+--------D-@00600024--------------------------
+CALL 0060h:0024h - Eagle MS-DOS v1.25 IO.SYS - READ SYSTEM TIME
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:001Eh,@0060h:0021h
+
+(Table F0012)
+Call Eagle MS-DOS entry point 0024h with:
+	nothing
+Return: AX = day count
+	CH = hours
+	CL = minutes
+	DH = seconds
+	DL = hundredths
+--------D-@00600027--------------------------
+CALL 0060h:0027h - Eagle MS-DOS v1.25 IO.SYS - CLEAR KEYBOARD BUFFER
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:0003h,@0060h:0006h
+
+(Table F0013)
+Call Eagle MS-DOS entry point 0027h with:
+	nothing
+Return: ZF set
+--------D-@0060002A--------------------------
+CALL 0060h:002Ah - Eagle MS-DOS v1.25 IO.SYS - SEARCH FOR NEXT DISK FORMAT
+InstallCheck:	MS-DOS v1.25 must be installed
+SeeAlso: @0060h:0000h,@0060h:001Bh
+
+(Table F0014)
+Call Eagle MS-DOS entry point 002Ah with:
+	AL = drive table number
+Return: AL = next drive table number with matching disk sector size and media
+	      ID byte
+--------D-@00600039--------------------------
+CALL 0060h:0039h - Eagle MS-DOS v1.25 IO.SYS - CONFIGURE FROM SYSINFO.SYS
+InstallCheck:	MS-DOS v1.25 must be installed
+Note:	reads the first 144 bytes of SYSINFO.SYS from the current drive into
+	  an internal configuration buffer
+SeeAlso: @0060h:0000h
+--------V-@C0000003--------------------------
+CALL C000h:0003h - VIDEO BIOS INITIALIZATION
+InstallCheck:	C000h:0000h must contain the word AA55h and the 
+		  512*BYTE[C000h:0002h] bytes must sum to 00h (mod 256)
+Note:	is normally called only by the System ROM BIOS initialization code
+--------V-@C0000064--------------------------
+CALL C000h:0064h U - ATI Mach32 VIDEO BIOS - ???
+InstallCheck: ATI Mach32 video board must be installed
+SeeAlso: @C000h:0068h"Mach32",@C000h:006Ch,@C000h:0070h
+
+(Table F0015)
+Call ATI Mach32 entry point with:
+	AL = function
+	    00h ???
+	    01h,02h ???
+	    11h,12h ???
+	    21h,22h ???
+	    41h,42h ???
+	    81h,82h ???
+Return: CF clear if successful
+	CF set on error
+--------V-@C0000064--------------------------
+CALL C000h:0064h U - ATI Mach64 VIDEO BIOS - ALTERNATE INT 10/AH=A0h (IRET)
+InstallCheck: ATI Mach64 video board must be installed
+SeeAlso: @C000h:0068h"Mach64",INT 10/AH=A0h"Mach64"
+--------V-@C0000068--------------------------
+CALL C000h:0068h U - ATI Mach32 VIDEO BIOS - ???
+InstallCheck: ATI Mach32 video board must be installed
+SeeAlso: @C000h:0064h"Mach32",@C000h:006Ch,@C000h:0070h
+
+(Table F0016)
+Call ATI Mach32 entry point with:
+	AL = ??? (00h-02h)
+	???
+Return: ???
+--------V-@C0000068--------------------------
+CALL C000h:0068h U - ATI Mach64 VIDEO BIOS - ALTERNATE INT 10/AH=A0h (RETF)
+InstallCheck: ATI Mach64 video board must be installed
+SeeAlso: @C000h:0064h"Mach64",INT 10/AH=A0h"Mach64"
+--------V-@C000006C--------------------------
+CALL C000h:006Ch - ATI Mach32 VIDEO BIOS - 
+InstallCheck: ATI Mach32 video board must be installed
+SeeAlso: @C000h:0064h,@C000h:0068h,@C000h:0070h
+
+(Table F0017)
+Call ATI Mach32 entry point with:
+	AL = function
+	    00h get ???
+		Return: AX = ??? (019Eh)
+	    01h get ??? information
+		ES:BX -> buffer for ??? information (see #F0018)
+		Return: buffer filled
+	    02h get ???
+		Return: AX = ??? (0250h)
+			BX = ??? (0A00h)
+			CX = ??? (0200h)
+			DX = ??? (0003h)
+Return: CF clear if successful
+	CF set if invalid function
+	all other registers preserved
+Note:	officially (Programmer's Reference Guide), interrupts should be
+	  disabled (CLI) during a function 01h call
+
+Format of ATI Mach32 ??? information:
+Offset	Size	Description	(Table F0018)
+ 00h	WORD	number of bytes of data returned (0116h for tested BIOS)
+ 02h  2 BYTEs	??? (00h 00h and 00h 05h seen)
+ 04h	WORD	offset of video mode records??? (0028h)
+ 06h	BYTE	length of one video mode record??? (22h)
+ 07h	BYTE	???
+ 08h	BYTE	??? (00h/01h, reflects bit 1 of port 36EEh)
+ 09h	BYTE	??? (01h)
+ 0Ah	BYTE	???
+ 0Bh	BYTE	memory size
+		00h = 256K, 01h = 512K, 02h = 1024K, 03h = 2M, 04h = 4M
+ 0Ch	BYTE	???
+ 0Dh	BYTE	???
+ 0Eh	BYTE	???
+ 0Fh	BYTE	??? (bits 6-4 of port 42E8h)
+ 10h	BYTE	???
+ 11h	BYTE	???
+ 12h	BYTE	???
+ 13h	BYTE	???
+ 14h	WORD	???
+ 16h	BYTE	???
+ 17h	BYTE	???
+ 18h	BYTE	???
+ 19h 14 BYTEs	unused
+ 27h	BYTE	scratch byte used by ROM code
+ 28h 34N BYTEs	??? video mode records (see #F0019)
+SeeAlso: #F0017
+
+Format of ATI Mach32 ??? video mode record:
+Offset	Size	Description	(Table F0019)
+ 00h	WORD	horizontal resolution in pixels
+ 02h	WORD	vertical resolution in pixels
+ 04h 30 BYTEs	???
+SeeAlso: #F0018
+--------V-@C0000070--------------------------
+CALL C000h:0070h U - ATI Mach32 VIDEO BIOS - ???
+InstallCheck: ATI Mach32 video board must be installed
+SeeAlso: @C000h:0064h,@C000h:0068h,@C000h:006Ch
+
+(Table F0020)
+Call ATI Mach32 entry point with:
+	AH = function
+	    00h ???
+	    01h ???
+	    02h ???
+		AL = subfunction
+		    00h ???
+		    01h ???
+	    03h ???
+		AL = ??? (00h/nonzero)
+Return: CF clear if successful
+	CF set on error
+--------B-@F000E739--------------------------
+CALL F000h:E739h - ROM BIOS INT 14 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000E82E--------------------------
+CALL F000h:E82Eh - ROM BIOS INT 16 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000EC59--------------------------
+CALL F000h:EC59h - ROM BIOS INT 13 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000EFD2--------------------------
+CALL F000h:EFD2h - ROM BIOS INT 17 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000F065--------------------------
+CALL F000h:F065h - ROM BIOS INT 10 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000F841--------------------------
+CALL F000h:F841h - ROM BIOS INT 12 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000F84D--------------------------
+CALL F000h:F84Dh - ROM BIOS INT 11 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000F859--------------------------
+CALL F000h:F859h - ROM BIOS INT 15 HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+--------B-@F000FE6E--------------------------
+CALL F000h:FE6Eh - ROM BIOS INT 1A HANDLER
+InstallCheck:	present if BIOS is 100% compatible with original IBM PC
+----------@F000FF82--------------------------
+CALL F000h:FF82h - PHOENIX CASCADE BIOS A20 CONTROL ENTRY
+InstallCheck: ??? (see INT 15h/C0h)
+Note:	This is an entry point for A20 control and is used by MS-DOS HIMEM.SYS
+--------H-@F000FFF0--------------------------
+CALL F000h:FFF0h - COLD-BOOT ADDRESS
+InstallCheck:	always present
+SeeAlso: @FFFFh:0000h,INT 19
+--------H-@FFFF0000--------------------------
+CALL FFFFh:0000h - COLD-BOOT ADDRESS
+InstallCheck:	always present
+Note:	this address is another way of expressing F000h:FFF0h
+SeeAlso: @F000h:FFF0h,INT 19
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - 10NET - 10MEMMGR.SYS
+InstallCheck:	see INT 21/AX=4402h"10MEMMGR"
+SeeAlso: INT 21/AX=4402h"10MEMMGR"
+--------t-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Alternate Multiplex Interrupt Specification TSRs
+InstallCheck:	see INT 2D"AMIS"
+SeeAlso: INT 2D"AMIS"
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - AutoCAD Device Interface
+InstallCheck:	see INT 7A/AX=0001h
+SeeAlso: INT 7A/AX=0001h
+----------@xxxxxxxx---------------------------
+CALL xxxxh:xxxxh - BIOS32 Service Directory
+InstallCheck:	scan paragraph boundaries E000h to FFFFh for signature string
+	"_32_", followed by a valid header structure (see #F0021)
+Notes:	a 32-bit-code alternate PCI BIOS entry point may be found (if
+	  supported) by requesting the entry point for the API with
+	  identifier "$PCI"
+	an alternate entry point for INT 1A/AH=B4h may be found (if
+	  supported) by requesting the entry point for the API with identifier
+	  "$ACF"
+	other known identifiers are "$WDS" and "MPTN"
+SeeAlso: INT 1A/AX=B100h
+
+Format of BIOS32 Service Directory header structure:
+Offset	Size	Description	(Table F0021)
+ 00h  4 BYTEs	signature "_32_"
+ 04h	DWORD	physical address of BSD entry point (see #F0022)
+ 08h	BYTE	header structure version number (currently 00h)
+ 09h	BYTE	header structure length in paragraphs (currently 01h)
+ 0Ah	BYTE	checksum (8-bit sum of all bytes in structure, including this
+		  one, should equal zero)
+ 0Bh  5 BYTEs	reserved (0)
+
+(Table F0022)
+Call BIOS32 Service Directory entry point with:
+	EBX = function
+	    00000000h get service entry point
+		EAX = service identifier
+		    46434124h ("FCA$") Plug-and-Play Auto-Configuration
+		    49435024h ("ICP$") PCI BIOS
+		    4E54504Dh ("NTPM") ??? MPTN [PhoenixBIOS4 Rev. 6.0]
+		    54435724h ("SDW$") ??? WDS$ [PhoenixBIOS4 Rev. 6.0]
+		Return: AL = status
+			    00h successful
+				 EBX = base address of handler's code seg
+				 ECX = size of code segment
+				 EDX = offset of handler in code seg
+			    80h unknown service identifier
+	    else
+		Return: AL = 81h invalid function
+Notes:	the BSD handler assumes that it is running in a 32-bit code segment
+	the returned entry points for PCI BIOS and Auto-Config must be called
+	  with the same registers as the real-mode INT 1Ah interface,
+	  including the value B1h or B4h in AH (AMI BIOS v1.00.05.AX1 returns
+	  the same entry point for both interfaces and uses AH to distinguish
+	  which API is desired)
+	some references indicate that only BL is used for the function number,
+	  though at least one implementation actually checks the entire EBX
+	  register; for maximum compatibility, the upper 24 bits of EBX should
+	  be cleared when calling the entry point
+SeeAlso: #F0021
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Borland TKERNEL
+InstallCheck:	see INT 2F/AX=FBA1h/BX=0082h
+SeeAlso: INT 2F/AX=FBA1h/BX=0082h
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Buffit v3.0
+InstallCheck:	see INT 60"Buffit"
+SeeAlso: INT 60"Buffit"
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - CEMM v5.10+ Private API
+InstallCheck:	see INT 21/AX=4402h/SF=00h
+SeeAlso: INT 21/AX=4402h/SF=00h
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Cloaking - PROTECTED-MODE API
+InstallCheck:	see INT 2C/AX=001Dh
+SeeAlso: INT 2C/AX=001Dh
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Cloaking - REAL-MODE API
+InstallCheck:	see INT 2F/AX=4310h"Cloaking"
+SeeAlso: INT 2F/AX=4310h"Cloaking"
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - CTMMSYS.SYS - API
+Program: CTMMSYS.SYS is the Creative DOS Multimedia Architecture Integration
+	  driver
+InstallCheck:	see INT 21/AX=4402h"CTMMSYS"
+SeeAlso: INT 21/AX=4402h"CTMMSYS"
+--------Q-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DESQview XDI - Driver API
+InstallCheck:	see INT 2F/AX=DE01h
+SeeAlso: INT 2F/AX=DE01h
+--------D-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Device Drivers
+InstallCheck:	see INT 21/AH=52h
+SeeAlso: INT 21/AH=52h
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Protected-Mode Interface - MODE SWITCH
+InstallCheck:	see INT 2F/AX=1687h
+SeeAlso: INT 2F/AX=1687h
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Protected-Mode Interface - Phar Lap RUN286
+InstallCheck:	see INT 2F/AX=168Ah
+SeeAlso: INT 2F/AX=168Ah
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Protected-Mode Interface - Vendor-Specific APIs
+InstallCheck:	see INT 31/AX=0A00h
+SeeAlso: INT 31/AX=0A00h
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Protected-Mode Interface - Windows Support
+InstallCheck:	see INT 2F/AX=168Ah
+SeeAlso: INT 2F/AX=168Ah
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Protected-Mode Services
+InstallCheck:	see INT 2F/AX=43E0h
+SeeAlso: INT 2F/AX=43E1h
+--------T-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Task Switcher - Callout
+InstallCheck:	see INT 2F/AX=4B01h
+SeeAlso: INT 2F/AX=4B01h
+--------T-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - DOS Task Switcher
+InstallCheck:	see INT 2F/AX=4B02h
+SeeAlso: INT 2F/AX=4B02h
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Enhanced Parallel Port (EPP) BIOS
+InstallCheck:	see INT 17/AX=0200h/BX=5050h
+SeeAlso: INT 17/AX=0200h/BX=5050h
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Extended Memory Specification (XMS)
+InstallCheck:	see INT 2F/AX=4300h
+SeeAlso: INT 2F/AX=4310h
+--------c-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - FASTOPEN
+InstallCheck:	see INT 2F/AX=122Ah
+SeeAlso: INT 2F/AX=122Ah
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - HIGHUMM.SYS
+InstallCheck:	see INT 21/AX=4402h"HIGHUMM"
+SeeAlso: INT 21/AX=4402h"HIGHUMM"
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - HugeRealMode Driver
+InstallCheck:	see INT 78/AX=0000h,INT 78/AX=0001h
+SeeAlso: INT 78/AX=0001h
+--------V-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - IBM 8514/A Adapter Interface (HDILOAD)
+InstallCheck:	see INT 7F/AX=0105h
+SeeAlso: INT 7F/AX=0105h
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - IBM 8516 Touch Screen Device Driver
+InstallCheck:	see INT 7F/AX=ABCDh
+SeeAlso: INT 7F/AX=ABCDh
+--------u-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - IBM System 36/38 Workstation Emulation
+InstallCheck:	see INT 0C"SYSTEM 36/38"
+SeeAlso: INT 0C"SYSTEM 36/38"
+--------D-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - IFS Drivers
+InstallCheck:	see INT 21/AH=52h
+SeeAlso: INT 21/AH=52h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - IFSHLP.SYS
+InstallCheck:	see INT 21/AH=3Fh"IFSHLP"
+SeeAlso: INT 21/AH=3Fh"IFSHLP"
+--------b-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Intel BIOS Upgrade
+InstallCheck:	scan paragraph boundaries from 0F0000h to 0FFFFFh for signature
+	  string "$IBU" (see #F0023)
+SeeAlso: INT 15/AX=D042h/BL=00h
+!!! IAL\PROCESSR\PPROBIOS.PDF page 60
+
+Format of Intel BIOS Upgrade header:
+Offset	Size	Description	(Table F0023)
+ 00h  4 BYTEs	signature "$IBU"
+ 04h	BYTE	IBU specification version (currently 01h = 1.0)
+ 05h	BYTE	length of entire header structure in bytes (currently 17h)
+ 06h	BYTE	checksum (forces 8-bit sum of all header bytes to 00h)
+ 07h	DWORD	real-mode entry point address
+ 0Bh	WORD	offset of 16-bit protected mode entry point
+ 0Dh	DWORD	segment base address of 16-bit protected-mode entry point
+ 11h	WORD	real-mode data segment address
+ 13h	DWORD	segment base address of 16-bit protected-mode data segment
+Notes:	calls from 32-bit protected mode may be made to the 16-bit entry
+	  point, but must ensure that any stack arguments are pushed as
+	  16-bit values instead of 32-bit values
+	the entry point uses standard C calling conventions to implement
+	  functions prototyped as
+		int far (*entrypoint)(int function, ...)
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Interrupt Sharing Protocol
+InstallCheck:	see INT 2D"AMIS"
+SeeAlso: INT 2D"AMIS"
+--------X-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Intel System Management Bus BIOS
+InstallCheck:	see INT 15/AX=53B0h/BH=01h,INT 15/AX=53B0h/BH=02h
+SeeAlso: INT 15/AX=53B0h/BH=01h,INT 15/AX=53B0h/BH=05h
+--------G-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - INTRSPY v1.0 only
+InstallCheck:	see INT 60"INTRSPY"
+SeeAlso: INT 60"INTRSPY"
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Memory Managers
+InstallCheck:	see INT 21/AX=4402h/SF=00h
+SeeAlso: INT 21/AX=4402h/SF=00h
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Microsoft EMM386.EXE
+InstallCheck:	see INT 67/AX=FFA5h
+SeeAlso: INT 67/AX=FFA5h
+--------M-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Microsoft Mouse Driver - Alternate Entry Point
+InstallCheck:	INT 33 must be non-NULL, and must not point at an IRET
+	  instruction; the alternate entry point is located two bytes past
+	  the INT 33 handler
+Note:	this alternate entry point accepts the same arguments as the
+	  INT 33 interface, but is invoked with a FAR CALL instead of INT 33.
+SeeAlso: INT 33/AX=0000h
+--------k-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Microsoft Real-Time Compression Interface (MRCI)
+InstallCheck:	see INT 1A/AX=B001h
+SeeAlso: INT 1A/AX=B001h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Microsoft Workgroup Connection - WORKGRP.SYS
+InstallCheck:	see INT 21/AH=3Fh"WORKGRP.SYS"
+SeeAlso: INT 21/AX=4402h"WORKGRP.SYS"
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - DOSMGR Device
+InstallCheck:	see INT 2F/AX=1684h/BX=0015h
+SeeAlso: INT 2F/AX=1684h/BX=0015h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - EDOS Device
+InstallCheck:	see INT 2F/AX=1684h/BX=2925h
+SeeAlso: INT 2F/AX=1684h/BX=2925h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - POSTMSG Device
+InstallCheck:	see INT 2F/AX=1684h/BX=8888h
+SeeAlso: INT 2F/AX=1684h/BX=8888h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - REBOOT Device
+InstallCheck:	see INT 2F/AX=1684h/BX=0009h
+SeeAlso: INT 2F/AX=1684h/BX=0009h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - SHELL Device
+InstallCheck:	see INT 2F/AX=1684h/BX=0017h
+SeeAlso: INT 2F/AX=1684h/BX=0017h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - VADMAD Device
+InstallCheck:	see INT 2F/AX=1684h/BX=0444h
+SeeAlso: INT 2F/AX=1684h/BX=0444h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - VbillD Device
+InstallCheck:	see INT 2F/AX=1684h/BX=8888h
+SeeAlso: INT 2F/AX=1684h/BX=8888h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - VSWITCHD Device
+InstallCheck:	see INT 2F/AX=1684h/BX=0750h
+SeeAlso: INT 2F/AX=1684h/BX=0750h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - VTD Device
+InstallCheck:	see INT 2F/AX=1684h/BX=0005h
+SeeAlso: INT 2F/AX=1684h/BX=0005h
+--------W-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - MS Windows - WPS Device
+InstallCheck:	see INT 2F/AX=1684h/BX=310Eh
+SeeAlso: INT 2F/AX=1684h/BX=310Eh
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Netroom RM386 v6.00
+InstallCheck:	see INT 2F/AX=4310h
+SeeAlso: INT 2F/AX=4310h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell - ODI Link Support Layer
+InstallCheck:	see INT 2F/AX=C000h"LSL.COM"
+SeeAlso: INT 2F/AX=C000h"LSL.COM"
+--------O-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell DOS 7 DELWATCH.EXE
+InstallCheck:	see INT 2F/AX=10FEh
+SeeAlso: INT 2F/AX=10FEh
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell DOS 7 EMM386.EXE
+InstallCheck:	see INT 2F/AX=12FFh/BX=0106h
+SeeAlso: INT 2F/AX=12FFh/BX=0106h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - Access Server Driver
+InstallCheck:	see INT 2F/AX=7AF1h
+SeeAlso: INT 2F/AX=7AF1h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - DOS Requester
+InstallCheck:	see INT 2F/AX=7A20h/BX=0000h
+SeeAlso: INT 2F/AX=7A20h/BX=0000h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell Netware - Event Service Layer
+InstallCheck:	see INT 2F/AX=C000h"NESL"
+SeeAlso: INT 2F/AX=C000h"NESL"
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - IPX
+InstallCheck:	see INT 2F/AX=7A00h
+SeeAlso: INT 2F/AX=7A00h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - IPXODI
+InstallCheck:	see INT 2F/AX=7A2Fh
+SeeAlso: INT 2F/AX=7A2Fh
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - TCP/IP Protocol Stack
+InstallCheck:	see INT 2F/AX=7A40h
+SeeAlso: INT 2F/AX=7A40h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - VLM
+InstallCheck:	see INT 2F/AX=7A20h/BX=0000h
+SeeAlso: INT 2F/AX=7A20h/BX=0000h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - VLM CallA
+InstallCheck:	see INT 2F/AX=7A20h/BX=0001h
+SeeAlso: INT 2F/AX=7A20h/BX=0001h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - VLM Multicast
+InstallCheck:	see INT 2F/AX=7A20h/BX=0004h
+SeeAlso: INT 2F/AX=7A20h/BX=0004h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - VLM Multiplex
+InstallCheck:	see INT 2F/AX=7A20h/BX=0002h
+SeeAlso: INT 2F/AX=7A20h/BX=0002h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare - VLM Parse API
+InstallCheck:	see INT 2F/AX=7A20h/BX=0003h
+SeeAlso: INT 2F/AX=7A20h/BX=0003h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare Lite - CLIENT
+InstallCheck:	see INT 2F/AX=D800h
+SeeAlso: INT 2F/AX=D800h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare Lite - NLCACHE/NWCACHE
+InstallCheck:	see INT 2F/AX=D8C0h
+SeeAlso: INT 2F/AX=D8C0h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Novell NetWare Lite - SERVER
+InstallCheck:	see INT 2F/AX=D880h
+SeeAlso: INT 2F/AX=D880h
+--------R-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - pcANYWHERE IV/LAN
+InstallCheck:	see INT 21/AX=2B44h/BX=4D41h
+SeeAlso: INT 21/AX=2B44h/BX=4D41h
+--------X-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - PCI BIOS v2.0c Protected-Mode API
+InstallCheck:	see INT 1A/AX=B101h
+SeeAlso: INT 1A/AX=B101h
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - PenDOS PENDEV.SYS
+InstallCheck:	see INT 21/AX=4402h"PENDEV"
+SeeAlso: INT 21/AX=4402h"PENDEV"
+--------E-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Phar Lap 386/DOS-Extender v4.1
+InstallCheck:	see INT 2F/AX=ED03h
+SeeAlso: INT 2F/AX=ED03h
+--------X-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Plug-and-Play BIOS v1.0A
+InstallCheck:	scan paragraph boundaries F000h to FFFFh for signature string
+	  "$PnP" followed by a valid Plug-and-Play header structure
+	  (see #F0024)
+SeeAlso: @xxxxh:xxxxh"BIOS32 Service Directory",INT 1A/AH=B4h
+
+Format of Plug-and-Play Installation Structure:
+Offset	Size	Description	(Table F0024)
+ 00h  4 BYTEs	signature "$PnP"
+ 04h	BYTE	Plug-and-Play version (major in high nybble, BCD minor in low)
+		10h for current specification
+ 05h	BYTE	length of Installation Structure in bytes
+ 06h	WORD	control field
+		bits 15-2 reserved
+		bits 1-0: event notification mechanism
+		     00 not supported
+		     01 polling
+		     10 asynchronous (interrupt time)
+ 08h	BYTE	checksum (8-bit sum of all bytes in structure, including this
+		  one, should equal zero)
+ 09h	DWORD	physical address of event notification flag if using polling
+		(bit 0 set when a system even occurs)
+ 0Dh	WORD	real mode entry offset (see #F0025)
+ 0Fh	WORD	real mode code segment
+ 11h	WORD	16-bit protected mode entry point offset (see #F0025)
+ 13h	DWORD	16-bit protected mode code segment base address
+ 17h	DWORD	OEM device identifier
+ 1Bh	WORD	real mode data segment
+ 1Dh	DWORD	16-bit protected mode data segment base address
+
+(Table F0025)
+Call Plug-and-Play BIOS entry point with:
+	STACK:	WORD	function number
+			0000h Get Number of System Device Nodes (see #F0026)
+			0001h Get System Device Node (see #F0027)
+			0002h Set System Device Node (see #F0028)
+			0003h Get Event (see #F0029)
+			0004h Send Message (see #F0031)
+			0005h Get Docking Station Information (see #F0033)
+			0006h reserved for future versions
+			0007h Select Primary Boot Devices (see #F0034)
+			0008h Get Primary Boot Devices (see #F0035)
+			0009h Set Statically Allocated Resource Information
+			      (see #F0037)
+			000Ah Get Statically Allocated Resource Information
+			      (see #F0038)
+			000Bh Get APM ID Table (see #F0039)
+			0040h Get Plug-and-Play ISA Configuration Structure
+			      (see #F0041)
+			0041h Get Extended System Configuration Data Info
+			      (see #F0043)
+			0042h Read Extended SYstem Configuration Data
+			      (see #F0044)
+			0043h Write Extended SYstem Configuration Data
+			      (see #F0045)
+			---Desktop Management Interface v2.0+---
+			0050h Get DMI Information (see #F0046)
+			0051h Get DMI structure (see #F0047)
+			---SMBIOS v2.1+ (formerly Desktop Management I'face---
+			0052h Set DMI structure (see #F0048)
+			0053h Get DMI structure-change information (see #F0051)
+			0054h SMBIOS control (see #F0053)
+			0055h Get GP Non-Volatile Storage info (see #F0056)
+			0056h Read GP Non-Volatile Storage data (see #F0057)
+			0057h Write GP Non-Volatile Storage data (see #F0058)
+			0058h-005Fh reserved for future use
+			---BIOS Boot Specification---
+			0060h Get Version and Installation Check (see #F0074)
+			0061h Get IPL Device Count (see #F0075)
+			0062h Get Boot Priority and IPL Table (see #F0076)
+			0063h Set Boot Priority (see #F0077)
+			0064h Get IPL Device from Last Boot (see #F0078)
+			0065h Get Boot First (see #F0079)
+			0066h Set Boot First (see #F0080)
+			0067h-006Fh reserved
+		var	function arguments
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the caller must provide at least 1024 bytes of stack space for use by
+	  the Plug-and-Play BIOS
+	this API is bi-modal; all calls are available in both real mode and
+	  16-bit protected mode (if calling from 32-bit protected mode, care
+	  must be taken to ensure proper alignment of the stack arguments)
+SeeAlso: #F0024
+
+(Table F0026)
+Call Plug-and-Play BIOS function 00h with:
+	STACK:	WORD	0000h (function "Get Number of System Device Nodes")
+		DWORD	-> BYTE in which to return number of device nodes
+		DWORD	-> WORD in which to return size of largest device node
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int *, unsigned int);
+
+(Table F0027)
+Call Plug-and-Play BIOS function 01h with:
+	STACK:	WORD	0001h (function "Get System Device Node")
+		DWORD	-> BYTE containing node number or handle
+		DWORD	-> buffer for device node
+		WORD	control flag
+			bits 15-2 reserved (0)
+			bit 1: get static config (values for next boot)
+			bit 0: get current (dynamic) configuration
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, DEV_NODE *, unsigned int,
+		unsigned int);
+	exactly one of the two defined bits in the control flag must be set
+
+(Table F0028)
+Call Plug-and-Play BIOS function 02h with:
+	STACK:	WORD	0002h (function "Set System Device Node")
+		DWORD	-> BYTE containing node number or handle
+		DWORD	-> buffer containing device node
+		WORD	control flag
+			bits 15-2 reserved (0)
+			bit 1: set static config (values for next boot)
+			bit 0: set current (dynamic) configuration
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, DEV_NODE *, unsigned int,
+		unsigned int);
+	exactly one of the two defined bits in the control flag must be set
+
+(Table F0029)
+Call Plug-and-Play BIOS function 03h with:
+	STACK:	WORD	0003h (function "Get Event")
+		DWORD	-> WORD buffer for event message identifier (see #F0030)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned int *, unsigned int);
+
+(Table F0030)
+Values for PnP Event Identifier:
+ 0001h	"ABOUT_TO_CHANGE_CONFIG" preliminary notification of changes, including
+	  docking and undocking
+ 0002h	"DOCK_CHANGED" devices have been added to or removed from system
+ 0003h	"SYSTEM_DEVICE_CHANGED" removable system devices have been inserted
+	  or removed
+ 0004h	"CONFIG_CHANGE_FAILED" error detected while atempting to add or remove
+	  devices
+ 8000h-FFFEh OEM-defined events
+ FFFFh	"UNKNOWN_SYSTEM_EVENT"
+
+(Table F0031)
+Call Plug-and-Play BIOS function 04h with:
+	STACK:	WORD	0004h (function "Send Message")
+		WORD	message identifier (see #F0032)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned int, unsigned int);
+SeeAlso: #F0031,#F0033
+
+(Table F0032)
+Values for PnP Message Identifier:
+ 0000h	"OK"
+ 0001h	"ABORT" action which caused an ABOUT_TO_X message
+ 0002h-003Fh reserved for future Response Messages
+ 0040h	"UNDOCK_DEFAULT_ACTION"
+ 0041h	"POWER_OFF"
+ 0042h	"PNP_OS_ACTIVE"
+ 0043h	"PNP_OS_INACTIVE"
+ 0044h-007Fh reserved for future Control Messages
+ 8000h-FFFFh OEM-defined messages
+
+(Table F0033)
+Call Plug-and-Play BIOS function 05h with:
+	STACK:	WORD	0005h (function "Get Docking Station Information")
+		DWORD	-> buffer for docking station info (see #F0036)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int);
+SeeAlso: #F0031,#F0034
+
+(Table F0034)
+Call Plug-and-Play BIOS function 07h with:
+	STACK:	WORD	0007h (function "Select Primary Boot Devices")
+		WORD	type of primary boot device
+			0000h primary input
+			0001h primary output
+			0002h primary IPL
+		DWORD	Plug-and-Play 32-bit device ID or FFFFFFFFh for ISA
+		DWORD	device serial number or FFFFFFFFh
+		DWORD	32-bit logical device ID or FFFFFFFFh for ISA device
+		WORD	physical unit number
+		WORD	control flag
+			bits 15-1 reserved (0)
+			bit 0: do not check for attached device during PnP POST
+				  boot device selection
+		DWORD	-> preferred resource allocation or -> END_TAG if none
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, int, unsigned long, unsigned long, unsigned long,
+		int, int, char *, unsigned int);
+
+(Table F0035)
+Call Plug-and-Play BIOS function 08h with:
+	STACK:	WORD	0008h (function "Get Primary Boot Devices")
+		WORD	type of primary boot device
+			0000h primary input
+			0001h primary output
+			0002h primary IPL
+		DWORD	-> DWORD buffer for Plug-and-Play 32-bit device ID
+		DWORD	-> DWORD buffer for device serial number
+		DWORD	-> DWORD buffer for logical device ID
+		DWORD	-> WORD buffer for physical unit number
+		DWORD	-> buffer for preferred resource allocation
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, int, unsigned long *, unsigned long *,
+		unsigned long *, unsigned int *, char *, unsigned int);
+
+Format of Plug-and-Play Docking Station Information:
+Offset	Size	Description	(Table F0036)
+ 00h	DWORD	docking station location identifier (EISA device ID format)
+		FFFFFFFFh if unknown or no product identifier
+ 04h	DWORD	serial number or 00000000h
+ 08h	WORD	capabilities
+		bits 15-3 reserved (0)
+		bits 2-1: hot-pluggability
+		    00 power-down required to dock/undock
+		    01 must be in suspend mode ("warm" dock/undock)
+		    10 system can be hot-docked
+		    11 reserved
+		bit 0: docking station provides support for controlling
+		      sequence of docking/undocking
+
+(Table F0037)
+Call Plug-and-Play BIOS function 09h with:
+	STACK:	WORD	0009h (function "Set Statically Allocated Resource
+			  Information")
+		DWORD	-> block of statically-allocated resources as described
+			  in the Plug-and-Play ISA Spec
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int);
+	if the returned status is 008Dh, the Plug-and-Play BIOS supports
+	  ESCD, and the caller should thus use functions 41h to 43h instead
+	  of 09h and 0Ah
+
+(Table F0038)
+Call Plug-and-Play BIOS function 0Ah with:
+	STACK:	WORD	000Ah (function "Get Statically Allocated Resource
+			  Information")
+		DWORD	-> buffer for statically-allocated resources as
+			  described in the Plug-and-Play ISA Spec
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int);
+	if the returned status is 008Dh, the Plug-and-Play BIOS supports
+	  ESCD, and the caller should thus use functions 41h to 43h instead
+	  of 09h and 0Ah
+
+(Table F0039)
+Call Plug-and-Play BIOS function 0Bh with:
+	STACK:	WORD	000Bh (function "Get APM ID Table")
+			  Information")
+		DWORD	-> WORD buffer for size of data buffer
+		DWORD	-> buffer for storing APM ID table (see #F0040)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Desc:	copies the Advanced Power Management v1.1 device identifier table to
+	  Plug-and-Play device identifier mappings
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned int *, unsigned char *, unsigned int);
+SeeAlso: INT 15/AX=5300h
+
+Format of Plug-and-Play APM ID Table:
+Offset	Size	Description	(Table F0040)
+ 00h	DWORD	Plug-and-Play device identifier
+ 04h	WORD	APM v1.1+ identifier
+SeeAlso: #F0039
+
+(Table F0041)
+Call Plug-and-Play BIOS function 40h with:
+	STACK:	WORD	0040h (function "Get Plug-and-Play ISA Configuration
+			  Structure")
+		DWORD	-> buffer for configuration structure (see #F0042)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int);
+
+Format of Plug-and-Play ISA Configuration Structure:
+Offset	Size	Description	(Table F0042)
+ 00h	BYTE	structure revision level (01h)
+ 01h	BYTE	total Card Select Numbers (CSNs) assigned
+ 02h	WORD	ISA Read Data Port (see also PORT 0A79h)
+ 04h	WORD	reserved (0)
+SeeAlso: #F0041
+
+(Table F0043)
+Call Plug-and-Play BIOS function 41h with:
+	STACK:	WORD	0041h (function "Get Extended System Configuration
+			  Information")
+		DWORD	-> WORD buffer for size of nonvolatile storage
+		DWORD	-> WORD buffer for size of ESCD allocated
+		DWORD	-> DWORD buffer for physical base address of NV storage
+			  (if memory-mapped, else 00000000h)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned int *, unsigned int *, unsigned long *,
+		  unsigned int);
+SeeAlso: INT 1A/AX=B401h
+
+(Table F0044)
+Call Plug-and-Play BIOS function 42h with:
+	STACK:	WORD	0042h (function "Read Extended System Configuration
+			  Data")
+		DWORD	-> buffer for storing ESCD
+		WORD	read/writable selector for ESCD if memory-mapped and
+			  called in protected mode (ignored otherwise)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int, unsigned int);
+	if an ESCD selector is required, the caller must construct a 16-bit
+	  data segment selector with a limit of 64K
+
+(Table F0045)
+Call Plug-and-Play BIOS function 43h with:
+	STACK:	WORD	0043h (function "Write Extended System Configuration
+			  Data")
+		DWORD	-> buffer containing ESCD
+		WORD	read/writable selector for ESCD if memory-mapped and
+			  called in protected mode (ignored otherwise)
+		WORD	PnP BIOS writable segment/selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned int, unsigned int);
+	if an ESCD selector is required, the caller must construct a 16-bit
+	  data segment selector with a limit of 64K
+
+(Table F0046)
+Call Desktop Management Specification function 50h with:
+	STACK:	WORD	0050h (function "Get DMI Information")
+		DWORD	-> buffer for ASCIZ DMI BIOS revision string
+		DWORD	-> WORD to receive number of DMI structures
+		DWORD	-> WORD to receive size of largest DMI structure
+		DWORD	-> DWORD to receive DMI storage base address
+		DWORD	-> WORD to receive DMI storage size
+		WORD	BIOS selector
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  short (*entry)(int, unsigned char *, unsigned short *,
+			unsigned short *, unsigned long *, unsigned short *,
+			unsigned short) ;
+	the BIOS may return a structure size larger than the actual largest
+	  DMI structure to permit dynamic information
+	this function is available in both real mode and 16-bit protected mode
+SeeAlso: #F0047
+
+(Table F0047)
+Call Desktop Management Specification function 51h with:
+	STACK:	WORD	0051h (function "Get DMI Structure")
+		DWORD	-> WORD number/handle of structure to retrieve
+		DWORD	-> buffer for DMI structure
+		WORD	DMI read/write data selector
+		WORD	PnP BIOS read/write selector
+Return: AX = status (see #F0081) 
+Notes:	the large-model c declaration is
+	  short (*entry)(int, unsigned short *,unsigned char *, unsigned short,
+			unsigned short) ;
+	structure number 0000h will return the first SMBIOS structure; the
+	  variable is updated with the number of the next structure after each
+	  successful call, returning FFFFh if the last structure has been
+	  returned
+	this function is available in both real mode and 16-bit protected mode
+SeeAlso: #F0046,#F0048
+
+(Table F0048)
+Call System Management BIOS function 52h with:
+	STACK:	WORD	0052h (function "Set DMI Structure")
+		DWORD	-> buffer containing new data (see #F0049)
+		DWORD	-> BIOS work buffer
+		BYTE	control flags
+			bit 0: set structure instead of just validating
+			bits 7-1: reserved (0)
+		BYTE	padding
+		WORD	DMI read/write data selector
+		WORD	PnP BIOS read/write selector
+Return:	AX = status (see #F0081)
+SeeAlso: #F0025,#F0047,#F0051
+
+Format of DMI data buffer for SMBIOS function 52h:
+Offset	Size	Description	(Table F0049)
+ 00h	BYTE	operation to perform (see #F0050)
+ 01h	BYTE	offset within fixed data of the structure for the to-be-
+		  changed item
+ 02h	DWORD	change mask for BYTE/WORD/DWORD change operation
+		this value is ANDed with the existing data prior to
+		  applying the change value given below
+ 06h	DWORD	change value for BYTE/WORD/DWORD change operation
+		this value is ORed with the result of applying the
+		  change mask above to the existing data
+ 0Ah	WORD	data length for structure-add, string-change, block-change
+		for a string-change command, this field specifies the
+		  length of the string including the NUL terminator; if
+		  the length is 1 (empty string), the string is removed
+		  if the applicable access rights are met
+ 0Ch  4 BYTEs	structure header of structure to be changed/added/removed
+		(see also #F0059)
+ 10h	var	new structure data for structure-add or block-change cmd
+		new string data for string-change command
+SeeAlso: #F0048,#F0059
+
+(Table F0050)
+Values for SMBIOS structure-change operation:
+ 00h	change a single byte in the identified structure
+ 01h	change a word (two bytes) in the identified structure
+ 02h	change a DWORD (four byets) in the identified structure
+ 03h	add the identified structure to the SMBIOS structure pool
+ 04h	remove the identified structure from the SMBIOS structure pool
+ 05h	change a string in the identified structure
+ 06h	change a block of data in the identified structure
+ 07h-FFh reserved for future revisions of specification
+SeeAlso: #F0049
+
+(Table F0051)
+Call System Management BIOS function 53h with:
+	STACK:	WORD	0053h (function "Get Structure Change Information")
+		DWORD	-> SMBIOS change structure (see #F0052)
+		WORD	DMI read/write data selector
+		WORD	PnP BIOS read/write selector
+Return: AX = status (see #F0081)
+SeeAlso: #F0025,#F0048,#F0053
+
+Format of SMBIOS change structure:
+Offset	Size	Description	(Table F0052)
+ 00h	BYTE	change status
+		00h no change
+		01h other
+		02h unknown
+		03h single SMBIOS structure affected
+		04h multiple SMBIOS structures affected
+		other reserved
+ 01h	BYTE	change type
+		bits 7-2 reserved (0)
+		bit 1: structure(s) added
+		bit 0: structure(s) changed
+ 02h	WORD	structure handle (if change status == 03h)
+ 04h 12 BYTEs	reserved (0)
+Note:	if multiple structures changed, all of the SMBIOS structures must be
+	  enumerated to determine what changed
+SeeAlso: #F0051
+
+(Table F0053)
+Call System Management BIOS function 54h with:
+	STACK:	WORD	0054h (function "SMBIOS Control")
+		WORD	subfunction (see #F0054)
+		DWORD	-> data
+		BYTE	control flags
+			bits 7-1: reserved (0)
+			bit 0: perform the operation instead of just validating
+				  parameters
+		BYTE	padding
+		WORD	DMI read/write data selector
+		WORD	PnP BIOS read/write selector
+Return: AX = status (see #F0081)
+SeeAlso: #F0025,#F0051,#F0056
+
+(Table F0054)
+Values for SMBIOS function 54h subfunction:
+ 0000h	clear event log
+	data parameter must be 00000000h
+ 0001h	control event logging
+	data parameter points at 2-WORD buffer containing AND-mask and
+	  OR-mask for modifying logging values; on return, the second word will
+	  contain the prior value of the control flags (see #F0055)
+ 0002h	(v2.1+) clear event log (Type 15)
+	data parameter is 32-bit physical address of a scratch buffer for use
+	  by the BIOS, which must be writeable and at least as large as the
+	  largest-structure size reported by function 50h
+ 0003h-3FFFh reserved for future revisions of specification
+ 4000h-7FFFh reserved for BIOS vendor
+ 8000h-FFFFh reserved for system vendor
+SeeAlso: #F0053
+
+Bitfields for SMBIOS event logging control word:
+Bit(s)	Description	(Table F0055)
+ 15-3	reserved for future use (0)
+ 2	disable logging of POST errors
+ 1	enable logging of correctable memory errors
+ 0	enable overall event logging
+SeeAlso: #F0054
+
+(Table F0056)
+Call System Management BIOS function 55h with:
+	STACK:	WORD	0055h (function "Get General-Purpose NonVolatile Info")
+		DWORD	-> WORD GPNV handle (set to 0000h for first call)
+		DWORD	-> WORD (ret) minimum buffer size (in bytes)
+		DWORD	-> WORD (ret) size allocated for this GPNV
+		DWORD	-> DWORD (ret) physical base address for memory-mapped
+				  non-volatile storage (00000000h if PMode
+				  mapping not required)
+		WORD	PnP BIOS read/write selector
+Return: AX = status (see #F0081)
+	GPNV handle var set to handle of next GPNV area or FFFFh if no more
+SeeAlso: #F0025,#F0053,#F0057
+
+(Table F0057)
+Call System Management BIOS function 56h with:
+	STACK:	WORD	0056h (func "Read General-Purpose NonVolatile Data")
+		WORD	GPNV handle for area to be read
+		DWORD	-> buffer for GPNV data (must be large enough to hold
+			  entire area - use "min buffer size" from func 55h)
+		DWORD	-> WORD lock value or FFFFh to ignore
+		WORD	GPNV storage selector
+		WORD	PnP BIOS read/write selector
+Return: AX = status (see #F0081)
+	lock value set to value of the current lock if it was not FFFFh on
+	  entry and locking is supported
+SeeAlso: #F0025,#F0056,#F0058
+
+(Table F0058)
+Call System Management BIOS function 57h with:
+	STACK:	WORD	0057h (func "Write General-Purpose NonVolatile Data")
+		WORD	GPNV handle for area to be written
+		DWORD	-> buffer containing GPNV data
+		WORD	lock value (must match value set by prior read) or
+			  FFFFh for a forced write
+		WORD	GPNV storage selector
+		WORD	PnP BIOS read/write selector
+Return: AX = status (see #F0081)
+SeeAlso: #F0025,#F0057
+
+Format of SMBIOS data structure:
+Offset	Size	Description	(Table F0059)
+ 00h  4 BYTEs	structure header
+		BYTE structure type (see #F0060)
+			80h-FFh available for system/OEM-specific data
+		BYTE length of formatted data, including header
+		WORD structure handle (a unique value 0000h-FEFFh [v2.0 allows
+			  up to FFFEh])
+			handles FF00h-FFFFh are reserved for use by the SMBIOS
+			  specification
+			handles need not be contiguous -- a handle might not
+			  exist any more after a configuration change, but the
+			  BIOS may not re-assign that handle number to another
+			  structure
+---type 00h---
+ 04h	BYTE	string number of the vendor name (string numbers are 1-based)
+ 05h	BYTE	string number of the version string (00h if not present)
+ 06h	WORD	starting segment of runtime BIOS
+ 08h	BYTE	string number of BIOS release date
+ 09h	BYTE	size of BIOS ROM (stored as one less than number of 64K units)
+ 0Ah	QWORD	BIOS characteristics (see #F0061)
+ 12h	var	optional space for BIOS characteristics extension
+		  (see #F0062,#F0063)
+		(size of optional space is implied by header's length field)
+ var	var	free-form ASCIZ strings (max 64 bytes per string)
+---type 01h---
+ 04h	BYTE	string number of manufacturer name
+ 05h	BYTE	string number of product name
+ 06h	BYTE	string number of version number
+ 07h	BYTE	string number of serial number
+ 08h 16 BYTEs	(v2.1+) universal unique ID number (UUID)
+		all-FFh if not currently set
+		all-00h if not present
+ 18h	BYTE	(v2.1+) type of last wake-up event (see #F0064)
+---type 02h---
+ 04h	BYTE	string number of manufacturer name
+ 05h	BYTE	string number of product name
+ 06h	BYTE	string number of version number
+ 07h	BYTE	string number of serial number
+---type 03h---
+ 04h	BYTE	string number of manufacturer name
+ 05h	BYTE	chassis type
+		bit 7: chassis lock present
+		bits 6-0: (see #F0065)
+ 06h	BYTE	string number of version number
+ 07h	BYTE	string number of serial number
+ 08h	BYTE	string number of asset tag number
+ 09h	BYTE	(v2.1+) enclosure state at last boot (see #F0066)
+ 0Ah	BYTE	(v2.1+) power supply state at last boot
+ 0Bh	BYTE	(v2.1+) thermal state at last boot
+ 0Ch	BYTE	(v2.1+) physical security status at last boot (see #F0067)
+ 0Dh	DWORD	(v2.3+) OEM/BIOS-specific information
+---type 04h---
+ 04h	BYTE	string number of socket designation
+ 05h	BYTE	processor type (see #F0068)
+ 06h	BYTE	processor family (see #F0069)
+ 07h	BYTE	string number of processor manufacturer
+ 08h	QWORD	processor identification data (see #F0070)
+ 10h	BYTE	string number of processor version string
+ 11h	BYTE	voltage (see #F0071)
+ 12h	WORD	external clock frequency in MHz (0000h if unknown)
+ 14h	WORD	maximum internal processor speed in MHz (0000h if unknown)
+ 16h	WORD	current internal processor speed in MHz (0000h if unknown)
+ 18h	BYTE	processor status (see #F0072)
+ 19h	BYTE	processor upgrade (see #F0073)
+ 1Ah	WORD	(v2.1+) handle of L1 cache information structure, or FFFFh
+ 1Ch	WORD	(v2.1+) handle of L2 cache information structure, or FFFFh
+ 1Eh	WORD	(v2.1+) handle of L3 cache information structure, or FFFFh
+---type 05h---
+ 04h	BYTE	error-detection method
+ 05h	BYTE	error-correction capability
+ 06h	BYTE	supported memory interleave
+ 07h	BYTE	current memory interleave
+ 08h	BYTE	maximum memory module size (00h=1M, 01h=2M, 02h=4M, etc.)
+ 09h	WORD	supported memory speeds
+ 0Bh	WORD	supported memory types
+ 0Dh	BYTE	voltages supported by memory modules
+		bits 7-3: reserved (0)
+		bit 2: 2.9V
+		bit 1: 3.3V
+		bit 0: 5.0V
+ 0Eh	BYTE	number of memory slots
+ 0Fh  N WORDs	handles of memory information structures for each slot
+	BYTE	(v2.1+) enabled error-correction capabilities
+!!!ftp://download.intel.com/ial/wfm/smbios.pdf p.39
+---type 06h---
+ 04h	BYTE	string number for socket designation
+ 05h	BYTE	bank connections
+ 06h	BYTE	current memory speed in ns (00h = unknown)
+ 07h	WORD	current memory type
+ 09h	BYTE	installed size
+ 0Ah	BYTE	enabled size
+ 0Bh	BYTE	error status
+		bits 7-3: reserved (0)
+		bit 2: get error status info from event log (bits 1-0 reserved)
+		bit 1: correctable errors encountered
+		bit 0: uncorrectable errors encountered, some or all of module
+			  disabled
+---type 07h---
+ 04h	BYTE	string number of socket designation
+ 05h	WORD	cache configuration
+ 07h	WORD	maximum cache size
+ 09h	WORD	installed cache size
+ 0Bh	WORD	supported SRAM type(s)
+ 0Dh	WORD	current SRAM type
+ 0Fh	BYTE	(v2.1+) cache speed in ns (00h = unknown)
+ 10h	BYTE	(v2.1+) error correction type
+ 11h	BYTE	(v2.1+) system cache type
+ 12h	BYTE	(v2.1+) cache associativity
+---type 08h---
+------
+ var	WORD	0000h end-of-structure marker
+		(if strings are present, only a single byte of 00h is needed,
+		  because the terminating NUL of the last string forms the
+		  first	byte of the end-of-structure marker)
+Note:	structures can have new fields added in successive revisions of the
+	  SMBIOS specification, so applications should use the actual length
+	  field given in the SMBIOS structure; as of SMBIOS v2.3, structure
+	  types also have a minimum length to enable the addition of optional
+	  fields
+SeeAlso: #F0049
+
+(Table F0060)
+Values for SMBIOS structure type:
+ 00h	BIOS Information
+ 01h	System Information
+ 02h	Motherboard Information
+ 03h	system enclosure/chassis information
+ 04h	processor information
+ 05h	memory controller information
+ 06h	memory module information
+ 07h	cache information
+ 08h	port connector information
+ 09h	system slots
+ 0Ah	on-board devices
+ 0Dh	BIOS language
+ 0Eh	group associations
+ 0Fh	system event log
+ 10h	physical memory array
+ 11h	memory device information
+ 12h	memory error information
+ 13h	memory array mapped addresses
+ 14h	memory device mapped addresses
+ 15h	built-in pointing device information
+ 16h	portable battery
+ 17h	(v2.2+) system reset
+ 18h	(v2.2+) hardware security
+ 19h	(v2.2+) system power controls
+ 1Ah	(v2.2+) voltage probe
+ 1Bh	(v2.2+) cooling device
+ 1Ch	(v2.2+) temperature probe
+ 1Dh	(v2.2+) electrical current probe
+ 1Eh	(v2.2+) out-of-band remote access
+ 1Fh	(v2.3+) Boot Integrity Services (BIS) entry point
+ 20h	(v2.3+) system boot information
+ 21h	(v2.3+) 64-bit memory error information
+ 22h	(v2.3+) management device attributes
+ 23h	(v2.3+) management device component
+ 24h	(v2.3+) management device threshold information
+ 7Eh	inactive structure
+ 7Fh	end of structure table indicator
+SeeAlso: #F0059
+
+Bitfields for SMBIOS BIOS characteristics:
+Bit(s)	Description	(Table F0061)
+ 63-48	reserved for system vendor
+ 47-32	reserved for BIOS vendor
+ 31	NEC PC-98
+ 30	supports INT 10 CGA/Mono video services
+ 29	supports INT 17 printer services
+ 28	supports INT 14 serial services
+ 27	supports INT 09 and 8042 keyboard services
+ 26	supports INT 05 print-screen
+ 25	supports INT 13 3.5-inch/2.88M floppy services
+ 24	supports INT 13 3.5-inch/720K floppy services
+ 23	supports INT 13 5.25-inch/1.2M floppy services
+ 22	supports INT 13 5.25-inch/360K floppy services
+ 21	supports INT 13 for Japanese Toshiba 1.2M floppy (3.5-inch, 360rpm)
+ 20	supports INT 13 for Japanese NEC 9800 1.2M floppy (3.5-inch, 1024-byte
+	  sectors, 360rpm)
+ 19	supports Enhanced Disk Drive specification
+ 18	supports booting from PC Card (PCMCIA)
+ 17	BIOS ROM is socketed
+ 16	supports selectable boot
+ 15	supports booting from CD-ROM
+ 14	ESCD support is available
+ 13	supports VL-VESA
+ 12	allows BIOS shadowing
+ 11	upgradeable (Flash) BIOS
+ 10	supports APM
+ 9	supports Plug-and-Play
+ 8	supports PC Card (PCMCIA)
+ 7	supports PCI
+ 6	supports EISA
+ 5	supports MCA
+ 4	supports ISA
+ 3	BIOS characteristics not supported
+ 2	characteristics unknown
+ 1-0	reserved
+SeeAlso: #F0059,#F0062,#F0063
+
+Bitfields for SMBIOS v2.1+ BIOS characteristics extension byte 1:
+Bit(s)	Description	(Table F0062)
+ 7	Smart Battery supported
+ 6	supports booting from IEEE 1394 device
+ 5	supports booting from ATAPI ZIP drive
+ 4	supports booting from LS-120
+ 3	supports booting from I2O device
+ 2	supports AGP
+ 1	supports legacy USB
+ 0	supports ACPI
+SeeAlso: #F0059,#F0061,#F0063
+
+Bitfields for SMBIOS v2.3+ BIOS characteristics extension byte 2:
+Bit(s)	Description	(Table F0063)
+ 7-1	reserved for future versions
+ 0	supports BIOS Boot Specification (see #F0074)
+SeeAlso: #F0059,#F0061,#F0062
+
+(Table F0064)
+Values for SMBIOS wake-up type:
+ 00h	reserved
+ 01h	other
+ 02h	unknown wake-up method
+ 03h	APM timer
+ 04h	modem ring
+ 05h	LAN remote
+ 06h	power switch
+ 07h	PCI PME#
+ 08h	AC power restored
+SeeAlso: #F0059
+
+(Table F0065)
+Values for SMBIOS Chassis Type:
+ 01h	other
+ 02h	chassis type not known
+ 03h	desktop
+ 04h	low-profile desktop
+ 05h	pizza box
+ 06h	mini tower
+ 07h	full tower
+ 08h	portable
+ 09h	laptop
+ 0Ah	notebook
+ 0Bh	handheld
+ 0Ch	docking station
+ 0Dh	all-in-one
+ 0Eh	sub-notebook
+ 0Fh	space-saving
+ 10h	lunch box
+ 11h	main server chassis
+ 12h	expansion chassis
+ 13h	subchassis
+ 14h	bus-expansion chassis
+ 15h	peripheral chassis
+ 16h	RAID chassis
+ 17h	rack-mount
+ 18h	sealed-case PC
+SeeAlso: #F0059,#F0066,#F0067
+
+(Table F0066)
+Values for SMBIOS system enclosure/chassis state:
+ 01h	other
+ 02h	state not known
+ 03h	safe
+ 04h	warning
+ 05h	critical
+ 06h	non-recoverable
+SeeAlso: #F0059,#F0065,#F0067
+
+(Table F0067)
+Values for SMBIOS system enclosure/chassis security status:
+ 01h	other
+ 02h	not known
+ 03h	none
+ 04h	external interface locked out
+ 05h	external interface enabled
+SeeAlso: #F0059,#F0065,#F0066
+
+(Table F0068)
+Values for SMBIOS processor type:
+ 01h	other
+ 02h	unknown processor type
+ 03h	central processor
+ 04h	math processor
+ 05h	digital signal processor (DSP)
+ 06h	video processor
+SeeAlso: #F0059,#F0069,#F0070,#F0071
+
+(Table F0069)
+Values for SMBIOS processor family:
+ 01h	other
+ 02h	unknown processor family
+ 03h	8086
+ 04h	80286
+ 05h	80386
+ 06h	80486
+ 07h	8087
+ 08h	80287
+ 09h	80387
+ 0Ah	80487
+ 0Bh	Pentium
+ 0Ch	Pentium Pro
+ 0Dh	Pentium II
+ 0Eh	Pentium-MMX
+ 0Fh	Celeron
+ 10h	Pentium II-Xeon
+ 11h	reserved for future Pentium (probably Pentium III)
+ 12h	Cyrix M1 family
+ 13h-18h reserved for future M1 versions
+ 19h	AMD K5 family
+ 1Ah-1Fh reserved for future K5 versions
+ 20h	PowerPC family
+ 21h	PowerPC 601
+ 22h	PowerPC 603
+ 23h	PowerPC 603+
+ 24h	PowerPC 604
+ 30h	DEC Alpha family (Pentium Pro for some v2.0 implementations)
+ 40h	MIPS family
+ 50h	Sun SPARC family
+ 60h	Motorola 68040 family
+ 61h	68xxx
+ 62h	68000
+ 63h	68010
+ 64h	68020
+ 65h	68030
+ 70h	Hobbit family
+ 80h	Weitek
+ 90h	Hewlett-Packard PA-RISC family
+ A0h	NEC V30 family
+ B0h	
+SeeAlso: #F0059,#F0068
+
+Bitfields for SMBIOS processor identification data:
+Bit(s)	Description	(Table F0070)
+---x86 supporting CPUID---
+ 63-32	EDX returned by CPUID with EAX=1
+ 31-0	EAX returned by CPUID with EAX=1
+---x86 not supporting CPUID---
+ 63-16	reserved
+ 15-0	contents of DX at CPU reset
+SeeAlso: #F0059,#F0068
+
+Bitfields for SMBIOS processor voltage:
+Bit(s)	Description	(Table F0071)
+ 7	=0 legacy mode
+	=1 new mode
+---bit7=0---
+ 6-3	reserved (0)
+ 2	supports 2.9V
+ 1	supports 3.3V
+ 0	supports 5.0V
+---bit7=1---
+ 6-0	current CPU voltage * 10 (12h = 1.8V)
+SeeAlso: #F0059,#F0068,#F0072
+
+Bitfields for SMBIOS processor status:
+Bit(s)	Description	(Table F0072)
+ 7	reserved (0)
+ 6	CPU socket is populated
+ 5-3	reserved (0)
+ 2-0	CPU status
+	000 unknown
+	001 CPU enabled
+	010 CPU disabled by user (via BIOS setup)
+	011 CPU disabled by BIOS (POST error)
+	100 CPU idle
+	101 reserved
+	110 reserved
+	111 other
+SeeAlso: #F0059,#F0068,#F0071
+
+(Table F0073)
+Values for SMBIOS processor upgrade:
+ 01h	other
+ 02h	unknown processor upgrade
+ 03h	daughter board
+ 04h	ZIF socket
+ 05h	replaceable piggyback
+ 06h	none
+ 07h	LIF socket
+ 08h	Slot 1
+ 09h	Slot 2
+SeeAlso: #F0059,#F0068
+
+(Table F0074)
+Call BIOS Boot Specification function 60h with:
+	STACK:	WORD	0060h (function "Get Version and Installation Check")
+		DWORD	-> WORD buffer for BIOS Boot Spec version number (BCD)
+Return: AX = status (see #F0081)
+	   0081h if BIOS Boot not available
+Note:	the large-model C declaration is
+	  int (*entry)(int, int *) ;
+SeeAlso: #F0075,#F0076,#F0077,#F0078
+
+(Table F0075)
+Call BIOS Boot Specification function 61h "Get IPL Device Count" with:
+	STACK:	WORD	0061h (function "Get IPL Device Count")
+		DWORD	-> WORD buffer for number of IPL devices in system
+		DWORD	-> WORD buffer for max. number of IPL devices supported
+		DWORD	-> WORD buffer for size of an IPL table entry
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned int *, unsigned int *, unsigned int *) ;
+SeeAlso: #F0074,#F0076,#F0077,#F0078
+
+(Table F0076)
+Call BIOS Boot Specification function 62h with:
+	STACK:	WORD	0062h (function "Get Boot Priority and IPL Table")
+		DWORD	-> buffer for copy of boot priority stored in NVRAM
+		DWORD	-> buffer for IPL table
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *, unsigned char *) ;
+	the size of the boot priority buffer must be at least MaxIPL bytes
+	  (see #F0075), of which the first CurrentIPL bytes are valid, with
+	  the lowest-valued byte indicating the device which should attempt
+	  booting first, the next lowest second, etc.
+	the size of the IPL table buffer must be at least MaxIPL + IPLsize
+	  bytes (see #F0075)
+SeeAlso: #F0074,#F0075,#F0077,#F0078
+
+(Table F0077)
+Call BIOS Boot Specification function 63h "Set Boot Priority" with:
+	STACK:	WORD	0063h (function "Set Boot Priority")
+		DWORD	-> buffer containing new boot priority list (see #F0076)
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned char *) ;
+SeeAlso: #F0074,#F0075,#F0076,#F0078
+
+(Table F0078)
+Call BIOS Boot Specification function 64h with:
+	STACK:	WORD	0064h (function "Get IPL Device from Last Boot")
+		DWORD	-> WORD buffer for index in IPL table of boot device
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, unsigned int *) ;
+SeeAlso: #F0074,#F0075,#F0076,#F0077,#F0079
+
+(Table F0079)
+Call BIOS Boot Specification function 65h "Get Boot First" with:
+	STACK:	WORD	0065h (function "Get Boot First")
+		DWORD	-> WORD buffer for index in IPL table of current
+			  first boot device
+Return: AX = status (see #F0081)
+Notes:	the large-model C declaration is
+	  int (*entry)(int, unsigned int *) ;
+	the boot-first device will attempt booting before the boot-priority
+	  list is considered
+SeeAlso: #F0074,#F0075,#F0076,#F0077,#F0080
+
+(Table F0080)
+Call BIOS Boot Specification function 66h "Set Boot First" with:
+	STACK:	WORD	0066h (function "Set Boot First")
+		DWORD	-> WORD containing index in IPL table of new device
+			  from which to attempt booting first before
+			  considering the boot priority list
+Return: AX = status (see #F0081)
+Note:	the large-model C declaration is
+	  int (*entry)(int, 
+SeeAlso: #F0074,#F0075,#F0076,#F0077,#F0079
+
+(Table F0081)
+Values for Plug-and-Play function status code:
+ 0000h	successful
+ 0001h	boot device resource configuration not saved to nonvolatile memory
+ 0002h-007Eh reserved for future warnings
+ 0055h	unable to read/write Extended System Config Data from nonvolatile mem
+ 0056h	no valid Extended System Configuration Data in nonvolatile storage
+ 0059h	user's buffer was too small for Extended System Configuration Data
+ 007Fh	device could not be configured statically, but dynamic config succeeded
+ 0081h	unknown function
+ 0082h	unsupported function
+ 0083h	invalid device node (or DMI structure) number/handle
+ 0084h	bad parameter
+ 0085h	failure setting device node
+	invalid DMI/SMBIOS subfunction
+ 0086h	no pending events
+ 0087h	system not docked
+	(SMBIOS) out of space to add data
+ 0088h	no ISA Plug-and-Play cards installed
+ 0089h	unable to determine docking station's capabilities
+ 008Ah	undocking sequence failed because system unit does not have a battery
+ 008Bh	resource conflict with a primary boot device
+ 008Ch	buffer provided by user was too small
+ 008Dh	must use ESCD support for specified device
+	(SMBIOS) "set" request failed (one or more fields read-only)
+ 008Eh	message not supported
+ 008Fh	hardware error
+---SMBIOS v2.1+ ---
+ 0090h	locking not supported for the GPNV handle
+ 0091h	GPNV already locked
+ 0092h	invalid GPNV lock value
+SeeAlso: #01243
+
+Format of Option ROM header:
+Offset	Size	Description	(Table F0082)
+ 00h	WORD	AA55h signature
+ 02h	BYTE	length of option ROM in 512-byte pages (should be multiple 4)
+ 03h  4 BYTEs	standard initialization entry point
+		(called with ES:DI -> PnP Installation Structure)
+ 07h 19 BYTEs	reserved
+ 1Ah	WORD	offset to PnP Expansion Header
+
+Format of Expansion Header:
+Offset	Size	Description	(Table F0083)
+ 00h  4 BYTEs	signature ("$PnP" for Plug-and-Play expansion header)
+ 04h	BYTE	structure version number
+ 05h	BYTE	length of entire header in paragraphs
+ 06h	WORD	offset to next header or 0000h
+ 08h	BYTE	reserved
+ 09h	BYTE	checksum (sum of all bytes in header, including this one,
+		  mod 256 should equal zero)
+---PnP Expansion Header---
+ 0Ah	DWORD	Plug-and-Play device identifier
+ 0Eh	WORD	offset of manufacturer ID string in Option ROM or 0000h
+ 10h	WORD	offset of product name string in Option ROM or 0000h
+ 12h  3 BYTEs	device type code (see #F0085)
+		byte 0: base type (general kind of device)
+		byte 1: device subtype
+		byte 2: device programming interface
+ 15h	BYTE	device indicator flags (see #F0084)
+ 16h	WORD	Boot Connection Vector offset (real/protected mode) or 0000h
+		(see #F0089)
+ 18h	WORD	Disconnect Vector offset (real/protected mode) or 0000h
+		far-called by system BIOS is boot attempt failed
+ 1Ah	WORD	bootstrap entry point (real/protected mode) or 0000h
+ 1Ch	WORD	reserved (0)
+ 1Eh	WORD	Static Resource Information offset (real/prot mode) or 0000h
+		should be used only by non-PnP devices to make them PnP-aware
+		  (see #F0090)
+
+Bitfields for Plug-and-Play device indicator flags:
+Bit(s)	Description	(Table F0084)
+ 7	supports Device Driver Initialization model
+ 6	may be shadowed in RAM
+ 5	may be read cached
+ 4	only required if device used for booting
+ 3	reserved (0)
+ 2	device is Initial Program Load (IPL, i.e. boot) device
+ 1	device is Input device
+ 0	device is Display device
+SeeAlso: #F0085
+
+(Table F0085)
+Values for Plug-and-Play device type code:
+Type	Subtype		Description
+ 00h	---	reserved
+ 01h	---	mass storage
+	00h	  SCSI controller
+	01h	  IDE controller
+			programming interface (see #F0087)
+	02h	  floppy controller (NEC 765-compatible)
+	03h	  IPI controller
+	04h	  RAID controller
+	80h	  other
+ 02h	---	network interface controller
+	00h	  Ethernet
+	01h	  Token Ring
+	02h	  FDDI
+	03h	  ATM
+	80h	  other
+ 03h	---	display controller
+	00h	  VGA
+			programming interface 00h = VGA registers
+			programming interface 01h = 8514/A-compatible registers
+	01h	  SuperVGA
+	02h	  XGA
+	80h	  other
+ 04h	---	multi-media controller
+	00h	  video
+	01h	  audio
+	80h	  other
+ 05h	---	memory
+	00h	  RAM
+	01h	  Flash memory
+	80h	  other
+ 06h	---	bridge controller
+	00h	  host processor bridge
+	01h	  ISA bridge
+	02h	  EISA bridge
+	03h	  MicroChannel bridge
+	04h	  PCI bridge
+	05h	  PCMCIA bridge
+	06h	  NuBus bridge
+	07h	  CardBus bridge
+	80h	  other
+ 07h	---	communications device
+	00h	  XT-compatible RS-232
+	01h	  AT-compatible parallel port
+	80h	  other
+ 08h	---	system peripherals
+	00h	  8259-compatible Programmable Interrupt Controller
+	01h	  8237-compatible DMA Controller
+	02h	  8254-compatible system timer
+	03h	  real-time clock
+	80h	  other
+ 09h	---	input device
+	00h	  keyboard controller
+	01h	  digitizer/pen
+	02h	  mouse
+	80h	  other
+ 0Ah	---	docking station
+	00h	  generic docking station
+	80h	  other
+ 0Bh	---	CPU
+	00h	  386-based
+	01h	  486-based
+	02h	  Pentium-based
+	03h	  Pentium-Pro (P6)
+	10h	  DEC Alpha
+	40h	  coprocessor
+	80h	  other
+ 0Ch	---	Serial Bus controller
+	00h	  Firewire (IEEE 1394)
+	01h	  ACCESS.bus
+	02h	  SSA
+	03h	  Universal Serial Bus (USB)
+			programming interface 10h = OpenHCI Host Controller
+	04h	  Fiber Channel
+	80h	  other
+SeeAlso: #F0084,#F0086,#00878
+
+(Table F0086)
+Values for Plug-and-Play generic EISA device ID:
+ PNP0xxx	system devices
+ PNP00xx	  interrupt controller
+ PNP0000		AT interrupt controller
+ PNP0001		EISA interrupt controller
+ PNP0002		MCA interrupt controller
+ PNP0003		APIC
+ PNP0004		Cyrix SLiC MP interrupt controller
+ PNP01xx	  timer
+ PNP0100		AT timer
+ PNP0101		EISA timer
+ PNP0102		MCA timer
+ PNP02xx	  DMA controller
+ PNP0200		AT DMA controller
+ PNP0201		EISA DMA controller
+ PNP0202		MCA DMA controller
+ PNP03xx	  keyboard
+ PNP0300		PC/XT keyboard controller (83-key)
+ PNP0301		PC/AT keyboard controller (84-key)
+ PNP0302		PC/XT keyboard controller (84-key)
+ PNP0303		IBM enhanced keyboard (101/102-key, PS/2 mouse)
+ PNP0304		Olivetti keyboard (83-key)
+ PNP0305		Olivetti keyboard (102-key)
+ PNP0306		Olivetti keyboard (86-key)
+ PNP0307		enhanced keyboard with Windows keys
+ PNP0308		General Input Device Emulation Interface (GIDEI) legacy
+ PNP0309		Olivetti keyboard (A101/102-key)
+ PNP030A		AT&T 302 keyboard
+ PNP04xx	  parallel port
+ PNP0400		standard printer port
+ PNP0401		ECP printer port
+ PNP05xx	  serial port
+ PNP0500		standard 8250/16450 UART
+ PNP0501		16550A-compatible UART
+ PNP06xx	  disk controller
+ PNP0600		generic ESDI/IDE/ATA controller
+ PNP0601		Plus Hardcard II
+ PNP0602		Plus Hardcard IIXL/EX
+ PNP0700	  standard floppy controller
+ PNP0800	  PC speaker
+ PNP09xx	  display adapter
+ PNP0900		VGA-compatible
+ PNP0Axx	  periperal bus
+ PNP0A00		ISA
+ PNP0A01		EISA
+ PNP0A02		MCA
+ PNP0A03		PCI
+ PNP0A04		VESA/VL bus
+ PNP0A05		generic ACPI bus
+ PNP0A06		extended IO bus
+ PNP0A07		SMB bus
+ PNP0A08		ACPI three-wire device bus
+ PNP0A09		ACPI two-wire device bus
+ PNP0B00	  AT-style real-time clock
+ PNP0Cxx	  BIOS/system board
+ PNP0C00		Plug-and-Play BIOS
+ PNP0C01		system board
+ PNP0C02		(PnP-reserved resources)
+ PNP0C03		Plug-and-Play event notification interrupt
+ PNP0C04		math coprocessor
+ PNP0C08		ACPI driver/BIOS
+ PNP0C09		embedded controller device
+ PNP0C0A		control method battery
+ PNP0C0B		fan
+ PNP0C0C		power button
+ PNP0C0D		lid
+ PNP0Exx	  PCMCIA controller chipset
+ PNP0E00		Intel 82365-compatible
+ PNP0Fxx	  mouse
+ PNP8xxx	network adapter
+ PNP9xxx	modem
+ PNPAxxx	SCSI controller/proprietary CD-ROM controller
+ PNPA000		Adaptec 154x-compatible
+ PNPA001		Adaptec 174x-compatible
+ PNPA002		Future Domain 16-700-compatible
+ PNPBxxx	sound/video/multimedia
+ PNPB000		Sound Blaster 1.5
+ PNPB001		Sound Blaster 2.0
+ PNPB002		Sound Blaster Pro
+ PNPB004		Thunderboard
+ PNPB005		Adlib-compatible FM synthesis
+ PNPB006		MPU-401
+ PNPB007		Microsoft Windows Sound System
+ PNPB008		Compaq Waveform
+ PNPB010		Motion Video device (MCI)
+ PNPB011		MIDI Sequencer (MCI)
+ PNPB012		Wave Audio (MCI)
+ PNPB013		VISCA VCR (MCI)
+ PNPB014		Pioneer Laserdisk (MCI)	
+ PNPB015		CD Audio (MCI)
+ PNPB020		Yamaha OPL3-compatible FM synthesis
+ PNPB02F		joystick/game port
+ ACPI0001	three-wire serial memory device
+ ACPI0002	two-wire serial memory device
+SeeAlso: #F0085,#F0088
+
+Bitfields for Plug-and-Play IDE programming interface:
+Bit(s)	Description	(Table F0087)
+ 7	bus mastering (read-only)
+ 6-4	reserved (read-only)
+ 3	secondary IDE mode bit is writable (read-only)
+ 2	secondary IDE mode (0 = legacy, 1 = native)
+ 1	primary IDE mode bit is writable (read-only)
+ 0	primary IDE mode (0 = legacy, 1 = native)
+SeeAlso: #F0085
+
+(Table F0088)
+Values for data tags:
+ 22h	IRQ descriptor, no flags
+ 23h	IRQ descriptor, with flags
+ 2Ah	DMA descriptor
+ 30h	Dependent Function start
+ 31h	Dependent Function start, with priority byte
+ 38h	Dependent Function end
+ 47h	I/O port descriptor
+ 4Bh	fixed-location I/O port descriptor
+ 78h	"END_TAG" end of resource descriptors
+SeeAlso: #F0086
+
+(Table F0089)
+Values Boot Connection Vector is called with:
+	AX = which vectors to hook
+	   bit 2: connect as IPL (INT 13)
+	   bit 1: connect as primary video (INT 10)
+	   bit 0: connect as primary input (INT 09)
+	ES:DI -> system BIOS PnP Installation Check Structure
+	BX = Card Select Number for this card (ISA bus only)
+	DX = read data port (ISA only) or FFFFh
+SeeAlso: #F0090
+
+(Table F0090)
+Values Static Resource Information vector is called with:
+	ES:DI -> buffer for device's static resource config info (at least 1024
+		  bytes)
+SeeAlso: #F0089
+
+Format of Plug-and-Play System Device Node:
+Offset	Size	Description	(Table F0091)
+ 00h	WORD	size of device node in bytes
+ 02h	BYTE	device node number/handle
+ 03h	DWORD	EISA product identifier
+ 07h  3 BYTEs	device type code
+ 0Ah	WORD	attribute flags
+		bits 15-9 reserved (0)
+		bits 8-7: configurability
+		    00 can only be statically configured for next boot
+		    01 can be dynamically configured at runtime
+		    10 reserved
+		    11 can only be dynamically configured
+		bit 6: removable device
+		bit 5: docking station
+		bit 4: capable of being primary IPL (boot) device
+		bit 3: capable of being primary input device
+		bit 2: capable of being primary output device
+		bit 1: device is not configurable
+		bit 0: device can not be disabled
+ 0Ch	var	allocated resource configuration descriptors
+	var	possible resource configuration descriptors
+	var	compatible device identifiers
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - POST Memory Manager Specification (PMM) v1.0
+InstallCheck:	scan paragraph boundaries E000h to FFFFh for signature string
+	  "$PMM" followed by a valid PMM header structure (see #F0092)
+Note:	the PMM is only available at system boot -- between the completion
+	  of the memory check and the call to INT 19; this includes Option
+	  ROM initialization and Plug-and-Play Boot Connection Vectors, but
+	  not the Bootstrap Entry Vector (which is called after INT 19)
+SeeAlso: INT 2F/AX=4300h,INT 67/AH=40h
+
+Format of POST Memory Manager Specification structure:
+Offset	Size	Description	(Table F0092)
+ 00h  4 BYTEs	signature "$PMM"
+ 04h	BYTE	structure version number (01h)
+ 05h	BYTE	length of structure in bytes
+ 06h	BYTE	checksum of structure (value needed to force byte-wise sum
+		of entire structure to be 00h)
+ 07h	DWORD	-> PMM entry point (real mode only) (see #F0093)
+ 0Bh  5 BYTEs	reserved (0)
+SeeAlso: #F0024
+
+(Table F0093)
+Call POST Memory Manager Specification entry point with:
+	STACK:	WORD	function number
+			0000h pmmAllocate (see #F0094)
+			0001h pmmFind (see #F0095)
+			0002h pmmDeallocate (see #F0096)
+		additional parameters vary by function
+Notes:	PMM calls use standard large-model C-language calling conventions
+	the caller must provide at least 256 bytes of stack space; BIOSes
+	  which support this specification will provide at least 1024 bytes
+	  of stack space when calling a ROM initialization vector, Boot
+	  Connection Vector, or Bootstrap Entry Vector (thus allowing the
+	  Option ROM's code to provide sufficient stack space when calling
+	  the PMM)
+
+(Table F0094)
+Call PMM "pmmAllocate" entry point with:
+	STACK:	WORD	0000h (function "pmmAllocate")
+		DWORD	length of memory block, in paragraphs
+			if 00000000h, only get size of largest available block
+		DWORD	handle to assign to memory block, or FFFFFFFh for
+			  "anonymous" block
+		WORD	option flags
+			bit 0: allocate from conventional memory
+			bit 1: allocate from extended memory
+			bit 2: use alignment based on least-significant set
+				bit of requested length
+Return: DX:AX = 32-bit physical address of allocated memory block, or
+	      size of largest available block in paragraphs, or
+	      00000000h if specified handle is already in use, or
+	      FFFFFFFFh if allocation failed
+Notes:	at least one of bits 0 and 1 must be set in the option flags; both
+	  may be set if the location of the memory block is not important
+	the specification requires that an Option ROM must use handles
+	  compliant with the Plug-and-Play specification (high 16 bits are
+	  manufacturer's vendor ID, low 16 bits are vendor-defined); handles
+	  whose highest bit is set or highest six bits are all clear are
+	  reserved for the BIOS, and the BIOS may flag attempts to use such
+	  reserved handles
+SeeAlso: #F0093,#F0095,#F0096
+
+(Table F0095)
+Call PMM "pmmFind" entry point with:
+	STACK:	WORD	0001h (function "pmmFind")
+		DWORD	handle to be found
+Return: DX:AX = 32-bit physical address of allocated memory block, or
+	      00000000h if handle is not in use
+Desc:	get the address of the memory block associated with the given handle
+SeeAlso: #F0093,#F0094,#F0096
+
+(Table F0096)
+Call PMM "pmmDeallocate" entry point with:
+	STACK:	WORD	0002h (function "pmmDeallocate")
+		DWORD	physical address of block (as returned by pmmAllocate)
+Return: DX:AX = FFFFFFFFh on error
+Notes:	the memory block is cleared to all zeros by the PMM
+	invalid functions (0003h-FFFFh) return DX:AX = FFFFFFFFh
+SeeAlso: #F0093,#F0094,#F0095
+--------b-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - BIOS Boot Specification (BBS)
+InstallCheck:	perform Plug-and-Play installation check, then call PnP
+	  function 60h
+SeeAlso: @xxxxh:xxxxh"Plug-and-Play"
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - QEMM Programming Interface (QPI)
+InstallCheck:	see INT 67/AH=3Fh
+SeeAlso: INT 67/AH=3Fh
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - QEXT.SYS Private API
+InstallCheck:	see INT 15/AX=11DEh
+SeeAlso: INT 15/AX=11DEh
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Quarterdeck VIDRAM
+InstallCheck:	see INT 2F/AX=D201h/BX=5649h
+SeeAlso: INT 2F/AX=D201h/BX=5649h
+--------s-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - SoundBlaster Speech Driver
+InstallCheck:	see INT 2F/AX=FBFBh
+SeeAlso: INT 2F/AX=FBFBh
+--------k-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Stacker
+InstallCheck:	see INT 2F/AX=4A12h/CX=5354h
+SeeAlso: INT 2F/AX=4A12h/CX=5354h
+--------s-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - VESA Audio Interface Driver
+InstallCheck:	see INT 10/AX=4F13h/BX=0002h
+SeeAlso: INT 10/AX=4F13h/BX=0002h
+--------m-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - Virtual Control Program Interface (VCPI) - Protected-Mode
+InstallCheck:	see INT 67/AX=DE01h
+SeeAlso: INT 67/AX=DE01h
+--------N-@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - WEB v4.02 - MODULE APIs
+InstallCheck:	see INT 2F/AH=EEh
+SeeAlso: INT 2F/AH=EEh
+---------------------------------------------
+
+----------@xxxxxxxx--------------------------
+CALL xxxxh:xxxxh - 
+InstallCheck:	
+SeeAlso: 
+--------!---Admin----------------------------
+Highest Table Number = F0096
+--------!---FILELIST-------------------------
+Please redistribute all of the files comprising the interrupt list (listed at
+the beginning of the list and in INTERRUP.1ST) unmodified as a group, in a
+quartet of archives named INTER61A through INTER61D (preferably the original
+authenticated PKZIP archives), and the utility and hypertext conversion
+programs in two additional archives called INTER61E.ZIP and INTER61F.ZIP
+
+Copyright (c) 1989-1999,2000 Ralf Brown
+--------!---CONTACT_INFO---------------------
+E-mail: ralf@pobox.com (currently forwards to ralf@telerama.lm.com)

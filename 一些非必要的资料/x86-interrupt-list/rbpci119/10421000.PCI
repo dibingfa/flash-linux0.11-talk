@@ -1,0 +1,24 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 10421000.PCI = Vendor 1042h, Device 1000h -- PC Techn. RZ-1000 
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+Everything preceding a line beginning with the six characters "!begin" is
+a comment and will be ignored (with the proviso that the total file size
+not exceed 64K).  Everything from the !begin line to a line starting with
+the four characters "!end" forms part of the device description, in a
+format similar to that used for printf().
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+PC Technology RZ-1000 registers in detail:
+ Read-Ahead Mode: %[40:13]ed
+ ?:               %[40:31-0]8x
+ ?:               %[44:31-0]8x
+ ?:               %[48]2x %[49]2x %[4A]2x %[4B]2x %[4C]2x %[4D]2x %[4E]2x %[4F]2x
+!end
+
+%! end of file

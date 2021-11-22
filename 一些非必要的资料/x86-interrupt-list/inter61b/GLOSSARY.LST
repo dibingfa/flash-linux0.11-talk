@@ -1,0 +1,1074 @@
+GLOSSARY			Release 60		Last change 03jan99
+Copyright (c) 1989,1990,1991,1992,1993,1994,1995,1996,1997,1998,1999 Ralf Brown
+
+A20
+	(Address line 20) The 80286 and higher CPUs allow addresses in
+real mode to extend slightly beyond the one megabyte mark, which causes
+an incompatibility with some older programs which expect such addresses
+to wrap back to the beginning of the address space.  For complete
+compatibility with the 8088, newer machines thus contain circuitry
+which permits the twenty-first address line (A20) to be disabled.  The
+CPU then effectively has only twenty address lines in real mode, just
+as the 8088 does, and addresses which would extend beyond the one
+megabyte mark wrap to the beginning of the address space.  See also
+High Memory Area, Real Mode.
+
+ABIOS
+	(Advanced BIOS) The IBM XT/286 and PS/2 models with 80286 or
+higher processors contain two separate BIOSes.	The ABIOS is a
+protected-mode BIOS which is used by OS/2.  For machines without an
+ABIOS, such as the IBM AT, OS/2 loads the equivalent of the ABIOS from
+disk.  see also CBIOS
+
+ACCESS.bus
+	A further development of the I2C bus which forms the physical layer
+of the Universal Serial Bus.  Because ACCESS.bus is used for communication with
+external devices, it includes power and ground wires in addition to I2C's clock
+and data lines, and permits twice the current draw (6ma) on the clock and data
+lines.	see also I2C, SMBus.
+
+API
+	(Application Program[ming] Interface) The defined set of calls
+which a program may make to interact with or request services of the
+operating system or environment under which it is running.  Because the
+inputs and outputs of the calls are well-defined, a program using the
+API can continue using the identical calls even if the internal
+organization of the program providing the API changes.
+
+APL
+	(A Programming Language) An interactive, mathematically-
+oriented language which is well-suited to manipulating matrices.
+Originally using greek letters and numerous special symbols, thus
+requiring a special display, versions are now available which use
+keywords in place of the special symbols.
+
+ASCIZ
+	A NUL-terminated ASCII string.	The ASCIZ string "ABC" consists
+of the four bytes 41h, 42h, 43h, and 00h.  Unless otherwise specified,
+maximum lengths given in the interrupt list do not include the
+terminating NUL.
+
+AVATAR
+	(Advanced Video Attribute Terminal Assembler and Recreator) A
+set of control codes which may be used to affect the output of
+characters to the screen on systems equipped with an appropriate
+driver.	 Similar in intent to ANSI sequences, AVATAR has shorter
+command sequences and provides additional PC-specific functionality.
+AVATAR is primarily used by the Opus and Maximus bulletin board systems
+(it was designed by one of the developers of the Opus system).
+
+BASIC
+	(Beginner's All-purpose Symbolic Instruction Code) A
+programming language originally designed as a means of teaching
+FORTRAN.  There are many variations of BASIC with differing
+capabilities; the majority are interpreted but compiled BASIC is
+becoming more popular.	All genuine IBM personal computers (including
+the latest PS/2 models) come equipped with a cassette-based BASIC
+interpreter in ROM.
+
+BCD
+	(Binary Coded Decimal) A method of data storage where two
+decimal digits are stored in each byte, one in the upper four bits and
+the other in the lower four bits.  Since only the values 0 through 9
+are used in each half of a byte, BCD values can be read as decimal
+numbers on a hexadecimal display of memory or a file.
+
+Big-Endian
+	One of the two major ways of organizing multi-byte numeric
+values in memory.  A big-endian layout places the most significant byte
+of the value in the lowest (first) memory location, i.e. 12345678h is
+stored as 12h 34h 56h 78h.  Motorola processors are big-endian.	 Compare
+Little-Endian.
+
+BIOS
+	(Basic Input/Output System) A set of standardized calls giving
+low-level access to the hardware.  The BIOS is the lowest software
+layer above the actual hardware and serves to insulate programs (and
+operating systems) which use it from the details of accessing the
+hardware directly.
+
+BIOS Parameter Block
+	The BIOS Parameter Block stores the low-level layout of a
+drive.	See also INT 21h Function 53h.
+
+bit-banging
+	The process of sending data to or reading data from a serial
+device by raising and lowering a data line in the proper sequence
+(writing), or polling a data line and determining the bit sequence
+represented by the detected transitions and their timing.  It is
+equivalent to emulating a UART in software.
+
+Boot
+	To start up the computer or operating system. The term "boot"
+is a contraction of "bootstrap", which in turn comes from the
+expression "to lift oneself by one's boot straps."  The ROM BIOS on IBM
+PCs and compatibles reads in the first sector of the disk, which
+contains a short (less than 500 bytes) program that reads in a portion
+of the operating system, which in turn reads in the remainder of the
+operating system.  See also IPL.
+
+Boot Drive
+	The disk drive from which the operating system was booted.  See
+also Boot.
+
+BPB
+	see BIOS Parameter Block
+
+Breakpoint
+	When debugging, a memory location which when accessed causes a
+break in the normal flow of execution and the invocation of the
+debugger.  Used to let a program run at full speed until a certain
+instruction is reached or (less frequently) a particular data item is
+accessed or changed.
+
+Cache
+	Caching is a method of increasing performance by keeping
+frequently-used data in a location which is more quickly accessed. The
+most common caches are disk caches (store disk sectors in RAM) and RAM
+caches (store portions of main memory in special high-speed RAM which
+may be accessed as fast as the CPU is capable of accessing memory).
+See also Delayed Write, Write-Through.
+
+Callback
+	A call to a specified function made by the operating system or
+operating environment when a request (usually an asynchronous request)
+completes.  This permits the calling program to continue operating while
+the request is processed yet still be aware of its completion
+immediately without the need to constantly poll the request's status.
+See also Callout.
+
+Callout
+	A call made by the operating system, operating environment, or
+an application program on various events, which may be intercepted by
+other software which is interested in the current state of the system.
+See also Callback, External Device Interface.
+
+CAS
+	see Communicating Applications Specification
+
+CBIOS
+	(Compatibility BIOS) The IBM XT/286 and PS/2 models with 80286
+or higher processors contain two separate BIOSes.  The CBIOS is a
+real-mode BIOS which is compatible with the earlier products in the IBM
+PC family and PS/2 models with 8086 processors.	 See also ABIOS.
+
+CDS
+	see Current Directory Structure
+
+CGA
+	(Color/Graphics Adapter) One of the two video display boards
+introduced together with the original IBM PC.  See also HGC, MDA.
+
+Clock Tick
+	1/18.2 second, or approximately 55 milliseconds.  This is the
+rate at which the IBM PC's system clock is updated, derived by dividing
+1.19 MHz (1/4 of the original PC's 4.77 MHz CPU clock) by 65536 (the
+highest divisor possible on the 8253/8254 timer chip).
+
+CMOS
+	(Complementary Metal-Oxide-Semiconductor) A type of integrated
+circuit design known for its low power consumption.
+
+CMOS RAM
+	A small amount (typically 64 or 128 bytes) of memory in the system's
+real-time clock chip that is preserved by the clock's battery and is used for
+storing configuration information.  See also Real-Time Clock.
+
+Communicating Applications Specification
+	DCA and Intel's standard programmatic interface for sending and
+receiving FAXes via any of a number of internal FAX boards.
+
+CP/M
+	(Control Program for Microcomputers) An early operating system
+for micros based on the 8-bit Intel 8080 CPU (and later the compatible
+8085 and Zilog Z80 CPUs).  MSDOS version 1.0 was essentially a clone of
+CP/M for the Intel 8086.
+
+CP/M-86
+	One of the three operating systems offered by IBM for its
+original PC (the other two were MSDOS and the UCSD p-System).  It has
+since evolved into DR-DOS version 6 and Novell DOS 7.
+
+CPU
+	(Central Processing Unit) The microprocessor which executes
+programs on your computer.
+
+Current Directory Structure
+	The data record used by DOS to keep track of the current
+directory on a drive; whether the drive is valid, network, SUBSTituted,
+or JOINed; and other pertinent information.  See also INT 21h Function
+52h.
+
+Cylinder
+	The set of concentric tracks of data located at the same
+position on each data-bearing surface of the disk. A double-sided
+floppy will contain two tracks per cylinder.
+
+DAC
+	(Digital-to-Analog Converter) A hardware device (in its simplest
+form, nothing more than a set of interconnected resistors) which converts
+a digital number into an analog signal whose voltage is proportional to
+the value of the digital number.  VGA and later color video boards use
+DACs to convert color values into the analog signals sent to the display;
+sound boards normally use DACs as well.
+
+DCC
+	(Display Combination Code) A number which indicates both the
+type of display adapter board and the type of monitor attached to the
+video board.
+
+Delayed Write
+	A form of caching in which control is returned before the data is
+actually written to the storage media.	See also Cache, Write-Through.
+
+Device Driver
+	An interface module between the device-independent portions of
+the operating system and an actual hardware device which converts
+device-independent requests into the actual sequence of device
+operations to perform the requested action.  IO.SYS contains the
+standard, built-in MSDOS device drivers such as CON, COM1, AUX, PRN,
+etc.  See also INT 21h Function 52h and INT 2Fh Function 0802h.
+
+Device Driver Request Header
+	The data structure passed to a device driver which contains the
+command to be executed, its parameters, and space for a returned status
+and data values.  See INT 2Fh Function 0802h.
+
+DGIS
+	(Direct Graphics Interface Standard)
+
+Direct Memory Access
+	A method whereby peripherals may transfer data into or out of
+main memory without the involvement of the CPU.
+
+Disk Transfer Address
+	The Disk Transfer Address indicates where functions which do
+not take an explicit data address will read or store data.  Although
+the name implies that only disk accesses use this address, other
+functions use it as well.  See INT 21h Function 4Eh for an example of
+the DTA's use.
+
+DLL
+	see Dynamic Link Library
+
+DMA
+	see Direct Memory Access
+
+DOS Extender
+	A program which allows a program to run in protected mode while still
+retaining access to real-mode MSDOS services.  See also Protected Mode.
+
+DOS Parameter List
+	The DOS Parameter List is used to pass arguments to SHARE and
+network functions.  See also INT 21h Function 5D00h.
+
+DOS Protected-Mode Interface
+	An API which provides basic services for protected-mode programs to
+allocate memory, invoke real-mode software, etc.  See also Virtual Control
+Program Interface.
+
+DOS Protected-Mode Services
+	An API designed by Novell (and first released with Novell DOS 7) which
+allows TSRs to store most of themselves outside of the first megabyte of
+memory.
+
+DPB
+	see Drive Paramter Block
+
+DPL
+	see DOS Parameter List
+
+DPMI
+	see DOS Protected-Mode Interface
+
+DPMS
+	see DOS Protected-Mode Services
+
+DRAM
+	(Dynamic Random Access Memory) RAM memory which essentially consists
+of a tiny capacitor for each bit of memory.  Since capacitors do not hold
+a charge indefinitely, DRAM must be constantly refreshed to avoid losing
+its contents.  Also, the process of reading the contents of the memory are
+destructive, meaning extra time must be spent restoring the contents of
+memory addresses which are accessed, so DRAM is slower than SRAM.  See also
+Refresh, SRAM.
+
+Drive Parameter Block
+	The DOS Drive Parameter Block stores the description of the
+media layout for a logical drive, as well as some housekeeping
+information.  See also INT 21h Function 1Fh and INT 21h Function 32h.
+
+DTA
+	see Disk Transfer Address
+
+DWORD
+	Doubleword; four bytes.	 Commonly used to hold a 32-bit
+segment:offset or selector:offset address.
+
+Dynamic Link Library
+	A collection of subroutines which are linked with a program at
+the time it is loaded into memory rather than permanently placed in the
+executable.  This has the advantage of allowing a single copy of the
+subroutine library to reside on disk or in memory even when it is used
+by many programs.  It also permits all programs using the DLL to be
+updated without recompiling simply by installing a new version of the
+library.
+
+EGA
+	(Enhanced Graphics Adapter) IBM's second color video board for the
+IBM PC family, capable of a maximum resolution of 640x350 pixels in 16
+simultaneous colors of a total of 64 possible colors.
+
+EISA
+	(Enhanced Industry-Standard Architecture) A 32-bit superset of the
+IBM AT's expansion bus (which is now known as the ISA or Industry-Standard
+Architecture bus).
+
+EMS
+	see Expanded Memory Specification
+
+EOI
+	(End of Interrupt) A particular command sent to the interrupt
+controller to indicate that the interrupt has been handled by software
+and that new interrupts of the same or lower priority may now be signalled
+by the interrupt controller.
+
+ESDI
+	(Enhanced Small Device Interface) A disk drive interface type
+which was briefly popular before IDE took over.	 An ESDI drive can
+transfer data between the drive and controller at 10, 15, or 20
+megabits per second, which is faster than an MFM or RLL controller but
+slower than what is possible with an IDE or SCSI drive.	 See also IDE.
+
+Exception
+	A signal by the CPU that some error condition has been encountered
+that it can not deal with without a program's intervention.  The most commonly
+encountered exceptions on Intel processors are Exceptions 12 and 13 (decimal,
+how Intel specifies exception numbers), which are stack and general problems,
+respectively.  Exception 13 is typically caused by a memory access which wraps
+from the end of a segment back to the beginning.
+
+Expanded Memory Specification
+	A specification devised by Lotus, Intel, and Microsoft for
+accessing more than one megabyte of memory by bank-switching additional
+memory into the one megabyte real mode address space.
+
+Extended BIOS Data Area
+	A block of memory, typically the 1K at the top of conventional
+memory, which is used to store additional data for use by the BIOS which
+does not fit into the 256-byte data area at segment 0040h.
+
+Extended File Control Block
+	A DOS File Control Block which has had an additional seven
+bytes prepended to permit control of file attributes (which are stored
+in the appendage).  See also FCB.
+
+Extended Memory
+	Memory beyond the one megabyte address which is available only
+on 80286 and higher machines.  Except for a small portion (the High
+Memory Area), extended memory is only accessible from protected mode.
+
+Extended Memory Specification
+	A specification devised by Microsoft which allows multiple
+programs to share extended (above 1 megabyte) memory and noncontiguous
+memory above 640K.  See also Upper Memory Block.
+
+External Device Interface
+	A series of calls made by the DESQview multitasker on various
+"interesting" events, which may be intercepted by programs which wish to
+keep track of the current system state.	 See also Callout.
+
+FAT
+	see File Allocation Table
+
+FCB
+	see File Control Block
+
+File Allocation Table
+	A data structure on disk that records which clusters are free,
+which are unusable, and which have been allocated.  The clusters occupied
+by a file are linked into a list in the file allocation table, allowing
+DOS to find the contents of the file.
+
+File Control Block
+	A data record in the calling program's address space which is
+used by DOS 1.x functions to record the state of an open file.	See
+also INT 21h Function 13h.
+
+File Handle
+	A small positive integer used to identify the previously-opened
+file on which a program wishes to perform an operation.
+
+Flush
+	To force the copying of any data still stored in temporary
+buffers to its final destination.
+
+FM
+	(Frequency Modulation)	A method of encoding data as a series of
+magnetic flux reversals on disk or tape, commonly known as single-density
+recording.  In frequency modulation, a series of clock pulses are written
+at regular intervals, with one data bit for each clock pulse.  See also
+MFM, RLL.
+
+Formatting
+	Preparing a storage medium (usually magnetic media such as a
+disk or tape) for storing data.	 Low-level or physical formatting
+writes all necessary housekeeping data to enable the storage device
+to read the media and may also initialize the storage units on the
+media to a known state.	 High-level or logical formatting writes data
+used by the operating system, such as allocation information and
+directories onto media which has already been physically formatted.
+Formatting programs often perform both a low-level and a high-level
+format.
+
+FOSSIL
+	(Fido/Opus/Seadog Standard Interface Layer)  A standardized API
+for performing serial I/O, originally used by the Fido and Opus bulletin-
+board software and Seadog bulletin-board mailer, but now in wider use.
+
+FTP
+	(File Transfer Protocol)  The standard protocol for copying files
+from one machine to another on a TCP/IP (Internet) network.  Also the
+program of the same name with which a user may transfer files.
+
+Gather-Write
+	see Scatter/Gather
+
+Handle
+	A short identifier, usually a small integer or a pointer, for
+some other object which is maintained or controlled by the operating
+system or environment; a particular handle may be valid system-wide or
+may have meaning only for a particular process.	 See also File Handle.
+
+HGC
+	(Hercules Graphics Card) A monochrome video adapter capable
+of 720x352 monochrome graphics.	 The HGC was the first non-IBM video
+adapter for the IBM PC.	 See also CGA, MDA.
+
+High Memory Area
+	The first 65520 bytes (64K less 16 bytes) of extended memory.
+This area is accessible from real mode on the 80286 and higher
+processors because these processors do not wrap addresses at one
+megabyte as the 8088 and 8086 do.  See also A20, INT 2Fh Functions
+4A01h.
+
+HMA
+	see High Memory Area
+
+Horizontal Retrace
+	When a monitor has finished displaying a single scan line, it must
+move it electron beam(s) back to the left edge of the CRT, during which time
+it turns off the beam.	On the original CGA (and some early clones), the
+only time one could access the display memory without causing "snow" was
+during the horizontal or vertical retrace periods, as the display adapter
+was not itself accessing the display memory during those times.	 See also
+Vertical Retrace.
+
+I2C
+	(also IIC; the "2" is superscripted) Inter-Integrated Circuit
+Bus -- A moderate-speed serial communications bus originally invented
+by Philips in the early 1980s for consumer-electronics applications,
+such as inter-chip communication in a television set or high-end
+stereo.	 The I2C bus has recently appeared on PCs in video capture
+boards and similar devices, as well as (surprisingly) SDRAM DIMMs (for
+the on-board serial EEPROM).  The ACCESS.bus is a derivative of the I2C
+bus which forms the physical layer of the Universal Serial Bus.	 Similary,
+the SMBus (System Management Bus) also uses I2C as its physical layer.
+
+IDE
+	(Integrated Drive Electronics) A type of disk drive interface
+which essentially extends the PC's expansion bus all the way to the
+drive and places the drive controller on the disk drive itself.	 See
+also ESDI.
+
+IDT
+	see Interrupt Descriptor Table
+
+IFS
+	see Installable File System
+
+IIC
+	see I2C.
+
+Installable File System
+	An Installable File System which allows non-DOS format media to
+be used by DOS.	 In most ways, an IFS is very similar to a networked
+drive, although an IFS would typically be local rather than remote.
+See also INT 21h Function 52h.
+
+Interrupt Descriptor Table
+	The protected-mode table of descriptors specifying the handlers
+for up to 256 interrupts, and how to transfer control to each one.  See
+also Interrupt Vector Table.
+
+Interrupt Vector Table
+	The real-mode table of 256 four-byte interrupt handler addresses,
+located in the lowest 1024 bytes of the address space.	See also Interrupt
+Descriptor Table.
+
+
+IP
+	(Internet Protocol) The lower level (transport layer) of the
+TCP/IP protocol suite.	See also TCP, TCP/IP.
+
+IPC
+	(Inter-Process Communication) Any one of numerous methods for
+allowing two or more separate processes to exchange data.
+
+IPL
+	(Initial Program Load) See Boot.
+
+IPX
+	(Internetwork Packet Exchange) A low-level layer of Novell's
+NetWare networking software.
+
+IRQ
+	(Interrupt ReQuest) A hardware line connected to the interrupt
+controller chip which signals that a CPU interrupt should be generated.
+
+ISA
+	(Industry-Standard Architecture) The expansion bus used by the
+IBM PC/AT.  See also EISA.
+
+IVT
+	see Interrupt Vector Table
+
+JFT
+	see Job File Table
+
+Job File Table
+	The Job File Table (also called Open File Table) stored in a
+program's PSP which translates handles into SFT numbers.  See also INT
+21h Function 26h.
+
+LCD
+	(Liquid Crystal Display)
+
+List of Lists
+	An internal DOS table of lists and other tables through which
+most DOS-internal data structures may be reached.  See INT 21h Function
+52h.
+
+Little-Endian
+	One of the two major ways of organizing multi-byte numeric
+values in memory.  A little-endian layout places the least significant
+byte of the value in the lowest (first) memory location, i.e. 12345678h
+is stored as 78h 56h 34h 12h.  Intel processors are little-endian.
+Compare Big-Endian.
+
+LPT
+	Abbreviation for Line PrinTer.
+
+MCB
+	see Memory Control Block
+
+MCGA
+	(Multi-Color Graphics Array) The low-end color adapter offered
+in IBM's early PS/2 series machines.
+
+MDA
+	(Monochrome Display Adapter) A text-only video adapter introduced
+together with the original IBM PC.  See also CGA, HGC.
+
+Memory Control Block
+	The data structure containing the length and owner (among other
+things) of a portion of the memory managed by DOS.  See INT 21h
+Function 52h.
+
+MFM
+	(Modified Frequency Modulation) A method of encoding data as a
+series of magnetic flux reversals on disk or tape, commonly known as
+double-density recording.  In contrast to FM, modified frequency
+modulation omits all clock pulses except those between pairs of zero
+bits.  See also FM, RLL.
+
+Mickey
+	The smallest increment of motion a mouse can sense.
+
+MIDI
+	(Musical Instrument Digital Interface) A standardized interface
+for controlling musical instruments with a computer.
+
+Modem
+	(contraction of MOdulator/DEModulator)
+
+MSR
+	(Model-Specific Register) Additional, indirectly-accessible,
+registers containing control or status information about various
+aspects of the processor such as caches, performance counters, and the
+like.	These registers, accessible via the RDMSR and WRMSR
+instructions, were added with the Pentium and later-model 486
+processors.
+
+Multitasking
+	Any of a number of methods by which multiple programs may
+execute concurrently, with rapid switching between the programs giving
+the appearance that all are executing simultaneously.
+
+MZ
+	The letters M and Z appear in numerous places in DOS (memory
+control blocks, .EXE header, etc.); the conventional explanation is
+that these are the initials of Mark Zbikowski, one of the principal
+architects of MSDOS 2.0.
+
+NCB
+	see Network Control Block
+
+NDIS
+	(Network Driver Interface Specification) A hardware-independent
+network interface developed by Microsoft and 3com.  See also Packet
+Driver, TCP/IP.
+
+NetBIOS
+	One of a number of low-level device-independent network
+interfaces; the other major interfaces are Novell's IPX and the
+Internet's IP (Internet Protocol, the lower-level portion of TCP/IP).
+
+Network Control Block
+	A Network Control Block used to pass requests to NetBIOS and
+receive status information from the NetBIOS handler.
+
+Network Redirector
+	A program which permits access to network devices (disks,
+printers, etc.) using the MSDOS kernel network redirector interface.
+See also Network Shell, Redirector Interface.
+
+Network Shell
+	A program which permits access to network devices (disks,
+printers, etc.) by intercepting DOS calls before they reach the DOS
+kernel and handling those operating on network devices while passing
+through actions on local devices.  See also Network Redirector.
+
+NMI
+	see Non-Maskable Interrupt
+
+Non-Maskable Interrupt
+	An interrupt which can not be disabled by clearing the CPU's
+interrupt enable flag, unlike most normal interrupts.  Non-maskable
+interrupts are typically used to signal calamities which require
+immediate action, such as a hardware failure or imminent loss of power.
+
+Non-Volatile RAM
+	Memory which can be modified like normal RAM but does not lose
+its contents when the system's power is turned off. This memory may be
+powered by a battery when the system power if off, or it may be a type
+of memory which does not need electricity to maintain its contents,
+such as EEPROM or bubble memory.
+
+NVRAM
+	see Non-Volatile RAM
+
+ODI
+	(Open Data-link Interface) A hardware-independent network
+interface developed by Novell, Inc.  See also NDIS, Packet Driver.
+
+OEM
+	(Original Equipment Manufacturer) a company which purchases
+components that are resold as part of its own products under the company's
+own brand name, e.g. a Gateway 2000-branded monitor may actually be a Mag
+or NEC monitor.
+
+Open File Table
+	see Job File Table
+
+Overscan Area
+	The "border" between the edge of the area where graphics or text can
+be displayed and the actual edge of the area the video adapter can illuminate
+on the monitor's screen.
+
+Overscan Register
+	On a display adapter, the control register which specifies the color
+to be displayed in the overscan area.
+
+Packet Driver
+	Any one of the numerous drivers conforming to FTP Software's
+Packet Driver Specification, which provides a hardware-independent
+network interface.  See also NDIS, ODI.
+
+Page Fault
+	A CPU-generated signal, and the operating system's reaction to it,
+generated when a program accesses a page of virtual memory which is not
+located in RAM at the time.  The operating system's response is to load in
+the required page, possibly writing some other page out to disk in order
+to make room.  See also INT 0E in INTERRUP.LST.
+
+Page Register
+	A peripheral register or I/O port used to extend the addressing
+range of some other register or I/O port.  The prime example are
+the DMA page registers, which allow the DMA controller to address
+more than 64K (since the DMA controller only contains 16 address
+lines; this is the cause of the 64K DMA boundaries).
+
+Palette Register
+	A memory location on the video controller which specifies the actual
+color displayed for a particular color number.
+
+Paragraph
+	A 16-byte unit of memory.  This size is the result of the 8086's
+segmentation model, where incrementing the segment by one advances the
+absolute location by 16 bytes.
+
+Park
+	To move a hard disk's read/write heads to a position in which
+it is safe to turn off the power and transport the disk drive.	Many
+drives also lock the heads into position when they are parked,
+providing additional protection from sudden movement.
+
+Pel
+	see Pixel
+
+Pixel
+	A picture element, the smallest addressable unit of a graphical
+display.
+
+Post
+	Make known, either generally or to a specific handler, that a
+particular event of interest has occurred.
+
+POST
+	see Power-On Self-Test
+
+Power-On Self-Test
+	A brief examination of the system's functionality performed
+each time the system is turned on.
+
+Print Spooler
+	see SPOOL.
+
+Program Segment Prefix
+	The Program Segment Prefix is a 256-byte data area prepended to
+a program when it is loaded.  It contains the command line that the
+program was invoked with, and a variety of housekeeping information for
+DOS.  See also INT 21h Function 26h.
+
+Protected Mode
+	One of the operating modes of the 80286 and higher Intel
+processors, in which addresses used by programs no longer correspond to
+physical addresses and the CPU enforces various protection mechanisms
+designed to prevent one program from disrupting other programs or the
+operating system.  See also Real Mode, Virtual-86 Mode.
+
+PSP
+	see Program Segment Prefix
+
+PWORD
+	Six bytes.  Used to hold an 80386 protected-mode "far" address,
+consisting of a segment selector and a 32-bit offset, or a Turbo Pascal
+"real" variable.  See also DWORD, QWORD.
+
+QWORD
+	(quad-word) Eight bytes.  See also DWORD, PWORD.
+
+RAM
+	(Random Access Memory)	See also DRAM, SRAM.
+
+Real Mode
+	One of the operating modes of the 80286 and higher Intel
+processors, and the only operating mode of the 8088, 8086, 80186, and
+80188 processors.  In this mode, all addresses used by programs
+correspond directly to real physical addresses (thus the full name,
+Real Address Mode) and there are no CPU-imposed protections between
+programs.  See also Protected Mode, Virtual-86 Mode.
+
+Real-Time Clock
+	A battery-powered clock which continues to maintain its time even
+while the system is powered down.  On PCs, the real-time clock contains a
+small amount of battery-powered memory (set CMOS RAM).
+
+Redirector Interface
+	The set of device-independent INT 2Fh function calls invoked by
+the MSDOS kernel to operate on devices it recognizes as network
+devices.  These function calls provide a lower-level interface than the
+INT 21h calls made to DOS, allowing a program intercepting these
+functions to be simpler than one intercepting INT 21h calls.  See INT
+2Fh Functions 1100h through 1130h.
+
+Refresh
+	The process of periodically rewriting the contents of a DRAM
+memory chip to keep it from fading.  The term "refresh" is also commonly
+applied to redrawing the image on a CRT's phosphors.   See also DRAM.
+
+RGB
+	(Red-Green-Blue) The color specification mechanism normally
+used in computer displays, where colors are separated into their
+primary-color components.  See also YUV.
+
+RLL
+	(Run-Length Limited) A method of encoding data as a series of
+magnetic flux reversals on disk or tape.  RLL can achieve higher data
+densities than MFM recording because it encodes the data such that
+(on average), fewer than one flux reversal per data bit is required
+(however, timing becomes more critical).  RLL is actually an entire
+family of encoding methods, specified with two numbers indicating the
+minimum and maximum distances between one bits (flux transitions).  The
+variant normally called RLL is RLL-2,7; RLL-1,7 and RLL-3,9 are also in
+use.  MFM is in effect RLL-1,3.	 See also FM, MFM.
+
+ROM
+	(Read-Only Memory) A memory for program storage which may not be
+changed by the program as it runs.
+
+RTC
+	see Real-Time Clock
+
+Scan Code
+	The actual key number sent by the keyboard, which differs from the
+key codes seen by application programs.	 The enhanced (101/102-key) keyboard
+actually sends different scan codes than the original (83/84-key) IBM
+keyboard, but these are normally translated by the keyboard controller into
+the scan codes used by the original keyboard before they become visible to
+programs.
+
+Scatter/Gather
+	A technique in which the contiguous data of a disk sector or sectors
+is transferred to or from multiple non-contiguous areas of memory.  When
+reading into multiple areas of memory, this is called a scatter-read; the
+opposing operation is called gather-write.
+
+Scatter-Read
+	see Scatter/Gather
+
+SCSI
+	(Small Computer Systems Interface) A system-independent
+expansion bus typically used to connect hard disks, tape drives, and
+CD-ROMs to a computer.	A host adapter connects the SCSI bus to the
+computer's own bus.  See also ESDI, IDE.
+
+SDA
+	see Swappable Data Area
+
+Sector
+	The smallest addressable unit of data on a disk; under MS-DOS,
+this is normally 512 bytes.  See also Track.
+
+SFT
+	see System File Table
+
+SMBus
+	(System Management Bus) A derivative of the I2C bus used for
+communication between various components of a computer, such as smart
+batteries and their chargers.  In contrast to I2C, SMBus specifies
+fixed voltage levels (instead of relative to the power supply voltage)
+and a 10 KHz minimum clock rate (I2C minimum is 0).  SMBus also
+specifies several timings which are not required by I2C.  See also I2C,
+ACCESS.bus.
+
+SMM
+	(System Management Mode) A special CPU mode typically invoked
+on changes in power-supply status.  In this mode, additional hidden
+memory becomes available for storing the CPU's state and a control
+program to deal with the needs of power management or other critical
+events.
+
+SPOOL
+	(Simultaneous Peripheral Operation OnLine)  The process of
+performing output to a slow peripheral such as a printer while other
+tasks continue running on the CPU.  This term dates back to mainframe
+days before the invention of timesharing.
+
+SQL
+	(Structured Query Language)
+
+SRAM
+	(Static Random Access Memory)  RAM which typically consists of one
+flip-flop per bit of memory.  Unlike DRAMs, static RAM retains its contents
+as long as power is applied.  Because there is no need to refresh the
+contents of memory addresses which are read, SRAM is faster than DRAM,
+but it is more expensive and typically is available in much smaller sizes
+than DRAM because each bit occupies more space on the chip.  See also DRAM.
+
+SVGA
+	(Super VGA) A video adapter capable of higher resolution
+(pixels and/or colors) than the 320x200x256 and 640x480x16 which IBM's
+VGA adapter is capable of producing.  See also VESA.
+
+Swappable Data Area
+	The portion of the DOS data segment containing all of the
+variables used internally by DOS to record the state of a function call
+in progress.  See also INT 21h Function 5D06h and INT 21h Function
+5D0Bh.
+
+System File Table
+	A System File Table is a DOS-internal data structure used to
+maintain the state of an open file for the DOS 2+ handle functions,
+just as an FCB maintains the state for DOS 1.x functions.  See also INT
+21h Function 52h.
+
+TCP
+	(Transmission Control Protocol) A higher level (session layer)
+of the TCP/IP protocol suite.  See also IP, TCP/IP.
+
+TCP/IP
+	The protocol suite originally developed by DARPA for use on its
+ARPAnet network, which is now known as the Internet.  See also IP, TCP.
+
+TSR
+	(Terminate and Stay Resident) A program which remains in memory
+after terminating in order to provide services to other programs or the
+user.  The name comes from the name of the DOS function call used to
+remain in memory after termination.
+
+Track
+	One of multiple concentric circular rings of data on a single
+data-bearing surface of a disk.	 Tracks at the same location on
+different surfaces form a cylinder.
+
+UART
+	(Universal Asyncronous Receiver/Transmitter)  A peripheral device
+which converts a sequence of bytes into a serial bit stream at a programmable
+rate, and vice versa.  This device is what makes an RS-232 serial port
+function.  See also USART.
+
+UMB
+	see Upper Memory Block
+
+UNC
+	(Universal Naming Convention) The standard way of describing
+network servers and their directories under MS-DOS and Windows NT.  A
+name in UNC format consists of two backslashes followed by the server
+name, optionally followed by another backslash and a list of
+backslash-separated fields; for example
+\\SERVER1\SHARED-DIR\SUBDIR1\SUBDIR2\FILENAME.EXT.
+
+undocumented
+	Information about a product which is not publicly available from
+the manufacturer, and must be determined by reverse-engineering (disassembly,
+trial-and-error, etc.).	 Undocumented information tends to change -- often
+dramatically -- between successive revisions of a product, since the
+manufacturer has no obligation to maintain compatibility in behavior which
+is not explicitly stated.
+
+Universal Serial Bus
+	A high-speed serial interconnection providing data rates as high
+as 48 MHz (6 MB/s) between various devices inside (or even outside of) a
+PC.  See also I2C.
+
+Upper Memory Block
+	A noncontiguous section of allocatable memory located between
+the 640K and 1024K addresses.  See also INT 21h Function 52h.
+
+USART
+	(Universal Synchronous/Asynchronous Receiver/Transmitter)
+	see also UART
+
+USB
+	see Universal Serial Bus
+
+V86
+	see Virtual-86 Mode
+
+VCPI
+	see Virtual Control Program Interface
+
+VDM
+	see Virtual DOS Machine
+
+VDS
+	see Virtual DMA Specification
+
+VDU
+	(Video Display Unit)  Mainframe-speak for computer monitor.
+
+Vertical Retrace
+	When a monitor has finished displaying an image by sweeping its
+electron beam(s) over the face of the CRT, it has to move the beam back up
+to the top of the display.  During the time this takes, the beam is turned
+off.  The vertical retrace interval is a good time to change the displayed
+picture for smooth animation.  See also Horizontal Retrace.
+
+VESA
+	(Video Electronics Standards Association)  An industry group
+which sets both hardware and software standards and recommendations.
+The term VESA is also used to denote compliance with the VESA SuperVGA
+BIOS Extensions, a standard set of video BIOS functions for accessing
+video modes of higher resolution than those defined by IBM.
+
+VGA
+	(Video Graphics Array) The video adapter introduced with the
+IBM PS/2 series of computers.
+
+Virtual-86 Mode
+	One of the operating modes of the 80386 and 80486 processors in
+which user programs run as if the CPU were in Real Mode, while
+providing the protection and address-mapping capabilities of Protected
+Mode to a supervisor program which oversees the virtual machine on
+which the user programs are running.  This mode is called Virtual-86
+because one or more virtual 8086 environments are run on a single CPU.
+See also Protected Mode, Real Mode, Virtual Machine.
+
+Virtual Control Program Interface
+	A simple API for protected-mode programs to allocate memory and
+switch into or out of protected mode.  See also DOS Protected-Mode Interface.
+
+Virtual DMA Specification
+	A set of interrupt calls which permit the use of DMA even on
+systems running in protected or Virtual-86 mode with their address
+remapping, or systems such as Micro Channel PS/2s with multiple bus
+masters independently performing DMA operations.
+
+Virtual DOS Machine
+	A special type of virtual machine provided by OS/2 version 2.0,
+in which a copy of MS-DOS or an MS-DOS compatible operating system (or
+even an incompatible 8086 operating system) is run and appears to have
+full control of the system.  See also Virtual Machine, INT 21h Function
+64h.
+
+Virtual Machine
+	One method for multitasking programs is to virtualize the CPU
+and other hardware, giving the appearance of sole possession of the
+system to each program being run.  Such a virtualized environment is
+called a virtual machine.  See also Virtual-86 Mode, Virtual DOS
+Machine.
+
+virus
+	A program which attaches itself to other programs for the purpose
+of duplicating itself.	Viruses often (but not always) contain harmful
+code which is triggered by some event, after a certain number of
+reproductions, or on a specific date.  See also worm.
+
+VM
+	see Virtual Machine
+
+VxD
+	A virtual device driver for Windows 3.x or 95.	So called because
+nearly all of the Windows 3.0 drivers had names of the form "VdeviceD".
+See also device driver.
+
+WORM
+	(Write Once, Read Many)	 A storage medium which may be written
+exactly once, but may not be altered once data is stored.
+
+worm
+	A program which duplicates itself, typically across networks.
+In contrast to a virus, a worm does not attach itself to other programs,
+but can reproduce itself independently.	 See also virus.
+
+Write-Through
+	One of two main types of caches, the write-through cache immediately
+writes any new information to the medium it is caching, so that the cache
+never contains information which is not already present on the cached device.
+See also cache,
+
+XBDA
+	see Extended BIOS Data Area
+
+XDI
+	see External Device Interface
+
+XGA
+	(Extended Graphics Array)
+
+XMS
+	see Extended Memory Specification
+
+YIQ
+	see YUV
+
+YUV
+	A color specification mechanism used in NTSC-type color
+television signals.  Y represents luminance (overall brightness, the
+only part of the signal used by black-and-white televisions), while U
+and V are chrominance (color) information.  Also called YIQ.  See also
+RGB.
+
+			      --- end of file ---

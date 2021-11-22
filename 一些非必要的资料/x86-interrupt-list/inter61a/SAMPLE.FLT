@@ -1,0 +1,25 @@
+# Sample filtering file.  Lines starting with a hash mark in the first
+# column are comments.	Actual filtering lines start with either a dash
+# or a plus sign in the first column (additional modes may be added in
+# the future).	Lines starting with a dash specify that interrupt list
+# entries containing that string in the first line will be omitted from
+# the formatted output; lines starting with a plus sign specify that
+# interrupt list entries containing that string are to be included in
+# the formatted output unless one of the minus lines matches.
+
+# Extract MS-DOS calls, but exclude DR-DOS-specific, DOS-extender, and
+# non-DOS networking calls.  Note: a few extraneous calls are still included.
+#
++ DOS
+-DR DOS
+-DR-DOS
+-DR Multiuser DOS
+-Concurrent DOS
+-DOS/16M
+-DOS4GX
+-DOS/4G
+-extender
+-LAN Manager
+-DECnet DOS
+#
+# end of SAMPLE.FLT

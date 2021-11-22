@@ -1,0 +1,20 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80860483.PCI = Vendor 8086h, Device 0483h -- Intel 82424
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+!begin
+82424 registers in detail:
+ Programmable Attribute Map
+	C000-C3FF: %[5A:2]{-C}%[5A:1]{-W}%[5A:0]{-R}\tD000-D3FF: %[5C:2]{-C}%[5C:1]{-W}%[5C:0]{-R}\tE000-E3FF: %[5E:2]{-C}%[5E:1]{-W}%[5E:0]{-R}%
+	F000-FFFF: %[59:6]{-C}%[59:5]{-W}%[59:4]{-R}
+	C400-C7FF: %[5A:6]{-C}%[5A:5]{-W}%[5A:4]{-R}\tD400-D7FF: %[5C:6]{-C}%[5C:5]{-W}%[5C:4]{-R}\tE400-E7FF: %[5E:6]{-C}%[5E:5]{-W}%[5E:4]{-R}
+	C800-CBFF: %[5B:2]{-C}%[5B:1]{-W}%[5B:0]{-R}\tD800-DBFF: %[5D:2]{-C}%[5D:1]{-W}%[5D:0]{-R}\tE800-EBFF: %[5F:2]{-C}%[5F:1]{-W}%[5F:0]{-R}
+	CC00-CFFF: %[5B:6]{-C}%[5B:5]{-W}%[5B:4]{-R}\tDC00-DFFF: %[5D:6]{-C}%[5D:5]{-W}%[5D:4]{-R}\tEC00-EFFF: %[5F:6]{-C}%[5F:5]{-W}%[5F:4]{-R}
+
+  %! insert device description here
+
+!end
+
+%! end of file
