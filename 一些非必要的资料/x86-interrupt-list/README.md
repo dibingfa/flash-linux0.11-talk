@@ -7,13 +7,15 @@ x86 中断函数列表
 
 目录和文件（可按文本格式打开）按照字母序，比如 `inter61a/INTERRUP.A` 包含了 `INT 00` 到 `INT 10`
 
-文中会对指令作出较为详细的描述，以 最近一篇文章中的中
+文中会对指令作出较为详细的描述，以 [最近一篇文章中](https://mp.weixin.qq.com/s/hStc-y-sabP-KwJUDUesTw)的
 [INT 13](https://github.com/sunym1993/flash-linux0.11-talk/blob/547ef4b440ff2ed1be2204e459316a39e9a734fc/%E4%B8%80%E4%BA%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E8%B5%84%E6%96%99/linux-0.11/boot/bootsect.s#L71) 
 为例, 可以看到给 `AX` 赋值了 `#0x0200+SETUPLEN -> #0x0204` 即 `AH=02`
 
 ```assembly
 mov	ax,#0x0200+SETUPLEN	; service 2, nr of sectors
 int	0x13
+
+jnc	ok_load_setup		; ok - continue
 ```
 
 对应在 `inter61a/INTERRUP.B` 找到如下描述，可知 `CF` 用来做错误位设置，clear 时标志成功，
