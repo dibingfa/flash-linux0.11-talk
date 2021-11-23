@@ -1,0 +1,172 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867110.PCI = Vendor 8086h, Device 7110h
+%!    Intel 82731AB PIIX4 PCI-to-ISA Bridge
+%! Last Edit 31 Dec 1997 by Andy Sawyer
+%!
+%! Reference : Intel document 29056201.PDF
+%! "82371AB PCI-TO-ISA/IDE XCELERATOR (PIIX4)"
+%!
+%! Since the 82371AB indicates that it is a "single function" device
+%! for all functions except function 0, version 1,0 of PCICFG.EXE
+%! does not correctly display all functions.
+%!
+%! See also:
+%!    80867111.PCI
+%!    80867112.PCI
+%!    80867113.PCI
+!begin
+
+Intel 82371AB PIIX4 PCI-to-ISA Bridge registers in detail:     [by Andy Sawyer]
+ ISA I/O Recovery Time
+  DMA Reserved Page Register Aliasing  %[4C:7]Ed
+  8-bit I/O Recovery                   %[4C:6]ed - %[4C:5-3]{81234567} SYSCLK
+  16-bit I/O Recovery                  %[4C:2]ed - %[4C:1-0]{3124} SYSCLK
+
+ X-Bus Chip Select
+
+  Microcontroler Location Enable       %[4E:10]ed
+  1-Meg Extended BIOS Enable           %[4E:9]ed
+  I/O APIC                             %[4E:8]ed
+  Extended BIOS Enable                 %[4E:7]ed
+  Lower BIOS Enable                    %[4E:6]ed
+  Coprocessor Error Fucntion Enable    %[4E:5]ed
+  IRQ12/Mouse Control                  %[4E:4]|IRQ12;Mouse|
+  Port 61h Alias Enable                %[4E:3]ed
+  BIOSCS# Write Protect Control        %[4E:2]|Read Only;Read Write|
+  Keyboard Controller I/O Ports        %[4E:1]ed
+  Real-Time Clock I/O ports            %[4E:0]ed
+
+ PIRQRC Route Control
+  PIRCQA Routing                       %[60:7]Ed - %[60:3-0](PIRQCRRoute)
+  PIRCQB Routing                       %[61:7]Ed - %[61:3-0](PIRQCRRoute)
+  PIRCQC Routing                       %[62:7]Ed - %[62:3-0](PIRQCRRoute)
+  PIRCQD Routing                       %[63:7]Ed - %[63:3-0](PIRQCRRoute)
+
+ Serial IRQ Control
+  Serial IRQ Enable                    %[64:7]ed
+  Serial IRQ Mode                      %[64:6]|Quiet;Continuous|
+  Serial IRQ Frame Size                %[64:5-2+17]d
+  Start Frame Pulse Width              %[64:1-0]|4;6;8;Reserved|
+
+ Top of Memory Register
+  Top of Memory                        %[69:7-4+1]d Mbyte
+  ISA/DMA Lower BIOS                   %[69:3]|not ;|forwarded to PCI
+  640k-768k Memory Region              %[69:2]|not ;|forwarded to PCI
+  ISA/DMA 512k-640k Region             %[69:1]|not ;|forwarded to PCI
+
+ Misc. Status Register
+  SERR# Generation                     %[6A:15]d
+  Host-to-PCI Bridge Retry enable      %[6A:7]ed
+
+ Motherboard Device DMA Control 0
+  Type F DMA Buffer Enabled            %[76:7]ed
+  Type F DMA Channel Routing           %[76:2-0](MBDMA)
+ Motherboard Device DMA Control 1
+  Type F DMA Buffer Enabled            %[77:7]ed
+  Type F DMA Channel Routing           %[77:2-0](MBDMA)
+
+ APIC Base Address Relocation Register
+  A12 Mask                             %[80:6]d
+  Base Address                         FEC0%[80:5-2]x%[80:1-0]x00h
+
+ Detrministic Latency Control Register
+  SERR# on delayed transaction timeout %[82:3]ed
+  USB Passive Release                  %[82:2]ed
+  Passive Release                      %[82:1]ed
+  Delayed Transactions                 %[82:0]ed
+
+ PCI DMA Configuration
+  DMA Channel 7                        %[90:15-14](DMAType)
+  DMA Channel 6                        %[90:13-12](DMAType)
+  DMA Channel 5                        %[90:11-10](DMAType)
+  DMA Channel 3                        %[90:7-6](DMAType)
+  DMA Channel 2                        %[90:5-4](DMAType)
+  DMA Channel 1                        %[90:3-2](DMAType)
+  DMA Channel 0                        %[90:1-0](DMAType)
+
+ Distributed DMA Slave Base Pointer Registers
+  Channel 0-3                          %[92:15-6<6]4x
+  Channel 5-7                          %[94:15-6<6]4x
+
+ General Configuration Register
+  KBCCS#                          %[B0:31]|KBCCS#;GPO26|
+  RTCALE                          %[B0:30]|RTCALE;GPO25|
+  RTCCS#                          %[B0:29]|RTCCS#;GPO24|
+  XOE#/XDIR#                      %[B0:28]|XOE#/XDIR#;GPO22/GPO23|
+  RI#                             %[B0:27]|RI#;GPI12|
+  LID                             %[B0:25]|LID;GPI10|
+  BATLOW#                         %[B0:24]|BATLOW#;GPI9|
+  THRM#                           %[B0:23]|THRM#;GPI8|
+  SUS_STAT2#                      %[B0:22]|SUS_STAT2#;GPO21|
+  SUS_STAT1#                      %[B0:21]|SUS_STAT1#;GPO20|
+  ZZ                              %[B0:20]|ZZ;GPO19|
+  PCI_STP#                        %[B0:19]|PCI_STP#;GPO18|
+  CPU_STP#                        %[B0:18]|CPU_STP#;GPO17|
+  SUSB#/SUSC#                     %[B0:17]|SUSB#/SUSC#;GPO15/16|
+  SERIRQ                          %[B0:16]|GPI7;SERIRQ|
+  SMBALERT#                       %[B0:15]|SMBALERT#;GPI11|
+  IRQ8#                           %[B0:14]|GPI6;IRQ8#|
+  PC/PCI REQC/GNTC                %[B0:10]|GPI4/GPO11;REQC/GNTC|
+  PC/PCI REQB/GNTB                %[B0:9]|GPI3/GPO10;REQB/GNTB|
+  PC/PCI REQA/GNTA                %[B0:8]|GPI2/GPO9;REQA/GNTA|
+
+  Decode configuration            %[B0:1]|Subtractive;Positive|
+  PnP Address Decode              %[B0:6]ed
+  Alternate Access Mode           %[B0:5]ed
+  IDE Secondary Interface         %[B0:4]Ed
+
+  Secondary IDE Signal Interface  %[B0:12]|Enabled;Tri-State|
+  Primary   IDE Signal Interface  %[B0:11]|Enabled;Tri-State|
+
+  CONFIG2 Status                  %[B0:3]d
+  CONFIG1 Status                  %[B0:2]d (%[B0:2]|Pentium;Pentium II|)
+  ISA/EIO Select                  %[B0:0]|EIO;ISA|
+
+ Real Time Clock Configuration
+  RTC Positive Decode  %[CB:5]ed
+  Lock Upper RAM Bytes %[CB:4]ed
+  Lock Lower RAM Bytes %[CB:3]ed
+  Upper RAM Enable     %[CB:2]ed
+  RTC Enable           %[CB:0]ed
+
+!end
+
+!enum PIRQCRRoute
+Reserved
+Reserved
+Reserved
+IRQ 3
+IRQ 4
+IRQ 5
+IRQ 6
+IRQ 7
+Reserved
+IRQ 9
+IRQ 10
+IRQ 11
+IRQ 12
+Reserved
+IRQ 14
+IRQ 15
+!end
+
+!enum MBDMA
+DMA Channel 0
+DMA Channel 1
+DMA Channel 2
+DMA Channel 3
+Disabled
+DMA Channel 5
+DMA Channel 6
+DMA Channel 7
+!end
+
+!enum DMAType
+Normal ISA DMA
+PC/PCI DMA
+Distributed DMA
+Reserved
+!end
+
+%! end of file

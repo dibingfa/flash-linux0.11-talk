@@ -1,0 +1,12 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80861229.PCI = Vendor 8086h, Device 1229h : Intel 82557 Fast Ethernet
+%! Last Edit 22jan98 by Ralf Brown
+%!
+
+!begin
+The 82557 does not use any device-specific PCI configuration registers.
+!end
+
+
+%! end of file

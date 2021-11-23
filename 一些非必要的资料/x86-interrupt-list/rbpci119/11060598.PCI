@@ -1,0 +1,266 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 11060598.PCI = Vendor 1106h, Device 0598h
+%!   VIA Technologies VT82C598MVP Host Bridge
+%!
+%! Written by Maurizio Vairani, email: mvairani@cloverinformatica.com
+%! Created 08jan99 by Maurizio Vairani
+%! Last edit 10jan99 by Ralf Brown
+%!
+!begin
+
+Via VT82C598MVP Host Bridge registers in detail:	[by Maurizio Vairani]
+
+Cache Control
+  Offset 50-51 - Cache Control
+      Cache enable/initialize: %[50:7-6]|cache disable;cache initialize - L2 fill;cache enable;reserved|
+      Linear Burst: %[50:5]e		Tag Configuration: %[50:4-3]|8+0;7+1;reserved|
+      Backoff CPU: %[51:5]|defer ready return until L2 filled;backoff CPU until L2 filled|
+      Cache Size: %[51:1-0]|256K;512K;1M;2M|	SRAM Banks: %[51:3+1]d
+  Offset 52 - Non-Cacheable Control
+      C0000-C7FFF Cacheable & Write-Protected: %[52:7]Y
+      D0000-DFFFF Cacheable & Write-Protected: %[52:6]Y
+      E0000-EFFFF Cacheable & Write-Protected: %[52:5]Y
+      F0000-FFFFF Cacheable & Write-Protected: %[52:4]Y
+      L2 Fill on Single Read: %[52:2]|normal;force (fastest)|
+      L2 Write-Thru/Write-Back: %[52:0]|write-thru;write-back|
+  Offset 53 - System Performance Control
+      Read Around Write: %[53:7]e
+      Cache Pipeline Cycle: Read = %[53:6]e	Write = %[53:5]e
+      DRAM Read Pipeline Cycle: %[53:4]e
+  Offset 55-54 - Non-Cacheable region #1
+      Base Address: %[54:15-3<16]xh (%[54:15-3*128]dKb)	 Size: %[54:2-0](Range)
+  Offset 57-56 - Non-Cacheable region #2
+      Base Address: %[56:15-3<16]xh (%[56:15-3*128]dKb)	 Size: %[56:2-0](Range)
+
+DRAM Control
+  Offset 59-58 - DRAM MA (Memory Address) Map Type
+      Bank 5/4 MA Map Type: %[60:5-4|58:15-13](EDO_FPG_SDRAM)
+      Bank 5/4 Virtual Channel Enable: %[58:12]Y
+      Bank 3/2 MA Map Type: %[60:3-2|58:3-1](EDO_FPG_SDRAM)
+      Bank 3/2 Virtual Channel Enable: %[58:0]Y
+      Bank 1/0 MA Map Type: %[60:1-0|58:7-5](EDO_FPG_SDRAM)
+      Bank 1/0 Virtual Channel Enable: %[58:4]Y
+  Offset 5F-5A - DRAM Row Ending Addresses
+      Offset 5A - Bank 0 Ending: %[5A<23]8xh (%[5A*8]3dMb)
+      Offset 5B - Bank 1 Ending: %[5B<23]8xh (%[5B*8]3dMb)
+      Offset 5C - Bank 2 Ending: %[5C<23]8xh (%[5C*8]3dMb)
+      Offset 5D - Bank 3 Ending: %[5D<23]8xh (%[5D*8]3dMb)
+      Offset 5E - Bank 4 Ending: %[5E<23]8xh (%[5E*8]3dMb)
+      Offset 5F - Bank 5 Ending: %[5F<23]8xh (%[5F*8]3dMb)
+  Offset 60 - DRAM Type
+      DRAM Type for Bank 5/4: %[60:5-4](DRAM)
+      DRAM Type for Bank 3/2: %[60:3-2](DRAM)
+      DRAM Type for Bank 1/0: %[60:1-0](DRAM)
+  Offset 61,62,63 - Shadow RAM Control
+      C0000h-C3FFFh: %[61:1-0](Shadow)	D0000h-D3FFFh: %[62:1-0](Shadow)
+      C4000h-C7FFFh: %[61:3-2](Shadow)	D4000h-D7FFFh: %[62:3-2](Shadow)
+      C8000h-CBFFFh: %[61:5-4](Shadow)	D8000h-DBFFFh: %[62:5-4](Shadow)
+      CC000h-CFFFFh: %[61:7-6](Shadow)	DC000h-DFFFFh: %[62:7-6](Shadow)
+      E0000h-EFFFFh: %[63:7-6](Shadow)	F0000h-FFFFFh: %[63:5-4](Shadow)
+      Memory Hole: %[63:3-2]|none;512K-640K;15M-16M (1M);14M-16M (2M)|
+      SMI Mapping Control: %[63:1-0]|disable SMI address redirection;allow access DRAM Axxxx-Bxxxx for both
+				     normal and SMI cycles;reserved;allow SMI Axxxx-Bxxxx DRAM access|
+  Offset 64 - DRAM Timing for Banks 0,1
+      if DRAM is EDO/FPG:
+	RAS Precharge Time: %[64:7+3]dT		Pulse Width: %[64:6+4]dT
+	CAS Pulse Width: Read = %[64:5-4]dT	Write = %[64:3+1]dT
+	MA-to-CAS Delay: %[64:2+1]dT		RAS to MA Delay: %[64:1+1]dT
+      if DRAM is SDRAM:
+	Precharge Command to Activate Command Period, Trp: %[64:7+2]dT
+	Activate Command to Precharge Command Period, Tras: %[64:6+5]dT
+	CAS Latency: %[64:5-4]|SDRAM 1T or SDRAM-II n/a;SDRAM 2T or SDRAM-II n/a;SDRAM 3T or SDRAM-II 2T,2.5T;SDRAM n/a or SDRAM-II 3T|
+	DDR Write Enable (SDRAM-II Only): %[64:3]e
+	ACTIVE Command to CMD Command Period: %[64:2+2]dT
+	Bank Interleave: %[64:1-0]|no interleave;2-way;4-way;reserved|
+  Offset 65 - DRAM Timing for Banks 2,3
+      if DRAM is EDO/FPG:
+	RAS Precharge Time: %[65:7+3]dT		Pulse Width: %[65:6+4]dT
+	CAS Pulse Width: Read = %[65:5-4]dT	Write = %[65:3+1]dT
+	MA-to-CAS Delay: %[65:2+1]dT		RAS to MA Delay: %[65:1+1]dT
+      if DRAM is SDRAM:
+	Precharge Command to Activate Command Period, Trp: %[65:7+2]dT
+	Activate Command to Precharge Command Period, Tras: %[65:6+5]dT
+	CAS Latency: %[65:5-4]|SDRAM 1T or SDRAM-II n/a;SDRAM 2T or SDRAM-II n/a;SDRAM 3T or SDRAM-II 2T,2.5T;SDRAM n/a or SDRAM-II 3T|
+	DDR Write Enable (SDRAM-II Only): %[65:3]e
+	ACTIVE Command to CMD Command Period: %[65:2+2]dT
+	Bank Interleave: %[65:1-0]|no interleave;2-way;4-way;reserved|
+  Offset 65 - DRAM Timing for Banks 4,5
+      if DRAM is EDO/FPG:
+	RAS Precharge Time: %[66:7+3]dT		Pulse Width: %[66:6+4]dT
+	CAS Pulse Width: Read = %[66:5-4]dT	Write = %[66:3+1]dT
+	MA-to-CAS Delay: %[66:2+1]dT		RAS to MA Delay: %[66:1+1]dT
+      if DRAM is SDRAM:
+	Precharge Command to Activate Command Period, Trp: %[66:7+2]dT
+	Activate Command to Precharge Command Period, Tras: %[66:6+5]dT
+	CAS Latency: %[66:5-4]|SDRAM 1T or SDRAM-II n/a;SDRAM 2T or SDRAM-II n/a;SDRAM 3T or SDRAM-II 2T,2.5T;SDRAM n/a or SDRAM-II 3T|
+	DDR Write Enable (SDRAM-II Only): %[66:3]e
+	ACTIVE Command to CMD Command Period: %[66:2+2]dT
+	Bank Interleave: %[66:1-0]|no interleave;2-way;4-way;reserved|
+  Offset 68 - DRAM Control
+      SDRAM Open Page Control: %[68:7]|always precharge SDRAM banks when accessing
+	    EDO/FPG DRAMs;SDRAM banks remain active when accessing
+	    EDO/FPG banks|
+      Bank Page Control: %[68:6]|allow only pages of the same bank active;allow pages of different banks to be active|
+      EDO Pipeline Burst Rate: X-2-2-2-%[68:5]|2-2-2-2;3-2-2-2|
+      EDO Test Mode: %[68:3]e
+      Burst Refresh: %[68:2]e
+      System Frequency Divider: CPU/PCI Frequency Ratio %[68:1-0]|2x (66MHz);3x (100MHz);2x (66MHz);2.5x (75/83 MHz)|
+  Offset 69 - DRAM Clock select
+      DRAM Operating Frequency: Same as %[69:7]|CPU Frequency (66/75/83/100 MHz);AGP Frequency (66 MHz)|
+  Offset 6A - DRAM Refresh Counter: %[6A]e, %[6A*16+16]d CPUCLKs (valid if enable)
+  Offset 6B - DRAM Arbitration Control
+      Arbitration Parking Policy: %[6B:7-6]|park at last bus owner;park at CPU side; park at AGP side;reserved|
+      Multi-Page Open: %[6B:0]e
+  Offset 6C - SDRAM Control
+      DRAM Start Cycle: %[6C:6]|concurrent with cache hit detection (for 66MHz);after cache hit detection (for 100MHz)|
+      MD-to-HD Pop: %[6C:5]|normal;add 1T latency for 100MHz|
+      DDR Write-to-Read Turnaround: %[6C:4+1]dT turnaround
+      Single RW Burst Stop Command: %[6C:3]e
+      SDRAM Operation Mode Select: %[6C:2-0](SDRAM_Mode)
+  Offset 6D - DRAM Drive Setting
+      Delay DRAM read Latch: %[6D:6-5]|disable;0.5 ns;1.0 ns;2.0 ns|
+      MD Drive: %[6D:4]|8;6| mA
+      SDRAM Command Drive: %[6D:3]|16;24| mA	CAS# Drive: %[6D:1]|8;12| mA
+      MA[2:13]/WE# Drive: %[6D:2]|16;24| mA	RAS# Drive: %[6D:0]|16;24| mA
+  Offset 6E - ECC Control
+      ECC / ECMode select: %[6E:7]|ECC checking and reporting;ECC checking, reporting and correcting|
+      Enable (Assert) SERR# on ECC / EC Multi-Bit Error: %[6E:5]Y
+      Enable (Assert) SERR# on ECC / EC Single-Bit Error: %[6E:4]Y
+      ECC / EC Enable Bank 5/4 (DIMM 2): %[6E:2]e
+      ECC / EC Enable Bank 3/2 (DIMM 1): %[6E:1]e
+      ECC / EC Enable Bank 1/0 (DIMM 0): %[6E:0]e
+  Offset 6F - ECC Status
+      Multi-Bit Error Detected: %[6F:7]Y	DRAM Bank: %[6F:6-4]d
+      Single-Bit Error Detected: %[6F:3]Y	DRAM Bank: %[6F:2-0]d
+
+PCI Bus #1 Control
+  Offset 70 - PCI Buffer Control
+      CPU to PCI Post-Write: %[70:7]e
+      PCI Master to DRAM Post-Write: %[70:6]e
+      CPU-to-PCI Prefetch: %[70:5]e
+      PCI Master to DRAM Prefetch Disable: %[70:4]e
+      PCI Master Read Caching: %[70:2]e
+      Delay Transaction: %[70:1]e
+  Offset 71,72 - CPU to PCI Flow Control
+      Dynamic Burst: %[71:7]e		PCI I/O Cycle Post Write: %[71:4]e
+      Byte Merge: %[71:6]e   		PCI Burst: %[71:3]e
+      PCI Fast Back-to-Back Write: %[71:2]e
+      Quick Frame Generation: %[71:1]e
+      1 Wait State PCI Cycles: %[71:0]e
+      Retry Status: retry occured %[72:7]|less;more| than retry limit (see Retry Limit)
+      Retry Timeout Action: %[72:6]|retry forever (record status only);flush buffer for write or return all 1s for read|
+      Retry Limit: retry %[72:5-4]|2;16;4;64| times
+      Clear Failed Data and Continue Retry: %[72:3]|flush the entire post-write buffer;when data is posting and master (or
+	    target) abort fails, pop the failed data if any, and keep posting|
+      CPU Backoff on PCI Read Retry Failure: %[72:2]e
+      Reduce 1T for FRAME# Generation: %[72:1]e
+  Offset 73,74 - PCI Master Control
+      PCI Master 1-Wait-State Write: %[73:6]|zero;one| wait state TRDY# response
+      PCI Master 1-Wait-State Read: %[73:5]|zero;one| wait state TRDY# response
+      Prefetch Disable: %[73:4]e
+      Assert STOP# after PCI Master Write Timeout: %[73:3]e
+      Assert STOP# after PCI Master Read Timeout: %[73:2]e
+      LOCK# Function: %[73:1]e
+      PCI Master Broken Timer Enable: %[73:0]e
+      PCI Master Read Prefetch by Enhance Command: %[74:7]|always prefetch;prefetch only if enhance
+	    command|
+      PCI Master Write Merge: %[74:6]e
+  Offset 75,76 - PCI Arbitration
+      Arbitration Mechanism: %[75:7]|PCI has priority;fair arbitration between PCI and CPU|
+      Arbitration Mode: %[75:6]|REQ-based (at the end of REQ#);frame-based (at #FRAME assertion)|
+      Latency Timer: %[75:5-4]d
+      PCI Master Bus Time-Out (0 means disable): %[75:3-0*32]d
+      PCI #2 Master Access PCI #1 Retry Disconnect: %[76:7]e
+      CPU Latency Timer Bit-0: %[76:6]|CPU has at least 1 PCLK time slot when CPU has
+	    PCI bus;CPU has no time slot|
+      Master Priority Rotation Control: Grant CPU after every %[76:5-4]d PCI master 
+	    grant(s)
+  Offset 78 - PMU Control 
+      I/O Port 22 Access: CPU access to I/O address 22h is %[78:7]|passed on to PCI bus;processed internally|
+      Suspend Refresh Type: %[78:6]|CBR;self| refresh
+      Normal Refresh: %[78:5]|suspend refresh using SUSCLK;normal resresh|
+      Dynamic Clock Control: %[78:4]|normal (clock is always running);clock to various internal functional blocks is 
+	    disabled when those blocks are not being used|
+      GCKRUN# De-assertion: GCKRUN# %[78:3]|always low;could be high due to PCKRUN#|
+      PCKRUN# / GCKRUN# Pin Control: %[78:1]e
+      Memory Clock Enable (CKE) Function: %[78:0]e
+
+Graphics Address Relocation Table (GART) / Graphics Aperture (GA) Control
+  Offset 83-80 - GART/TLB Control
+      Flush Page TLB: %[80:7]e
+      PCI#1 Master Address Translation for GA Access: %[80:3]e
+      PCI#2 Master Address Translation for GA Access: %[80:2]e
+      CPU Address Translation for GA Access: %[80:1]e
+      AGP Address Translation for GA Access: %[80:0]e
+  Offset 84 - Graphics Aperture Size: %[84:7-5](GA_SIZE) (%[88:1]ed)
+  Offset 8B-88 - GA Translation Table Base
+      Graphics Aperture Translation Table Base: %[88:31-12]8x
+      PCI Master Directly Accesses DRAM if in GART Range: %[88:2]e
+      Translation Table is %[88:0]|;non-|cacheable
+!end
+
+!enum Range
+ disabled
+ 64K
+ 128K
+ 256K
+ 512K
+ 1M
+ 2M
+ 4M
+!end
+
+!enum DRAM
+ Fast Page Mode DRAM (FPG)
+ EDO DRAM (EDO)
+ SDRAM Double Data Rate (DDR SDRAM-II)
+ SDRAM Single Data Rate (SDR SDRAM)
+!end
+
+!enum EDO_FPG_SDRAM
+ 8-bit Column Address
+ 9-bit Column Address
+ 10-bit Column Address
+ 11-bit Column Address
+ 12-bit Column Address
+ reserved
+ reserved
+ reserved
+ 16Mbit SDRAM
+ 16Mbit SDRAM
+ 16Mbit SDRAM
+ 16Mbit SDRAM
+ 64Mbit SDRAM
+ reserved
+!end
+
+!enum SDRAM_Mode
+ normal
+ NOP command enable
+ All-Banks-Precharge command enable
+ MSR enable
+ CRB cycle enable
+ reserved
+!end
+
+!enum GA_SIZE
+ 256M
+ invalid
+ invalid
+ invalid
+ 128M
+ invalid
+ 64M
+ 32M or less
+!end
+
+!enum Shadow
+ read/write disable
+ write enable	\
+ read enable	\
+ read/write enable
+!end
+
+%! end of file
+

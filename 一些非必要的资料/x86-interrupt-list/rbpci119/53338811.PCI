@@ -1,0 +1,15 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 53338811.PCI = Vendor 5333h, Device 8811h -- S3 Trio64V+
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+S3 Trio64V+ registers in detail:
+   The Trio64 doesn't seem to use any device-specific registers
+!end
+
+%! end of file

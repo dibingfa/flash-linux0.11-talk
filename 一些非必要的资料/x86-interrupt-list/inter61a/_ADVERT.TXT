@@ -1,0 +1,112 @@
+Warning: Blatant advertisements follow
+
+Tired of wearing out printer ribbons getting a hardcopy of the interrupt
+list?  Want the list split up by subject and thoroughly indexed?  Try
+
+     PC Interrupts:
+       A Programmer's Reference to BIOS, DOS, and Third-Party Calls
+       (second edition)
+     Ralf Brown and Jim Kyle
+     1210 pages
+     Addison-Wesley
+     ISBN 0-201-62485-0
+     $39.95
+
+Corresponds to the non-networking portions of INTER36 with a few of the
+additions from INTER37.
+
+The companion book Network Interrupts corresponds to the networking
+portions of INTER37 with a few of the additions from INTER38.
+
+     Network Interrupts: A Programmer's Reference to Network APIs
+     Ralf Brown and Jim Kyle
+     730 pages
+     Addison-Wesley 1994
+     ISBN 0-201-6644-6
+     $29.95
+
+Now (December 1994) available:
+
+     Uninterrupted Interrupts: A Programmer's CD-ROM Reference to
+       Network APIs, and to the BIOS, DOS, and Third-Party Calls
+     Ralf Brown and Jim Kyle
+     Addison-Wesley
+     ISBN 0-201-40966-6
+     $49.95
+
+CD-ROM containing the full text of both PC Interrupts (2nd ed) and
+Network Interrupts, updated to include information added through INTER42.
+
+-------
+
+PC Interrupts is now available in Chinese.  I don't know the exact title
+(and couldn't reproduce it here), but it is a three-volume set which
+appears to be a straight translation of the Interrupt List, circa
+INTER26.
+
+   ISBN 957-652-272-2 (INT 00h-1Fh)  516 pages, NT$ 300
+   ISBN 957-652-271-4 (INT 20h-30h)  704 pages, NT$ 400
+   ISBN 957-652-261-7 (INT 31h-FFh)  488 pages, NT$ 280
+
+Also available in Russian....  ISBN 5-03-002989-3 (vol. 1)
+			       ISBN 5-03-002990-7 (vol. 2)
+The Russian version is a translation of the first edition.
+
+-------
+
+     Undocumented DOS:
+       A Programmer's Guide to Reserved MS-DOS Functions and Data Structures
+       (second edition)
+     Andrew Schulman, Ralf Brown, David Maxey, Raymond J. Michels, and
+       Jim Kyle
+
+     880 pages, 7-3/8" x 9-1/8"
+     Addison-Wesley
+     ISBN 0-201-63287-X
+     $44.95 (book and 1.44M disk)
+
+Includes a repackaged version of INTER36, script-based interrupt
+monitoring utility, source for a sample network redirector, discussions
+of TSRs/multitasking/networks/installable file systems/debugging,
+lots of examples, etc.
+
+Jolt Productivity Award winner, 1991 (first edition)
+
+-------
+
+Undocumented DOS (first edition) is now also available in Chinese.
+ISBN 7-302-01071-4.
+
+-------
+
+WindowBook, Inc., the folks who prepared the hypertext version for
+_Undocumented_DOS_, first edition, is tracking my releases of the
+interrupt list, and offering the WindowBook version for $39.95 ($19.95
+for updates).  You can reach them at 800-524-0380 or 617-661-9515.  Note
+that I have no financial interest whatsoever in WindowBook's offering,
+I'm just letting people know of value-added versions of the list.
+
+	Window Book, Inc.
+	61 Howard Street
+	Cambridge, MA 02139
+
+-------
+
+The following books may also be of interest:
+
+	DOS Internals
+	Geoff Chappell
+	740 pages + 1.44M disk, $39.95
+	Addison-Wesley
+	ISBN 0-201-60835-9
+
+	The Undocumented PC: A Programmer's Guide to I/O, CPUs, and
+	  Fixed Memory Areas
+	Frank van Gilluwe
+	916 pages + 1.44M disk, $44.95
+	Addison-Wesley
+	ISBN 0-201-62277-7
+
+Again, I have no financial interest in the above (though I have met both
+authors).
+

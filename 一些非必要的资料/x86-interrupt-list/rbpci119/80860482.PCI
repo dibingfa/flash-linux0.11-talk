@@ -1,0 +1,32 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80860482.PCI = Vendor 8086h, Device 0482h
+%! Last Edit 10jan99 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+Intel 82375%[08+-3](Variant) registers in detail:
+PCI Control:          %[40]2x
+PCI Arbiter Control:  %[41]2x
+PCI Priority Control: %[43|42]4x
+PCI Decode Control:   %[58]2x
+MEMCS# Control:       %[44]2x  Hole: %[45]d-%[46]dM  MemTop: %[47]dM
+ISA I/O Recover Time: %[4C]2x
+EISA Address Decode:  %[48]2x %[5A]2x
+EISA-to-PCI Memory:   attr %[5C]2x addr=%[60:31-0]8x %[64:31-0]8x %[68:31-0]8x %[6C:31-0]8x
+EISA-to-PCI I/O:      addr=%[70:31-0]8x %[74:31-0]8x %[78:31-0]8x %[7C:31-0]8x
+EISA Latency Timer:   %[84]2x
+BIOS Timer Address:   %[80:15-0]4x
+PCEB Test Control:    %[88:31-0]8x
+!end
+
+!enum Variant
+EB
+SB
+
+!end
+
+%! end of file

@@ -1,0 +1,20 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 10040005.PCI = Vendor 1004h, Device 0005h
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+VLSI VL82C593 PCI/ISA Bridge registers in detail:
+ Device-Specific: %[50]2x %[51]2x %[52]2x %[53]2x %[54]2x %[55]2x %[56]2x %[57]2x
+                  %[58]2x %[59]2x %[5A]2x -- %[5C]2x %[5D]2d %[5E]2x %[5F]2x
+		  %[60]2x %[61]2x %[62]2x %[63]2x %[64]2x %[65]2x %[66]2x %[67]2x
+		  %[68]2x %[69]2x %[6A]2x %[6B]2x %[6C]2x %[6D]2x %[6E]2x %[6F]2x
+		  %[70]2x %[71]2x %[72]2x %[73]2x %[74]2x
+		  %[FF]2x
+!end
+
+%! end of file

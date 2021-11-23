@@ -1,0 +1,277 @@
+	   PCICFG - Show configuration space for PCI devices
+	   =================================================
+
+			    Version 1.19
+		  Copyright 1997,1998,1998,1999 Ralf Brown
+
+PCICFG is a small utility to tell you more than you ever wanted to
+know about the PCI devices in your computer.  To install it, you can
+simply extract all of the files in the distribution archive into a
+directory on your hard disk.  A minimal installation consists of
+PCICFG.EXE and PCICFG.DAT; to enable the Verbose option, you will also
+need the *.PCI files.
+
+<<UPDATES>> The newest version of the PCICFG.DAT file (as well as the
+full distribution archive) is always available at
+     http://www.pobox.com/~ralf/files.html#RBpci
+
+
+			  Running PCICFG
+			  ==============
+
+There are two ways to run PCICFG in normal use:
+	PCICFG [flag(s)] bus device function
+	PCICFG [flag(s)] *		       (to scan all devices)
+
+PCI devices have an address which is broken down into a PCI-bus number
+(usually 0), a device number within that bus (0-31), and a function
+number within the device (0-7).  The majority of devices have only a
+single function (0); multi-function devices are those which incorporate
+very different functionalities within a single chip, i.e.  a chip which
+is both a SCSI and an EIDE controller might present separate function
+numbers for each.  If you use the first form of the commandline, PCICFG
+will display information on only the specified device (or function for
+a multi-function device).
+
+Since you will probably not know the addresses of the devices in your
+computer, the second form of the commandline tells PCICFG to scan all
+possible PCI addresses for active devices.  You will generally want to
+run this with the -t flag (see below) the very first time you use
+PCICFG in order to find out which devices are installed.
+
+The three optional flags which PCICFG supports are:
+        -t      terse -- output only device type and ID
+        -v      verbose output for known devices
+	-b[N]	bypass BIOS and talk directly to PCI ports
+
+Use -v for more verbose output on devices specifically recognized by
+PCICFG (these are described by the *.PCI files, where the first four
+characters of the filename are the vendor ID and the next four the
+device ID).  Output is generally quite lengthy even without -v, so you
+should redirect output into a file or pipe it to MORE or LIST.
+
+On most systems, the default of using the BIOS calls should be OK.  If
+you encounter a problem (such as on some older [1996] Award BIOSes),
+you can try the -b option, which tells PCICFG to access the PCI
+configuration ports directly.  If a digit follows the -b, then the
+automatic determination of the appropriate access method will be
+overridden and the specified method will be used regardless of what the
+BIOS reports.  There are two incompatible methods for accessing the
+ports; on most chipsets, -b1 is the proper method ("PCI Configuration
+Space Access Mechanism #1").  On some chipsets (mostly the earliest
+ones supporting PCI), you will need to use -b2 ("PCI Configuration
+Space Access Mechanism #2").  USING THE INCORRECT METHOD CAN HANG OR
+RESET YOUR COMPUTER!  Intel's Saturn and Neptune chipsets require -b2,
+and will reset when attempting to access certain PCI addresses with -b1
+because the latter can set the chipset's "reboot" bit....
+
+For system maintenance, a third method of running PCICFG is available:
+	PCICFG -m filename [filename ...]
+which will merge the vendor/device IDs contained in the specified files
+into PCICFG.DAT if they are not already present.
+
+
+				Examples
+				========
+
+Example 1: PCICFG -t *
+
+PCICFG v1.10 (c) Copyright 1997,1998 Ralf Brown
+PCI bus 00 device 00 function 00:  Header Type 'non-bridge' (single-func)
+Intel Corporation		       º Class 06: bridge		I/F: 00
+82434LX/NX  (Mercury/Neptune)	       º SubCl 00: CPU/PCI		Rev: 10
+-----------------------------------------------------------
+PCI bus 00 device 01 function 00:  Header Type 'non-bridge' (single-func)
+PC Technology			       º Class 01: disk 		I/F: 00
+RZ1000				       º SubCl 01: IDE			Rev: 01
+-----------------------------------------------------------
+PCI bus 00 device 02 function 00:  Header Type 'non-bridge' (single-func)
+Intel Corporation		       º Class 00: reserved		I/F: 00
+82378/82379 SIO  ISA Bridge	       º SubCl 00: ???			Rev: 03
+-----------------------------------------------------------
+PCI bus 00 device 06 function 00:  Header Type 'non-bridge' (single-func)
+S3				       º Class 03: display		I/F: 00
+Trio64/64V+			       º SubCl 00: VGA			Rev: 53
+-----------------------------------------------------------
+PCI bus 00 device 0C function 00:  Header Type 'non-bridge' (single-func)
+DEC				       º Class 02: network		I/F: 00
+DC21041 Tulip Plus		       º SubCl 00: Ethernet		Rev: 21
+-----------------------------------------------------------
+PCI bus 00 device 0E function 00:  Header Type 'non-bridge' (single-func)
+S3				       º Class 03: display		I/F: 00
+Trio64/64V+			       º SubCl 00: VGA			Rev: 43
+
+
+Example 2: PCICFG 0 14 0
+
+PCICFG v1.10 (c) Copyright 1997,1998 Ralf Brown
+PCI bus 00 device 0E function 00:  Header Type 'non-bridge' (single-func)
+Vendor:	5333	S3                                                
+Device:	8811	S3 Trio64/64V+                                    
+Class:	  03	display             	Revision:	43
+SubClass: 00	VGA                 	ProgramI/F:	00
+CommandReg:	 0023 = I/O-on mem-on VGAsnoop
+Status Reg:	 0200 = (med)
+CacheLine:	   00	Latency:	00	BIST:	     00
+SubsysVendor:    0000	SubsysDevice: 0000
+Base Addresses:
+	(0) A0000000 = mem base=A0000000 len=64M
+CardBus:     00000000	ExpansionROM: FE000000 (64K,disabled)
+INTline:	   09	INTpin:       01
+MinGrant:	   00	MaxLatency:   00
+Device-Specific Data:
+ 40: 00000000  00000000  00000000  00000000  00000000  00000000 
+ 58: 00000000  00000000  00000000  00000000  00000000  00000000 
+ 70: 00000000  00000000  00000000  00000000  00000000  00000000 
+ 88: 00000000  00000000  00000000  00000000  00000000  00000000 
+ A0: 00000000  00000000  00000000  00000000  00000000  00000000 
+ B8: 00000000  00000000  00000000  00000000  00000000  00000000 
+ D0: 00000000  00000000  00000000  00000000  00000000  00000000 
+ E8: 00000000  00000000  00000000  00000000  00000000  00000000 
+
+
+Example 3: PCICFG -v 0 0 0
+
+PCICFG v1.10 (c) Copyright 1997,1998 Ralf Brown
+PCI bus 00 device 00 function 00:  Header Type 'non-bridge' (single-func)
+Vendor:	8086	Intel Corporation                                 
+Device:	04A3	82434LX/NX  (Mercury/Neptune)                     
+Class:	  06	bridge              	Revision:	10
+SubClass: 00	CPU/PCI             	ProgramI/F:	00
+CommandReg:	 0146 = mem-on busmstr parity-err sys-err
+Status Reg:	 A500 = parity-err mst-abort det-parity (slow)
+CacheLine:	   00	Latency:	40	BIST:	     00
+SubsysVendor:    0000	SubsysDevice: 0000
+No base addresses
+CardBus:     00000000	ExpansionROM: 00000000 (no ROM)
+INTline:	   00	INTpin:       00
+MinGrant:	   00	MaxLatency:   00
+Device-Specific Data:
+ 40: 00000000  00000000  00000000  00000000  0B9B40A6  E5000006 
+ 58: 50555700  00555555  20181008  20202020  00000000  00000000 
+ 70: 00003003  00000000  00000000  A000220F  00000000  00000000 
+ 88: 00000000  00000000  00000000  00000000  00000000  00000000 
+ A0: 00000000  00000000  00000000  00000000  00000000  00000000 
+ B8: 00000000  00000000  00000000  00000000  00000000  00000000 
+ D0: 00000000  00000000  00000000  00000000  00000000  00000000 
+ E8: 00000000  00000000  00000000  00000000  00000000  00000000 
+82434NX (Neptune) registers in detail:
+ Host CPU:         type: 101  bus speed: 60 MHz  L1 cache enabled
+ L2 cache:         256K  async SRAM (enabled)  cache all reads
+		   cache byte select  LX-compatible connectivity
+		   LX only: write-back
+ Deturbo control:  40
+ CPU Buf Control:  read-around-write enabled
+                   CPU-PCI posted writes enabled, CPU-mem posted writes enabled
+ PCI Control:      LBXs connected to TRDY#
+                   PCI-memory posted writes disabled, PCI burst enabled
+ DRAM Control:     parity errors masked  SMRAM not enabled
+                   DRAM bursts: X-3-3-3
+		   0-Active RAS# Mode: N  Burst-of-Four Refresh: Y
+		   Refresh Type: RAS#-only (enabled)
+ DRAM Timing:      RAS# Wait State: N   CAS# Wait State: N
+ DRAM Boundaries:   8M  16M  24M  32M  32M  32M  32M  32M
+ Memory Size:	   32M
+ Programmable Attribute Map
+	C000-C3FF: C-R	D000-D3FF: C-R	E000-E3FF: C-R	F000-FFFF: C-R
+	C400-C7FF: C-R	D400-D7FF: C-R	E400-E7FF: C-R
+	C800-CBFF: ---	D800-DBFF: C-R	E800-EBFF: ---
+	CC00-CFFF: C-R	DC00-DFFF: C-R	EC00-EFFF: ---	8000-9FFF: CWR
+ Error Control:    03 = SERR# on: --------- ---------------- ---------------
+		   SERR# on ------------------ --------------
+		   PERR# on -----------   assert PEN# on reads
+		   L2 cache parity disabled
+ Error Status:     30 = ---------------- PCI-read parity PCI-address parity
+			----------- --------------- --------
+ SMRAM control:    SMM Space at segment 8000 is ---- ------ ------
+ ISA memory hole:  at 0M, size 1M (disabled)
+ Frame Buffer:	   16M at 2560M (A0000000)	byte merging enabled
+		   lock requests disabled  transparent buffer writes disabled
+                   applied to VGA-range
+
+
+
+		       Writing your own .PCI file
+		       ==========================
+
+All of the information used by PCICFG.EXE is in plain-text format,
+which means you can update it for your system if you have devices
+which are not yet recognized (and if you send me your updates, I'll
+put them in the next release along with your name).
+
+
+PCICFG.DAT
+----------
+
+This file lists the vendor and device IDs by which a device is
+identified.  Its format is very simple: for each vendor ID, there is a
+line giving the vendor ID number and the associated vendor name,
+optionally followed by one or more lines listing the device IDs used by
+that vendor.  Both vendor and device IDs consist of four hexadecimal
+digits; a sample fragment of the PCICFG.DAT file is
+
+	Vendor 1003 ULSI
+	  0201 US201 Graphics Controller
+	Vendor 1004 VLSI Technologies
+	  0005 VL82C591 CPU Bridge
+
+Which indicates that vendor 0x1003 is ULSI, and that it uses device ID
+0x0201 for its model US201 graphics controller.  Both vendor and device
+names are limited to 50 characters (anything beyond that is simply
+ignored).  The only limits on the size of the PCICFG.DAT file are that
+all of the information must fit into available memory, and no single
+vendor's information may occupy more than 16K (250 or more devices,
+depending on the lengths of the device names).
+
+If you have another listing of vendor and device IDs, you can have
+PCICFG merge them into PCICFG.DAT rather than manually updating the
+file, using
+	PCICFG -m filename
+The list in 'filename' must be in either the PCICFG format or the format
+used by Merlin's PCI program (essentially the PCICFG format without the
+initial signature and the 'Vendor' markers; device IDs *must* be indented,
+unlike PCICFG.DAT where the indent is optional).  Craig Hart maintains
+an updated collection of ID numbers in this format at
+http://members.hyperlink.net.au/~chart/pci.htm.
+
+There is a small problem with data files using Unix-style newlines; if
+you encounter an error in merging, make sure that the file you are
+trying to merge uses DOS-style CRLFs.  One easy way to fix the line
+terminators is to load the file into DOS EDIT or Semware's Qedit/TSE
+and immediately save the file.
+
+
+*.PCI
+-----
+
+These files give a more detailed breakdown of a device's configuration
+data.  The filename indicates the device for which it is a description.
+
+The main content of a .PCI file is a set of lines with embedded
+printf-style conversion specifiers, which list addresses in the
+device's PCI configuration space and how to turn the values stored
+there into numbers or text.  The included BLANK.PCI can be used as a
+template for your own .PCI files, and contains more details on the
+conversion specifiers.
+
+
+			     Update History
+			     ==============
+
+21dec97	v1.00	initial non-beta release
+03jan98	v1.01	bugfix
+04jan98	v1.10	implemented data merging (-m), removed 64K limit on PCICFG.DAT
+		tightened output in terse mode
+23mar98 v1.11	implemented BIOS bypass (-b), minor bugfixes
+27jun98 v1.15	fixed problem with vendor IDs being reported as xxFFh, added
+		  AGP capabilities reporting, allow leading/trailing whitespace
+		  in enums, support bit numbers above 31
+15jul98 v1.16	added automatic detection of configuration mechanism
+		fixed partially corrupted PCICFG.DAT
+18aug98 v1.17	added display of header format number for unknown header types
+		added new entries to PCICFG.DAT
+03jan99 v1.18	bugfix for -B1 with device>15
+		updated AGP capabilities dump
+10jan99 v1.19	fixed premature exit following PCI capabilities list entries
+
+			      End of File

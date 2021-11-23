@@ -1,0 +1,204 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867190.PCI = Vendor 8086h, Device 7190h (Intel 440BX PCI-Host)
+%! Last Edit 18jun98 by Ralf Brown
+%!
+
+!begin
+82443BX Registers in detail:
+
+ Programmable Attribute Map
+\tC000-C3FF: %[5A:2]{-C}%[5A:1]{-W}%[5A:0]{-R}\tD000-D3FF: %[5C:2]{-C}%[5C:1]{-W}%[5C:0]{-R}\tE000-E3FF: %[5E:2]{-C}%[5E:1]{-W}%[5E:0]{-R}%
+\tF000-FFFF: %[59:6]{-C}%[59:5]{-W}%[59:4]{-R}
+\tC400-C7FF: %[5A:6]{-C}%[5A:5]{-W}%[5A:4]{-R}\tD400-D7FF: %[5C:6]{-C}%[5C:5]{-W}%[5C:4]{-R}\tE400-E7FF: %[5E:6]{-C}%[5E:5]{-W}%[5E:4]{-R}
+\tC800-CBFF: %[5B:2]{-C}%[5B:1]{-W}%[5B:0]{-R}\tD800-DBFF: %[5D:2]{-C}%[5D:1]{-W}%[5D:0]{-R}\tE800-EBFF: %[5F:2]{-C}%[5F:1]{-W}%[5F:0]{-R}
+\tCC00-CFFF: %[5B:6]{-C}%[5B:5]{-W}%[5B:4]{-R}\tDC00-DFFF: %[5D:6]{-C}%[5D:5]{-W}%[5D:4]{-R}\tEC00-EFFF: %[5F:6]{-C}%[5F:5]{-W}%[5F:4]{-R}%
+\t8000-9FFF: %[59:2]{-C}%[59:1]{-W}%[59:0]{-R}
+
+ DRAM type:		%[57:4-3]|EDO;SDRAM;registered SDRAM;reserved|\t\trefresh rate: %[57:2-0](refresh)
+ DRAM Row Boundaries:	%[60*8]4dM %[61*8]4dM %[62*8]4dM %[63*8]4dM %[64*8]4dM %[65*8]4dM %[66*8]4dM %[67*8]4dM 
+ SDRAM Type:		%[50:24](ECC) %[50:25](ECC) %[50:26](ECC) %[50:27](ECC) %[50:28](ECC) %[50:29](ECC) %[50:30](ECC) %[50:31](ECC) 
+   Row Page Size:	%[74:1-0](PS) %[74:3-2](PS) %[74:5-4](PS) %[74:7-6](PS) %[74:9-8](PS) %[74:11-10](PS) %[74:13-12](PS) %[74:15-14](PS)
+   Banks per Row:	%[78:8](BpR) %[78:9](BpR) %[78:10](BpR) %[78:11](BpR) %[78:12](BpR) %[78:13](BpR) %[78:14](BpR) %[78:15](BpR)
+ EDO DRAM timing:	add one RASx# wait = %[58:1]y, add one wait to first CASx# = %[58:0]y
+ SDRAM timing (clks):	Leadoff=%[76:3]|4;3|, CAS# latency=%[76:2]|3;2|, RAS-to-CAS=%[76:1]|3;2|, RAS# prechg=%[76:0]|3;2|
+ SDRAM mode select:	%[76:7-5](MS)\tDRAM Idle Timer: %[78:3-0](DIT)
+ DRAM data asserted:	%[50:18]|one clock after;on same clock as| snoop
+ Fixed DRAM Hole:	%[68:7-6]|none	;512K-640K;15M-16M;reserved|\tModuleMode: %[57:5|76:4](MM)
+ WSC# handshake:	%[50:15]Ed\t\tECC signals always driven for EDO: %[50:17]y
+ IDSEL redirection:	%[50:16]|IDSEL1/AD12;IDSEL7/AD18|\tHost/DRAM frequency: %[50:13-12]|100 MHz;reserved;66 MHz;reserved|
+ AGP-to-PCI access:	%[50:11]ed  \tPCI-agent access to aperture: %[50:10]Ed
+ Graphics Aperture:	%[50:9]ed  \tDRAM integrity mode: %[50:8-7](integ)
+ ECC diagnostics mode:	%[50:6]ed  \tMDA on PCI/ISA: %[50:5]|absent;present|
+ Posting Host USWC:	%[50:3]ed  \tIn-Order Queue depth: %[50:2]|1;maximum|
+
+ SMRAM Control:		SMM Space %[72:6]/Open/ %[72:5]/Closed/ %[72:4]/Locked/ %[72:3]/Enabled/ at %[72:2-0<12+32768]4x
+ Ext. SMRAM Control:	Using %[73:7]|compatible;high| SMRAM; TSEG (%[73:0]ed) is %[73:2-1]|128K;256K;512K;1M|
+			SMRAM cacheable: %[73:5]/globally/ %[73:4]/L1/ %[73:3]/L2/
+			have %[73:6]|not ;|detected non-SMM access to closed SMRAM
+ Power Management:	enable %[7A:7]/SDRAM powerdown,/ %[7A:6]/ACPI ctrl reg,/ %[7A:4]/normal refresh/
+			quick-start %[7A:3]ed, dynamic clock gating %[7A:2]ed
+			AGP %[7A:1]Ed, CPU reset w/o PCIRST %[7A:0]ed
+			suspend refresh type is %[7A:5]|self-refresh;CBR|
+ Suspend CBR Refresh:	automatic rate adjustment %[7B:12]ed, rate = %[7B:11-0]d
+
+ Error Address:		error address %[80:31-12<12]8x, %[80:1]/multi-bit//%[80:0]/single-bit/ error
+ Error Command:		enable SERR# on: %[90:7]/AGP outs. aperture/ %[90:6]/inv AGP DRAM access/
+			  %[90:5]/invalid GATT/ %[90:4]/Target Abort/ %[90:3]/Thermal Throttle/
+			  %[90:1]/multi-bit error/ %[90:0]/single-bit error/
+			SERR# mode: %[90:2]|single PCI clock;level mode|
+ Error Status:		detected %[91:12]/Read//%[91:11]/Write/ thermal throttle
+			  %[91:10]/AGP outside aperture/ %[91:9]/inv AGP DRAM access/ %[91:8]/invalid GATT/
+			  %[91:4]/multi-bit error/ (row %[91:7-5]d), %[91:0]/single-bit error/ (row %[91:3-1]d)
+
+ AGP Control:		AGP %[A8:8]ed, sideband addr %[A8:9]ed, %[A8:1-0](AGPxfer) xfer rate
+			forced ordering of snoop-writes/AGP reads is %[B0:15]Ed
+			Graphics Aperture write/AGP read sync is %[B0:13]ed
+			Graphics Translation Lookaside Buffer is %[B0:7]ed
+			Aperture Size Mask (bits 27-22) = %[B4:5-0]6b
+			Graphics Aperture Translation Table at %[B8:31-12<12]8x
+			AGP Jam Latch: %[F0:8]/weak//%[F0:9]/strng/ pull-up, %[F0:6]/weak//%[F0:7]/strng/ pull-down
+
+ DRAM Write Thermal Throttling Control:		Read		Write
+    Global DRAM Write Sampling Window (ms): 	%[E8:13-6<2]d\t\t%[E4:13-6<2]d 
+    Global QWORD Threshold: 			%[E8:37-26*215]d\t\t%[E0:37-26*215]d
+    Throttle Time (* sampling window length): 	%[E8:25-20]d\t\t%[E0:25-20]d
+    Throttle Monitoring Window (DRAM CLKs): 	%[E8:19-13<4]d\t\t%[E0:19-13<4]d
+    Throttle QWORD Maximum: 			%[E8:12-3]d\t\t%[E0:12-3]d
+    DRAM Throttle Mode: 			%[E8:2-0](throt)\t\t%[E0:2-0](throt)
+    lock: %[E4:31]Y
+
+ Memory Buffers (Speed x Strength):
+    MAA[13:0],WEA#,SRASA#,SCASA#			%[CA:22](Spd)x%[69:39-38](Str1)
+    MAB[12:11,9:0],MAB[13,10],WEB#,SRASB#,SCABS#	%[CA:21](Spd)x%[69:37-36](Str1)
+    MD[63:0] control 1					%[CA:19](Spd)x%[69:33-32](Str2)
+    MD[63:0] control 2					%[CA:20](Spd)x%[69:35-34](Str2)
+    MECC[7:0] control 1					%[CA:17](Spd)x%[69:29-28](Str2)
+    MECC[7:0] control 2					%[CA:18](Spd)x%[69:31-30](Str2)
+    CSB7#/CKE5						%[CA:16](Spd)x%[69:27-26](Str1)
+    CSA7#/CKE3						%[CA:15](Spd)x%[69:25-24](Str1)
+    CSB6#/CKE4						%[CA:14](Spd)x%[69:23-22](Str1)
+    CSA6#/CKE2						%[CA:13](Spd)x%[69:21-20](Str1)
+    CSA5#/RASA5#, CSB5#/RASB5#				%[CA:12](Spd)x%[69:19](Str3)
+    CSA4#/RASA4#, CSB4#/RASB4#				%[CA:11](Spd)x%[69:18](Str3)
+    CSA3#/RASA3#, CSB3#/RASB3#				%[CA:10](Spd)x%[69:17](Str3)
+    CSA2#/RASA2#, CSB2#/RASB2#				%[CA:9](Spd)x%[69:16](Str3)
+    CSA1#/RASA1#, CSB1#/RASB1#				%[CA:8](Spd)x%[69:15](Str3)
+    CSA0#/RASA0#, CSB0#/RASB0#				%[CA:7](Spd)x%[69:14](Str3)
+    DQMA5/CASA5#					%[CA:6](Spd)x%[69:13-12](Str4)
+    DQMA1/CASA1#					%[CA:5](Spd)x%[69:11-10](Str1)
+    DQMB5/CASB5#					%[CA:4](Spd)x%[69:9-8](Str4)
+    DQMB1/CASB1#					%[CA:3](Spd)x%[69:7-6](Str4)
+    DQMA[7:6,4:2,0]/CASA[7:6,4:2,0]#			%[CA:2](Spd)x%[69:5-4](Str1)
+    CKE1/GCKE						%[CA:1](Spd)x%[69:3-2](Str1)
+    CKE0/FENA						%[CA:0](Spd)x%[69:1-0](Str1)
+!end
+
+!enum refresh
+disabled
+15.6 us
+31.2 us
+62.4 us
+124.8 us
+249.6 us
+reserved
+!end
+
+!enum ECC
+\  ECC
+noECC
+!end
+
+!enum PS
+\ 2 KB
+\ 4 KB
+\ 8 KB
+\ rsvd
+!end
+
+!enum BpR
+\ two \
+\ four
+!end
+
+!enum integ
+non-ECC
+parity
+ECC
+ECC w/ hw scrubbing
+!end
+
+!enum MS
+normal operation
+issue NOP commands
+All-Banks-Precharge
+mode register set
+CBR cycles
+reserved
+!end
+
+!enum MM
+3 DIMMs, powerdown enabled
+4 DIMMs, no power-down
+3 DIMMs, no power-down
+3 DIMMs, no power-down
+!end
+
+!enum DIT
+0 clocks
+2 clocks
+4 clocks
+8 clocks
+10 clocks
+12 clocks
+16 clocks
+32 clocks
+infinite
+!end
+
+!enum throt
+rsvd
+rsvd
+rsvd
+rsvd
+normal
+rsvd
+!end
+
+!enum Spd
+\ 66 MHz \
+100 MHz \
+!end
+
+!enum Str1
+1 (66/100)
+rsvd
+2 (66/100)
+3 (66/100)
+!end
+
+!enum Str2
+1 (66/100)
+rsvd
+2 (66/100)
+3 (100 only)
+!end
+
+!enum Str3
+1 (66/100)
+2 (66/100)
+!end
+
+!enum Str4
+1 (66/100)
+rsvd
+2 (66/100)
+3 (66 only)
+!end
+
+!enum AGPxfer
+default
+1x
+2x
+illegal
+!end

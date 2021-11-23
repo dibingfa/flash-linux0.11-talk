@@ -1,0 +1,38 @@
+			   COMBINE.COM v2.10
+			     by Ralf Brown
+			     22 March 1998
+
+COMBINE.COM will concatenate all of the partial files in the interrupt
+list distribution archives into a single master file for interrupts and
+a single master file for I/O ports, which is required by some viewers
+and hypertext conversion programs.
+
+To use COMBINE, just change to the directory into which you extracted
+the distribution archives, and type
+
+	COMBINE {dir}		(for interrupts)
+   and then
+	COMBINE -p {dir}	(for ports)
+
+where {dir} is the name of the directory in which you want the combined
+list to be stored (typically, you will type "COMBINE ." to store the
+result in the same directory as the individual sections).  If there is
+not enough free disk space to hold both the individual sections and the
+combined list, you will be told and given the option of running COMBINE
+again with an option to tell it that it should delete each section as
+it is added to the combined file:
+
+	COMBINE -d {dir}
+
+COMBINE will skip any missing sections of the interrupt list; if at
+least one section other than INTERRUP.A (PORTS.A with -p) is present,
+it will stop as soon as the last section has been processed (otherwise,
+it will continue trying all names through INTERRUP.Z/PORTS.Z).  On
+completion, it sets the combined file's timestamp to be the same as
+that of the last of the individual sections.
+
+System Requirements:
+	DOS 2.0+ or a DOS compatibility box
+	64K available RAM
+	a copy of the interrupt list :-)
+	sufficient free disk space (~360K with the -d option)

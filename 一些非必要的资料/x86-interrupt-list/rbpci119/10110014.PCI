@@ -1,0 +1,20 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 10110014.PCI = Vendor 1011h, Device 0014h = DEC DC24014
+%! Last Edit 04feb98 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+DEC DC24014 Tulip Plus registers in detail:
+ Chip Stepping:	%[08:7-4]d	Revision within Stepping: %[08:3-0]d
+ Configuration Driver Information:
+    Sleep Mode:  %[40:31]ed
+    Snooze Mode: %[40:30]ed
+    Driver Use:  %[40:15-8]2x
+    ?:		 %[40]2x
+!end
+
+%! end of file

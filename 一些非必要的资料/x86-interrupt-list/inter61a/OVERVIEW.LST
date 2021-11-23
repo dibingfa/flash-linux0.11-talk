@@ -1,0 +1,262 @@
+[Provided by Bent Lynggaard <lynggaard@risoe.dk>.  Last Edit 6/5/94]
+This list is a brief description of each of the 256 interrupts. Each
+description begins with "INT nn " where "nn" is a two digit hexadecimal
+number 00 - FF. For automatic processing, do not rely on the order being
+consecutive.
+--------!---TITLES---------------------------
+INT 00 - CPU-generated - DIVIDE ERROR
+INT 01 - CPU-generated - SINGLE STEP; (80386+) - DEBUGGING EXCEPTIONS
+INT 02 - external hardware - NON-MASKABLE INTERRUPT
+INT 03 - CPU-generated - BREAKPOINT
+INT 04 - CPU-generated - INTO DETECTED OVERFLOW
+INT 05 - PRINT SCREEN; CPU-generated (80186+) - BOUND RANGE EXCEEDED
+INT 06 - CPU-generated (80286+) - INVALID OPCODE
+INT 07 - CPU-generated (80286+) - PROCESSOR EXTENSION NOT AVAILABLE
+INT 08 - IRQ0 - SYSTEM TIMER; CPU-generated (80286+)
+INT 09 - IRQ1 - KEYBOARD DATA READY; CPU-generated (80286,80386)
+INT 0A - IRQ2 - LPT2/EGA,VGA/IRQ9; CPU-generated (80286+)
+INT 0B - IRQ3 - SERIAL COMMUNICATIONS (COM2); CPU-generated (80286+)
+INT 0C - IRQ4 - SERIAL COMMUNICATIONS (COM1); CPU-generated (80286+)
+INT 0D - IRQ5 - FIXED DISK/LPT2/reserved; CPU-generated (80286+)
+INT 0E - IRQ6 - DISKETTE CONTROLLER; CPU-generated (80386+)
+INT 0F - IRQ7 - PARALLEL PRINTER
+INT 10 - VIDEO; CPU-generated (80286+)
+INT 11 - BIOS - GET EQUIPMENT LIST; CPU-generated (80486+)
+INT 12 - BIOS - GET MEMORY SIZE
+INT 13 - DISK
+INT 14 - SERIAL
+INT 15 - CASSETTE
+INT 16 - KEYBOARD
+INT 17 - PRINTER
+INT 18 - DISKLESS BOOT HOOK (START CASSETTE BASIC)
+INT 19 - SYSTEM - BOOTSTRAP LOADER
+INT 1A - TIME
+INT 1B - KEYBOARD - CONTROL-BREAK HANDLER
+INT 1C - TIME - SYSTEM TIMER TICK
+INT 1D - SYSTEM DATA - VIDEO PARAMETER TABLES
+INT 1E - SYSTEM DATA - DISKETTE PARAMETERS
+INT 1F - SYSTEM DATA - 8x8 GRAPHICS FONT
+INT 20 - DOS 1+ - TERMINATE PROGRAM
+INT 21 - DOS 1+ - Function Calls
+INT 22 - DOS 1+ - PROGRAM TERMINATION ADDRESS
+INT 23 - DOS 1+ - CONTROL-C/CONTROL-BREAK HANDLER
+INT 24 - DOS 1+ - CRITICAL ERROR HANDLER
+INT 25 - DOS 1+ - ABSOLUTE DISK READ
+INT 26 - DOS 1+ - ABSOLUTE DISK WRITE
+INT 27 - DOS 1+ - TERMINATE AND STAY RESIDENT
+INT 28 - DOS 2+ - DOS IDLE INTERRUPT
+INT 29 - DOS 2+ - FAST CONSOLE OUTPUT
+INT 2A - NETBIOS
+INT 2B - DOS 2+ - RESERVED
+INT 2C - DOS 2+ - RESERVED
+INT 2D - DOS 2+ - RESERVED
+INT 2E - DOS 2+ - PASS COMMAND TO COMMAND INTERPRETER FOR EXECUTION
+INT 2F - Multiplex
+INT 30 - (NOT A VECTOR!) - DOS 1+ - FAR JMP instruction
+INT 31 - overwritten by CP/M jump instruction in INT 30
+INT 32 - (no special use)
+INT 33 - MS MOUSE
+INT 34 - FLOATING POINT EMULATION - OPCODE D8h
+INT 35 - FLOATING POINT EMULATION - OPCODE D9h
+INT 36 - FLOATING POINT EMULATION - OPCODE DAh
+INT 37 - FLOATING POINT EMULATION - OPCODE DBh
+INT 38 - FLOATING POINT EMULATION - OPCODE DCh
+INT 39 - FLOATING POINT EMULATION - OPCODE DDh
+INT 3A - FLOATING POINT EMULATION - OPCODE DEh
+INT 3B - FLOATING POINT EMULATION - OPCODE DFh
+INT 3C - FLOATING POINT EMULATION - SEGMENT OVERRIDE
+INT 3D - FLOATING POINT EMULATION - STANDALONE FWAIT
+INT 3E - FLOATING POINT EMULATION - Borland "SHORTCUT" CALL
+INT 3F - Overlay manager interrupt (Microsoft/Borland)
+INT 40 - DISKETTE - RELOCATED ROM BIOS DISKETTE HANDLER
+INT 41 - SYSTEM DATA - HARD DISK 0 PARAMETER TABLE; CPU - MS Windows
+INT 42 - VIDEO - RELOCATED DEFAULT INT 10 VIDEO SERVICES (EGA,VGA)
+INT 43 - VIDEO DATA - CHARACTER TABLE (EGA,MCGA,VGA)
+INT 44 - VIDEO DATA - CHARACTER FONT (PCjr); Novell NetWare
+INT 45 - Z100/Acorn
+INT 46 - SYSTEM DATA - HARD DISK 1 DRIVE PARAMETER TABLE
+INT 47 - Z100/Acorn/Western Digital/SQL Base
+INT 48 - KEYBOARD (PCjr) - Z100/Watstar/Acorn/Western Digital/Compaq
+INT 49 - SYSTEM DATA (PCjr) - Z100/TI/Watstar/Acorn/MAGic
+INT 4A - SYSTEM - USER ALARM HANDLER
+INT 4B - IBM SCSI interface; Virtual DMA Specification (VDS)
+INT 4C - Z100/Acorn/TI
+INT 4D - Z100
+INT 4E - TI/Z100
+INT 4F - Common Access Method SCSI
+INT 50 - IRQ0 relocated by software
+INT 51 - IRQ1 relocated by software
+INT 52 - IRQ2 relocated by software
+INT 53 - IRQ3 relocated by software
+INT 54 - IRQ4 relocated by software
+INT 55 - IRQ5 relocated by software
+INT 56 - IRQ6 relocated by software
+INT 57 - IRQ7 relocated by software
+INT 58 - IRQ8/0 relocated by software
+INT 59 - IRQ9/1 relocated by software; GSS Computer Graphics Interface
+INT 5A - IRQ10/2 relocated by software
+INT 5B - IRQ11/3 relocated by software; Network
+INT 5C - IRQ12/4 relocated by software; Network Interface
+INT 5D - IRQ13/5 relocated by software
+INT 5E - IRQ14/6 relocated by software
+INT 5F - IRQ15/7 relocated by software; HP 95LX GRAPHICS PRIMITIVES
+INT 60 - reserved for user interrupt; multiple purposes
+INT 61 - reserved for user interrupt; multiple purposes
+INT 62 - reserved for user interrupt; multiple purposes
+INT 63 - reserved for user interrupt; multiple purposes
+INT 64 - reserved for user interrupt; multiple purposes
+INT 65 - reserved for user interrupt; multiple purposes
+INT 66 - reserved for user interrupt; multiple purposes
+INT 67 - reserved for user interrupt; LIM EMS; multiple purposes
+INT 68 - multiple purposes
+INT 69 - multiple purposes
+INT 6A - multiple purposes
+INT 6B - multiple purposes
+INT 6C - CONVERTIBLE; DOS 3.2; DECnet DOS network scheduler
+INT 6D - VGA - internal
+INT 6E - DECnet DOS - DECnet NETWORK PROCESS API
+INT 6F - Novell NetWare; 10NET; MS Windows 3.0
+INT 70 - IRQ8 - CMOS REAL-TIME CLOCK
+INT 71 - IRQ9 - REDIRECTED TO INT 0A BY BIOS
+INT 72 - IRQ10 - RESERVED
+INT 73 - IRQ11 - RESERVED
+INT 74 - IRQ12 - POINTING DEVICE (PS)
+INT 75 - IRQ13 - MATH COPROCESSOR EXCEPTION (AT and up)
+INT 76 - IRQ14 - HARD DISK CONTROLLER (AT and later)
+INT 77 - IRQ15 - RESERVED (AT,PS); POWER CONSERVATION (Compaq)
+INT 78 - DOS extenders; multiple purposes
+INT 79 - multiple purposes
+INT 7A - Novell NetWare; IBM 3270; multiple purposes
+INT 7B - multiple purposes
+INT 7C - multiple purposes
+INT 7D - multiple purposes
+INT 7E - RESERVED FOR DIP, Ltd. ROM LIBRARY; multiple purposes
+INT 7F - multiple purposes
+INT 80 - reserved for BASIC; multiple purposes
+INT 81 - reserved for BASIC
+INT 82 - reserved for BASIC
+INT 83 - reserved for BASIC
+INT 84 - reserved for BASIC
+INT 85 - reserved for BASIC
+INT 86 - IBM ROM BASIC - used while in interpreter; multiple purposes
+INT 87 - IBM ROM BASIC - used while in interpreter
+INT 88 - IBM ROM BASIC - used while in interpreter; multiple purposes
+INT 89 - IBM ROM BASIC - used while in interpreter
+INT 8A - IBM ROM BASIC - used while in interpreter
+INT 8B - IBM ROM BASIC - used while in interpreter
+INT 8C - IBM ROM BASIC - used while in interpreter
+INT 8D - IBM ROM BASIC - used while in interpreter
+INT 8E - IBM ROM BASIC - used while in interpreter
+INT 8F - IBM ROM BASIC - used while in interpreter
+INT 90 - IBM ROM BASIC - used while in interpreter
+INT 91 - IBM ROM BASIC - used while in interpreter
+INT 92 - IBM ROM BASIC - used while in interpreter; multiple purposes
+INT 93 - IBM ROM BASIC - used while in interpreter
+INT 94 - IBM ROM BASIC - used while in interpreter; multiple purposes
+INT 95 - IBM ROM BASIC - used while in interpreter
+INT 96 - IBM ROM BASIC - used while in interpreter
+INT 97 - IBM ROM BASIC - used while in interpreter
+INT 98 - IBM ROM BASIC - used while in interpreter
+INT 99 - IBM ROM BASIC - used while in interpreter
+INT 9A - IBM ROM BASIC - used while in interpreter
+INT 9B - IBM ROM BASIC - used while in interpreter
+INT 9C - IBM ROM BASIC - used while in interpreter
+INT 9D - IBM ROM BASIC - used while in interpreter
+INT 9E - IBM ROM BASIC - used while in interpreter
+INT 9F - IBM ROM BASIC - used while in interpreter
+INT A0 - IBM ROM BASIC - used while in interpreter
+INT A1 - IBM ROM BASIC - used while in interpreter
+INT A2 - IBM ROM BASIC - used while in interpreter
+INT A3 - IBM ROM BASIC - used while in interpreter
+INT A4 - IBM ROM BASIC - used while in interpreter
+INT A5 - IBM ROM BASIC - used while in interpreter
+INT A6 - IBM ROM BASIC - used while in interpreter
+INT A7 - IBM ROM BASIC - used while in interpreter
+INT A8 - IBM ROM BASIC - used while in interpreter
+INT A9 - IBM ROM BASIC - used while in interpreter
+INT AA - IBM ROM BASIC - used while in interpreter
+INT AB - IBM ROM BASIC - used while in interpreter
+INT AC - IBM ROM BASIC - used while in interpreter
+INT AD - IBM ROM BASIC - used while in interpreter
+INT AE - IBM ROM BASIC - used while in interpreter
+INT AF - IBM ROM BASIC - used while in interpreter
+INT B0 - IBM ROM BASIC - used while in interpreter
+INT B1 - IBM ROM BASIC - used while in interpreter
+INT B2 - IBM ROM BASIC - used while in interpreter
+INT B3 - IBM ROM BASIC - used while in interpreter
+INT B4 - IBM ROM BASIC - used while in interpreter
+INT B5 - IBM ROM BASIC - used while in interpreter
+INT B6 - IBM ROM BASIC - used while in interpreter
+INT B7 - IBM ROM BASIC - used while in interpreter
+INT B8 - IBM ROM BASIC - used while in interpreter
+INT B9 - IBM ROM BASIC - used while in interpreter
+INT BA - IBM ROM BASIC - used while in interpreter
+INT BB - IBM ROM BASIC - used while in interpreter
+INT BC - IBM ROM BASIC - used while in interpreter
+INT BD - IBM ROM BASIC - used while in interpreter
+INT BE - IBM ROM BASIC - used while in interpreter
+INT BF - IBM ROM BASIC - used while in interpreter
+INT C0 - IBM ROM BASIC - used while in interpreter
+INT C1 - IBM ROM BASIC - used while in interpreter
+INT C2 - IBM ROM BASIC - used while in interpreter
+INT C3 - IBM ROM BASIC - used while in interpreter
+INT C4 - IBM ROM BASIC - used while in interpreter
+INT C5 - IBM ROM BASIC - used while in interpreter
+INT C6 - IBM ROM BASIC - used while in interpreter
+INT C7 - IBM ROM BASIC - used while in interpreter
+INT C8 - IBM ROM BASIC - used while in interpreter
+INT C9 - IBM ROM BASIC - used while in interpreter
+INT CA - IBM ROM BASIC - used while in interpreter
+INT CB - IBM ROM BASIC - used while in interpreter
+INT CC - IBM ROM BASIC - used while in interpreter
+INT CD - IBM ROM BASIC - used while in interpreter
+INT CE - IBM ROM BASIC - used while in interpreter
+INT CF - IBM ROM BASIC - used while in interpreter
+INT D0 - IBM ROM BASIC - used while in interpreter
+INT D1 - IBM ROM BASIC - used while in interpreter
+INT D2 - IBM ROM BASIC - used while in interpreter
+INT D3 - IBM ROM BASIC - used while in interpreter
+INT D4 - IBM ROM BASIC - used while in interpreter
+INT D5 - IBM ROM BASIC - used while in interpreter
+INT D6 - IBM ROM BASIC - used while in interpreter
+INT D7 - IBM ROM BASIC - used while in interpreter
+INT D8 - IBM ROM BASIC - used while in interpreter
+INT D9 - IBM ROM BASIC - used while in interpreter
+INT DA - IBM ROM BASIC - used while in interpreter
+INT DB - IBM ROM BASIC - used while in interpreter
+INT DC - IBM ROM BASIC - used while in interpreter
+INT DD - IBM ROM BASIC - used while in interpreter
+INT DE - IBM ROM BASIC - used while in interpreter
+INT DF - IBM ROM BASIC - used while in interpreter
+INT E0 - IBM ROM BASIC - used while in interpreter; multiple purposes
+INT E1 - IBM ROM BASIC - used while in interpreter
+INT E2 - IBM ROM BASIC - used while in interpreter
+INT E3 - IBM ROM BASIC - used while in interpreter
+INT E4 - IBM ROM BASIC - used while in interpreter
+INT E5 - IBM ROM BASIC - used while in interpreter
+INT E6 - IBM ROM BASIC - used while in interpreter
+INT E7 - IBM ROM BASIC - used while in interpreter
+INT E8 - IBM ROM BASIC - used while in interpreter
+INT E9 - IBM ROM BASIC - used while in interpreter
+INT EA - IBM ROM BASIC - used while in interpreter
+INT EB - IBM ROM BASIC - used while in interpreter
+INT EC - IBM ROM BASIC - used while in interpreter
+INT ED - IBM ROM BASIC - used while in interpreter
+INT EE - IBM ROM BASIC - used while in interpreter
+INT EF - BASIC - ORIGINAL INT 09 VECTOR
+INT F0 - BASICA.COM, GWBASIC, compiled BASIC - ORIGINAL INT 08 VECTOR
+INT F1 - reserved for user interrupt
+INT F2 - reserved for user interrupt
+INT F3 - reserved for user interrupt
+INT F4 - reserved for user interrupt
+INT F5 - reserved for user interrupt
+INT F6 - reserved for user interrupt
+INT F7 - reserved for user interrupt
+INT F8 - reserved for user interrupt
+INT F9 - reserved for user interrupt
+INT FA - reserved for user interrupt
+INT FB - reserved for user interrupt
+INT FC - reserved for user interrupt
+INT FD - reserved for user interrupt
+INT FE - AT/XT286/PS50+ - destroyed by return from protected mode
+INT FF - AT/XT286/PS50+ - destroyed by return from protected mode

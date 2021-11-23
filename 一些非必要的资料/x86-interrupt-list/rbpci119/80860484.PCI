@@ -1,0 +1,46 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80860484.PCI = Vendor 8086h, Device 0484h -- Intel 82378
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+!begin
+82378/82379 registers in detail:
+ PCI Control:          %[40:6]/alias8x/ %[40:5]/IntAck/ SubDec=%[40:3-4]2b %[40:2]/PostWrt/ %[40:1]/ISAMstrBuf/ %[40:0]/DMALineBuf/
+ PCI Arbiter:          Master Retry %[41:4-3]2b  BusPark %[41:2]y  BusLock %[41:1]y  GAT: %[41:0]y
+ PCI Arbiter Priority: %[42]2x
+ PCI Arbiter Pr. Ext.: %[43]2x (REQ%[43:0]{23} has higher priority)
+ MEMCS# Control:       Master Enable %[41:4]y  F000-FFFF: %[44:2]{-R}%[44:3]{-W}  8000-9FFF: %[44:0]{-R}%[44:1]{-W}
+ MEMCS# Hole:          %[45]2dM-%[46]2dM
+ MEMCS# Top of Memory: %[47]2dM
+ MEMCS# Attr #1:       C000: %[54:0]{-R}%[54:1]{-W}  C400: %[54:2]{-R}%[54:3]{-W}  C800: %[54:4]{-R}%[54:5]{-W}  CC00: %[54:6]{-R}%[54:7]{-W}
+ MEMCS# Attr #2:       D000: %[55:0]{-R}%[55:1]{-W}  D400: %[55:2]{-R}%[55:3]{-W}  D800: %[55:4]{-R}%[55:5]{-W}  DC00: %[55:6]{-R}%[55:7]{-W}
+ MEMCS# Attr #3:       E000: %[56:0]{-R}%[56:1]{-W}  E400: %[56:2]{-R}%[56:3]{-W}  E800: %[56:4]{-R}%[56:5]{-W}  EC00: %[56:6]{-R}%[56:7]{-W}
+ ISA Address Control:  ISAmemtop=%[48:7-4+1]dM  DMAcycle seg=%[48:0]/01234567/%[48:1]/89/%[48:2]/AB/--%[48:3]/E/-
+ ISA Addr ROM Blocks:  Dx00=%[49:0]/0123/%[49:1]/4567/%[49:2]/89AB/%[49:3]/CDEF/  Ex00=%[49:4]/0123/%[49:5]/4567/%[49:6]/89AB/%[49:7]/CDEF/
+ ISA Addr Hole:        %[4A]2dM-%[4B]2dM
+ ISA Ctrlr Recovery:   8-bit: %[4C:6]y - %[4C:3-5]1d SYSCLK  16-bit: %[4C:2]y - %[4C:0-1]1d SYSCLK
+ ISA Clock Divisor:    divisor=%[4D:2-0]{43?} %[4D:6]/upperBIOS/ %[4D:5]/coproc-error/ %[4D:4]/mouse/ %[4D:3]/RSTDRV/
+ X-Bus Chip Select A:  %[4E:7]/extBIOS/ %[4E:6]/lowBIOS/ %[4E:5]/2nd-floppy/ %[4E:4]/IDE/ floppy=%[4E:3-2]2b %[4E:1]/kbd/ %[4E:0]/RTC/
+ X-Bus Chip Select B:  %[4F:7]/cfg-RAM/ %[4F:6]/port92/ par=LPT%[4F:5-4]{123-} serialA=COM%[4F:3-2]{12?-} serialB=COM%[4F:1-0]{12?-}
+ Scatter/Gather Ports: %[57]2x10-%[57]2x3F
+ IRQ0# Route Control:  %[60:0-3]2x (%[60:7]Ed)
+ IRQ1# Route Control:  %[61:0-3]2x (%[61:7]Ed)
+ IRQ2# Route Control:  %[62:0-3]2x (%[62:7]Ed)
+ IRQ3# Route Control:  %[63:0-3]2x (%[63:7]Ed)
+ PIC/APIC Cfg Control: %[70:1]/use APIC/  %[70:0]/INT disabled/
+ APIC Base Address:    FEC0%[71:5-0<10]4x  %[71:6]/ignore A12/
+ BIOS timer base:      %[80:1-15<1]4x (%[80:0]ed)
+ SMI Control:          %[A0:6]/StopGnt/ %[A0:3]/frzFast-Off/ %[A0:2]/STPCLKscale/ %[A0:1]/STPCLKenable/ %[A0:0]/SMIgate/
+ SMI Enable:           %[A2:8]/USB/ %[A2:7]/APMCwrite/ %[A2:6]/EXTSMI/ %[A2:5]/FastOff/ %[A2:4]/IRQ12/ %[A2:3]/IRQ8/ %[A2:2]/IRQ4/ %[A2:1]/IRQ3/ %[A2:0]/IRQ1/
+ System Event Enable:  %[A4:0-31]8x
+\t\tFast-Off: %[A4:31]/SMI/ %[A4:30]/interrupt/ %[A4:28]/APIC/ %[A4:29]/NMI/
+\t\treset Fast-Off on: %[A4:27]/COM/ %[A4:26]/LPT/ %[A4:25]/Drive/ %[A4:24]/DMA/
+\t\treset Fast-Off on IRQ%[A4:0]/0/ %[A4:1]/1/ %[A4:3]/3/ %[A4:4]/4/ %[A4:5]/5/ %[A4:6]/6/ %[A4:7]/7/ %[A4:8]/8/ %[A4:9]/9/ %[A4:10]/10/ %[A4:10]/11/ %[A4:10]/12/ %[A4:10]/13/ %[A4:10]/14/ %[A4:15]/15/
+ SMI Request:\t       due to %[AA:8]/legacy USB/ %[AA:7]/APM/ %[AA:6]/EXTSMI#/ %[AA:5]/Fast-Off/ IRQ: %[AA:4]/12/ %[AA:3]/8/ %[AA:2]/4/ %[AA:1]/3/ %[AA:0]/0/
+ Fast-Off Timer:      %[A8]3d minutes
+ STPCLK# Low Timer:   %[AC<5]3d us
+ STPCLK# High Timer:  %[AE<5]3d us
+!end
+
+%! end of file

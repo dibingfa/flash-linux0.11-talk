@@ -1,0 +1,293 @@
+			    INTPRINT v3.11
+			    by Ralf Brown
+
+The INTPRINT program is hereby donated to the public domain, with the sincere
+hope that proper credit will be retained in all copies and derivatives.
+
+------------------------------------------------------------------------------
+
+INTPRINT.COM is a simple formatter for the interrupt list, both
+INTERRUP.LST and the other *.LST files.  Use this program to print only
+a portion of the list, prevent widow lines at the beginning of a
+function call, number the pages, boldface key portions, center the
+printout, or create a summary of the function calls.  After formatting
+is complete, the total number of pages is displayed on the screen.
+
+Usage:
+   intprint [options] intlist [[>|>>]outfile]
+
+where the options are:
+	-b    boldface the title lines, Return:, and Notes: by overprinting
+	-B    boldface by sending printer control sequences
+
+	-d    (duplex) print even/odd pages with different margins; suitable
+	      for binding the printout.
+
+	-e    assume printer is in elite mode (96 characters per line), and
+	      indent the output eight spaces to center the printout.  This
+	      is primarily for the default printer, as other printers may
+	      force the equivalent or override this option.
+
+	-ffile	create a file containing only the data structures described
+	      in the interrupt list.
+	      NOTE: you must put the filename immediately after the 'f'; no
+	      blanks are allowed.
+
+	-Ffile	filter the listing based on include and exclude strings
+	      in 'file'.  Only entries whose headers match none of the
+	      exclude strings and at least one of the include strings
+	      will be processed.  All others will be skipped.
+	      NOTE: you must put the filename immediately after the 'F'; no
+	      blanks are allowed.
+
+	-H    print a heading on each page indicating which interrupts
+	      are listed on the page
+
+	-iN   indent the output N spaces.  The output device is assumed to be
+	      at least 80+N characters wide.
+	      NOTE: you must put the number immediately after the 'i'; no
+	      blanks are allowed.
+
+	-I    assume the printer is capable of producing IBM character
+	      graphics.  Printers other than "default" may force this option.
+
+	-k    keep original divider lines instead of replacing them
+	      with all dashes.
+
+	-lN   print N lines per pages, overriding the printer-specific
+	      default.	Use 0 to omit page breaks (in this case, the
+	      reported number of pages and -r page restriction may be
+	      incorrect unless you also use -L); this can be useful if
+	      you only want to filter the list before processing it
+	      further.
+
+	-LN   assume N lines on a page.  If this is more than the number of
+	      lines to print on each page, INTPRINT will use line feeds to
+	      advance to the next page instead of form feeds.
+
+	-m    specify that the interrupt list is in multiple parts beginning
+	      with the named file.  INTPRINT will increment the last
+	      character of the name to get the next filename, and continue
+	      until it is unable to open the file thus selected.
+
+	-nN   assume N pages have already been printed, and start numbering
+	      at N+1.  This option allows you to create a properly-numbered
+	      printout even if there is not enough disk space to concatenate
+	      the parts of the interrupt list or hold a complete output file.
+	      See the examples below.
+	      NOTE: you must put the number immediately after the 'n'; no
+	      blanks are allowed.
+
+	-p    print the page number at the bottom center of each page
+
+	-Pname use control codes for the specified printer (-P? lists the
+	      supported printers).  The printer name may be given in either
+	      case and abbreviated to a unique prefix; use either dashes or
+	      underscores in place of blanks in the printer name.
+
+	-rN:M print only pages N through M.  The entire input is processed
+	      for use in -s and -f summaries (see below) even though only
+	      a portion is formatted for printing.  If filtering is enabled,
+	      (see -F), page numbers are based on entries selected by the
+	      filter file.
+	      NOTE: you must put the page numbers immediately after the 'r';
+	      no blanks are allowed.  When using -l0 together with -r,
+	      you must specify the appropriate page length with -L so
+	      that page numbers can be computed correctly.
+
+	-sfile	create a one-line-per-function summary and write it to "file"
+	      if -n is also given, the summary will be appended to "file",
+	      allowing a properly numbered summary file to be created even if
+	      there is not enough disk space to concatenate the parts of the
+	      list.  See the examples below.  If -p is also given, page
+	      numbers will be included in the summary.	If -V is also given,
+	      byte offsets for use by INTERVUE will be included.
+	      NOTE: you must put the filename immediately after the 's'; no
+	      blanks are allowed.
+
+	-tN   select typeface N for the chosen printer (currently supported
+	      only for the HP).
+
+	-Tfile	create a one-line-per-table summary and write it to "file"
+	      if -n is also given, the summary will be appended to the named
+	      file.  If -p is also given, page numbers will be included in
+	      the summary.  If -V is also given, byte offsets for use by
+	      INTERVUE will be included.
+	      NOTE: you must put the filename immediately after the 'T'; no
+	      blanks are allowed.
+
+	-V    indicate that the summary file is intended for use by INTERVUE.
+	      INTPRINT will output byte offsets that allow INTERVUE to jump
+	      directly to an entry.  Also forces -I.
+
+	-wN   (widow lines) search N lines from the end of the page for a
+	      good place to break.  The default is eight lines; the valid
+	      range is from 3 to one-half of the page length.
+	      NOTE: you must put the number immediately after the 'w'; no
+	      blanks are allowed.
+
+	-x    include Index: lines in formatted listing.  These lines are
+	      are excluded by default because they are intended primarily
+	      for use by hypertext converters.
+
+Options may not be merged; "-ep" is illegal and the "p" will be ignored.
+Use "-e -p" instead.
+
+The formatted result of the input file is sent to the specified output file,
+or to standard output if no output file is given.  Standard output may be
+redirected using the usual Unix or MSDOS redirection characters > or >>.  If
+you only want a summary file or data formats file, send or redirect the
+output to the null device ("NUL" under MSDOS, "/dev/null" under Unix).
+
+
+FILTER FILE:
+------------
+
+The filter file specified with -F is a simple text file containing
+include lines, exclude lines, and comment lines.  Both 'include' and
+'exclude' lines may be based on either a category code or a substring
+of the entry's title line.  Comment lines start with a hash mark (#) in
+the first column and are ignored.  The other valid command characters
+in the first column are:
+
+   >  unconditionally include any entry with the specified category letter
+   <  unconditionally exclude any entry with the specified category letter
+   +  include entries containing the specified string, unless unconditionally
+      excluded
+   -  exclude entries containing the specified string, unless unconditionally
+      included
+   i  include entries with the given category letter unless specifically
+      excluded by a '-' line
+   o  override '-' line and include entry anyway if it has the given
+      category letter
+
+Note that any category letters or selection strings must immediately
+follow the command character.  All spaces on '+' include and '-' exclude
+lines are significant.  Thus,
+	+ DOS
+will only match entries containing the four-letter sequence " DOS",
+while
+	+DOS
+will match any entries containing the sequence "DOS", whether or not it
+is preceded by a blank.
+
+If a filter file is specified, only entries whose title lines contain at
+least one of the '+' include lines (ignoring uppercase/lowercase
+distinctions), none of the '-' exclude lines, or whose category codes
+have been selected by other include/exclude lines, are processed.  Thus,
+a filter file must contain at least one include line, or INTPRINT will
+skip all interrupt entries and print only the non-interrupt text in the
+file.
+
+----cut here----
+# SAMPLE1.FLT
+# Sample filtering file number 1, using only title includes/excludes.
+# Extract MS-DOS calls, but exclude DR-DOS-specific, DOS-extender, and
+# non-DOS networking calls.
+# Note: a few extraneous calls are still included.
+#
++ DOS
+-DR DOS
+-DR-DOS
+-DR Multiuser DOS
+-Concurrent DOS
+-DOS/16M
+-DOS4GX
+-DOS/4G
+-extender
+-LAN Manager
+-DECnet DOS
+#
+# end of SAMPLE1.FLT
+----cut here----
+
+----cut here----
+# SAMPLE2.FLT
+# Sample filtering file number 2, using category includes/excludes.  Extract
+# MS-DOS and DR-DOS calls, but exclude OS/2 and other operating systems.
+#
+# unconditionally include the DOS category
+>D
+# include 'other OSes' category, but remove OS/2, VMiX, PC-MOS, etc.
+iO
+-OS/2
+-VMiX
+-PC-MOS
+-STARLITE
+-WinDOS
+-Acorn BBC
+-Linux DOSEMU
+#
+# end of SAMPLE2.FLT
+----cut here----
+
+------------------------------------------------------------------------------
+
+EXAMPLES:
+---------
+
+	Print the interrupt list with page numbers, and create a summary file,
+	without concatenating INTERRUP.A, INTERRUP.B, and INTERRUP.C:
+
+		A> intprint -sb:interrup.sum -p interrup.a >prn
+		146 pages    [screen output from INTPRINT]
+		A> intprint -sb:interrup.sum -p -n146 interrup.b prn
+		285 pages    [screen output from INTPRINT]
+		A> intprint -sb:interrup.sum -p -n285 interrup.c >prn
+		403 pages    [screen output from INTPRINT]
+
+	or, more easily:
+		A> intprint -sb:interrup.sum -m -p interrup.a prn
+		1587 pages   [screen output from INTPRINT]
+
+	Create only a summary file:
+
+		C> intprint -sinterrupt.sum interrup.lst nul
+
+	Create a listing of the tables in the interrupt list:
+
+		C> intprint -Tinterrup.tbl interrup.lst nul
+
+	Print only those entries containing the string "DOS", except
+	those containing the string "DR-DOS"
+
+		C> type dos
+		+DOS
+		-DR-DOS
+
+		C> intprint -Fdos interrup.lst nul
+		
+
+	Print the interrupt list on an Epson FX80, using 54 lines per page and
+	omitting both page numbers and summary:
+
+		C> intprint -Pepson -l54 interrup.lst >prn
+
+	Print the interrupt list using 120 lines on every 132-line page (using
+	superscript mode, for example), and make divider lines using IBM
+	character graphics:
+
+		C> intprint -I -l120 -L132 interrup.lst >prn
+
+	Print only pages 123 through 127, assuming that 106 pages are contained
+	in the first section of the list:
+
+		C> intprint -n106 -r123:127 interrup.b prn
+
+	Print using HP PCL4/5 escape sequences, numbering pages, from file
+	"interrup.lst" to file "interrup.pcl", at the default 69 lines per
+	page, using form-feeds:
+
+		C> intprint -Php -p interrup.lst >interrup.pcl
+		1587 pages    [screen output from INTPRINT]
+
+------------------------------------------------------------------------------
+
+PORTABILITY:
+------------
+
+INTPRINT.C contains the source code for INTPRINT, for those people who
+are using the interrupt list on a machine which does not run MSDOS.
+This code has been tested with Turbo C v2.0, Borland C++ v3.1, and Mach
+(BSD 4.3 Unix) "cc" and "gcc".
+
