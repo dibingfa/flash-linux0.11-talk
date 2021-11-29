@@ -41,6 +41,8 @@
    * [第二回 自己给自己挪个地儿](https://mp.weixin.qq.com/s/U-txDYt0YqLh5EeFOcB4NQ)
    * [第三回 做好最最基础的准备工作](https://mp.weixin.qq.com/s/90QBJ-lP_-du2qQJxNF-Fw)
    * [第四回 把自己在硬盘里的其他部分也放到内存来](https://mp.weixin.qq.com/s/hStc-y-sabP-KwJUDUesTw)
+   * [第五回 进入保护模式前的最后一次折腾内存](https://mp.weixin.qq.com/s/5s_nmrWRZbA_4mkNKOQ2Cg)
+   * [第六回 先解决段寄存器的历史包袱问题](https://mp.weixin.qq.com/s/p1a6QxYZyMpJF__uBSE1Kg)
 
 * **第二部分：大战前期的初始化工作**
 
