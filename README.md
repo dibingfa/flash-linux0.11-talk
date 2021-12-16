@@ -46,6 +46,8 @@
    * [第七回 六行代码就进入了保护模式](https://mp.weixin.qq.com/s/S5zarr9BmLhUHAmdmeNypA)
    * [第八回 烦死了又要重新设置一遍 idt 和 gdt](https://mp.weixin.qq.com/s/ssQKFMehxZxWT9i6mdRtXg)
    * [第九回 Intel 内存管理两板斧：分段与分页](https://mp.weixin.qq.com/s/q2wU9IbX54t_GAuc9V5r7A)
+   * [第十回 进入 main 函数前的最后一跃！](https://mp.weixin.qq.com/s/ISyaX5zPWRw_d-9zvZUPUg)
+   * [第一部分总结与回顾](https://mp.weixin.qq.com/s/8bP3feeF_A13j7ysWur_JQ)
 
 * **第二部分：大战前期的初始化工作**
 
