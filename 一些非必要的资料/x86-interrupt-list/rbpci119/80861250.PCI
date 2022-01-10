@@ -1,0 +1,60 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80861250.PCI = Vendor 8086h, Device 1250h -- Intel 82439HX
+%! Last Edit 1/18/97 by Ralf Brown
+%!
+
+Everything preceding a line beginning with the six characters "!begin" is
+a comment and will be ignored (with the proviso that the total file size
+not exceed 64K).  Everything from the !begin line to a line starting with
+the four characters "!end" forms part of the device description, in a
+format similar to that used for printf().
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+
+!begin
+Intel 82439HX registers in detail:
+ PCI Control: NewFeaturesEnabled:%[50:0]y  Port92 shutdown:%[50:5]y  2-processor NA#: %[50:4]y
+	      %[50:7]|ECC;Parity| memory  SERR# %[50:2]|floats;driven| high  %[50:6]/ECC Test/ %[50:3]/PCI concurrency/
+ Programmable Attribute Map\t(Readable/Writeable/Cacheable)
+	C000-C3FF: %[5A:2]{-C}%[5A:1]{-W}%[5A:0]{-R}\tD000-D3FF: %[5C:2]{-C}%[5C:1]{-W}%[5C:0]{-R}\tE000-E3FF: %[5E:2]{-C}%[5E:1]{-W}%[5E:0]{-R}%
+\tF000-FFFF: %[59:6]{-C}%[59:5]{-W}%[59:4]{-R}
+	C400-C7FF: %[5A:6]{-C}%[5A:5]{-W}%[5A:4]{-R}\tD400-D7FF: %[5C:6]{-C}%[5C:5]{-W}%[5C:4]{-R}\tE400-E7FF: %[5E:6]{-C}%[5E:5]{-W}%[5E:4]{-R}
+	C800-CBFF: %[5B:2]{-C}%[5B:1]{-W}%[5B:0]{-R}\tD800-DBFF: %[5D:2]{-C}%[5D:1]{-W}%[5D:0]{-R}\tE800-EBFF: %[5F:2]{-C}%[5F:1]{-W}%[5F:0]{-R}
+	CC00-CFFF: %[5B:6]{-C}%[5B:5]{-W}%[5B:4]{-R}\tDC00-DFFF: %[5D:6]{-C}%[5D:5]{-W}%[5D:4]{-R}\tEC00-EFFF: %[5F:6]{-C}%[5F:5]{-W}%[5F:4]{-R}
+ DRAM Boundaries: %[60]3dM %[61]3dM %[62]3dM %[63]3dM %[64]3dM %[65]3dM %[66]3dM %[67]3dM
+ DRAM Type:       %[68:0]/EDO/  %[68:1]/EDO/  %[68:2]/EDO/  %[68:3]/EDO/  %[68:4]/EDO/  %[68:5]/EDO/  %[68:6]/EDO/  %[68:7]/EDO/
+ DRAM Control:   refresh   = %[57:2-0]|disabled;50MHz;60MHz;66MHz;reserved|
+		 DRAM hole = %[57:7-6]|none;512K-640K;reserved|
+		 EDO Detect mode is %[57:3]ed; 64M SIMM support is %[56:0]ed
+		 Speculative Leadoff %[56:4]Ed
+		 Insert %[56:3]d clocks fo turnaround time after MWE# asserted
+		 Memory Address drive strength is %[56:2-1]|8;8/12;12/8;12|mA
+ DRAM Timing:    read burst   = %[58:6-5]|x444/x444;x333/x444;x222/x333;x322/x333|
+		 write burst  = %[58:4-3]|x444;x333;x222;reserved|
+		 RAS-to-CAS   = %[58:2]|3;2| clocks
+		 DRAM leadoff = %[58:1-0]|7/6/3;6/5/3;7/6/4;6/5/4| (read/write/precharge)
+		 Turbo Read Leadoff is %[58:7]ed
+ Cache Control:	 cache size    %[52:7-6]|0K;256K;512K;reserved|
+		 L2 RAM type   %[52:5-4]|p.burst;reserved;reserved;two banks p.burst|
+		 NA disable     %[52:3]y   cache memory up to %[52:2]|64;512|M
+		 Force L2 miss  %[52:1]y   L1 cache %[52:0]Ed
+ SMRAM Control:	 SMM Space at segment %[72:2-0+8]1x000 is %[72:6]/open/ %[72:5]/closed/ %[72:4]/locked/
+ Error Command:  %[90:7]/SERR# until cleared/ %[90:2]/force bad parity/
+		 %[90:1]/SERR# on multi-bit errors/ %[90:0]/SERR# on single-bit errors/
+ Error Status:   multi-bit error:  %[91:4]y  (in DRAM row %[91:7-5]d)
+		 single-bit error: %[91:0]y  (in DRAM row %[91:3-1]d)
+ Error Syndrome: %[92]2x
+ Undocumented registers:
+	F0h = %[F0]2x
+	F1h = %[F1]2x
+!end
+
+; everything between the above !end line and a following !enum line (not
+; yet implemented) is also a comment
+
+!enum ToBeImplemented
+
+%! end of file

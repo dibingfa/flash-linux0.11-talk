@@ -1,0 +1,266 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867113.PCI = Vendor 8086h, Device 7113h
+%!    Intel 82731AB PIIX4 Power Management Controller
+%! Last Edit 31 Dec 1997 by Andy Sawyer
+%!
+%! Reference : Intel document 29056201.PDF
+%! "82371AB PCI-TO-ISA/IDE XCELERATOR (PIIX4)"
+%!
+%! See also : 80867110.PCI,80867111.PCI,80867113.PCI
+%!
+
+!begin
+Intel 82371AB PIIX4 Power Management Controller in detail:     [by Andy Sawyer]
+
+  Power Management I/O Space is %[80:0]ed, Base Address is %[40:15-6<6]4x
+
+  Count A/B
+    Fast Burst Timer Count            %[48:4-0]d
+    Slow Burst Timer Count:           %[44:31-28]d
+    Bus Master Timer Count:           %[48:22-18]d
+    Software Idle Timer Count:        %[44:11-8]d
+    Idle Timer Count A:               %[44:3-0]d
+    Idle Timer Count B:               %[44:16-12]d
+    Idle Timer Count C:               %[44:21-17]d
+    Idle Timer Count D:               %[44:27-23]d
+    Device  0 Idle Timer Resolution:  %[44:4]|8 seconds;1 second|
+    Device  1 Idle Timer Resolution:  %[44:5]|8 seconds;1 second|
+    Device  2 Idle Timer Resolution:  %[44:6]|8 seconds;1 second|
+    Device  3 Idle Timer Resolution:  %[44:7]|8 seconds;1 ms|
+    Device  8 Idle Timer Resolution:  %[48:15]|1 second;1 ms|
+    Device 11 Idle Timer Resolution:  %[44:22]|1 second;1 minute|
+    Video Status:                     %[48:24]d
+    ZZ Enable                         %[48:14]ed
+    Thermal Duty Cycle                %[48:11-13](DutyCycle)
+    Processor PLL Lock Count          %[48:10-6]d
+    Processor PLL Lock Resolution     %[48:5]|1 ms;1 microsecond|
+
+  General Purpose Input Control
+    Device 13 GPI is %[4C:12]ed - asserted %[4C:25](HiLo), %[4C:27](LE) sensitive
+    Device 12 GPI is %[4C:11]ed - asserted %[4C:24](HiLo), %[4C:26](LE) sensitive
+    Device 11 GPI is %[4C:10]ed - asserted %[4C:23](HiLo)
+    Device 10 GPI is %[4C:9]ed - asserted %[4C:22](HiLo)
+    Device  9 GPI is %[4C:8]ed - asserted %[4C:21](HiLo)
+    Device  8 GPI is %[4C:7]ed - asserted %[4C:20](HiLo)
+    Device  7 GPI is %[4C:6]ed - asserted %[4C:19](HiLo)
+    Device  6 GPI is %[4C:5]ed - asserted %[4C:18](HiLo)
+    Device  5 GPI is %[4C:4]ed - asserted %[4C:17](HiLo)
+    Device  4 GPI is %[4C:3]ed - asserted %[4C:16](HiLo)
+    Device  3 GPI is %[4C:2]ed - asserted %[4C:15](HiLo)
+    Device  2 GPI is %[4C:1]ed - asserted %[4C:14](HiLo)
+    Device  1 GPI is %[4C:0]ed - asserted %[4C:13](HiLo)
+
+  Device Activity A
+    Device 1 event reloads %[54:28]|slow;fast| burst timer
+    Device 2 event reloads %[54:29]|slow;fast| burst timer
+    Device 3 event reloads %[54:30]|slow;fast| burst timer
+    Device 5 event reloads %[54:31]|slow;fast| burst timer
+
+    Device  0 Burst Timer Reload %[54:14]ed, Global Timer Reload %[54:0]ed
+    Device  1 Burst Timer Reload %[54:15]ed, Global Timer Reload %[54:1]ed
+    Device  2 Burst Timer Reload %[54:16]ed, Global Timer Reload %[54:2]ed
+    Device  3 Burst Timer Reload %[54:17]ed, Global Timer Reload %[54:3]ed
+    Device  4 Burst Timer Reload %[54:18]ed, Global Timer Reload %[54:4]ed
+    Device  5 Burst Timer Reload %[54:19]ed, Global Timer Reload %[54:5]ed
+    Device  6 Burst Timer Reload %[54:20]ed, Global Timer Reload %[54:6]ed
+    Device  7 Burst Timer Reload %[54:21]ed, Global Timer Reload %[54:7]ed
+    Device  8 Burst Timer Reload %[54:22]ed, Global Timer Reload %[54:8]ed
+    Device  9 Burst Timer Reload %[54:23]ed, Global Timer Reload %[54:9]ed
+    Device 10 Burst Timer Reload %[54:24]ed, Global Timer Reload %[54:10]ed
+    Device 11 Burst Timer Reload %[54:25]ed, Global Timer Reload %[54:11]ed
+    Device 12 Burst Timer Reload %[54:26]ed, Global Timer Reload %[54:12]ed
+    Device 13 Burst Timer Reload %[54:27]ed, Global Timer Reload %[54:13]ed
+
+  Device Activity B
+    SMI# Generation on APMC Read                %[58:25]ed
+    Video detect generates reload on Device 11  %[58:24]ed
+    Percentage Bus Utilisation Threshold        %[58:23-16]d
+    Bus Utilisation Threshold                   %[58:15-8]d
+    IRQ Global Reload event                     %[58:6]ed
+    IRQ Clock event                             %[58:1]ed
+    IRQ0 Clock event                            %[58:0]ed
+    IRQ8 Clock event                            %[58:5]ed
+    PME Clock event                             %[58:4]ed
+    Keyboard/Mouse global read event            %[58:2]ed
+
+  Device Resources
+    LPT DMA Select                    %[50:21-22](LPTDMA)
+    LPT Port Enable                   %[50:18]ed
+    LPT DMA Monitor Enable            %[50:17]ed
+    LPT Decode Select                         %[60:26-25](LPTDecode)
+
+    Serial Port B Monitor Enable      %[50:16]ed
+    Serial Port A Monitor Enable      %[50:14]ed
+
+    FDC Monitor Enable                %[50:12]ed
+    FDC DMA Monitor Enable            %[50:11]ed
+    FDC Decode Select                         %[60:28](FDCDecode)
+
+    DACK7 Enable                      %[50:5]ed
+    DACK6 Enable                      %[50:4]ed
+    DACK5 Enable                      %[50:3]ed
+    DACK3 Enable                      %[50:2]ed
+    DACK1 Enable                      %[50:1]ed
+    DACK0 Enable                      %[50:0]ed
+
+    Graphics A/B Segment Enable               %[5C:27]ed
+    Graphics I/O Enable                       %[5C:26]ed
+    Linear Frame Buffer Decode Enable         %[5C:24]ed
+       Base Address: %[5C:21-10<20]8x Decode Mask: %[5C:23-22<20]8x
+
+    SoundBlaster EIO Enable                   %[5C:25]ed
+    SoundBlaster 8/16-bit Decode Enable       %[5C:3]ed
+    SoundBlaster Decode Select                %[5C:6-5](SBDecode)
+
+    Microsoft Sound System EIO Enable         %[60:24]ed
+    Microsoft Sound System Decode enable      %[5C:7]ed
+    Microsoft Sound System Decode Select      %[5C:9-8](MSSDecode)
+
+    MIDI EIO enable                           %[60:20]ed
+    MIDI Enable                               %[5C:0]ed
+    MIDI Decode Select                        %[5C:2-1](MIDIDecode)
+
+    Game Port enable                          %[5C:4]ed
+    Game Port EIO enable                      %[60:31]ed
+
+    Keyboard EIO enable                       %[60:30]ed
+    Serial Port B Decode Select               %[64:30-28](COMDecode)
+    Serial Port A Decode Select               %[64:26-24](COMDecode)
+    Device  5 EIO enable                      %[60:29]ed
+    Device  6 EIO Enable                      %[64:27]ed
+    Device  7 EIO Enable                      %[64:31]ed
+    Device  8 EIO Enable                      %[5C:31]ed
+    Device  9 EIO enable                      %[60:22]ed
+    Device  9 Generic Decode Chip Select      %[60:23]ed
+    Device  9 Generic Decode Monitor Enable   %[60:21]ed
+    Device  9 Generic Decode Mask             %[60:19-16]4x
+    Device  9 Generic Decode Base Address     %[60:15-0]4x
+    Device 10 EIO Enable                      %[64:22]ed
+    Device 10 Generic Decode Chip Select      %[64:23]ed
+    Device 10 Generic Decode Monitor Enable   %[64:21]ed
+    Device 10 Generic Decode Mask             %[64:19-16]4x
+    Device 10 Generic Decode Base Address     %[64:15-0]4x
+    Device 11 EIO Enable                      %[5C:28]ed
+    Device 11 IRQ12 (Mouse) Enable            %[50:20]ed
+    Device 11 IRQ1 (Keyboard) Enable          %[50:19]ed
+    Device 12 EIO Enable                      %[5C:29]ed
+    Device 13 EIO Enable                      %[5C:30]ed
+
+ Device 12 I/O Monitor  %[68:20]ed
+      Base Address: %[68:15-0]4x Decode Mask : %[68:19-16]4x
+
+ Device 12 Memory Monitor %[6C:7]ed
+      Base Address: %[6C:31-15<15]8x Decode Mask : %[6C:6-0<15]8x
+
+ Device 13 I/O Monitor %[70:20]ed
+      Base Address: %[70:15-0]4x Decode Mask : %[70:19-16]4x
+
+ Device 13 Memory Monitor %[74:7]ed
+      Base Address: %[74:31-15<15]8x Decode Mask : %[74:6-0<15]8x
+
+ Generic I/O Montior 0 %[78:20]ed
+      Base Address: %[78:15-0]4x Decode Mask : %[78:19-16]4x
+
+ Generic I/O Monitor 1 %[7C:20]ed
+      Base Address: %[7C:15-0]4x Decode Mask : %[7C:19-16]4x
+
+
+ SMBUS Configuration
+   Revision ID:                 %[D6]2x
+   Base Address:                %[90:15-4<4]4x
+   Interrupt Select:            %[D2:3-1](SMBInt)
+   Controller Host Interface:   %[D2:0]ed
+   Slave Command:               %[D3]2x
+   Slave Shadow Port 1 Address: %[D4:7-1]2x  R/W: %[D4:0]|Write;Read|  (**CHECK THIS**)
+   Slave Shadow Port 2 Address: %[D5:7-1]2x  R/W: %[D5:0]|Write;Read|  (**CHECK THIS**)
+
+!end
+
+
+!enum DutyCycle
+Reserved
+12.5%
+25%
+37.5%
+50%
+62.5%
+75%
+87.5%
+!end
+
+!enum HiLo
+high
+low
+!end
+
+!enum LE
+level
+edge
+!end
+
+!enum MSSDecode
+530h-537h
+604h-60Bh
+E80h-E87h
+F40h-F47h
+!end
+
+!enum SBDecode
+220-22Fh, 230-233h
+240-24Fh, 250-253h
+260-26Fh, 270-273h
+280-28Fh, 290-293h
+!end
+
+!enum MIDIDecode
+300-303h
+310-313h
+320-323h
+330-333h
+!end
+
+!enum FDCDecode
+Primary (3F0h-3F5h,3F7h)
+Secondary (370h-375h,377h)
+!end
+
+!enum LPTDMA
+DACK0
+DACK1
+DACK3
+Reserved
+!end
+
+!enum LPTDecode
+3BCh-3BFh, 7BCh-7BEh
+378h-37Fh, 778h-77Ah
+278h-27Fh, 678h-67Ah
+Reserved
+!end
+
+
+!enum COMDecode
+3F8h-3FFh (COM1)
+2F8h-2FFh (COM2)
+220h-227h
+228h-22Fh
+238h-23Fh
+2E8h-2EFh (COM4)
+338h-33Fh
+3E8h-3EFh (COM3)
+!end
+
+!enum SMBInt
+SMI#
+Reserved
+Reserved
+Reserved
+IRQ9
+Reserved
+Reserved
+Reserved
+!end
+
+%! end of file
+

@@ -1,0 +1,30 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867112.PCI = Vendor 8086h, Device 7112h
+%!    Intel 82731AB PIIX4 USB Host Controller
+%! Last Edit 31 Dec 1997 by Andy Sawyer
+%!
+%! Reference : Intel document 29056201.PDF
+%! "82371AB PCI-TO-ISA/IDE XCELERATOR (PIIX4)"
+%!
+%! See also : 80867110.PCI,80867111.PCI,80867113.PCI
+%!
+
+!begin
+Intel 82371AB PIIX4 USB Host Controller registers in detail:   [by Andy Sawyer]
+
+ USB Specification:  %[60:7-4]d.%[60:3-0]d
+ Legacy Support:
+   A20GATE Pass-through:  %[C0:5]ed %[C0:15]|;seq. ended| %[C0:6]|;in progress|
+   USB PIRQ               %[C0:13]ed
+   USB IRQ Status         %[C0:12]|in;|active
+   Trap caused by:        %[C0:11]|;0064 write| %[C0:10]|;0064 read| %[C0:9]|;0060 write| %[C0:8]|;0060 read|
+   SMI Enable:            %[C0:7]|;A20GATE| %[C0:4]|;USB IRQ| %[C0:3]|;0064 write| %[C0:2]|;0064 read| %[C0:1]|;0060 write| %[C0:0]|;0060 read|
+
+ Misc. Status:
+   RTC Index Read is %[FF:4]ed
+
+!end
+
+%! end of file
+

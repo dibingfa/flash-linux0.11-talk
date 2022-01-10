@@ -1,0 +1,83 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867111.PCI = Vendor 8086h, Device 7111h
+%!    Intel 82731AB PIIX4 Ultra DMA/33 IDE Controller
+%! Last Edit 31 Dec 1997 by Andy Sawyer
+%!
+%! Reference : Intel document 29056201.PDF
+%! "82371AB PCI-TO-ISA/IDE XCELERATOR (PIIX4)"
+%!
+%! See also : 80867110.PCI,80867112.PCI,80867113.PCI
+%!
+%! Note, the entry listed below as "Fast Timing" is rather confusingly
+%! described by intel as "DMA Timing Enable Only", although it doesn't
+%! actually affect the timing for DMA operations...
+%!
+
+!begin
+Intel 82371AB PIIX4 IDE Controller registers in detail:        [by Andy Sawyer]
+ IDE Timing Modes
+  Primary Channel                     %[40:15]ed
+    Slave Timing Register             %[40:14]ed
+    IORDY Sample Point                %[40:13-12]{5432} clocks after DIOx#
+    Recovery Time after IORDY         %[40:9-8]{4321} clock(s)
+    Drive 0:
+      Fast Timing                     %[40:3](FastTiming)
+      Prefetch and Posting            %[40:2]ed
+      IORDY Sample Point Drive Select %[40:1]ed
+      Fast Timing Bank Drive Select   %[40:0]ed
+    Drive 1:
+      Fast timing                     %[40:7](FastTiming)
+      Prefetch and Posting            %[40:6]ed
+      IORDY Sample Point Drive Select %[40:5]ed
+      Fast Timing Bank Drive Select   %[40:4]ed
+
+  Secondary Channel                   %[42:15]ed
+    Slave Timing Register             %[42:14]ed
+    IORDY Sample Point                %[42:13-12]{5432} clocks after DIOx#
+    Recovery Time after IORDY         %[42:9-8]{4321} clock(s)
+    Drive 0:
+      Fast timing                     %[42:3](FastTiming)
+      Prefetch and Posting            %[42:2]ed
+      IORDY Sample Point Drive Select %[42:1]ed
+      Fast Timing Bank Drive Select   %[42:0]ed
+    Drive 1:
+      Fast timing                     %[42:7](FastTiming)
+      Prefetch and Posting            %[42:6]ed
+      IORDY Sample Point Drive Select %[42:5]ed
+      Fast Timing Bank Drive Select   %[42:4]ed
+
+ Slave IDE Timing Register
+   Primary Drive 1:
+     IORDY Sample Point               %[44:3-2]{5432} clocks after DIOx#
+     Recovery Time                    %[44:1-0]{4321} clock(s)
+   Secondary Drive 1:
+     IORDY Sample Point               %[44:7-6]{5432} clocks after DIOx#
+     Recovery Time                    %[44:5-4]{4321} clock(s)
+
+ Ultra DMA/33 Control Register
+   Primary Drive 0 UDMA               %[48:0]ed
+   Primary Drive 1 UDMA               %[48:1]ed
+   Secondary Drive 0 UDMA             %[48:2]ed
+   Secondary Drive 1 UDMA             %[48:3]ed
+
+ Ultra DMA/33 Timing Register
+   Primary Drive 0 Cycle Time         %[4A:1-0](UDMATiming)
+   Primary Drive 1 Cycle Time         %[4A:5-4](UDMATiming)
+   Secondary Drive 0 Cycle Time       %[4A:9-8](UDMATiming)
+   Secondary Drive 1 Cycle Time       %[4A:13-12](UDMATiming)
+!end
+
+!enum FastTiming
+DMA & PIO Modes
+DMA mode only
+!end
+
+!enum UDMATiming
+4/6
+3/5
+2/4
+Reserved
+!end
+
+%! end of file

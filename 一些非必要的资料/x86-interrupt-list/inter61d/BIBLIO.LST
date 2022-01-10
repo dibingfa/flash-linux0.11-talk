@@ -1,0 +1,1259 @@
+Bibliography			Release 61		Last change 16jul00
+Copyright (c) 1989-1999,2000 Ralf Brown
+--------!---BIBLIOGRAPHY---------------------
+Information on Tseng/Ahead/Paradise EGA video modes from a list posted by
+Dan Kegel 3/87.
+
+Information on the INT 10h functions supported by the EGA BIOS was derived
+from the article "Graphic Enhancement" found in the April 1985 _PC Tech
+Journal_, pages 58ff., and is marked with the string (EGA). jrh.
+
+Information on functions unique to the Portable PC and the Convertible was
+derived from a similar list compiled by David E. Powell, and added by
+Ralf Brown 11/14/87.
+
+Information on LIM EMS 3.2 functions was derived from _Advanced_MSDOS_, by
+Ray Duncan. Added by Ralf Brown 11/19/87.
+
+Information on LIM EMS 4.0 functions was derived from the transcription of
+the specification by Dick Flanagan.  Added by Ralf Brown, 11/20/87.
+
+Some of the information on MCGA/VGA BIOS calls was derived from _Byte_,
+Volume 12 Number 12.
+
+Various and sundry info on which machines support which calls was derived from
+the BIOS comparison in _Byte_, Volume 12 Number 12 and added by Ralf Brown,
+1/4/88.
+
+COMPAQ DOS 3.31 INT 25/26 from a posting by John Lefor, 1/25/88.
+
+TopView INT 15/AH=12h info from macro definitions by Daniel T. Travison Jr.
+Added 3/4/88.  Some additional TopView INT 15 info gleaned from "glue" routines
+by John Navas.
+
+Quarterdeck's flyer on its overpriced API specs and tools provided sufficient
+clues as to functionality to allow figuring out a large number of DESQview
+INT 15h calls.
+
+MS Mouse driver calls derived from PC Magazine, Vol 6 #13.  Added 3/29/88.
+
+Non-video PS/2 BIOS calls derived from _IBM_ROM_BIOS_ by Ray Duncan.
+Added by Ralf Brown, 7/6/88.
+
+EEMS function calls derived from PC Tech Journal, May 1987.  Added by Ralf
+Brown, 7/11/88.
+
+The list of functions used by Novell NetWare was taken from Novell's
+"NetWare Function Call Reference".
+
+PC Mouse information derived from the "PC Mouse Reference Manual version 4.00"
+
+10-Net INT 6Fh information derived from "10-Net Reference Manual version 2.0"
+
+APPC/PC INT 68h information derived from "Advanced Program-to-Program
+Communication for the IBM Personal Computer, Programming Guide", second
+edition, Dec 1986.
+
+CD-ROM function call information derived from "Microsoft MS-DOS CD-ROM
+Extensions Function Requests", dated May 28, 1988.  Added by Ralf Brown,
+9/19/88.
+
+Novell NetWare function names from a 9/23/88 post by Marc Guyott
+<mguyott@mirror.TMC.COM>.  Added by Ralf Brown, 9/30/88.
+
+Miscellaneous data structures contributed by Helmut Waelder derived from
+descriptions in _MS-DOS_Encyclopedia_.
+
+Additional 10-Net INT 6F info from 10-Net version 3.3.10.
+
+Additional Novell NetWare info from "Advanced NetWare 2.0 Reference".
+
+Three miscellaneous calls from an info package by Dave Williams.  I do wish
+he'd given this list more credit than
+   "various text files downloaded from BBS systems - INTERRUP.ARC, BIOSDOS.ZOO,
+   DOSINFO.ARC, DOSERROR.DOC, DOSTIPS.TXT, etc."
+considering that most of his interrupt listing is derived from this one (a
+majority of that with only formatting changes), AND he's asking a $15 shareware
+registration [newer versions do give better credit].
+
+Compaq speed setting calls derived from the Compaq DeskPro 386 Technical
+Reference Guide.
+
+TesSeRact RAM-resident API calls derived from the documentation to the 
+TesSeRact library v1.0, available on BBSs as TESS_10.ARC.  Added by Ralf Brown,
+11/29/88.
+
+Various extended VGA video modes from PC Tech Journal, Jan 1989.  Added by Ralf
+Brown, 1/6/89.
+
+HLLAPI functions derived from PC Tech Journal, Jan 1989.  Added by Ralf Brown,
+1/7/89.
+
+Virtual Control Program Interface functions derived from "Virtual Control 
+Program Interface, Revision 1.0, December 1987", copyright Phar Lap Software
+and Quarterdeck Office Systems.	 Added by Ralf Brown, 2/21/89.	Available for
+free by writing to Bob Moote, VCPI Coordinator, Phar Lap Software, Inc.,
+60 Aberdeen Ave, Cambridge, MA 02138.
+
+DOS 4.0 calls submitted by Helmut Waelder are largely derived from _Advanced_
+_MSDOS_Programming_, by Ray Duncan, Second Edition.
+
+pcANYWHERE API functions derived from the pcANYWHERE v2.10 User's Guide. 4/7/89
+
+Communicating Applications Specification API derived from "DCA/Intel 
+Communicating Applications Specification, Version 1.0A", Sep 1988, copyright
+Digital Communications Associates, Inc and Intel Corp.	Added by Ralf Brown,
+4/18/89.  Available on Intel's BBS at 503-645-6275.
+
+Image Processing Interface API derived from "Intel Image Processing Interface
+Specification, Version 1.0", copyright 1989 Intel Corp.	 Added by Ralf Brown,
+4/19/89.  Available on Intel's BBS at 503-645-6275.
+
+More TesSeRact RAM-resident API calls derived from the documentation to the 
+TesSeRact library v1.1.	 Added by Ralf Brown, 4/30/89.
+
+CD-ROM 2.10 function calls derived from "Microsoft MS-DOS CD-ROM Extensions
+Function Requests Specification, 29 March 1989".  Added by Ralf Brown, 6/2/89.
+
+Video7 VGA extended INT 10 calls derived from Video Seven VGA Technical
+Reference Manual, dated 6/30/88.
+
+Additional video modes gleaned from configuration file for FRACTINT v8.0.
+Added by Ralf Brown, 6/26/89.
+
+A variety of notes inspired by the 12/16/88 version of the MSDOS reference
+by Dave Williams.  Added 7/30/89.
+
+Additional video modes gleaned from configuration file for VPIC v2.0.  Added by
+Ralf Brown, 9/2/89.
+
+Btrieve API derived from the Btrieve Reference Manual, Rev. 2.0.  Added 9/7/89.
+
+The Hercules GraphX manual, edition 2.1. Aug 1986, was used to fill in gaps
+in coverage.  Info added 9/7/89.
+
+Banyan VINES info summarized from _VINES_Programmer's_Interface_(DOS)_, June88
+revision, provided by Barry Burke <Barry=Burke%3PM%Banyan@thing.banyan.com>.
+Added by Ralf Brown, 11/89.
+
+ZIPKEY programmatic interface extracted from ZIPKEY documentation.  Added by
+Ralf Brown, 12/15/89.
+
+File sharing behavior from July 1987 PC Tech Journal.  Added by Ralf Brown,
+12/21/89.
+
+Inset API derived from "Inset Extended Specification" 11/23/88 by Inset Systems
+Added 1/4/90.
+
+EMS4 hardware configuration info data format cribbed from
+"MS-DOS Extensions Quick Reference" by Ray Duncan.  Added 1/4/90.
+
+PC-IPC API from PC-IPC documentation.  Added by Ralf Brown, 1/5/90.
+
+Imtec and Genoa 6400 video modes from VPIC v2.3 config files.  Added by Ralf
+Brown, 1/12/90.
+
+LANtastic API info derived from "LANtastic (tm) Network Operating System
+Technical Reference Manual", provided by Edwin Floyd <76067.747@CompuServe.COM>
+Added by Ralf Brown, 1/90.
+
+Phar Lap 386/DOS-extender API extracted from Phar Lap's manual.	 Added 1/90.
+
+IBM 3270 Workstation Program API derived from "IBM 3270 Workstation Program
+Version 1.10, Programming Guide", dated December 1987.	Added 2/90.
+
+VESA SuperVGA BIOS extensions derived from Dr. Dobb's Journal, April 1990.
+Added by Ralf Brown, 3/25/90.
+
+Additional undocumented DOS 4 info gleaned from _Developing_Applications_Using_
+_DOS_, by Christopher, Feigenbaum, and Saliga.	Added by Ralf Brown, 3/29/90
+and 3/31/90.
+
+TAME v2.30 data structure provided by David G. Thomas.	Added 5/26/90.
+
+OS/386 API call names extracted from _Extending_DOS_ by Ray Duncan et al.
+Added by Ralf Brown, 5/27/90.
+
+Network Driver Interface Specification 2.0.1 calls extracted from the May 18,
+1990 draft of the spec.	 Added by Ralf Brown, 6/7/90.
+
+Additional Phar Lap 386/DOS-Extender calls extracted from _Extending_DOS_.
+Added by Ralf Brown, 6/8/90.
+
+Even more video modes derived from VPIC 2.8 configuration files.  Added by
+Ralf Brown, 6/8/90.
+
+DOS Protected Mode Interface version 0.9 API from the May 15,1990 version of
+the specification.  Intel Corp. order number 240763-001.  Added by Ralf Brown,
+July 13-14, 1990.
+
+MSWindows INT 2F/AH=16h info gleaned from Microsoft Windows 3.0 Device Driver
+Kit and the March 1990 issue of Computer Language.  Added 7/17/90.
+
+Tseng ET4000 chipset mode info from _ET4000_Graphics_Controller_Data_Book_ by
+Tseng Labs, Inc., Newtown, PA (215)968-0502.  Added 7/25/90.
+
+Additional Packet Driver API calls extracted from version 1.09 of the "PC/TCP
+Packet Driver Specification" Sept 14, 1989, by FTP Software, Inc.,
+26 Princess St, Wakefield, MA 01880-3004.  Added by Ralf Brown, 8/29/90.
+
+Additional Netware 3.01 shell calls from "Professional Development Series
+Bullets" Volume 2, Number 5 (June 1990).  Added 9/90.
+
+Video FOSSIL INT 14 API extracted from Fidonet document FSC-0021 version 1.00
+by Rick Moore, dated May 23, 1988.  Added by Ralf Brown, 9/12/90.
+
+Additional DESQview API info (mostly for v2.2+ calls) extracted from
+_DESQview_API_Reference_, provided by Quarterdeck Office Systems,150 Pico Blvd,
+Santa Monica, CA 90405.	 Added by Ralf Brown, 9/90.
+
+LANtastic v3.0 calls derived from the online "LANtastic (tm) Network Operating
+System Technical Reference Manual", file date 6/13/90.	Added by Ralf Brown,
+10/6/90.
+
+Additional DECnet DOS INT 69/INT 6A info derived from the "DECnet DOS
+Programmer's Reference Manual" (AA-EB46C-TV).  Added 10/13/90.
+
+Carbon Copy Plus API derived from the Carbon Copy Plus user's manual.  Added
+11/2/90.
+
+CMC International SCSI driver TARGA.DEV API derived from its source code.
+Added 11/2/90.
+
+Everex Viewpoint VGA calls derived from Everex Viewpoint Owner's Manual and
+Reference Guide, version 1.0.  Added 11/3/90.
+
+VESA SuperVGA BIOS 1.1 extensions extracted from VESA standard #VS900602.
+Added by Ralf Brown, 12/9/90.
+
+PCSpool API derived from PC Magazine, Vol 10 Number 1 (Jan 15,1991).  Added
+12/20/90.
+
+STARLITE calls derived from _General_Software_Project_STARLITE_Architecture_
+_Specification_, Final Draft, October 1, 1990, provided by Stephen Jones
+of General Software.  Added by Ralf Brown, 1/5/91.
+
+Communicating Applications Specification v1.2 information extracted from
+"DCA/Intel Communicating Applications Specification Version 1.2" dated 9/27/90
+(Intel part number 301812-004) and available from the Intel BBS at
+(503)645-6275.	Added by Ralf Brown, 2/23/91.
+
+TBScanX v2.3 API extracted from the TBScanX documentation (Frans Veldman,
+ESaSS B.V., P.O. Box 1380, 6501 BJ Nijmegen, The Netherlands).	Added 3/12/91.
+
+Novell IPX/SPX calls in part from an article by J. Vanderaart in the Dutch
+_LAN-Magazine_, issue #1, titled "IPX, de kabel in de knel".  Added 3/16/91.
+
+Replacements for July 1987 info derived from
+	_80286_and_80287_Programmer's_Reference_Manual, Intel number 274798-004
+	_IBM_ROM_BIOS_, Ray Duncan, "Programmer's Quick Reference Series"
+	_DOS_and_BIOS_Functions_Quick_Reference_, Que
+	_The_MS-DOS_Encyclopedia_, Microsoft Press
+	_Advanced_MSDOS_, Ray Duncan (first edition, 1986)
+	_System_BIOS_for_IBM_PC/XT/AT_Computers_and_Compatibles_, Phoenix
+		Technical Reference Series
+	_PC_Tech_Journal, December 1984, April 1986, May 1986, and August 1988
+	_Programmer's_Journal_, v8 #1
+	_Byte_, v12 #12 (1987 Extra Edition)
+Information added by Ralf Brown, 3/91.
+
+John J. Seal's BIOS Window Extension v1.1 API extracted from the May 1986 Dr.
+Dobb's Journal.	 Added by Ralf Brown, 3/23/91.
+
+Some additional NetWare data structures and flag values from _NetWare_System_
+_Interface_Technical_Overview_ by Novell.  Added by Ralf Brown, 3/24/91.
+
+Alloy ANSK, NTNX, and MW386 calls summarized from information provided by
+Joseph G. Souza and Frank Gladu of Alloy Computer Products, Inc.  "Alloy and
+its employees are not to be held responsible for any errors which may be
+contained in the information provided."	 Added by Ralf Brown, 4/91.
+
+Windows 3.0 DOSX information from PC Magazine, Feb 26, 1991.  Added 4/22/91.
+
+MultiDOS Plus API summarized from the on-line manual provided by Nanosoft, Inc.
+(available on the Nanosoft BBS at 508-650-9552).  Added by Ralf Brown, 4/91.
+
+Replacements for July 1987 networking INT 2A calls gleaned from
+	_Networking_Software_, ed. Colin B. Ungaro (McGraw Hill), p265.
+Added by Ralf Brown, 5/8/91.
+
+Common Access Method r2.3 calls and data structures extracted from "SCSI-2
+Common Access Method, Transport and SCSI Interface Module, Rev 2.3", dated
+February 25, 1991, by the Computer and Business Equipment Manufacturers
+Association (CBEMA).  Available from the SCSI BBS, (316)636-8700.
+Added by Ralf Brown, 6/7/91.
+
+DOS Protected Mode Interface spec 1.0 calls extracted from _DOS_Protected_
+_Mode_Interface_(DPMI)_Specification,_Version_1.0_, dated March 12, 1991,
+Intel Corp. order number 240977-001.  Added by Ralf Brown, 6/11/91.
+
+CD-ROM device driver request headers extracted from "Microsoft MS-DOS CD-ROM
+Extensions Hardware-Dependent Device Driver Specification" of 5 Aug 88.
+Added by Ralf Brown, 7/25/91.
+
+Some DOS 5.0 information extracted from _Microsoft_MSDOS_Programmer's_
+_Reference_, ISBN 1-55615-329-5.  Added 7/28/91.
+
+DOS 5.0 task switcher interface and misc other info extracted from _Microsoft_
+_Programmer's_Reference_, ISBN 1-55615-329-5.  Added by Ralf Brown, 8/3/91.
+
+Turbo Debugger hardware breakpoint interface extracted from the Borland C++ 2.0
+file MANUAL.TNT.  Added by Ralf Brown, 8/4/91.
+
+Various and sundry references from Michael Shiels:
+	Fundamentals of FOSSIL Implementation and Use, Draft Version 4
+		August 10, 1987; Vincent E. Perriello, VEP Software
+	FSC-0015
+		Fundamentals of FOSSIL Implementation and Use, Version 5
+		February 11, 1988; Rick More, Solar Wind Computing
+	FSC-0008
+	eXtended Memory Specification (XMS), version 2.0
+		July 19, 1988; Microsoft Corporation
+	Virtual DMA Services (VDS), Version 1.00
+		Printed July 16, 1990; Microsoft Corporation
+	Enhanced Expanded Memory Specification (Enhanced EMS), version 2.0
+		(020022-001 A), July 1986; AST Research, Quadram Inc., Ashton-
+		Tate
+
+Additional video modes extracted from the VPIC v4.6 configuration files.
+Added by Ralf Brown, 9/14/91.
+
+Japanese functions extracted from the January 1992 issue of _Windows/DOS_
+_Developer's_Journal_:
+	"Japanese Double Byte Character Processing", John G. Nelson, p23.
+	"Uncovering the NEC-9801 PC", John G. Nelson, p35.
+Added by Ralf Brown, 1/2/92.
+
+Additional SMARTDRV info gleaned from "Programmer's Workbench", Dr. Dobb's
+Journal, January 1992.	Added by Ralf Brown, 1/4/92.
+
+Miscellaneous tidbits found in Andrew Rossman's (andyross@infopls.chi.il.us)
+INFOPLUS v1.50 of January 1, 1992.  Added by Ralf Brown, 1/4/92.
+
+Da Vinci eMail Dispatcher interface calls were extracted from the
+_Da_Vinci_Systems_Dispatcher_Development_Toolkit_ (Revision 2), dated
+20 June 1990.  Added 1/7/92.
+
+FaxBIOS calls and structures gleaned from the FaxBios sample source code
+including struct/enum .h files (dated 1 October 1991).	Added 1/8/92.
+
+TaskMAX calls extracted from Digital Research Inc.'s DR DOS 6.0 TaskMAX API
+document.  Added by Ralf Brown, 1/16/92.
+
+SOLLEX SuperVGA calls extracted from _SOLLEX_Super_VGA_Standard_ (Smos
+videO controLLer EXtensions), No. S03-SP-001-01, dated 9/23/91,
+copyright Seiko Epson Corp.  Added by Ralf Brown, 1/20/92.
+
+RSIS information was found in "RSIS: Relocated Screen Interface Specification",
+available for free from V Communications, Inc. (see below).
+
+"Strategies for Writing State-of-the-Art TSRs that exploit MS-DOS", Douglas
+Boling, Microsoft Systems Journal volume 7 number 1.
+
+Advanced Power Management calls abstracted from _Advanced_Power_Management_
+_The_Next_Generation_, Version 1.0, by Intel Corporation and Microsoft Corp.
+Added by Ralf Brown, 3/31/92.
+
+PGS1600.DEV info extracted from _PG1600_Display_Adapter,_Installation_and_
+_Reference_ First Edition, November 1987, P/N 0010216-101A by CornerStone
+Technology.  Added 4/10/92.
+
+Borland debug info header was found in Borland's _Open_Architecture_Handbook_.
+Added by Ralf Brown, 4/14/92.
+
+Several DR Multiuser DOS (Concurrent CP/M) calls found in "Multiuser DOS for
+Control Systems: Part I" by Richard Kryszak, Dr. Dobbs Journal, April 1992.
+Added 4/18/92.
+
+Vanderaart text-windows API found in J. Vanderaart,"The Golden Btriever", LAN
+Magazine, July 1990, p. 85.  Added 4/18/92.
+
+SuperVGA v1.2 info from _Super_VGA_BIOS_Extension_, standard #VS911022,
+October 22, 1991.  Added 5/6/92.
+
+Additional partition types from a public domain list by Sean Goggin
+<sean@u36.kwnet.on.ca>.	 Added 5/22/92.
+
+XMS 3.0 calls were found in XMS30.TXT on the CompuServer MSLANG forum.
+
+Vanderaart PC Thuis Shell calls extracted from the premiere (June/July 1990)
+issue of PC Thuis Power magazine, column "Voorheen Methode Vanderaart" by
+John Vanderaart.  Added 7/24/92.
+
+Additional video modes extracted from the VPIC v5.0 configuration files.
+Added by Ralf Brown, 8/7/92.
+
+Details on the NetWare API found in Novell's _NetWare_System_Calls--DOS_,
+Volume I and Volume II (item numbers 100-000571-002 and 100-000572-002,
+1989).	Added by Ralf Brown, 9/92.
+
+SNAP.EXE v3.2 API culled from the SNAP source code.  Added by Ralf Brown,
+9/10/92.
+
+FlashTek X-32VM calls extracted from the X-32VM manual of April 1, 1992.
+
+Comtrol Hostess i/ISA interrupt usage from the
+ COMTROL HOSTESS i/ISA Programmer's Reference, First Edition, December 1991
+ COMTROL Corporation product number 6978-12/96/91.
+
+Disk Spool II v4.0x documented API extracted from file SP2INTFC.DOC, included
+with the Disk Spool II v4.05.04 distribution.  Added by Ralf Brown, 1/22/93.
+
+Novell Link Support Layer API extracted from Novell's _ODI_Developer's_Guide_
+_for_DOS_Protocol_Stacks_, Rev 1.1 3/18/92.  Available for anonymous FTP from
+sjf-lwp.novell.com.  Added by Ralf Brown, 2/93.
+
+VADMAD device info from Microsoft KnowledgeBase article Q83012, "Using Auto-
+Initialize DMA under Windows" (4/17/92).  Added 2/24/93.
+
+Windows 3.0 Virtual DMA Spec bugs extracted from Microsoft KnowledgeBase
+article Q77998, "Errors in the VDS API in Enhanced Mode Windows" (11/8/91).
+Added 2/24/93.
+
+IBMSND driver API info from "Examining PC Audio, welcome to the wild and wooly
+world of PC Sound", John W. Ratcliff, DDJ #198 (March 1993), p. 78-85.
+Added 3/93.
+
+UM587 chipset video modes from "IBM VGA-Compatible Video Graphics Controller
+User's Manual".	 Added by Ralf Brown, 5/22/93.
+
+Cirrus Logic CL-GD 5420/5422/5426 video modes extracted from "V542X (Super VGA)
+User Manual".  Added by Ralf Brown, 5/22/93.
+
+Additional Tseng ET-3000 info extracted from "Puretek VGA Ultra Advanced
+Graphics Board Operations Guide".  Added by Ralf Brown, 5/22/93.
+
+Additional virus calls extracted from the Computer Virus Catalog maintained
+by Prof. Dr. Klaus Brunnstein <brunnstein@rz.informatik.uni-hamburg.dbp.de> at
+the University of Hamburg.  Added by Ralf Brown, 5/25/93.
+
+Software Carousel API extracted from a technical note dated 1/20/88.  Added
+6/4/93.
+
+DIET v1.43e API from DIETAPI.DOC "DIET APPLICATION INTERFACE version 1.43e"
+by Teddy Matsumoto, 11/22/91.  Added 6/4/93.
+
+xDISK v3.32+ installation check extracted from the xDISK v3.40 documentation.
+Added by Ralf Brown, 6/4/93.
+
+NetWare Access Server Driver API extracted from "NetWare Access Server
+Driver Specification", Version 1.0 (November 17, 1992), Novell part number
+107-000018-002.	 Added by Ralf Brown, 6/12/93.
+
+Chips&Technologies VGA BIOS INT 10/5Fxx extracted from Programmer's Guide to
+EGA and VGA Programming, 2nd edtion.  Added 6/24/93.
+
+Cloaking API based on CLOAKAPI.INC and RMFUNCS.DOC on Netroom Supplemental
+Disk.  Added by Ralf Brown, 6/24/93.
+
+Cirrus Logic BIOS info from the Cirrus Logic CL-GD542X Technical Reference
+Manual, dated April 1993.  Added 7/13/93.
+
+Some QEMM internal functions documented in Quarterdeck files QDMEM.DOC and
+QPI.DOC, dated 6/15/93.	 Added by Ralf Brown, 7/18/93.
+
+10NET v5.0 calls and data structures extracted from "10NET 5.0 Implementation
+Spec", chapter 5.  Added by Ralf Brown, 7/24/93.
+
+Phar Lap 386|DOS-Extender v4.0/4.1 info extracted from 386DOSX.DOC.  Added
+7/27/93.
+
+Novell NetWare 3270 API (INT 6F) extracted from Novell SNA Note 3-133,
+"API/HLLAPI INFORMATION", dated March 7, 1991.	Added by Ralf Brown, 7/28/93.
+
+PCMCIA Socket Services from _PCMCIA_Socket_Services_Interface_Specification_,
+Revision A.00, dated June 20, 1991.  Added by Ralf Brown, 8/30/93.
+
+MEMORY.LST updates from "IBM Local Area Network Technical Reference"
+SC30-3383-03, December 1990 (page D-31), and "IBM PS/2 and PC BIOS Interface
+Technical Reference" (September 1991 edition).	Added 9/24/93.
+
+Connection Manager API extracted from _The_Connection_Manager_User's_Guide_,
+Third Edition, February 1993.  Added by Ralf Brown, 10/18/93.
+
+NetWare multiplexor (INT 21/AH=F2h) calls from November 1993 _Dr._Dobb's_
+_Journal_ "Undocumented Corner" (Pawel Szczerbina, "The NetWare Core Protocol
+(NCP)") and Novell's SC3X04.EXE (available from NOVLIB and ftp.novell.com).
+Added by Ralf Brown, 10/26/93.
+
+Additional Microsoft Mouse driver details from Microsoft Knowledge Base
+articles, available for anonymous FTP from ftp.microsoft.com.  Added by
+Ralf Brown, 10/26/93.
+
+HLLAPI return codes extracted from Microsoft's _Windows_HLLAPI_Specification_,
+version 1.0 (10/6/92).	Added by Ralf Brown, 10/31/93.
+
+Chicago VxD identifiers from "Undocumented Corner", _Dr._Dobb's_Journal_
+December 1993.	Added by Ralf Brown, 11/19/93.
+
+SBSIM (SoundBlaster Simplified Interface Module) API extracted from file
+SBSIMDMO.C, distributed along with the other files for _SoundBlaster:_The_
+_Official_Book_.  Added by Ralf Brown, 1/22/94.
+
+Windows debugging kernel calls from _Undocumented_Windows_ and _Windows_
+_Internals_.  Added 1/22/94.
+
+YEA_GUS.EXE and EURO_MOD.EXE APIs from the SPHINX C-- v0.189 example files
+GUS.H-- and GUSMOD.H--.	 Added by Ralf Brown, 1/31/94.
+
+ZFAX v3 API from the ZFAX v3.01 manual, Appendix D.  Added 2/3/94.
+
+Husky Hunter 16 BIOS from the _Husky_Hunter_16_User_Guide_, 2nd edition (Sept
+1991).	Added 2/4/94.
+
+Additional ASPI information from Brian Sawert's ASCILOOK utility, published
+in the March 1994 Dr. Dobb's Journal.  Added by Ralf Brown, 3/26/94.
+
+Novell XQL INT 7Bh from XQL C interface source of 7/89.	 Added by Ralf Brown,
+3/94.
+
+Various PS/1 and DOS/V calls were found in Frank van Gilluwe's book
+_The_Undocumented_PC_, Addison-Wesley 1994.  ISBN 0-201-62277-7.  Added by
+Ralf Brown, 4/16/94.
+
+Various ports and miscellaneous data structure were found in Frank van
+Gilluwe's book _The_Undocumented_PC_, Addison-Wesley 1994.  ISBN 0-201-62277-7.
+Added by Ralf Brown, 6/5/94.
+
+Compaq QVision info from the _COMPAQ_QVision_Graphics_System_Technical_
+_Reference_Guide_, second edition (October 1993).  Compaq part number
+073A/0693.  Added by Ralf Brown, 7/31/94.
+
+Cloaking v1.01 info from the Cloaking(tm) Developer's Toolkit, first edition
+(October 1993), provided by Helix Software.  Helix part number N04,1093.
+Added by Ralf Brown, 8/94.
+
+K3PLUS API from the K3API.DOC file v2.04 for K3PLUS.  Added by Ralf Brown,
+8/7/94.
+
+QEMM port-trapping API extracted from the QEMM v7.5 manual.  Added by
+Ralf Brown, 10/22/94.
+
+IBM 8514/A and XGA Adapter Interface calls extracted from Richard F. Ferraro's
+_Programmer's_Guide_to_the_EGA,_VGA,_and_Super_VGA_Cards_, third edition.
+Added by Ralf Brown, 10/94.
+
+Enhanced Disk Drive Specification calls and tables from Phoenix Technologies'
+_Enhanced_Disk_Drive_Specification_,_Version_1.0_, dated January 25, 1994.
+Added 10/94.
+
+VSWITCHD VxD API from "Q&A MSDOS" column by Jeff Prosise in the September 1994
+_Microsoft_System_Journal_.  SHELL VxD API from "Windows Questions and
+Answers", _Windows/DOS_Developer's_Journal_, August 1994.  POSTMSG VxD API
+from "Q&A MSDOS", _Microsoft_Systems_Journal_, November 1994.  Added 11/5/94.
+
+VESA Audio Interface calls from the VBEAI SDK include files.  Added 1/3/95.
+
+VESA SuperVGA BIOS v2.0 calls gleaned from SVGAKit v5.1beta1 by SciTech
+Software.  Added by Ralf Brown, 1/6/95.
+
+PCMCIA ExCA function names from "Programmer's Guide to the AMIBIOS",
+ISBN 0-07-001562-7, page 395.  Added 1/7/95.
+
+Hewlett Packard EX-BIOS functions extracted from the _HP_Vectra_AT_Technical_
+_Reference_Manual_,Vol_2:_System_BIOS_, first edition, September 1985.	Added
+1/95.
+
+Plug-and-Play BIOS specs extracted from _Plug_and_Play_BIOS_Specification_
+_Version_1.0A_ (May 5, 1994).  Added by Ralf Brown, 3/4/95.
+
+Extended System Configuration Data formats extracted from _Extended_System_
+_Configuration_Data_Specification_Version_1.01_ (December 28, 1993).
+Added by Ralf Brown, 3/5/95.
+
+Plug-and-Play Configuration Manager API extracted from _Plug_and_Play_Device_
+_Driver_Interface_Version_1.0C_ (October 5, 1993).  Added by Ralf Brown,
+3/6/95.
+
+Comments about PC LAN Program from _IBM_PC_Local_Area_Network_Program_User's_
+_Guide_ Third edition (April 1987, for Release 1.2).  Added 3/17/95.
+
+QRIP API extracted from QRIPTECH.TXT in RIPCPP10.ZIP (C++ class library for
+using QRIP/TSR).  Added 3/17/95.
+
+AMI BIOS-FLASH interface from "AMIFLASH - Flash Implementation Guide",
+available as FLASH110.ZIP on American Megatrends' BBS and FTP sites.
+Added 3/31/95.
+
+Many Windows VxD function numbers extracted from PharLap's PHARLAPX header
+file PHAR386.H.	 Added by Ralf Brown 4/14/95.
+
+PHARLAPX VxD API extracted from PharLap's
+ftp.pharlap.com:/pub/286dosx/pharlapx.zip.  Added by Ralf Brown, 4/14/95.
+
+Intel SMBus info from _Intel_System_Management_Bus_BIOS_Interface_
+_Specification_, _Revision_1.0_, February 15, 1995, by Intel Architecture
+Labs.  Added 5/14/95.
+
+Various Novell NetWare info available at
+ftp://ftp.urz.uni-heidelberg/pub/novell/unsupported; SC4X01.ZIP info (many
+NetWare INT 21/F216h,F217h,F268h,F27Bh subfunctions; written by Wolfgang
+Schreiber) added 8/95.
+
+Pentium Local APIC info from _Pentium_Processor_System_Architecture_ (second
+edition), by MindShare, Inc. (Addison-Wesley 1995, ISBN 0-201-40992-5).
+Added by Ralf Brown, 9/8/95.
+
+ATA-2 info from _AT_Attachment_Interface_with_Extensions_(ATA-2)_,
+Revision 3 (January 17, 1995), document of the X3T10 standardization
+committee.  Added 9/9/95.
+
+ATA-3 info from _AT_Attachment-3_Interface_(ATA-3)_, Revision 1 (April 25,
+1995), document of the X3T10 standardization committee.	 Added 9/9/95.
+
+Enhanced Disk Drive Spec v1.1 (and INT 13 Extensions v2.1) from
+_Enhanced_Disk_Drive_Specification_Version_1.1_, January 26, 1995.
+Added 9/10/95.
+
+Bootable CD-ROM info from _"El Torito"_Bootable_CD-ROM_Format_Specification_
+Version 1.0, November 14, 1994, by Phoenix Technologies and IBM.
+Added 9/10/95.
+
+PCI configuration info from _PCI_System_Architecture_ (third edition), by
+MindShare, Inc. (Addison-Wesley 1995, ISBN 0-201-40993-3).
+Added by Ralf Brown, 9/10/95.
+
+Most PCI vendor IDs from Linux v1.3.25 include/linux/pci.h by Drew Eckhardt,
+dated 9/8/95.  Added by Ralf Brown, 9/15/95.
+
+EPP BIOS Revision 7 from _IEEE_1284_Enhanced_Parallel_Port_BIOS_Specification_,
+Revision 7, dated 3/9/94.  Added by Ralf Brown, 9/17/95.
+
+Many additional NetWare functions (particularly NCP calls) from Chapters 1-8
+and portions of Chapters 9-15 of the NetWare API reference available online
+from www.novell.com.  Added by Ralf Brown, 9/95 and 10/95.
+
+Multiprocessor Specification info from _Multiprocessor_Specification_,
+Version 1.4, July 1995 (Intel order number 242016-004, available online from 
+www.intel.com).	 Added by Ralf Brown, 9/20/95.
+
+Smart Battery protocol info from _Duracell_Intel_Smart_Battery_Data_
+_Specification_, Revision 1.0, February 15, 1995.
+Added by Ralf Brown, 9/21/95.
+
+Additional Plug-and-Play info from _Plug_and_Play_System_Architecture_, by
+MindShare, Inc. (Addison-Wesley 1995, ISBN 0-201-41013-3).
+Added by Ralf Brown, 9/23/95.
+
+PCI BIOS v2.1 info and more-complete PCI vendor ID list from _Programming_
+_Plug_and_Play_, James Kelsey, Sams Publishing 1995.  ISBN 0-672-30703-0.
+Added by Ralf Brown, 10/95.
+
+Yet more PCI vendor IDs extracted from Intel PCD Systems Engineering's
+PCI.EXE v2.2.  Added by Ralf Brown, 12/12/95.
+
+Tandy 2000 BIOS calls from _Programmer's_Reference_(for Tandy 2000),
+Catalog No. 26-5403, Copyright 1983.  Added by Ralf Brown, 4/96.
+
+More Windows95 calls from _Win95_SDK:_Programmer's_Guide_to_Win95,_MS-DOS_
+_Extensions_.  Added 5/11/96.
+
+Pentium Pro Model-Specific Registers from Pentium Pro Family User's Guide,
+Volume 3, Appendix C (available on the March 1996 Intel Architecture Labs
+CD).  Added by Ralf Brown, 10/16/96.
+
+APM v1.2 calls and enhancements from _Advanced_Power_Management_(APM)_BIOS_
+_Interface_Specification_, Revision 1.2 (February 1996, available on the
+March 1996 Intel Architecture Labs CD).	 Added by Ralf Brown, 10/17/96.
+
+Information on FAT32 calls from FAT32API.HLP.  Added 10/22/96.
+
+SCSI Command Data Block format, ASPI info, etc. from _The_Book_of_SCSI_ by
+Peter M. Ridge.	 Added by Ralf Brown, 11/3/96.
+
+CardBus info from _CardBus_System_Architecture_ by Mindshare, Inc.
+ISBN 0-201-40997-6.  Added by Ralf Brown, 11/3/96.
+
+InterWave Game API and InterWave ports from _InterWave(tm)_IC_Am78C201/202_
+_Programmer's_Guide_, Revision 2, 1996.	 Added by Ralf Brown, 12/7/96.
+
+PCI Power Management info from _PCI_Bus_Power_Management_Interface_
+_Specification_, _Preliminary_Review_Draft_Revision_0.93_, November 22, 1996.
+Added by Ralf Brown, 15dec96.
+
+Intel 82378ZB and 82379AB PCI configuration data and I/O ports from _82378ZB_
+_System_I/O_(SIO)_and_82379AB_System_I/O_APIC_(SIO.A)_, available from
+www.intel.com as file 29057101.PDF.  Added by Ralf Brown, 29dec96.
+
+Intel 82437VX PCI configuration data from _Intel 430VX_PCIset_82437VX_
+_System_Controller_(TVX)_and_82438VX_Data_Path_Unit_(TDX)_, available at
+www.intel.com as file 29055301.PDF.  Added by Ralf Brown, 30dec96.
+
+Intel 82439HX PCI configuration data from _Intel_430HX_PCIset_82439HX_
+_System_Controller_(TXC)_, available on www.intel.com as file 29055101.PDF.
+Added by Ralf Brown, 30dec96.
+
+Intel 82371FB/82371SB PCI configuration data and I/O ports from
+_82371FB_(PIIX)_and_82371SB_(PIIX3)_PCI_ISA_IDE_Xcelerator_, available
+on www.intel.com as file 29055001.PDF.	Added by Ralf Brown, 30dec96.
+
+Intel 82441FX PCI configuration data from _Intel_440FX_PCIset_82441FX_PCI_
+_and_Memory_Controller_(PMC)_and_82442FX_Data_Bus_Accelerator_(DBX)_,
+available on www.intel.com as file 29054901.PDF.
+Added by Ralf Brown, 30dec96.
+
+Intel 82437MX PCI configuration data from _Intel_430MX_PCIset_82437MX_
+_Mobile_System_Controller_(MTSC)_and_82438MX_Mobile_Data_Path_(MTDP)_,
+available on www.intel.com as file 29052401.PDF.
+Added by Ralf Brown, 30dec96.
+
+Intel 82437FX PCI configuration data from _Intel_82430FX_PCIset_Datasheet_
+_82437FX_System_Controller_(TSC)_and_82438FX_Data_Path_Unit_(TDP)_,
+available on www.intel.com as file 29051801.PDF.
+Added by Ralf Brown, 30dec96.
+
+ATAPI Removable Media Device information from _ATAPI_Removable_Media_
+_Device_BIOS_Specification_, version 0.8, September 16, 1996; Compaq Computer
+Corporation and Phoenix Technologies.  Added by Ralf Brown, 02jan97.
+
+NetWare TCP/IP API info from "The RCB Interface to the LAN WorkPlace TCP/IP
+Protocol Stack", available from occam.sjf.novell.com.
+Added by Ralf Brown, 04jan97.
+
+Intel 82347/82351/82359 I/O ports from _The_Undocumented_PC_, second edition.
+Added by Ralf Brown, 09jan97.
+
+OpenHCI info from _Open_Host_Controller_Interface_Specification_for_USB_,
+10/16/96 preliminary release 1.0a.  Added by Ralf Brown, 11jan97.
+
+ACPI info from _Advanced_Configuration_and_Power_Interface_Specification_,
+draft revision 0.9, October 14, 1996.  Added by Ralf Brown, 11jan97.
+
+PCI IRQ Routing Table Specification v1.0 from _PCI_IRQ_Routing_Table_
+_Specification_, version 1.0, Microsoft Corporation, February 27, 1996.
+Added by Ralf Brown, 19jan97.
+
+Many additional IBM BIOS functions from
+http://www.surepath.ibm.com/documents/pcs/biosintr_func_list.html.
+Added by Ralf Brown, 12apr97.
+
+Additional VxD service names from SERVICES.DAT included with VXDMON by
+Bryce Cogswell and Mark Russinovich.  Added by Ralf Brown, 09jul97.
+
+Intel 82434LX/NX (Mercury/Neptune) chipset info from "82434LX/82434NX PCI,
+Cache, and Memory Controller (PCMC)", (online as file 29047904.pdf).
+Added by Ralf Brown, 24aug97.
+
+S.M.A.R.T. commands from "Self-Monitoring, Analysis, and Reporting Technology
+(S.M.A.R.T.), SFF-8035i", Revision 2.0, dated April 1, 1996.
+Added by Ralf Brown.
+
+AWARD Plug-and-Play POST codes from
+http://www.asus.com.tw/Products/TECHREF/BIOS/pnp-post.html  Added 24aug97.
+
+PentiumMMX updates from "Pentium Processor Family Developer's Manual (1997)",
+Intel document number 241428 (online as file 24142805.pdf).
+Added by Ralf Brown, 02sep97.
+
+Am486 SMM state-save map from "AMD BIOS Development Guide", file 19720C.PDF.
+Added by Ralf Brown, 03sep97.
+
+OPTi 82C206 configuration register from
+ftp://ftp.opti.com/pub/chipsets/archive/206/Db026_01.pdf.
+Added by Ralf Brown, 05sep97.
+
+OPTi 82C281/2 data from "OPTI Cache Sx/AT: 82C281 Data Book", Revision 1.1,
+22aug91.  Available as ftp://ftp.opti.com/pub/chipsets/archive/206/82c281.pdf.
+Added by Ralf Brown, 05sep97.
+
+OPTi 82C283 data from "82C283: 386SX System Controller", available as
+ftp://ftp.opti.com/pub/chipsets/archive/283/Db012_10.pdf.
+Added by Ralf Brown, 05sep97.
+
+(I2C) JEDEC manufacturer ID from http://www.eia.org/jedec/download/jep-106.pdf.
+Added by Ralf Brown, oct97.
+
+(I2C) Documented VPX32xx info from file VPX3220.PDF, available from
+www.itt-sc.de.	Added by Ralf Brown, oct97.  (Undocumented info from my own
+poking around)
+
+(I2C) VDP 3108 info from file VDP3108.PDF, available from www.itt-sc.de.
+Added by Ralf Brown, nov97.
+
+(I2C) VDP 31xxB info from file VDP31xxB.PDF, available from www.itt-sc.de.
+Added by Ralf Brown, nov97.
+
+(I2C) SDRAM Serial Presence Detection from file SPDSD_12.PDF, "SDRAM Serial
+Presence Detect (SPD) Data Structure (168- and SO-144 DIMM)", Revision 1.2,
+November 1997, available from www.intel.com.  Added by Ralf Brown, 20dec97.
+
+(I2C) X24C01A info from document x24c01a.pdf, available from www.xicor.com.
+Added by Ralf Brown, 03jan98.
+
+(I2C) Raytheon TMC2361 info from document tmc2361.pdf, availble from
+www.raytheon.com.  Added by Ralf Brown, 03jan98.
+
+(I2C) Crystal Semiconductor CS4920/CS4920A/CS4921 info from file 4920A.PDF,
+available from www.crystal.com/ftp/pubs/.  CS4922 info from file 4922.PDF.
+CS4952/53 info from file CS4952.PDF.  Added by Ralf Brown, jan98.
+
+S3 Trio32/Trio64 info from S3's "Trio32/Trio64 Graphics Accelerators", dated
+March 1995.  Added by Ralf Brown, jan98.
+
+AMD-640 info from "AMD-640 System Controller Data Sheet", file 21090C.PDF,
+dated June 1997.  Added by Ralf Brown, 18jan98.
+
+AMD-645 info from "AMD-645 Peripheral Bus Controller Data Sheet", file
+21095B.PDF, dated June 1997.  Added by Ralf Brown, 18jan98.
+
+(I2C) Philips SAA5252 info from "SAA5252 Line Twenty-One Acquisition and
+Display", http://www.semiconductors.philips.com/acrobat/2005.pdf.
+Added by Ralf Brown, 20jan98.
+
+Philips TSA5523M info from "TSA5523M 1.4 GHz I2C-bus Controlled Multimedia
+Synthesizer", http://www.semiconductors.philips.com/acrobat/2295.pdf.
+Added by Ralf Brown, 23jan98.
+
+Philips TSA5055T info from "TSA5055T 2.5 GHz bi-directional I2C-bus Controlled
+Synthesizer", http://www.semiconductors.philips.com/acrobat/2471.pdf.
+Added by Ralf Brown, 23jan98.
+
+Philips TSA5512 info from "TSA5512 1.3 GHz Bidirectional I2C-bus Controlled
+Synthesizer", http://www.semiconductors.philips.com/acrobat/2472.pdf.
+Added by Ralf Brown, 23jan98.
+
+Philips TSA5515T info from "TSA5515T 1.3 GHz bi-directional I2C-bus Controlled
+Synthesizer", http://www.semiconductors.philips.com/acrobat/2474.pdf.
+Added by Ralf Brown, 23jan98.
+
+C&T 82C450 BIOS info from "VGA BIOS OEM Reference Guide, January 1992",
+ftp://ftp.chips.com/pub/pdf/oc82c450.pdf.  Added by Ralf Brown, 27jan98.
+
+C&T 82C100 BIOS POST codes from "SXT BIOS OEM Reference Guide, July 1991",
+ftp://ftp.chips.com/pub/pdf/oc82c100.pdf.  Added by Ralf Brown, 27jan98.
+
+C&T 82C235 BIOS POST codes from "SCAT BIOS OEM Reference Guide, March 1992",
+ftp://ftp.chips.com/pub/pdf/oc82c235.pdf.  Added by Ralf Brown, 27jan98.
+
+C&T 64300 "Wingine DGX" BIOS calls from "Wingine DGX BIOS OEM Reference Guide",
+dated October 1994.  ftp://ftp.chips.com/pub/pdf/oc64300.pdf.
+Added by Ralf Brown, 28jan98.
+
+C&T 65530 BIOS calls from "OC65530 VGA BIOS OEM Reference Guide",
+dated June 1993.  ftp://ftp.chips.com/pub/pdf/oc65530.pdf.
+Added by Ralf Brown, 28jan98.
+
+C&T F87000 info from "F87000 Multi-Mode Peripheral Chip - Data Sheet, November
+1993", ftp://ftp.chips.com/pub/pdf/f87000.pdf.	Added by Ralf Brown, 28jan98.
+
+C&T N93N8042/A keyboard controller info from "N93N8042/A AT Keyboard Controller
+Data Sheet, September 1991", ftp://ftp.chips.com/pub/pdf/n93n8042.pdf.
+Added by Ralf Brown, 28jan98.
+
+OPTi 82C391/82C392 data from "OPTi-386WB PC/AT Chipset: 82C391/82C392 Data
+Book", Version 1.1, 19dec90, available as
+ftp://ftp.opti.com/pub/chipsets/archive/391/82c391.pdf.
+Transcribed by Roger Scudder, added 29jan98.
+
+OPTi 82C291 data from "82C291: SXWB PC/AT Chipset", available as
+ftp://ftp.opti.com/pub/chipsets/archive/291/Db011_10.pdf.
+Added by Ralf Brown, 05sep97 and David Brioso, 29jan98.
+
+OPTi "Viper" (82C556/557/558) chipset data from "Viper-DP Desktop Chipset for
+the 3.3V Pentium Processor, M1 and K5 Processors: Data Book", Revision 1.0,
+1/95; ftp://ftp.opti.com/pub/chipsets/archive/viper/Db023_10.pdf.
+Transcribed by David Brioso, added 29jan98.
+
+OPTi 82C463MV data from "Mixed Voltage Single Chip Notebook: 82C463MV Data
+Book", Version 1.0b, 30sep93, available as
+ftp://ftp.opti.com/pub/chipsets/archive/463/Db463mv.pdf.
+Transcribed by Pino Navato, added 29jan98.
+
+OPTi 82C381/82C382 data from "HiD/386 AT Chipset", available as
+ftp://ftp.opti.com/pub/chipsets/archive/381/82c381.pdf.
+Transcribed by Roger Scudder, added 29jan98.
+
+Philips TDA8366 info from "TDA8366 I2C-bus controlled PAL/NTSC TV processor",
+http://www.semiconductors.philips.com/acrobat/2086.pdf.
+Added by Ralf Brown, 31jan98.
+
+WindowsNT NTOS function numbers from a Usenet posting by Peter-Michael Hayer
+<Hager@dortmund.net>.  Added 02feb98.
+
+Intel 82091AA info from "82091AA Advanced Integrated Peripheral (AIP)",
+http://www.intel.com/design/periphrl/datashts/290486.htm.
+Added by Ralf Brown, 15feb98.
+
+Intel 82380AB info from "Intel 380FB PCIset: 82380AB Mobile PCI-to-ISA Bridge
+(MISA)", http://www.intel.com/design/pcisets/datashts/290563.htm.
+Added by Ralf Brown, 15feb98.
+
+Intel 82380FB info from "Intel 380FB PCIset: 82380FB Mobile PCI-to-PCI Bridge
+(MPCI2)", http://www.intel.com/design/pcisets/datashts/290567.htm.
+Added by Ralf Brown, 15feb98.
+
+Intel SE440BX ("Seattle") motherboard POST codes from "SE440BX Motherboard
+Technical Product Specification", file 69114101.pdf.
+Added by Ralf Brown, 16may98.
+
+OPTi "FireLink" (82C861) data from "FireLink / FireBlast 82C861/82C871
+PCI-to-USB Bus Bridges: Preliminary Data Book"; available as
+ftp://ftp.opti.com/pub/chipsets/system/861/pd022_20.pdf.
+Transcribed by Teppo Lehtonen <lehto@sci.fi>, added 28jun98.
+
+Intel 82371MX info from "Intel 430MX PCIset: 82371MX Mobile PCI I/O IDE 
+Xcelerator (MPIIX)", http://www.intel.com/design/pcisets/datashts/290525.htm.
+Transcribed by Craig Hart <chart@hyperlink.net.au>, added 25jul98.
+
+Chips&Technologies PC Video (82C9001A) info from "82C9001A PC Video: Video
+Windowing Controller", ftp://ftp.chips.com/pub/pdf/cs82c9001a.pdf.
+Transcribed by Teppo Lehtonen <lehto@sci.fi>, added 27jul98.
+
+OPTi "Vendetta" (82C750) data from "Vendetta Single-Chip MultiMedia PC
+Solution: Preliminary Data Book"; available as
+ftp://ftp.opti.com/pub/chipsets/system/vendetta/pd020_20.pdf.
+Transcribed by Teppo Lehtonen <lehto@sci.fi>, added jul98.
+
+OPTi 82C493/82C392 data from "OPTi-486SXWB PC/AT Chipset", Version 1.1,
+16aug91; ftp://ftp.opti.com/pub/chipsets/archive/493/82c493_392.pdf.
+Transcribed by Tom Creamer <tom_creamer@manorcare.com>, added 28jul98.
+
+Via Technologies' VT82C496G info from "VT82C496G/VT82C406MV Green PC 80486
+PCI/VL/ISA System Data Sheet", http://www.via.com.tw/496pluto.pdf.
+Transcribed by Teppo Lehtonen, added 31jul98.
+
+Via's VT82C570M info from "VT82C570M Apollo Master",
+http://www.via.com.tw/570m.pdf.	 Transcribed by Teppo Lehtonen, added 31jul98.
+
+Intel 82443LX (440LX) info from
+http://www.intel.com/design/pcisets/datashts/290564.htm.
+Transcribed by Craig Hart, added 04aug98.
+
+C&T 64310 info from "Wingine DGX - PCI DRAM Graphics Accelerator Data Sheet",
+Revision 1.0, dated December 1994.
+ftp://ftp.chips.com/pub/pdf/64310_ds.pdf.
+Transcribed by Teppo Lehtonen, added 23aug98.
+
+PicoPower Vesuvius info from "PicoPower VESUVIUS-LS Preliminary Data Book",
+http://www.national.com/ds/VS/PT/PT86C521-VC-B.pdf.
+Transcribed by Teppo Lehtonen, added 23aug98.
+
+Ensoniq AudioPCI ES1370 info from file es1370.doc, available at
+http://www.ensoniq.com/multimedia/semi_html/html/es1370.zip.
+Transcribed by Teppo Lehtonen, added 23aug98.
+
+Ensoniq AudioPCI-97 ES1371 info from file es1371.doc, available at
+http://www.ensoniq.com/multimedia/semi_html/html/es1370.zip.
+Transcribed by Teppo Lehtonen, added 23aug98.
+
+Intel 440EX chipset info from "Intel 440EX AGPset: 82443EX PCI AGP Controller
+(PAC) Datasheet", http://www.intel.com/design/pcisets/datashts/290616.htm.
+Transcribed by Craig Hart, added 28aug98.
+
+CL-PD6710/6722 info from "CL-PD6710/'22 ISA-to-PC-Card Host Adapters",
+http://www.cirrus.com/ftp/pubs/pd6710db.pdf.
+Transcribed by Teppo Lehtonen, added 28aug98.
+
+CL-PD6729 info from "CL-PD6729 PCI-to-PCMCIA Host Adapter",
+http://www.cirrus.com/ftp/pubs/pd6729db.pdf.
+Transcribed by Teppo Lehtonen, added 28aug98.
+
+Intel 82595FX info from "82595FX ISA Bus High-Integration Ethernet Controller",
+http://www.intel.com/design/network/datashts/281732.htm.
+Transcribed by Teppo Lehtonen, 9/98, added 01jan99.
+
+Adaptec AHA-154x info from "AHA-1540A/1542A User's Manual", dated 1989.
+Added 01jan99.
+
+Philips SAA7110/7110A info from "SAA7110/SAA7110A One Chip Front-end 1 (OCF1)",
+http://www.semiconductors.philips.com/acrobat/2007.pdf.	 Transcription by
+Roger Scudder, 10/98.  Added 01jan98.
+
+ATASPI info from "ATA Software Programming Interface (ATASPI) Specification
+for DOS and Windows Operating Systems", Version 0.72, December 20, 1994.
+ftp://ftp.adaptec.com/pub/BBS/FutureDomain/atap072.exe.  Added 15jul00.
+
+C&T 64200 info from "64200 (Wingine) High Performance Windows Engine",
+ftp://ftp.chips.com/pub/pdf/64200.pdf.	(to be added)
+
+Intel 82374EB/SB info from "82374EB/82374SB EISA System Component (ESC)",
+http://www.intel.com/design/pcisets/datashts/290476.htm.  (to be added)
+
+Intel 82439TX (430TX) info from "Intel 430TX PCIset: 82439TX System Controller
+(MTXC)", http://www.intel.com/design/pcisets/datashts/290559.htm.  (to be added)
+
+Intel 82371AB (PIIX4) info from "",
+http://www.intel.com/design/pcisets/datashts/290562.htm.  (to be added)
+
+Intel 82595TX info from "82595TX ISA/PCMCIA High-Integration Ethernet
+Controller", http://www.intel.com/design/network/datashts/281630.htm. [p.16-34]
+(to be added)
+
+OPTi 82C295 data from "82C295: SLCWB PC/AT Chipset", available as
+ftp://ftp.opti.com/pub/chipsets/archive/295/Db010_10.pdf.  (to be added)
+
+Crystal Semiconductors CS4239 info from "CS4239 Advanced Product Databook",
+available as 4239.PDF from www.cirrus.com.  (to be added)
+
+Crystal Semicondutors CS4610/4611 info from "CS4610/11 CrystalClear(tm)
+SoundFusion(tm) PCI Audio Accelerator", available as 4610.pdf from
+www.cirrus.com.	 (to be added)
+
+OPTi 82C491/82C392 data from "OPTi-486WB PC/AT Chipset", Version 1.1, 26apr91,
+available as ftp://ftp.opti.com/pub/chipsets/archive/491/Db491_11.pdf.
+(to be added)
+
+OPTi 82C465MV/MVA/MVB data from "";
+ftp://ftp.opti.com/pub/chipsets/system/465/db016_20.pdf. (to be added)
+
+OPTi "FireFox" (82C824) data from "FireFox 82C824 32-bit PC Card Controller:
+Preliminary Data Book", Revision 3.0, 26aug96; available as
+ftp://ftp.opti.com/pub/chipsets/system/824/pd013_30.pdf. (to be added)
+
+OPTi "FireBridge 2" (82C825) data from "FireBridge II 82C825 Docking Station
+Controller Data Book", Revision 1.0, 27jun97; available as
+ftp://ftp.opti.com/pub/chipsets/system/825/db046_10.pdf. (to be added)
+
+OPTi "FireFly" (82C852) data from "FireFly 82C852 16-bit PC Card Controller:
+Preliminary Data Book", Revision 1.0, 6jun96; available as
+ftp://ftp.opti.com/pub/chipsets/system/852/pd018_10.pdf. (to be added)
+
+Philips SAA7111 info from "SAA7111 Video Input Processor (VIP)",
+http://www.semiconductors.philips.com/acrobat/2211.pdf.
+(to be added)
+
+Philips SAA7111A info from "SAA7111A Enhanced Video Input Processor (EVIP)",
+http://www.semiconductors.philips.com/acrobat/2278.pdf.
+(to be added)
+
+Philips TDA9850 info from "TDA9850 I2C-bus Controlled BTSC stereo/SAP decoder",
+http://www.semiconductors.philips.com/acrobat/2144.pdf.
+(to be added)
+
+Brooktree Bt819A/817A/815A info from document l819a_c.pdf, available from
+www.brooktree.com.  (to be added)
+
+Harris HMP8115 info from "HMP8115 NTSC/PAL Video Decoder", file fn4283.pdf,
+available at http://www.semi.harris.com/families/mmedia.htm.  (to be added)
+
+Harris HMP8154/8156A info from "HMP8154, HMP8156A NTSC/PAL Encoders",
+file fn4343.pdf, available at http://www.semi.harris.com/families/mmedia.htm.
+(to be added)
+
+Harris HMP8156 info from "HMP8156 NTSC/PAL Encoder", file fn4269.pdf,
+available at http://www.semi.harris.com/families/mmedia.htm.  (to be added)
+
+Harris HMP817x info from "HMP8170, HMP8171, HMP8172, HMP8173 NTSC/PAL
+Video Encoder", available at http://www.semi.harris.com/families/mmedia.htm.
+(to be added)
+
+National Semiconductor PC87306 SuperI/O info from "PC87306 SuperI/O(tm)
+Enhanced Sidewinder Lite", http://www.national.com/ds/PC/PC87306.pdf.
+(to be added)
+
+National Semiconductor PC87311A SuperI/O II info from "PC87311A/PC87312
+(SuperI/O II/III)", http://www.national.com/ds/PC/PC87311A.pdf. (to be added)
+
+National Semiconductor PC87323VUL SuperI/O info from "PC87323VUL SuperI/O (tm)
+Sidewinder", http://www.national.com/ds/PC/PC87323V.pdf. (to be added)
+
+National Semiconductor PC87332VLJ SuperI/O info from "PC87332VLJ and
+PC87332VLJ-5 (SuperI/O(tm) III Premium Green)",
+http://www.national.com/ds/PC/PC87332VLJ.pdf. (to be added)
+
+National Semiconductor PC87550 info from "PC87550 PCI System Controller",
+http://www.national.com/ds/PC/PC87550.pdf. (to be added)
+
+TI 16C750 UART info from "TL16C750 Asynchronous Communications Element with
+64-Byte FIFOs and Autoflow Control", file slls191b.pdf at www.ti.com.
+(to be added)
+
+Via's VT82C586A info from "VT82C586A PCI Integrated Peripheral Controller",
+http://www.via.com.tw/586a.pdf.	 (to be added)
+
+TVP4010 info from "TVP4010 Data Manual: 3D Graphics Processor", file
+SLAS155.PDF, available from www.ti.com.	 (to be added)
+
+Harris HMP8130/8131 info from "HMP8130, HMP8131 NTSC/PAL Video Decoders with
+PCI Interface", file fn4354.pdf, available at
+http://www.semi.harris.com/families/mmedia.htm.	 (to be added)
+
+SMBIOS v2.1 info from http://www.ptltd.com/techs/smbios/htframe.html.
+(to be added)
+
+CL-GD1052/1053 info from "CL-GD1052/GD1053 Digital NTSC/PAL Encoder with
+Flicker Reduction", http://www.cirrus.com/ftp/pubs/gd1052db.pdf.  (to be added)
+
+CD-GD542x info from "True Color VGA Family CL-GD542X Technical Reference
+Manual", http://www.cirrus.com/ftp.pubs/gd542xtrm.pdf.	(to be added)
+
+CD-GD5446 info from "CL-GD5446 Technical Reference Manual",
+http://www.cirrus.com/ftp.pubs/gd5446trm.pdf.  (to be added)
+
+CL-GD7541/7543 info from "CL-GD7541/GD7543 Preliminary Data Book",
+http://www.cirrus.com/ftp/pubs/gd7543db.pdf.  (to be added)
+
+CL-GD7548 info from "CL-GD7548 Advance Hardware Reference Manual",
+http://www.cirrus.com/ftp/pubs/gd7548hrm.pdf.  (to be added)
+
+CL-GD7556 info from "CL-GD7556 Advance Hardware Reference Manual",
+http://www.cirrus.com/ftp/pubs/gd7556hrm.pdf.  (to be added)
+
+Philips TDA837x info from "TDA837x I2C-bus controlled economy PAL/NTSC and NTSC
+TV processors", http://www.semiconductors.philips.com/acrobat/2191.pdf.
+(to be added)
+
+Philips TDA8443A info from "TDA8443A I2C-bus controlled YUV/RGB switch",
+http://www.semiconductors.philips.com/acrobat/2101.pdf.	 (to be added)
+
+ATAPI info from "ATA Packet Interface for CD-ROMs (SFF-8020i)", Revision 2.6,
+ftp://fission.dt.wdc.com/pub/standards/SFF/specs/8020_26p.pdf; and
+"Errata for ATAPI for CD-ROMs (SFF-8028)", .../8028.pdf.  (to be added)
+
+ATAPI extensions for DVD from "Mt. Fuji Commands for CD and DVD Devices",
+Version 2 Revision 0.9,
+ftp://fission.dt.wdc.com/pub/standards/SFF/specs/8099v2r9.pdf.	(to be added)
+
+Bus Master IDE API from "Information Specification for Bus Master Programming
+Interface for IDE ATA Controllers, Rev. 1.0", dated May 16, 1994.
+ftp://fission.dt.wdc.com/pub/standards/SFF/specs/8038_r1.pdf. (to be added)
+
+Bt8230 info from "Bt8230 ATM Segmentation and Reassembly Controller - SRC",
+http://204.251.120.179/brok01_assets/product_images/L8230E.pdf.
+(to be added)
+
+C&T 64300/64301 info from "", ftp://ftp.chips.com/pub/pdf/64300_01.pdf.
+(to be added)
+
+C&T 82C311/82C315/82C316 info from "",
+ftp://ftp.chips.com/pub/pdf/cs8233.pdf.	 (to be added)
+
+C&T CS82310 from "CS82310 CHIPSet PEAK/DM Data Book", dated February 1991.
+ftp://ftp.chips.com/pub/pdf/cs82310.pdf.  (to be added)
+
+C&T CS4021 info from "ISA/486: The 4021 CHIPSet Databook", Revision 1.0.
+ftp://ftp.chips.com/pub/pdf/cs4021.pdf.	 (to be added)
+
+DEC DC21041 Ethernet info from "Digital Semiconductor 21041 PCI Ethernet LAN
+Controller Hardware Reference Manual", Order Number EC-QAWXB-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21041hm.pdf.
+(to be added)
+
+DEC DC21140 Fast Ethernet info from "Digital Semiconductor 21140A PCI Fast
+Ethernet LAN Controller Hardware Reference Manual", Order Number EC-QN7NE-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21140ahm.pdf.
+(to be added) p.35
+
+DEC 21143 Ethernet info from "DIGITAL Semiconductor 21143 PCI/CardBus
+10/100-Mb/s Ethernet LAN Controller Hardware Reference Manual",
+Order Number EC-QWC4F-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21143hrm.pdf.
+(to be added) p.62
+
+DEC 21052 PCI-PCI bridge info from "Digital Semiconductor 21052 PCI-to-PCI
+Bridge Data Sheet", Order Number EC-QHURB-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21052ds.pdf.
+(to be added)
+
+DEC 21150 info from "",
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21150ds.pdf.
+(to be added) p.148
+
+DEC 21152 info from "",
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21152ds.pdf.
+(to be added) p.137
+
+DEC 21153 info from "",
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21153ds.pdf.
+(to be added) p.158
+
+DEC 21154 info from "",
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21154ds.pdf.
+(to be added) p.158
+
+DEC 21230 info from "Digital Semiconductor 21230 Video Codec Technical
+Reference Manual", Order Number: EC-QJG5D-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21230tm.pdf.
+(to be added) p.74-114
+
+DEC 21230/231 info from "Digital Semiconductor 21230 Video Codec/21231 Video
+Output Logic Technical Reference Manual", Order Number: EC-R30TA-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/230_31rm.pdf.
+(to be added)
+
+DEC 21340 info from "DIGITAL Semiconductor 21340 10/100-Mb/s Managed Buffered
+Port Switch Data Sheet", Order Number: EC-R0UEB-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21340ds.pdf.
+(to be added) p.110-214
+
+DEC 21440 info from "DIGITAL Semiconductor 21440 Multiport 10/100Mbps Ethernet
+Controller Data Sheet", Order Number: EC-R471A-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/21440ds.pdf.
+(to be added) p.28-65
+
+DEC 21553/21554 info from "DIGITAL Semiconductor 2155x PCI-to-PCI Bridge for
+Embedded Applications - Hardware Reference Manual", Order Number: EC-R8WGA-TE,
+http://ftp.digital.com/pub/Digital/info/semiconductor/literature/55xhrm.pdf.
+(to be added) p.90-177
+
+ITT MAS 3507D info from "MAS 3507D MPEG 1/2 Layer 2/3 Audio Decoder -
+Preliminary Data Sheet", http://www.itt-sc.de/pdf/mas3507d.pdf.
+(to be added) p.15-25
+
+ITT MSP 3400C info from "MSP 3400C Multistandard Sound Processor -
+Preliminary Data Sheet", http://www.itt-sc.de/pdf/msp3400c.pdf.
+(to be added) p.16-42
+
+Intel 440BX chipset info from "Intel 440BX AGPset: 82443BX Host
+Bridge/Controller - Datasheet",
+http://www.intel.com/design/pcisets/datashts/290633.htm.
+(to be added) p.30-86.
+
+ITT VPC 32xx info from "", http://www.itt-sc.de/pdf/vpc3200a.pdf
+(to be added) p.18-30
+
+Cirrus Crystal CS5396/5397 info from http://www.cirrus.com/ftp/pubs/5396.pdf
+[p.19,25-30] (to be added)
+
+Crystal CS7615 CCD Imager Analog Processor info from
+http://www.cirrus.com/ftp/pubs/7615.pdf (to be added)
+
+Crystal CS7665 Digital Color Space Processor info from
+http://www.cirrus.com/ftp/pubs/7665.pdf (to be added)
+
+Crystal CS8425 Audio LAN Transceiver info from
+http://www.cirrus.com/ftp/pubs/8425.pdf (to be added)
+
+Crystal CS4226 info from
+http://www.cirrus.com/ftp/pubs/4226.pdf (to be added)
+
+Crystal CS4222 info from
+http://www.cirrus.com/ftp/pubs/4222.pdf (to be added)
+
+Crystal CS4225 info from
+http://www.cirrus.com/ftp/pubs/4225.pdf (to be added)
+
+Crystal CS4227 info from
+http://www.cirrus.com/ftp/pubs/4227.pdf (to be added)
+
+Crystal CS4922 info from
+http://www.cirrus.com/ftp/pubs/4922.pdf (to be added)
+
+Crystal CS4923 info from
+http://www.cirrus.com/ftp/pubs/4923.pdf (to be added)
+
+Crystal CS4610 info from
+http://www.cirrus.com/ftp/pubs/4610.pdf (to be added)
+
+Crystal CS4614 info from
+http://www.cirrus.com/ftp/pubs/4614.pdf (to be added)
+
+Crystal CS4622 info from
+http://www.cirrus.com/ftp/pubs/4622.pdf (to be added)
+
+Crystal CS4280 info from
+http://www.cirrus.com/ftp/pubs/4280.pdf (to be added)
+
+Crystal CS4952 info from
+http://www.cirrus.com/ftp/pubs/4952.pdf (to be added)
+--------!---FILELIST-------------------------
+Please redistribute all of the files comprising the interrupt list (listed at
+the beginning of the list and in INTERRUP.1ST) unmodified as a group, in a
+quartet of archives named INTER61A through INTER61D (preferably the original
+authenticated PKZIP archives), the utility programs in a fifth archive
+called INTER61E.ZIP, and the hypertext conversion programs in a final archive
+named INTER61F.ZIP.
+
+Copyright (c) 1989-1999,2000 Ralf Brown
+--------!---CONTACT_INFO---------------------
+Internet: ralf@pobox.com (currently forwards to ralf@telerama.lm.com)

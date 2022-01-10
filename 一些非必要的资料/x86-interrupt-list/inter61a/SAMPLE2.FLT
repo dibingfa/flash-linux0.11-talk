@@ -1,0 +1,17 @@
+# SAMPLE2.FLT
+# Sample filtering file number 2, using category includes/excludes.  Extract
+# MS-DOS and DR-DOS calls, but exclude OS/2 and other operating systems.
+#
+# unconditionally include the DOS category
+>D
+# include 'other OSes' category, but remove OS/2, VMiX, PC-MOS, etc.
+iO
+-OS/2
+-VMiX
+-PC-MOS
+-STARLITE
+-WinDOS
+-Acorn BBC
+-Linux DOSEMU
+#
+# end of SAMPLE2.FLT

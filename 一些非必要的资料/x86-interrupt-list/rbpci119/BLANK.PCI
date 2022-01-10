@@ -1,0 +1,111 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename VVVVDDDD.PCI = Vendor VVVVh, Device DDDDh 
+%! Last Edit 27jun98 by Ralf Brown
+%!
+
+Everything preceding a line beginning with the six characters "!begin" is
+a comment and will be ignored (with the proviso that the total file size
+not exceed 64K).  Everything from the !begin line to a line starting with
+the four characters "!end" forms part of the device description, in a
+format similar to that used for printf().
+
+To create your own device description file for PCICFG, copy this file to
+a file in the same directory containing PCICFG.EXE called VVVVDDDD.PCI,
+where VVVV are the four hexadecimal digits of the PCI vendor ID reported
+by PCICFG, and DDDD are the four hexadecimal digits of the PCI device
+ID.  Then, place the appropriate formatting directives between the
+"!begin" and "!end" lines below.
+
+
+   format spec:
+      everything is literal except backslashes and conversion ops
+      introduced by a percent sign; the percent-sign is followed by
+      PCI field specifier, an optional print width, and the conversion
+      character
+	
+      conversion characters:
+	 <newln>  ignore the newline and paste together the two lines
+	 %	  literal percent sign
+	 !	  rest of line is a comment and is skipped
+	 b	  print number in binary
+	 o	  print number in octal
+	 d	  print number in decimal
+	 x	  print number in hexadecimal
+	 e	  print boolean value as "disable" (false) or "enable" (true)
+	 E	  print boolean value as "enable" (false) or "disable" (true)
+	 f	  print boolean value as dash (false) or check mark (true)
+	 n	  print boolean value as Y (false) or N (true), i.e. inverted
+	 N	  print boolean as Yes (false) or No (true), i.e. inverted
+	 y	  print boolean value as N (false) or Y (true)
+	 Y	  print boolean value as No (false) or Yes (true)
+	 (name)	  print enumerated value given by enum spec "name"
+	 {xyz}	  print Nth character in "xyz" (prints last if N > # chars)
+	 /lit/	  print literal string if boolean is true, dashes otherwise
+	 |a1;a2;a3;a4|  select among 2-4 alternate values (index 0-3), prints
+		     last alternative given if N > # alternatives
+
+      backslash conversions supported:
+         \t	tab character
+	 \\	literal backslash
+	 \X	(any X not listed above:) literal X
+
+      PCI field specifier:
+	 '[' hex-address ']'	    entire byte at offset 'hex-address'
+	 '[' addr ':' bitnum ']'    bit 'bitnum' of byte at offset 'addr'
+	 '[' addr ':' bit1 '-' bit2 ']'
+				    bits 'bit1' to 'bit2' of byte at 'addr'
+         '[' bitfield-spec '|' bitfield-spec ... ']'
+				    concatenate multiple bitfields (MS first)
+         any of the above may also add the following modifiers just prior to
+	   the closing bracket or a separating vertical bar:
+	       '<' shift	    shift the field left 'shift' bits
+	       '*' mult		    multiply the field's value by 'mult'
+	       '+' offset	    add 'offset' to the field value
+	       '<' shift '+' offset
+				    shift left and then add
+	       '*' mult '+' offset  multiply and then add
+         bit numbers up to 31 are fully supported, and address the appropriate
+	   byte beginning at the specified address; all fields are treated as
+	   32-bit values internally.  Bit numbers above 31 are supported
+	   provided that the indicated field does not occupy more than four
+	   bytes (i.e. if the low bit is not a multiple of 8, the maximum field
+	   size is less than 32 bits).
+      Note: addresses are in hex, all other values are decimal (unsigned except
+         for 'offset', which may include a leading minus sign after the plus
+	 sign introducing it)
+
+      When printing, an explicit width greater than the item's actual width
+         causes the addition of padding on the left to ensure the desired
+	 width; the padding uses blanks for all formats except binary (b),
+	 octal (o), and hexadecimal (x) numbers, which use zeros.
+
+
+!begin
+
+  %! insert device description here
+
+!end
+
+; everything between the above !end line and a following !enum line is also
+; a comment
+
+!enum enum-name
+ Value0
+ Value1
+ Value2
+ ...
+ ValueN  (also used for any values > N)
+!end
+
+; enums are matched by name; first, an exact match is attempted, then the
+;  first named enum starting with the string in the (enum) is selected
+; name matches are case-sensitive!
+;
+; leading and trailing whitespace is ignored, allowing you to indent the
+;  value strings without forcing the space to appear in the output; if you
+;  really do need to retain leading or trailing whitespace, add a backslash
+;  to the beginning or end of the line
+
+
+%! end of file

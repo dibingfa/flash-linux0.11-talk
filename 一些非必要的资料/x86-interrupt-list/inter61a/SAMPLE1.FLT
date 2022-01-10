@@ -1,0 +1,19 @@
+# SAMPLE1.FLT
+# Sample filtering file number 1, using only title includes/excludes.
+# Extract MS-DOS calls, but exclude DR-DOS-specific, DOS-extender, and
+# non-DOS networking calls.
+# Note: a few extraneous calls are still included.
+#
++ DOS
+-DR DOS
+-DR-DOS
+-DR Multiuser DOS
+-Concurrent DOS
+-DOS/16M
+-DOS4GX
+-DOS/4G
+-extender
+-LAN Manager
+-DECnet DOS
+#
+# end of SAMPLE1.FLT

@@ -1,0 +1,21 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867020.PCI = Vendor 8086h, Device 7020h -- Intel 82371SB USB
+%! Last Edit 9/27/97 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+Intel 82371SB USB registers in detail:
+ I/O space base:    %[20:31-0]
+ USB Specification: %[60:7-4]d.%[60:3-0]d
+ Misc Status:       %[6A]2x (USB clock=%[6A:0]|24;48|MHz)
+ Legacy Support:    A20GATE pass-thru: %[C0:15]|;seq. ended| %[C0:6]|;in progress| (%[C0:5]ed)
+                    USB PIRQ %[C0:13]ed  IRQ status: %[C0:12]d
+		    enable SMI: %[C0:7]/A20GATE/ %[C0:4]/USB IRQ/ %[C0:3]/0064 write/ %[C0:2]/0064 read/ %[C0:1]/0060 write/ %[C0:0]/0060 read/
+		    trap caused by: %[C0:11]/0064 write/ %[C0:10]/0064 read/ %[C0:9]/0060 write/ %[C0:8]/0060 read/
+!end
+
+%! end of file

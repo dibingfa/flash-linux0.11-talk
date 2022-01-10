@@ -1,0 +1,3004 @@
+(C) Copyright 1993, 1994 By Harald Feldmann Revision 04, Nov 3rd 1994.
+
+
+
+Hamarsoft's 86BUGS list, (C) 1993/94 By Hamarsoft (R)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The 86BUGS list, distributed with Ralf Brown's Interrupt list, is maintained
+and provided to you by Hamarsoft, the maker of the HAP & PAH datacompression
+program. Latest version of HAP & PAH is 3.14e. If you like this list you are
+encouraged to register the HAP 3.00 shareware program. You will receive
+the latest, registered, version of HAP 3.14e by air-mail on 3.5" diskette.
+FTP to garbo.uwasa.fi and get pc/arcers/hap300re.zip   for more info.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+To contact Hamarsoft, write to  ³ or send e-mail over Internet to:
+                                ³ harald.feldmann@almac.co.uk               
+Hamarsoft,         New Address! ³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Harald Feldmann,                ³ or send e-mail to HARALD FELDMANN over
+P.o. Box 451,                   ³ Ilink in the international COMPRESS echo
+6400 AL  Heerlen,               ³ The p.o. box will be maintained if e-mail
+The Netherlands                 ³ should no longer be possible.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+Various people have contributed to this list. They are mentioned in a
+separate page, click on <acknowledgements> to see their names and e-mail
+addresses. These people are not employed by or affiliated with Hamarsoft.
+
+Hamarsoft and all people who contributed to the 86BUGS list do not accept
+any liability whatsoever regarding the use, inability to use, correctness
+or completeness of the information presented in the 86BUGS list.
+
+Attention authors: if you mention this list in your article or book, please
+send a courtesy copy to the P.o. box address by airmail. Thank you.
+
+This is 86BUGS list revision level 04, issued November 3rd 1994.
+(C) Copyright 1993, 1994 By Harald Feldmann.
+
+
+
+
+Acknowledgements
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+This file lists undocumented and buggy instructions of the Intel 80x86   
+family of processors as well as features of processors compatible with
+Intel products. Note that Intel does not support the special features and
+may decide to drop opcode variants and instructions in future products.  
+Wherever the notation 88,86,87,186,286,287,287xl,386,386sx,387,387sx,
+486,486sx,487 and Pentium is used, Intel CPUs are referenced unless
+noted otherwise.
+
+All mentioned trademarks and/or tradenames are owned by the respective   
+owners and are acknowledged.                                             
+
+I would like to give credit to those who provided useful information or
+who in another way contributed to the 86BUGS list.
+
+9308 Chris Lueders  (chris_lueders@zaphod.fido.de) iAPX program & mul bugs
+9311 Anthony Naggs  (amn@ubik.demon.co.uk) NEC differences and CPU tests
+9407 Christian Ludloff (Ludwig-Khn-Str. 15, 09123 Chemnitz, Germany)
+                    Discovered CPUID instruction on 486.
+9410 Robert Mashlan (rmashlan@r2m.com) BOUND difference on NEC V20
+9410 Anthony Naggs  (amn@ubik.demon.co.uk) POP CS & MOV CS on 86/88
+                    SETALC on NEC & i186 BOUND difference, NEC specific
+                    instructions.
+9410 Christian Ludloff (see above for address) Pentium extensions (MSRs),
+                    INFO and STAT programs.
+
+If you contributed, but are not listed, please send a note.
+
+
+
+
+AAA   Adjust After BCD Addition
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: AAA
+Opcode  : 37  (88=8, 86=8, 286=3, 386=4, 486=3 clocks)
+Bug in  : Different implementation in 88 and 86 versus 286+
+
+Function:
+The 88 and 86 processors would not add a carry out of al into ah if an
+invalid operand would be in al (FF), the newer processors _will_, yielding
+different results for the same _invalid_ operand. Execution is effectively
+the same when valid operands are loaded.
+Highest 4 bits of AL are always cleared.
+
+
+
+
+AAD    Adjust After BCD Division
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: AAD
+Opcode  : D5 imm8  (88=60, 86=60, 286=14, 386=19, 486=14 clocks)
+Bug in  : Is an opcode variant on Intel's 88,86,286,386,486
+          Variant does not work on NEC's V-series, probably not on AMD CPUs
+
+Function:                                   
+This instruction regularly performs the following action:
+  - unpacked BCD in AX   example (AX = 0104h)
+  - AL = AH * 10d + AL   (AL = 0eh )
+  - AH = 00              (AH = 00h )
+
+The normal opcode decodes as follows: d5,0a                
+The instruction itself is an instruction plus operand. By replacing the 
+second byte with any number in the range 00 - ff you can build your own
+instruction AAD for various number systems in those ranges. For example
+by coding d5,10 you achieve an instruction that performs: 
+
+  - AL = AH * 16d + AL.  
+  - AH = 00
+
+This feature of Intel's chips can be used to determine whether there is
+a true Intel CPU installed in a system.
+
+(NEC difference supplied by Anthony Naggs)
+
+
+
+
+AAM   Adjust After BCD Multiplication
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: AAM
+Opcode  : D4 imm8  (88=83, 86=83, 286=16, 386=17, 486=15 clocks)
+Bug in  : Is an opcode variant on Intel's 88,86,286,386,486
+
+Function:                                                                 
+This instruction regularly performs the following action:   
+  - binary number in AL
+  - AH = AL / 10d
+  - AL = AL MOD 10d
+
+Thus creating an unpacked BCD in AX. The normal opcode decodes as follows:
+d4,0a. The instruction itself is an instruction plus operand. By replacing
+the second byte with any number in the range 00 - ff you can build your own
+instruction AAM for various number systems in that range. For example by
+coding d4,07 you achieve an instruction that performs:
+  - binary number in AL
+  - AH = AL / 07d
+  - AL = AL MOD 07d                                                     
+
+
+
+
+
+
+AAS   Adjust After BCD Subtraction
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: AAS
+Opcode  : 3F
+Bug in  : Intel's documentation
+
+Function:
+Adjusts result of two subtracted BCD numbers to form a valid new BCD number.
+Highest 4 bits of AL are always cleared.
+
+
+
+
+ADD4S   Addition of packed BCD strings (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: ADD4S
+Opcode  : 0F 20  (7+19n clocks, n is the number of bytes per operand)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Adds the packed BCD string at DS:SI to the packed BCD string at ES:DI. The
+length of the string, in BCD digits, is specified in CL. Unlike Intel string
+operations CL, DI & SI are unchanged by the operation. The Zero Flag (ZF) is
+set if both operands are zero.  The Carry Flag (CF) and Overflow Flag (OF)
+appear to be set by the addition of the most significant digits.
+
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See also SUB4S, CMP4S, ROL4, ROR4
+
+
+
+BOUND  Checks register against limits
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BOUND reg,mem
+Opcode  : 62 [mod:reg:r/m]
+Bug in  : NEC V20 handles it differently from Intel 286+. But apparently,
+          according to Intel documentation, equal to 186.
+
+Function:
+Bound checks a register against limits and generates exception 5 if the
+value falls outside the limit. On NEC CPUs the mnemonic is apparently also
+referred to as 'CHKIND'.
+Note that the mem component refers to two consecutive memory locations, of
+size 'reg' which contain the lower and upper limit for the value in 'reg'
+as [low limit][high limit].
+
+'reg' size:     'mem' specifies address of:
+
+    word            dword
+    dword           qword
+
+Normally, on Intel 286+ CPUs, the exception saves the CS:IP pointing TO the
+BOUND instruction. On the NEC V20, the saved CS:IP point to the instruction
+following the BOUND instruction.
+
+According to Intel's documentation the 186 handles this exception the same
+way the NEC does. It has been verified on a 486 that the CS:IP of BOUND on
+that CPU indeed points TO the instruction itself and not the following one.
+
+Also, contrary to what one might expect, BOUND only allows word or dword
+registers to be tested. Byte registers are invalid.
+
+(V20 supplied by Robert Mashlan)
+(186 difference & 'CHKIND' supplied by Anthony Naggs)
+
+
+
+
+Breakpoint errors while debugging
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: N/A
+Opcode  : N/A
+Bug in  : some 386, some 486
+
+Function:
+Breakpoints are used in the process of debugging programs.
+On the 386+, debug registers may be used instead of a one byte opcode.
+
+386 specific debugging bugs occurring on some 386s:
+Breakpoints are missed under the following conditions:
+
+- A data breakpoint set to a mem16 operand of a VERR, VERW, LSL or LAR while
+  the segment with selector at mem16 is not accessible.
+
+- A data breakpoint is set to the write operand of a REP MOVS instruction
+  and the read cycle of the next iteration generates a fault.
+
+- A code or data breakpoint is set on the instruction following a MOV or
+  POP to SS while the instruction needs more than two clocks.
+  (see <MOV> and <POP>)
+
+Random breakpoints may occur under the following condition:
+
+- Breakpoints set using debug registers DR0 to DR4 may produce spurious
+  breaks if breakpoints were enabled before a MOV from CR3, TR6 or TR7 took
+  place. These unreliable breaks may continue to occur until the next JMP
+  instruction is executed. A workaround would be to:
+  = disable breakpoints before any MOV from CR3, TR6 or TR7
+  = MOV the values
+  = perform a JMP
+  = enable breakpoints.
+
+Single stepping is not disabled in the handler for a TSS fault if the code
+that caused the fault was being single-stepped and a task gate was used to
+handle the fault.
+
+486 specific debugging bugs occurring on some 486s:
+
+A code breakpoint set on control transfer instructions (like CALL, RET, JMP
+etc.) will clear the lowest four bits of DR6 when the breakpoint is taken.
+
+A code breakpoint set on an instruction immediately following a RETN, JCXZ,
+intrasegment indirect CALL (CALL word ptr [bx] for example) or
+intrasegment indirect JMP (JMP word ptr [bx] for example) will always be
+satisfied, even when the control instruction is taken. A breakpoint set at
+the target of these control transfer instructions will not be taken,
+even if control is transferred to them, because the buggy breakpoint sets
+the RF (Resume Flag). There is said to be no workaround other than to avoid
+the situation, however, coding a nop after the control transfer instruction
+and setting the breakpoint to the instruction following the nop may,
+according to my view, very well solve the problem. (untested)
+
+
+
+
+BRKEM   Break for emulation (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BRKEM   imm
+Opcode  : 0F FF imm  (38 clocks)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+(8080 is written here as 8O8O to avoid visual confusion with the 8088).
+This is the basic instruction used to switch to 8O8O emulation mode.
+The BRKEM instruction is used in a similar way to an INT instruction,
+(referred to as BRK by NEC). The mode flag (MD) is set to zero, the Flags,
+CS & IP are pushed onto the stack then CS & IP are loaded from the
+specified interrupt vector.
+
+In 8O8O emulation mode the V30 registers and flags are mapped to 8O8O
+registers and flags.
+
+    General purpose register names:
+                    ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+    8O8O nameÄÄÄÄÄÄÄ³ A ³ B ³ C ³ D ³ E ³ H ³ L ³ SP³ PC³
+    Intel x86 nameÄÄ³ AL³ CH³ CL³ DH³ DL³ BH³ BL³ BP³ IP³
+    V30 nameÄÄÄÄÄÄÄÄ³ AL³ CH³ CL³ DH³ DL³ BH³ BL³ BP³ PC³
+                    ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+
+    Individual flag names:
+                    ÚÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄÂÄÄÄ¿
+    8O8O nameÄÄÄÄÄÄÄ³ C ³ Z ³ S ³ P ³ AC³
+    Intel x86 nameÄÄ³ CF³ ZF³ SF³ PF³ AF³
+    V30 nameÄÄÄÄÄÄÄÄ³ C ³ Z ³ S ³ P ³ AC³
+                    ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÙ
+
+In 8O8O emulation mode the segment used for instructions is determined
+by the CS (PS) register. The DS (DS0) register determines the segment
+used for data.
+
+When an interrupt occurs during 8O8O emulation the CPU switches to native
+V30 mode to process the interrupt. When the interrupt handler is complete
+the IRET, (RETI in NEC nomenclature), will return to 8O8O emulation mode.
+
+From 8O8O emulation mode RETEM (Return from Emulation, opcode ED FD) returns
+to native mode, setting MD flag and restoring flags, CS & IP from the native
+stack. Alternatively CALLN imm8 (Call Native, opcode ED ED imm) can be used
+to call native V30 interrupts, (just like a regular INT).
+
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+
+
+
+BSF, Bit Scan Forward
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BSF op1,op2
+Opcode  : 0F BC
+Bug in  : Intel's documentation
+
+Function:
+Finds the first (lowest) bit set to 1 in op2, sets ZF=1 and returns the bit
+position in op1. If op2 is 0, ZF=0 and the value of op1 is undetermined,
+some 386's leave the old value in op1, some early 486's load garbage into
+op1 and later 486's leave op1 unchanged.
+
+
+
+
+BSWAP reg32   Byte Swap
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BSWAP reg32
+Opcode  : 0F C8+reg# (00001111 11001rrr)
+Bug in  : 486
+
+Function:
+Swaps all bytes in 32 bit registers, changing the sequence from ABCD to
+DCBA, handy for converting numbers to a CPU format where the byte order
+is reversed. Bug appears when BSWAP is not preceded by prefix 66h to
+indicate 32 bit registers in 16 bit mode or when it IS preceded by 66h
+in 32 bit mode.
+Do not use this instruction with 16 bit registers as operand.
+Results are undefined in that case. Use XCHG reg8,reg8 instead if you need
+to swap 2 bytes in a 16 bit register like AX.
+
+
+
+
+BT op1,op2  Bit Test
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BT
+Opcode  : 0F A3 op1,op2
+Bug in  : No bug, avoid use on ports in 386, 486
+
+Function:
+Basically copies bit(op2) from op1 into CY. Memory variant is more complex.
+Do not use on memory mapped I/O ports or memory operands that span into or
+lie completely within nonexistent memory.
+In the case of memory mapped I/O ports, use MOV and TEST instead.
+
+
+
+
+BTC op1,op2   Bit Test and Complement
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BTC op1,op2
+Opcode  : 0F BB reg1,reg2
+          0F BA reg,mem
+Bug in  : No bug, avoid use on ports in 386, 486
+
+Function:
+Basically copies bit(op2) from op1 into CY and complements bit(op2) of op1.
+Memory variant is more complex. Do not use on memory mapped I/O ports or
+memory operands that span into or lie completely within nonexistent memory.
+In the case of memory mapped I/O ports, use MOV and TEST instead.
+
+
+
+
+BTR op1,op2   Bit Test and Reset
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BTR op1,op2
+Opcode  : 0F B3 [mod:reg:r/m]
+          0F BA [mod:110:r/m] imm8
+Bug in  : No bug, avoid use on ports in 386, 486
+
+Function:
+Basically copies bit(op2) from op1 into CY and sets bit(op2) of op1 to 0.
+Memory variant is more complex. Do not use on memory mapped I/O ports or
+memory operands that span into or lie completely within nonexistent memory.
+In the case of memory mapped I/O ports, use MOV and TEST instead.
+
+
+
+
+BTS op1,op2   Bit Test and Set
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: BTS
+Opcode  : 0F BA [mod:101:r/m] imm8 / 0F AB [mod:reg:r/m]
+Bug in  : No bug, avoid use on ports in 386, 486
+
+Function:
+Basically copies bit(op2) from op1 into CY and sets bit(op2) of op1 to 1.
+Memory variant is more complex. Do not use on memory mapped I/O ports or
+memory operands that span into or lie completely within nonexistent memory.
+In the case of memory mapped I/O ports, use MOV and TEST instead.
+
+
+
+
+Chip Step information for Intel CPUs
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+CPUs are manufactured in models (like the 80386). While these models are
+manufactured, errors in the mask layout and mask design may become
+apparent. These errors may be corrected before a new batch of chips is
+made. To distinguish between these revisions an identification code is
+placed within the mask design on 386+ CPUs. By testing the CPU with CPUID
+or by performing a RESET, this information is copied to specific registers.
+
+The register used to hold mask info after a RESET is DX (apparently also
+sometimes the high word of EDX on some 486s).
+
+This page lists some component and revision ID's found in the DX register
+for the 386SX, 386DX, 486SX and 486DX models from Intel.
+
+
+        CPU:        DX:     Step:
+        386SX       2304h   A0
+                    2305h   B
+                    2306h   C
+                    2308h   D1
+
+        386DX       0303h   B0 - B10
+                    0305h   D0
+                    0308h   D1 & D2
+
+        486SX       0420h   A0
+
+        486DX       0000h   A1
+                    0401h   Bn
+                    0302h   C0
+                    0404h   D0
+                    0410h   cAn
+                    0411h   cBn
+
+
+
+
+CLEAR1  Clears a specific bit to 0 (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: CLEAR1 reg/mem,CL/immediate
+Opcode  : CLEAR1 r/m8,CL   : 0F 12 [mod:000:r/m]      (5/14 clocks)
+          CLEAR1 r/m8,imm3 : 0F 1A [mod:000:r/m] imm  (6/15 clocks)
+          CLEAR1 r/m16,CL  : 0F 13 [mod:000:r/m]      (5/14 clocks)
+          CLEAR1 r/m16,imm4: 0F 1B [mod:000:r/m] imm  (6/15 clocks)
+          CLEAR1 CY        : F8   (NEC nomenclature for Intel's CLC)
+          CLEAR1 DIR       : FC   (NEC nomenclature for Intel's CLD)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Clears the specified bit in the register/memory operand. The bit number (CL
+or immediate) is ANDed with 07 (for 8-bit operands) or 0F (for 16-bit
+operands) to get a valid bit number. No flags are affected by this
+operation, except by CLEAR1 CY and CLEAR1 DIR.
+
+The first (smaller) clock count of each pair is for register operands.
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: NECINS, EXT, TEST1, NOT1, SET1
+
+
+
+CMP4S   Subtraction of packed BCD strings (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: CMP4S
+Opcode  : 0F 26  (7+19n clocks, n is the number of bytes per operand)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Subtracts the packed BCD string at DS:SI from the packed BCD string at
+ES:DI, but does not store the result. The length of the string, in BCD
+digits, is specified in CL. Unlike Intel string operations CL, DI & SI are
+unchanged by the operation. The Zero Flag (ZF) is set if the result is zero.
+The Carry Flag (CF) and Overflow Flag (OF) appear to be set by the
+subtraction of the most significant digits.
+
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: ADD4S, SUB4S, ROL4, ROR4
+
+
+
+CMPS Compare String Bytes, Word or Dword
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: CMPS
+Opcode  : A6 (Bytes)
+          A7 (Words)
+          66 A6 (Bytes)
+          66 A7 (DWords)
+Bug in  : Early 286 in protected mode
+
+Function:
+Compares two strings in memory.
+Repeated version (REP CMPS) in early 286 protected mode has a bug that
+shows when, during execution, a segment limit exception or IO Privilege
+Level Exception occurs.
+In that case the exception handler sees the value of CX as it was at the
+start of the REP instruction. SI and DI however reflect the correct index
+of the elements currently scanned at the time of the exception.
+
+Workaround: Do not scan beyond segment limits or into memory mapped I/O
+areas.
+
+
+
+
+CMPXCHG op1,op2   Compare and Exchange
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: CMPXCHG
+Opcode  : 0F B0 reg,mem/reg (Byte)
+          0F B1 reg,mem/reg (Word)
+          66 0F b0/b1 (Byte / DWord)
+Bug in  : pre-B step 486
+
+Function:
+Compares the accumulator (8,16 or 32 bit form) with op1 by internally 
+subtracting op1 from the accumulator and setting ZF according to the result.
+If ZR, op2 is copied to op1, otherwise op1 is loaded into the accumulator.
+
+On the A-step of the 486, this Mnemonic was coded using the opcodes for 
+the, discarded, A- to B0-step 386 instructions XBTS (a6) and IBTS (a7). 
+Because of software conflicts with software written for the early 386 DX the
+opcodes for the 486 were changed to the ones above starting with the B step.
+
+Note that some 386 software won't run on older 386es and some 486 
+software will not run on early 486es when using this instruction.
+
+
+
+
+CPUID Identify CPU on 486 and higher CPUs
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: CPUID
+Opcode  : 0F A2
+Bug in  : Is undocumented for 486, seems not to work on tested AMD 486s
+          Officially introduced as a new instruction with the Pentium.
+
+Function:
+Identifies CPU and revision information for the installed CPU. Note that
+Intel officially introduced CPUID only with the Pentium processor.
+It seems the instruction was unofficially introduced in the later
+486 CPUs as well. Discovered by Christian Ludloff (see acknowledgements).
+Supported by the UMC U5S 486 clones as well.
+
+Executing it on an early 486 yields an Invalid Opcode Exception.
+To safely use this instruction, an exception handler must be installed.
+A safer workaround though is to test whether the ID bit in EFLAGS is set.
+If so, the CPU supports CPUID. See <EFLAGS> image.
+
+The instruction expects input in the EAX register and outputs information
+in the EAX, EBX, ECX and EDX registers.
+
+Input:  EAX = 0000 0000 : Check CPU 486+ installed
+
+Output: after CPUID:
+        EAX = 0000 0001 : OK, instruction supported
+        EBX = 756e 6547 : 'uneG'
+        EDX = 4965 6e69 : 'Ieni'
+        ECX = 6c65 746e : 'letn'
+        effectively the CPU says 'GenuineIntel'
+
+Officially this returns a 'vendor string', which may indicate other than
+Intel strings for OEMs.
+The UMC U5S-33 returns 'UMC UMC UMC ' or ' UMC UMC UMC' (untested).
+
+Input:  EAX = 0000 0001 : Obtain model specific information
+
+Output: after CPUID:
+        EAX = RRRR RFMS : revision information
+            R = Reserved  Zero, but reserved
+            F = Family    (4=486, 5=Pentium)
+            M = Model     (3 on tested 486DX-2/66, 1 on tested Pentium/60)
+            S = Stepping  (5 on tested 486DX-2/66, 3 on tested Pentium/60)
+        EBX = RRRR RRRR
+            R = Reserved  Zero, but reserved
+        ECX = RRRR RRRR
+            R = Reserved  Zero, but reserved
+        EDX = xxxx xxxx : Bitmapped features, 1 means option available
+            Bit 0 =       FPU built-in (supported on 486 and Pentium)
+            Bit 1 =       V-86 mode extensions present
+            Bit 2 =       I/O breakpoints possible
+            Bit 3 =       4 MB paging supported
+            Bit 4 =       Time Stamp Counter present
+            Bit 5 =       Has Pentium compatible Model Specific Registers
+            Bit 6 =       Reserved (0)
+            Bit 7 =       Machine Check Exception supported (P5 only)
+            Bit 8 =       CMPXCHG8B supported (apparently Pentium only)
+            Bits 9-31     Reserved
+            Assume zero if bit is not mentioned.
+
+Note that this instruction is not supported on all 486 CPUs. However,
+Christian Ludloff has tested it on some 486 DX and 486 SX models, in
+addition to the Pentium/60 and found them to be present on those machines.
+Any step and model information you find this instruction to run on is
+welcomed. Please forward it to Christian.
+
+Apparently all new(er) Intel CPUs are equipped with (some) of these
+extensions, not just the Pentium.
+
+
+
+
+CR0-4 register layout (386+)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+    = CR0: Some bits remain from the Machine Status Word of the 286.
+
+      Bit 31                         16                              0
+      ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄ¿
+      ³P³C³N³r³r³r³r³r³r³r³r³r³r³A³r³W³r³r³r³r³r³r³r³r³r³r³n³e³t³E³m³p³
+      ÀÅÁÅÁÅÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÄÁÅÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÅÁÅÁÅÁÅÁÅÙ
+       ³ÚÙ ³                     ³   ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ ³ ³ ³ ³ ³ ³
+       ³³ÚÄÙ                     ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿ ³ ³ ³ ³ ³ ³ ³
+       ³³ÀNW Not Write through (1 if write through)    ³ ³ ³ ³ ³ ³ ³ ³
+       ³ÀÄCD Cache Disable (1 if disabled)             ³ ³ ³ ³ ³ ³ ³ ³
+       ÀÄÄPE Paging Enabled                            ³ ³ ³ ³ ³ ³ ³ ³
+          AC Alignment mask (1=masked)ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³ ³ ³ ³ ³ ³ ³
+          WP Write Protect (1 if read-only pages protected)³ ³ ³ ³ ³ ³
+          NE Numeric Error (1 if errors should be ignored)ÄÙ ³ ³ ³ ³ ³
+          ET Extension Type (1=387 type FPU,0=287 type FPU)ÄÄÙ ³ ³ ³ ³
+          TS Task Switch (1=task switch has occurred)ÄÄÄÄÄÄÄÄÄÄÙ ³ ³ ³
+          EP Emulate Processor Extension ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³ ³
+             (1=execute exception 7 on FPU codes)                  ³ ³
+          MP Math Present (1=_FPU_ will handle FPU codes)ÄÄÄÄÄÄÄÄÄÄÙ ³
+          PE Protection Enabled (1=Protected mode activated)ÄÄÄÄÄÄÄÄÄÙ
+
+      If EP=1 and MP=0, the FPU codes will be handled by software routines
+      via exception 7. Coprocessor emulators use this property.
+
+    = CR1: Is reserved
+    = CR2: Linear 32-bit address of Page Fault
+
+
+
+    = CR3: Page Directory Base Register (386+)
+
+      Bit 31                         16                              0
+      ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄ¿
+      ³x³x³x³x³x³x³x³x³x³x³x³x³x³x³x³x³x³x³x³x³r³r³r³r³r³r³r³p³P³r³r³r³
+      ÀÅÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÅÁÄÁÄÁÄÙ
+       ÀÄÄÄÄÄPage Directory Base RegisterÄÄÄÄÙ               ³ ³       PDBR
+       (used in the Paging process implemented on the 386+)  ³ ³
+                                                             ³ ³
+       Page-level Cache Disable (486+)ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³       PCD
+       Page-level Writes Transparent (486+)ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ       PWT
+
+
+
+    = CR4: Extended Machine Control (Pentium+)
+
+      Bit 31                         16                              0
+      ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄ¿
+      ³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³r³M³r³p³D³T³P³V³
+      ÀÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÄÁÅÁÅÁÅÁÅÁÅÙ
+       Machine Check Enable (1=enabled)ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ   ³ ³ ³ ³ ³ MCE
+       Page Size Extension (1=4 Mb paging instead of 4 Kb)ÄÄÄÙ ³ ³ ³ ³ PSE
+       Debugging Extension (1=breakpoints also valid for I/O)ÄÄÙ ³ ³ ³ DE
+       Time Stamp instruction Disable (1=RDTSC only with CPL=0)ÄÄÙ ³ ³ TSD
+       Protected mode Virtual Interrupts (1=use VI flag in PM)ÄÄÄÄÄÙ ³ PVI
+       Virtual86 mode Virtual Interrupts (1=use VI flag in VM)ÄÄÄÄÄÄÄÙ VME
+
+
+       The VME bit allows a V86 (or VM) task to use the 'virtual' interrupt
+       flag. Setting and clearing the interrupt flag (IF) in EFLAGS is no
+       longer intercepted by the V86 Monitor program (a very time consuming
+       procedure), instead, the Pentium+ sets and clears the VI flag in
+       EFLAGS, instead of the IF flag. This saves task switches to the
+       monitor to handle the CLI and STI instructions and thus a lot
+       of time in general purpose 8086 programs running in V86 mode.
+
+       The PVI bit allows the same for Protected Mode procedures who would
+       otherwise need supervision by a different task. That is:
+       Tasks with CPL<0 may now call tasks with CPL=0 without crashing
+       the system, but only under specific circumstances.
+
+       The TSD bit changes the CPL-sensitivity of the RDTSC (Read Time
+       Stamp Counter) instruction, a built-in CPU counter which is
+       incremented every internal clockpulse.
+       When TSD is 0, <RDTSC> is accessible for all CPL levels.
+       With TSD set to 1 however, RDTSC is available only to tasks with
+       CPL=0.
+
+       The DE bit allows the Pentium+ to set breakpoints in I/O space
+       using the breakpoint registers. The R/W coding 10b is used to
+       indicate that the breakpoint is in I/O space on the Pentium+.
+       The 10b encoding was marked as 'invalid' for pre-Pentium CPUs.
+
+       The PSE bit determines the size of the pages controlled by the
+       Paging Unit. With PSE = 0, the Paging mechanism uses 4 Kb pages.
+       With PSE set to 1 however, the Paging mechanism uses 4 Mb pages.
+
+       The MCE bit is used to allow generation of a Machine Check Exception.
+       This exception is the result of a Parity error _within_ the Pentium
+       or an active BUSCHK signal (low) on pin T3 (upper right hand corner,
+       fourth pin from right, third from top when pin A1 is upper left
+       corner, TOP view). The exception is vectored through interrupt 18d
+       (or 12h). Execution after this exception may void system integrity.
+       The Machine Check Address register holds the value of the address
+       bus at the moment the event took place.
+       The Machine Check Type register holds the type of bus access at the
+       time the event took place.
+       Both these registers are internal 64 bit registers which can only be
+       read through the instruction <RDMSR> (Read Model Specific Register).
+       See also <WRMSR> (Write Model Specific Register).
+
+
+
+
+EFLAGS register layout (8088 to Pentium & NEC)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+      Bit 31                         16                              0
+      ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄ¿
+      ³r³r³r³r³r³r³r³r³r³r³c³p³v³a³V³R³M³N³IOP³O³D³I³T³S³Z³r³A³r³P³r³C³
+      ÀÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÅÁÅÁÅÁÅÁÅÁÅÁÅÁÅÁÄÁÅÁÅÁÅÁÅÁÅÁÅÁÄÁÅÁÄÁÅÁÄÁÅÙ
+                           ³ ³ ³ ³ ³ ³ ³ ³ ³   ³ ³ ³ ³ ³ ³   ³   ³Carry
+      CPUID available ÄÄÄÄÄÙ ³ ³ ³ ³ ³ ³ ³ ³   ³ ³ ³ ³ ³ ³   ³   Parity
+      Virtual Interrupt Pending³ ³ ³ ³ ³ ³ ³   ³ ³ ³ ³ ³ ³   ÀAux carry
+      Virtual Interrupt flag ÄÄÙ ³ ³ ³ ³ ³ ³   ³ ³ ³ ³ ³ ÀÄÄÄÄÄÄÄÄ Zero
+      Alignment check ÄÄÄÄÄÄÄÄÄÄÄÙ ³ ³ ³ ³ ³   ³ ³ ³ ³ ÀÄÄÄÄÄÄÄÄÄÄ Sign
+      Virtual-86 mode enabled ÄÄÄÄÄÙ ³ ³ ³ ³   ³ ³ ³ À Trap (step mode)
+      Resume flag ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³ ³ ³   ³ ³ ÀÄÄ Interrupt enable
+      Mode Flag ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³ ³   ³ ÀÄÄÄÄ Direction (1=up)
+      Nested Task ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³   ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄ Overflow
+                                           ÀÄÄ I/O privilege level 0..3
+
+   Note: the Mode Flag is supported only on the NEC V20/30,
+   it is reserved on Intel CPUs.
+
+   The diagram below shows the names for each bit as referenced to in most
+   books, along with the CPU in which the bit was =officially= introduced.
+
+      Description:                  Name:   CPU introduced:
+
+      CPUID availableÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄID      Pentium
+      Virtual Interrupt PendingÄÄÄÄÄVIP     Pentium
+      Virtual Interrupt flagÄÄÄÄÄÄÄÄVI      Pentium
+      Alignment Check FlagÄÄÄÄÄÄÄÄÄÄAC      486
+      Virtual-86 Mode FlagÄÄÄÄÄÄÄÄÄÄVM      386
+      Resume FlagÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄRF      386
+      Mode Flag (8O8O emulation on)ÄMD      V20/V30 only
+      Nested TaskÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄNT      286
+      I/O privilege level 0..3ÄÄÄÄÄÄIOPL    286
+      Overflow FlagÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄOF       86
+      Direction Flag (1=up)ÄÄÄÄÄÄÄÄÄDF       86
+      Interrupt Flag (1=enabled)ÄÄÄÄIF       86
+      Trap Flag (single step mode)ÄÄTF       86
+      Sign FlagÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄSF       86
+      Zero FlagÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄZF       86
+      Auxiliary carry FlagÄÄÄÄÄÄÄÄÄÄAF       86
+      Parity FlagÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄPF       86
+      Carry FlagÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄCF       86
+
+(8080 is written here as 8O8O to avoid visual confusion with the 8088).
+(Mode Flag supplied by Anthony Naggs)
+
+
+
+
+EXT   Extract bit field (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: EXT reg8,reg8 / EXT reg8,imm4
+Opcode  : 0F 33 [mod:reg:r/m]  (26-55 clocks)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Loads AX with bit field data. Bit field length is specified by the lowest
+four bits of the second operand, more significant bits in AX are set to
+zero. DS:SI specify the first memory location to read, and the low 4-bits
+of the first operand specify the bit start position.  The bit field can
+cross a byte boundary. After each complete data transfer, SI and the first
+operand are automatically updated to point to the next bit field.
+
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: NECINS, TEST1, NOT1, CLEAR1, SET1
+
+
+
+FPO2   Floating Point Operation 2 (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FPO2  fp-op / FPO2 fp-op,mem
+Opcode  : 0110011X [mod:XXX:r/m]  (2/11 clocks)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Intended to communicate with NEC maths co-processors. The NEC "FPO1" opcode
+corresponds to Intel's "ESC" prefix for co-processor instructions. Although
+data sheets exist for NEC maths co-processors, they have never been
+manufactured.
+
+Note that the 386+ CPUs implement the opcodes 66 and 67 as Operand Size and
+Address Size prefixes respectively.
+
+(Supplied by Anthony Naggs)
+
+
+
+
+HLT  Halt the processor
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: HLT
+Opcode  : F4
+Bug in  : No bug, handy use of instruction described below
+
+Function:
+Halts the processor, CPU restarts only when external event takes place such
+as RESET activation, NMI request on NMI lines or maskable interrupt request
+on INTR when interrupts are enabled. 
+Handy to use with following piece of code:
+
+          STI        ; enable interrupts
+     lazy:
+          HLT        ; suspend CPU internal bus clock
+          IN AL,60h  ; Key pressed !
+          CMP AL,whatever_key
+          JNE lazy   ; was not our key, just go back to sleep.
+
+If the CPU is not going to be used for any processing tasks (hence is idle)
+one may execute the code above to cool down the CPU because it stops the
+internal CPU bus clock. It also saves (some) energy.
+
+
+
+
+
+IBTS op1,op2   Insert Bit String
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: IBTS op1,op2
+Opcode  : 0F A7
+Bug in  : 386, 486 conflicting instruction opcode.
+
+Function:
+Obsolete instruction which was introduced on the A step of the 386 and
+removed on the B1 step of the 386. The opcode a7 is used by the A step 486
+to function as part of the CMPXCHG instruction. Because of software
+conflicts (some compilers generated code for IBTS and its counterpart XBTS)
+Intel decided to change the opcode for CMPXCHG on the B step of the 486.
+Do NOT use IBTS in general purpose 386 or 486 applications.
+
+
+
+
+IMUL  Integer, signed, Multiply
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: IMUL op
+          IMUL op1,op2
+          IMUL op1,op2,op3
+          IMUL op1,op3
+Opcode  : F6w [mod:101:r/m] disp
+Bug in  : Apparently no bug, timing formula may be handy
+
+Function:
+It is mentioned here because of the timing formula.
+The clocks used on 386 and 486 equal 9 or ceiling(log2(multiplier))+6.
+Depending on which one is bigger.
+Add an additional 3 clocks if multiplier is a memory operand.
+
+See <MUL> for 32-bit MUL bugs.
+
+
+
+
+INS  Input String from IO port
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: INS, INSB, INSW, INSD
+Opcode  : AA, AB
+Bug in  : early 286, some 386, early 486, NEC conflicting mnemonic: INS
+
+Function:
+Reads values from a port address in DX into a string at ES:DI or ES:EDI
+in memory. When used with the REPcondition prefix, CX or ECX contains the 
+number of values to read.
+
+There is also a NEC specific instruction with the conflicting mnemonic INS,
+see <NECINS> or select <NEC specific instructions> from the mnemonic list
+page for more information regarding that instruction.
+
+Bugs in the 286; 
+If, in protected mode, ES would contain a null selector or ES:DI would
+point beyond the segment limit when executing the single INS, causing
+exception 0dh, the 0d exception handler would point to the instruction
+following INS and not to it.
+
+If, in protected mode, during the repeated version of the instruction, a
+segment limit or IOPL exception occurred, the exception handler would see
+the CX value as it was before the start of the instruction, DI would reflect
+the proper index at the time of the exception though. This type of bug
+also occurs with the CMPS instruction.
+
+Bugs in the 386:
+The value of CX or ECX after the REPcondition version is not correct when
+the instruction is followed by a PUSH, POP or memory reference. After
+REP INS the value of CX, ECX is -1, not 0. Do not assume (E)CX to be 0.
+
+When REP INS or INS is followed by an instruction that uses a different
+address size or when they are followed by an instruction that references
+the stack implicitly while the B bit of the SS descriptor is different than
+the address size used by the instruction, INS will not properly update
+the (E)DI and REP INS will not properly update the (E)CX register.
+The actual address size used will be the one of the instruction following
+the (REP) INS.
+A workaround for this bug is to code a NOP with the same address size as the
+INS right behind it by using the address size prefix byte 67h (when needed).
+
+Bugs in the 486:
+Early 486 may hang if the INS destination address spans across a doubleword
+boundary, while not asserting BS16# or BS8#.
+To avoid this, always align the string at a doubleword.
+
+
+
+
+INS  (NECINS) Insert bit field (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: INS reg8,reg8 / INS reg8,imm4
+Opcode  : 0F 31 [mod:reg:r/m]  (31-117 clocks)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Stores bit field data from AX into memory. Bit field length is specified by
+the lowest four bits of the second operand. ES:DI specify the first memory
+location to write, and the low 4-bits of the first operand specify the bit
+offset position. The bit field can cross a byte boundary. After each
+complete data transfer, DI and the first operand are automatically updated
+to point to the next bit field.
+
+This mnemonic (INS) conflicts with the Intel mnemonic INS, which reads
+a string from an I/O port. This Intel instruction has bugs which are listed
+with the entry for <INS>. For clarity, this NEC version is referred to as
+"NECINS" where possible in this list.
+
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: EXT, TEST1, NOT1, CLEAR1, SET1
+
+
+
+INVD Invalidate internal and external caches
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: INVD
+Opcode  : 0F 08
+Bug in  : some 486
+
+Function:
+INVD tells the processor that all data in both the internal as well as the
+external caches is invalid. Data held in external write-back caches is
+discarded.
+
+If on some 486's a cache line fill is in progress while the INVD instruction
+is being executed, that line is NOT invalidated and the buffer contents
+is moved into the cache. Valid cache lines are ALWAYS used to satisfy
+read requests on all 486's, regardless whether the cache is enabled or not.
+
+Workaround is to disable the cache prior to flushing it like this:
+
+        MOV EAX,CR0
+        OR  EAX,60000000h  ; cache disable bits
+        PUSHFD
+        CLI
+        MOV BL,CS:here
+        OUT dummyport,dummydata
+        MOV CR0,EAX
+here:
+        INVD
+        AND EAX,9fffffff   ; cache enable, write-through
+        MOV CR0,EAX
+        POPFD
+
+
+
+
+JMP   Jump unconditionally.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: JMP dest
+Opcode  : EB disp8
+Bug in  : A to C0 step of 486
+
+Function:
+JMP transfers execution to a location within -127 to +128 bytes from the
+jump instruction. The bug occurs when the jump causes a General Protection 
+Violation while an NMI or INTR occur at exactly the same clockpulse.
+
+Although very unlikely to occur, it is listed for completeness.
+
+
+
+
+LAR   Load Access Rights (Protected Mode)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: LAR reg1,reg/mem
+Opcode  : 0F 02
+Bug in  : some 386
+
+Function:
+LAR Loads the Access rights of a descriptor in the Global Descriptor Table,
+whose selector is reg/mem into reg1. When successful, ZF=1, otherwise ZF=0.
+
+Some 386es allow access to selector 0 in the GDT leaving ZF=1.
+Normally this should not be possible and produce the condition ZF=0.
+
+Workaround would be to create an entry 0 in the GDT that consists of only
+zeroes. This will cause access with a selector of 0 to fail and
+produce ZF=0.
+
+A data breakpoint set to the mem16 operand of LAR can be missed on some
+386es if the segment with the selector at mem16 is not accessible.
+(see also <debugging>)
+
+
+
+
+286-LOADALL / 386-LOADALL
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: LOADALL
+Opcode  : 286 : 0F 05  (195 clocks)
+          386+: 0F 07  (  ? clocks)
+Bug in  : Is an undocumented opcode on 286,some 386,some early 486 ?
+          Support for this instruction has been dropped with the 486.
+
+Function: 
+Loads virtually all processor registers with defined values from memory.
+Initialises processor to specified state. Apparently aliased on the 286 by
+opcode 0f 04.
+
+The 286 LOADALL instruction reads a block of 102 bytes into the chip,
+starting at address 000800 hex.
+
+          Memory description for LOADALL read area on 286:
+          (addresses are in hexadecimal, lengths in decimal)
+
+          0800:  6   N/A
+          0806:  2   MSW (Machine Status Word)
+          0808: 14   N/A
+          0816:  2   TR (Task Register)
+          0818:  2   FLAGS (286 Flags)
+          081a:  2   IP (Instruction Pointer)
+          081c:  2   LDT (Local Descriptortable)
+          081e:  2   DS (Data Segment)
+          0820:  2   SS (Stack Segment)
+          0822:  2   CS (Code Segment)               
+          0824:  2   ES (Extra Segment)              
+          0826:  2   DI (Destination Index)          
+          0828:  2   SI (Source Index)               
+          082a:  2   BP (Base Pointer)               
+          082c:  2   SP (Stack Pointer)              
+          082e:  2   BX (BX register)                
+          0830:  2   DX (DX register)                
+          0832:  2   CX (CX register)                
+          0834:  2   AX (AX register)                
+          0836:  6   ES cache (ES descriptor _cache_)
+          083c:  6   CS cache (CS descriptor _cache_)
+          0842:  6   SS cache (SS descriptor _cache_)
+          0848:  6   DS cache (DS descriptor _cache_)
+          084e:  6   GDTR (Global Descriptor Table)
+          0854:  6   LDT cache (Local Descriptor_cache_)   
+          085a:  6   IDTR (Interrupt Descriptor table)     
+          0860:  6   TSS cache (Task State Segment _cache_)
+
+          Descriptor caches layout:
+          3 bytes    24 bit physical address of segment
+          1 byte     access rights byte, same format as access right byte
+                     in a regular descriptor. The 'present' bit now
+                     represents a 'valid' bit. If this bit is cleared
+                     (zero) the segment is invalid and accessing it will
+                     trigger exception 0dh.
+                     The DPL (Descriptor Privilege Level) fields of the CS
+                     and SS descriptor caches determine the CPL
+                     (Current Privilege Level).
+          2 bytes    16 bit segment length limit.
+
+This layout is the same for the GDTR and IDTR registers,
+except that the access rights byte must be zero.
+
+The register caches are internal CPU registers containing a copy of the last
+'composed' address and access information loaded for a particular register
+in protected mode (e.g. ES). An outline of the basics of 286 protected
+mode register caching and register layout is beyond the scope of this file
+
+
+The 386 LOADALL loads 204 (dec) bytes from the address at ES:EDI and resumes
+execution in the specified state.
+
+          Memory description for LOADALL read area on 386+: 
+          (addresses are in hexadecimal, lengths in decimal)
+
+          relative offset: Bytes:   Registers:
+          0000:  4   CR0
+          0004:  4   EFLAGS
+          0008:  4   EIP
+          000c:  4   EDI
+          0010:  4   ESI
+          0014:  4   EBP
+          0018:  4   ESP
+          001c:  4   EBX
+          0020:  4   EDX
+          0024:  4   ECX
+          0028:  4   EAX
+          002c:  4   DR6
+          0030:  4   DR7
+          0034:  4   TR
+          0038:  4   LDT
+          003c:  4   GS (zero extended)
+          0040:  4   FS (zero extended)
+          0044:  4   DS (zero extended)
+          0048:  4   SS (zero extended)
+          004c:  4   CS (zero extended)
+          0050:  4   ES (zero extended)  
+          0054: 12   TSS descriptor cache
+          0060: 12   IDT descriptor cache
+          006c: 12   GDT descriptor cache
+          0078: 12   LDT descriptor cache
+          0084: 12   GS descriptor cache
+          0090: 12   FS descriptor cache
+          009c: 12   DS descriptor cache
+          00a8: 12   SS descriptor cache
+          00b4: 12   CS descriptor cache
+          00c0: 12   ES descriptor cache
+
+          Descriptor caches layout:
+          1 byte     zero
+          1 byte     access rights byte, same as 286
+          2 bytes    zero
+          4 bytes    32 bit physical base address of segment
+          4 bytes    32 bit segment length limit
+
+
+
+
+
+LSL   Load Segment Limit
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: LSL reg1,reg/mem
+Opcode  : 0F 03
+Bug     : some 386
+
+Function:
+Loads the limits of a segment in protected mode by reading GDT entry reg/mem
+into reg1. Proper completion generates ZF=1, otherwise ZF=0.
+
+Some 386es allow access to selector 0 in the GDT leaving ZF=1.
+Normally this should not be possible and produce the condition ZF=0.
+
+Workaround would be to create an entry 0 in the GDT that consists of only
+zeroes. This will cause access with a selector of 0 to fail and
+produce ZF=0.
+
+Some 386es leave SP/ESP corrupted after successful completion of LSL, when
+LSL is followed by an explicit stack reference, using instructions like
+CALL, ENTER, LEAVE, IRET, RET, PUSH, POP, PUSHA, POPA, PUSHF and POPF.
+System-induced exceptions or interrupts however do not corrupt SP/ESP in
+that case. A workaround is to code a NOP after LSL.
+
+A data breakpoint set to the mem16 operand of LSL can be missed on some
+386es if the segment with the selector at mem16 is not accessible.
+(see also <debugging>)
+
+
+
+
+MOV   Move data to and from registers and or memory
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: MOV involving CRx, DRx or TRx, MOV to SS, CS
+Opcode  : 0F 2n [mod:rrr:r/m], 8E [mod:sreg:r/m]
+Bug in  : some 88,some 86,some 386,all 386,A to C0 step of 486
+
+Function:
+MOV Moves data in and out of (special) registers and memory.
+
+Some _very early_ 88 and 86 processors do not disable interrupts following
+a MOV sreg,reg. This causes them to crash when an interrupt uses the stack
+between MOV SS,reg and MOV SP,op. These versions carry a copyright message
+for 1978 on the package. Later, corrected revisions, carry both 1978 and
+1981 as the copyright year.
+Normally interrupts would be disabled between the move to SS and execution
+of the instruction following it on 88 and 86es. A workaround is to manually
+disable the interrupts when reloading SS. The 286 and higher processors only
+disable interrupts after a MOV SS, in contrast to earlier CPUs, including
+the NECs, who do this with all MOV sreg,op instructions.
+
+An unsolvable problem occurs when an unmaskable interrupt or exception
+takes place while executing the instruction pair on an old 88 or 86.
+There are conflicting messages though about this type of interrupts having
+no effect on the bug.
+
+On the 86 and 88, but not on the C-MOS versions 80C86 and 80C88, the
+instruction MOV CS,op is valid and causes an unconditional jump.
+The C-MOS versions, as well as the NEC V20 and V30 ignore this coding.
+This may also be the case on the 186 but has not been tested.
+The 286+ CPUs consider CS an invalid operand for this instruction and
+generate exception 6 (Invalid opcode).
+The opcode for the MOV CS,op is: 8e [mod:001:r/m] See also <POP CS>.
+
+On some 386es, random breakpoint breaks occur from the debug registers
+D0-D3 when a MOV from CR3, TR6 or TR7 is executed. This will continue until
+after a jump instruction is executed. The actual contexts of D0-D3 is not
+affected. Workaround is to disable breakpoints before the MOV from CR3,TR6
+or TR7, execute a jmp right after the move and enabling breakpoints again.
+See also <debugging>
+
+On some 386es a MOV to SS may cause a code or data breakpoint set to the
+instruction following the MOV to be missed if the instruction takes more
+than two clocks. (see <debugging>)
+
+On all 386es a MOV to or from CRx, TRx or DRx executes correctly regardless
+of the mod field (the first two bits in the third byte of the opcode).
+The mod should be 11b. Intel documentation for the 386 stated it was
+undefined.
+Some 386 assemblers and compilers may generate values other than 11b for
+mod and fail on early 486es, causing an Invalid Opcode Exception, since they
+do require the mod field to be correct. More recent 486es recognize the
+aliased instructions as valid and execute them accordingly.
+
+On all 386es, moves to or from DR4 and DR5 are aliased to DR6 and DR7.
+On the early 486es these encodings are not recognized and generate an
+Invalid Opcode Exception. More recent 486es do recognize these aliases and
+execute them correctly.
+
+On the A to C0 steps of the 486, loading TR5 with a reg32 operand may hang
+the CPU if bits 0 and 1 (control bits) activate cache read, cache write or
+flush. A workaround is:
+
+JMP fetcher
+
+ALIGN 16
+fetcher:
+     NOP
+     IN AL,port   ; Note that this corrupts EAX...
+     MOV TR5,EBX  ; EBX contained the new TR5 value.
+     NOP
+     NOP
+
+On the A to C0 step of the 486 loading a value into CR0 which disables the
+cache may corrupt the cache. Forcing a prefetch will avoid this.
+
+     PUSHFD
+     CLI
+     MOV BL,CS:label
+     MOV CR0,EAX
+   label:
+     POPFD
+     NOP
+
+Using EBX:
+Note that using EBX under the Microsoft Windows 3.0 DOS box in standard mode
+or after Microsoft Windows 3.0' termination after running standard mode, for
+32-bit addressing in real or virtual 86 mode, is likely to crash the system
+due to the fact that apparently the Windows 3.0 DOS box trashes EBX while
+servicing interrupts, turning bit 18 of EBX to 1 and thus causing unwanted
+segment violation errors. Use of EBX in calculations is likely to cause
+spurious errors and may yield unpredictable behaviour of your code under
+the aforementioned circumstances.
+
+(MOV CS,op for NEC and 88/86, C88/C86, & 1978 copyright message
+ supplied by Anthony Naggs).
+
+
+
+
+MOVS  Move string of bytes, words or doublewords in memory
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: MOVSB / MOVSW / MOVSD
+Opcode  : A4    / A5    / 66 A5
+Bug in  : early 286 in PM, some 386
+
+Function:
+MOVS moves strings in memory. Possible units to move are byte, word and
+doubleword. Typically the source is DS:(E)SI, the target ES:(E)DI
+
+If the single instruction MOVS (not prefixed by REPx) is executed with a
+NULL selector in ES or when ES:DI points beyond the segment limit while
+executing the the single instruction, causing exception 0dh, the CS:IP
+saved by the 0dh exception handler will point after the MOVS instruction,
+instead of to it on some 286s.
+
+If a segment limit exception or IOPL violation exception occurs during the
+REPx prefixed form of MOVS in Protected Mode, some early 286 will reset CX
+to its initial setting (before the REPx started) instead of showing CX as
+it was at the time of the exception. SI and DI are not affected and show the
+values they had at the time of the exception.
+
+During debugging with breakpoints set, REP MOVS can cause data breakpoints
+to be missed on some 386, see <debugging>.
+
+If, on some 386es, MOVS is followed by an instruction which uses a different
+address size, or by an instruction which implicitly references the stack
+(like POP, PUSH, IRET, RET, CALL, ENTER, LEAVE, PUSHA, POPA, PUSHF and POPF)
+while the D-bit for the stack is different from the current address size
+used by the MOVS instruction, the destination register updated will depend
+on the address size of the instruction that follows, rather than that of
+the MOVS. This can result in the updating of only DI when EDI was meant
+or EDI when only DI was meant.
+
+The repeated form REPx MOVS has the same bug, but in addition to (E)DI,
+also (E)SI is affected.
+
+A workaround is to always code a NOP with the same address size after MOVS
+and REPx MOVS.
+
+Example:
+
+    (16-bit code segment)
+    MOVSW       ; 16-bit addressing MOVS
+    NOP         ; 16-bit addressing NOP
+    db 67h
+    MOVSW       ; 32-bit addressing MOVS
+    db 67h
+    NOP         ; 32-bit addressing NOP
+
+    (32-bit code segment)
+    MOVSD       ; 32-bit addressing MOVS
+    NOP         ; 32-bit addressing NOP
+    db 67h
+    MOVSD       ; 16-bit addressing MOVS
+    db 67h
+    NOP         ; 16-bit addressing NOP
+
+
+
+
+
+MUL  Unsigned Multiply 16 & 32-bit versions
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: MUL reg
+Opcode  : (66) F7 Ex
+Bug in  : 386
+
+Function:
+MUL multiplies ax with a 16-bit operand to form a 32-bit result in dx:ax.
+The 32-bit version multiplies eax with a 32-bit operand to form a 64-bit
+result in edx:eax.
+
+Some 386es have a problem which redirects output from the 32-bit MUL
+to the wrong parts of the wrong registers.
+
+Typically the following happens:
+
+Properly operating 32-bit version:  Properly operating 16-bit version:
+
+  EAX: 'A':'B'                        EAX: 'A':'B'
+  EBX: 'C':'D'                        EBX: 'C':'D'
+  EDX: 'E':'F'                        EDX: 'E':'F'
+
+CD x AB gives a result in EF:AB     D x B gives a result in F:B
+
+While executing the 32-bit MUL, the faulty CPU takes CD times AB and puts
+the value it should have added to 'A' into 'F' while at the same time
+adding the value it should have put into EF to AB.
+
+No workaround other than to use 16-bit multiply.
+
+Some 386's have a bug which generates incorrect values in 16-bit mode.
+The iAPX program from IGEL (Chris Lueders) tests for this bug.
+
+Intel apparently organized a replacement project to get the faulty chips
+returned to factory for screening. After testing at Intel the faulty CPUs
+were sold again to bulk buyers who installed them in 16-bit only machines.
+These tested and failed chips carry the text "16-bit S/W only" or a single
+sigma. The tested and passed chips carry a double sigma (ää) on the package.
+
+(supplied by Chris Lueders)
+
+
+
+
+NEC V20/V30 introduction
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The NEC V series microprocessors are functionally similar to the 8086 design
+which NEC licensed from Intel. The internal microcode and most NEC mnemonics
+are different from Intel's, to avoid Intel copyright claims. Only the
+NEC V20 & V30, pin compatible with 8088 & 8086 respectively, are usually
+found in IBM compatible PCs.
+The V20 and V30 are often supplied as an "upgrade kit" for PCs originally
+equipped with an 88/86, as they execute most instructions in fewer clocks
+and can be used at a higher clock rate than the Intel parts.
+
+Occasionally single board PCs use the V40 & V50, which are based on the same
+CPU core and have integrated peripheral functions. Other V series family
+members diverge further from the Intel x86 series and are used in
+controllers and instrumentation rather than PCs.
+
+The V20 and V30 have four classes of extra instructions beyond those
+present on the 86/88:
+*   the instructions Intel introduced on the 186/188
+*   unique instructions for the NEC V series
+*   instructions to switch to/from 8O8O emulation mode
+*   8O8O instructions in 8O8O emulation mode
+
+(8080 is written here as 8O8O to avoid visual confusion with the 8088).
+Since the 188/186 instructions are widely documented, and the 8O8O
+instructions are of use only if you are writing a CP/M emulator or similar,
+these instructions are not listed. The special instructions which can be
+used in Intel x86 mode are listed in the <NEC mnemonics page>
+
+(Supplied by Anthony Naggs)
+
+
+
+
+NEC V20/V30-specific mnemonics list
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Bit field instructions:
+
+  <INS>     (NECINS) Insert bit field  <EXT>    Extract bit field
+  <TEST1>   Test a specific bit        <NOT1>   Invert a specific bit
+  <CLEAR1>  Clear a specific bit       <SET1>   Set a specific bit
+
+  Packed BCD support:
+
+  <ADD4S>   Add packed BCD numbers     <SUB4S>  Subtract BCD strings
+  <CMP4S>   Compare BCD strings (subtract without storing)
+  <ROL4>    Rotate left 4 bits         <ROR4>   Rotate right 4 bits
+
+  Instruction prefixes:
+
+  <REPC>    Repeat while Carry         <REPNC>  Repeat while No Carry
+
+  Floating point escape:               Start 8O8O emulation:
+
+  <FPO2>    NEC equivalent of ESC      <BRKEM>  Break to 8O8O emulation mode
+
+
+(Supplied by Anthony Naggs)
+
+
+
+
+NOT1 Invert a specific bit (NOT operation) (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: NOT1 reg/mem,CL/immediate
+Opcode  : NOT1 r/m8,CL   : 0F 16 [mod:000:r/m]      (4/18 clocks)
+          NOT1 r/m8,imm3 : 0F 1E [mod:000:r/m] imm  (5/19 clocks)
+          NOT1 r/m16,CL  : 0F 17 [mod:000:r/m]      (4/18 clocks)
+          NOT1 r/m16,imm4: 0F 1F [mod:000:r/m] imm  (5/19 clocks)
+          NOT1 CY        : F5  (NEC nomenclature for Intel's CMC)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+NOTs the specified bit in the register/memory operand. The bit number (CL
+or immediate) is ANDed with 07 (for 8-bit operands) or 0F (for 16-bit
+operands) to get a valid bit number. No flags are affected by this
+operation, except by NOT1 CY.
+
+The first (smaller) clock count in each pair is for register operands.
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: NECINS, EXT, TEST1, CLEAR1, SET1
+
+
+
+POP  Pop register from stack
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: POP
+Opcode  : 51+reg (01011rrr) for general purpose registers, 0F for POP CS
+Bug in  : POP CS is a valid opcode for 88, 86, invalid opcode for 186
+          0F is prefix byte on NEC V20/30 and 286+
+          POP SS and breakpoints on some 386
+
+Function:
+POP retrieves data from the stack while adjusting the stackpointer.
+
+The 88 and 86 allow the encoding of 0f for POP CS. The NEC V20 and V30,
+as well as the 286+ CPUs use that encoding to indicate new instructions.
+On the 88 and 86 POP CS causes an unconditional jump. Executing 0F on
+the 186 generates an Invalid opcode exception (6).
+
+On some 386es a code or data breakpoint set to the instruction following
+POP SS will not be taken if the instruction takes more than two clocks.
+(see also <debugging>)
+
+(POP CS supplied by Anthony Naggs)
+
+
+
+
+POPA / POPAD Pop all general purpose registers
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: POPA / POPAD
+Opcode  : 61 / 66 61
+Bug in  : some 386
+
+Function:
+POPA and POPAD pop all general purpose registers from the stack.
+POPA pops 16-bit registers and POPAD pops 32-bit registers. The opcode is
+the same. POPAD is POPA with an operand size prefix (66h).
+
+If either POPA or POPAD is followed by an instruction which uses an
+effective address calculation consisting of a base register and another
+register other than (E)AX as an index, the contents of EAX is corrupted.
+
+Also, if POPA or POPAD in 16-bit mode is followed by an instruction which
+uses an effective address using EAX as a base or index, the CPU will hang.
+
+The workaround is to always code a NOP after POPA as well as POPAD.
+
+
+
+
+Prefetch queue, bus & cache parameters per CPU
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+              NEC         NEC          sx  dx  sx  dx
+           88 V20 188  86 V30 186 286 386 386 486 486 Pentium
+         ÚÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÂÄÁÄÄÄÄÄ¿
+  SPQBÄÄÄÅ 4 ³ 4 ³ 4 ³ 6 ³ 6 ³ 6 ³ 6 ³16 ³16 ³32 ³32 ³32 x 2 ³
+ NEBIPQÄÄÅ 1 ³ 1 ³ 1 ³ 2 ³ 2 ³ 2 ³ 2 ³ 2 ³ 4 ³16 ³16 ³     ? ³
+ MPBRMPÄÄÅ 1 ³ 1 ³ 1 ³ 1 ³ 1 ³ 1 ³ 1 ³ 1 ³ 1 ³16b³16b³    32a³
+  DIQLÄÄÄÅ - ³ - ³ - ³ - ³ - ³ - ³ 3 ³ 3 ³ 3 ³ - ³ - ³     ? ³
+  OCSKBÄÄÅ - ³ - ³ - ³ - ³ - ³ - ³ - ³ - ³ - ³ 8 ³ 8 ³ 8 x 2 ³
+  DBSBÄÄÄÅ 8 ³ 8 ³ 8 ³16 ³16 ³16 ³16 ³16 ³32 ³32 ³32 ³    64 ³
+  ABSBÄÄÄÅ20 ³20 ³20 ³20 ³20 ³20 ³24 ³24 ³32 ³32 ³32 ³    32 ³
+         ÀÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÁÄÄÄÄÄÄÄÙ
+  Legend:
+
+   SPQB = Size of the Prefetch Queue (PQueue) in Bytes
+ NEBIPQ = Number of Empty Bytes In PQueue to initiate prefetch cycle
+*MPBRMP = Minimum possible number of Bytes to Read from Memory to Prefetch
+   DIQL = Decoded Instruction Queue Length, measured in instructions
+  OCSKB = On-chip Cache Size in KiloBytes
+   DBSB = Data Bus Size in Bits
+   ABSB = Address Bus Size in Bits
+      - = None
+      b = 16-byte burst mode cache line fill
+      a = 32-byte burst mode cache line fill
+
+* note that starting with the 486, prefetches are read from the cache.
+  A cache line fill is performed in case of a cache miss and starts to
+  read on paragraph boundaries only. A cache line on the 486 is 16 bytes
+  in size. On the Pentium, a line fill starts on a boundary which lies
+  at an even number of paragraphs (32-byte chunks).
+
+(NEC & 188/186 prefetches supplied by Anthony Naggs)
+
+
+
+
+PUSH  Pushes value or register onto the stack.
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: PUSH reg / PUSH mem
+Opcode  : 01010rrr / FF [mod:110:r/m]
+Bug in  : PUSH (E)SP different operation on 286+, PUSH mem on some 286 in PM
+
+Function:
+PUSH pushes a value or register onto the stack.
+
+Normally, the value pushed is placed in the location pointed to by SS:SP
+(or SS:ESP on 386+), after which (E)SP is decremented by a word or dword.
+
+When pushing any register or value, the difference between 286+ and previous
+CPUs is not visible and causes no problems.
+However, when pushing SP (or ESP on 386+) the value pushed is different
+between 286 and previous CPUs.
+
+On CPUs prior to the 286, SP would be decremented and then pushed.
+On 286+ however, SP gets pushed and then decremented, leaving a different
+value on the stack for SP. On the 386+ the same is in effect when
+pushing ESP
+
+If PUSH mem on the 286 in Protected Mode causes a stack limit violation -
+exception 0bh, the saved CS:IP will point _after_ the PUSH instead of _to_
+it on some early 286.
+
+
+
+
+
+RDTSC Read Time Stamp Counter
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: RDTSC
+Opcode  : 0F 31
+Bug in  : Poorly documented for Pentium Processor
+
+Function:
+RDTSC reads a Pentium internal 64 bit register which is being incremented
+from 0000 0000 0000 0000 at every CPU internal clockcycle. Note that this
+gives a clockcycle-accurate timer with a range of more than 8800 years at
+66 Mhz...
+
+The instruction places the counter in the EDX:EAX register pair.
+
+
+
+
+REPNC / REPC  Repeat next string operation while (No) Carry
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: REPC / REPNC
+Opcode  : 65   / 64 (  ? clocks) (GS/FS override on 386+)
+Bug in  : Rarely documented except in NEC manuals, invalid on Intel CPUs
+          Conflicting opcode for GS and FS segment override for 386+
+
+Function:
+REPC repeats the following string instruction while the Carry Flag is set.
+REPNC repeats the following string instruction while the Carry Flag is
+clear. CX should hold the maximum number of iterations,
+just as with REPZ/REPNZ.
+
+Note that since these instructions works with the Carry Flag, they have no
+special effect on MOVS and LODS. A simple REP should be used in these cases.
+
+These instructions are NEC specific. They are not implemented on the Intel
+CPUs. Note that the 386+ implements the listed opcodes 64 and 65 for the
+segment override instructions FS and GS respectively.
+
+If your software will run on a NEC, they may be handy.
+
+
+
+
+ROL4   Rotate left 4 bits (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: ROL4  reg8/mem8
+Opcode  : 0F 28 [mod:000:r/m]  (25/28 clocks)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Rotates a BCD digit (4 bits) left out of the operand, through the low 4 bits
+of AX.
+
+                    AL                   reg/mem
+             7 . . . . . . 0         7 . . . . . . 0
+            ÚÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄ¿       ÚÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄ¿
+            ³       ³       ³<ÄÄÄÄÄÄ´       ³       ³<ÄÄÄ¿
+            ÀÄÄÄÄÄÄÄÁÄÄÄÂÄÄÄÙ       ÀÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÙ    ³
+                        ÀÄÄ>ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The first (smaller) clock count is for a register operand.
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: ADD4S, SUB4S, CMP4S, ROR4
+
+
+
+ROR4   Rotate right 4 bits (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: ROR4  reg8/mem8
+Opcode  : 0F 2A [mod:000:r/m]  (29/33 clocks)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Rotates a BCD digit (4 bits) right out of the operand, through the low 4
+bits of AX.
+
+                    AL                   reg/mem
+             7 . . . . . . 0         7 . . . . . . 0
+            ÚÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄ¿       ÚÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄ¿
+            ³       ³       ÃÄÄÄÄÄÄ>³       ³       Ã>ÄÄÄ¿
+            ÀÄÄÄÄÄÄÄÁÄÄÄÂÄÄÄÙ       ÀÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÙ    ³
+                        ÀÄÄ<ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+The first (smaller) clock count is for a register operand.
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: ADD4S, SUB4S, CMP4S, ROL4
+
+
+
+SET1 Set a specific bit (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: SET1 reg/mem,CL/immediate
+Opcode  : SET1 r/m8,CL   : 0F 14 [mod:000:r/m]      (4/13 clocks)
+          SET1 r/m8,imm3 : 0F 1C [mod:000:r/m] imm  (5/14 clocks)
+          SET1 r/m16,CL  : 0F 15 [mod:000:r/m]      (4/13 clocks)
+          SET1 r/m16,imm4: 0F 1D [mod:000:r/m] imm  (5/14 clocks)
+          SET1 CY        : F9   (NEC nomenclature for Intel's STC)
+          SET1 DIR       : FD   (NEC nomenclature for Intel's STD)
+Bug in  : Rarely documented, except in NEC manuals
+
+Function:
+Sets the specified bit in the register/memory operand. The bit number (CL
+or immediate) is ANDed with 07 (for 8-bit operands) or 0F (for 16-bit
+operands) to get a valid bit number. No flags are affected by this
+operation, except the Carry and Direction Flag with SET1 CY and SET1 DIR.
+
+The first (smaller) clock count in each pair is for register operands.
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: NECINS, EXT, TEST1, NOT1, CLEAR1
+
+
+
+SETALC   Set AL according to Carry
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: SETALC
+Opcode  : D6  (  ? clocks)
+Bug in  : Is an undocumented opcode on 88,86,286,386,486
+          Does not work on NEC and Sony V20+ (is alias for XLATB there)
+                                   
+Function:                          
+This instruction copies the Carry Flag to the AL register without changing
+any flags. In case of a CY, AL becomes ffh. When the Carry Flag is cleared,
+AL becomes 00.
+
+(NEC & Sony difference, and 86/88 availability supplied by Anthony Naggs)
+
+
+
+
+Shift and Rotate operand limitations
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: SHL, SAL, SHR, SAR, ROL, RCL, ROR, RCR, and all xxxD variants
+Opcode  : various
+Bug in  : 186+ will AND the shift- or rotate count with 1f before execution
+          NEC V20 and V30 act like 88 / 86 and do not limit the count.
+                                   
+Function:
+The instructions mentioned above will limit the actual number of bits
+shifted or rotated to the number of bits to be shifted AND 1f. The
+remainder is actually shifted or rotated. A shift of 21h will actually be
+a shift of 1.
+
+This is also the case for the double shifts on 386+.
+
+(186 and NEC difference supplied by Anthony Naggs)
+
+
+
+
+SUB4S   Subtraction of packed BCD strings (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: SUB4S
+Opcode  : 0F 22  (7+19n clocks, n is the number of bytes per operand)
+Bug in  : Rarely documented, except in NEC manuals, is conflicting opcode
+          on 386+ (MOV)
+
+Function:
+Subtracts the packed BCD string at DS:SI from the packed BCD string at
+ES:DI. The length of the string, in BCD digits, is specified in CL. Unlike
+Intel string operations CL, DI & SI are unchanged by the operation. The
+Zero Flag (ZF) is set if the result is zero. The Carry Flag (CF) and
+Overflow Flag (OF) appear to be set by the subtraction of the most
+significant digits.
+
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+ CPUs.
+
+(Supplied by Anthony Naggs)
+
+See Also: ADD4S, CMP4S, ROL4, ROR4
+
+
+
+TEST1 Test a specific bit (NEC V20/30 only)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: TEST1 reg/mem,CL/immediate
+Opcode  : TEST1 r/m8,CL   : 0F 10 [mod:000:r/m]      (3/12 clocks)
+          TEST1 r/m8,imm3 : 0F 18 [mod:000:r/m] imm  (4/13 clocks)
+          TEST1 r/m16,CL  : 0F 11 [mod:000:r/m]      (3/12 clocks)
+          TEST1 r/m16,imm4: 0F 19 [mod:000:r/m] imm  (4/13 clocks)
+Bug in  : Rarely documented, except in NEC manuals, opcodes 0f 10 and
+          0f 11 are conflicting opcodes on 386+ (MOV aliases for 88-8b)
+
+Function:
+Tests the specified bit in the register/memory operand, if it is zero the
+Z flag is set otherwise it is cleared. The bit number (CL or immediate)
+is ANDed with 07 (for 8-bit operands) or 0F (for 16-bit operands) to get a
+valid bit number.
+
+The first (smaller) clock count in each pair is for register operands.
+Note that 0F is treated as <POP CS> on the 88/86 and prefixes newer
+instructions on 286+.
+
+(Supplied by Anthony Naggs)
+
+See Also: NECINS, EXT, NOT1, CLEAR1, SET1
+
+
+
+UNKNOWN opcode, info wanted
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: UNKNOWN
+Opcode  : 0F 04  (  ? clocks)
+Bug in  : Is an unknown opcode on 286                 
+
+Function:
+Exact purpose unknown, when executed it hangs the machine, likely bringing
+it into protected mode, anyone with a hardware debugger may check to find
+out. This instruction is likely to be an alias for the LOADALL on the 286.
+It does not generate an exception. >> info wanted <<
+
+
+
+
+VERR / VERW Verify a segment selector for Reading or Writing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: VERR op / VERW op
+Opcode  : 0F 00 [mod:100:r/m] / 0f 00 [mod:101:r/m]
+Bug in  : some 386
+
+Function:
+VERR verifies that the segment selector in memory, pointed to by op, is
+readable and accessible with the current privilege level (CPL).
+If so, the Zero Flag is set to 1, if not, the Zero Flag is cleared.
+
+VERW verifies that the segment selector in memory, pointed to by op, is
+writable and accessible with the current privilege level (CPL).
+If so, the Zero Flag is set to 1, if not, the Zero Flag is cleared.
+
+On some 386 both instructions allow a NULL selector to be specified,
+accessing selector zero in the GDT, instead of failing unconditionally with
+ZF=0, which would be the normal procedure. Workaround is to fill descriptor
+zero in the GDT with all zeroes. Accessing it will then always fail and
+produce the desired effect.
+
+On some 386 both VERR and VERW can hang the CPU until an INTR, NMI or RESET
+occurs. This bug occurs when there is no memory operand, JMP or CALL
+instruction in the <prefetch queue> along with the VERR or VERW.
+Workaround is to code a JMP or Jcondition instruction right after the VERR
+or VERW, with the added condition that _the last byte_ of the VERR / VERW
+and the _complete_ JMP instruction must fit in the same aligned doubleword.
+
+A data breakpoint set to the mem16 operand of either VERR or VERR can be
+missed on some 386es if the segment with the selector at mem16 is not
+accessible. (see also <debugging>)
+
+
+
+
+WBINVD Write back & invalidate both internal & external caches
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: WBINVD
+Opcode  : 0F 09
+Bug in  : some 486
+
+Function:
+WBINVD tells the processor that all data in both the internal as well as the
+external caches is invalid. Data held in external write-back caches is
+written back to memory before the flush.
+
+If on some 486's a cache line fill is in progress while the WBINVD
+instruction is being executed, that line is NOT invalidated and the buffer
+contents is moved into the cache. Valid cache lines are ALWAYS used to
+satisfy read requests on all 486's, regardless whether the cache is enabled
+or not.
+
+Workaround is to disable the cache prior to flushing it like this:
+
+        MOV EAX,CR0
+        OR  EAX,60000000h  ; cache disable bits
+        PUSHFD
+        CLI
+        MOV BL,CS:here
+        OUT dummyport,dummydata
+        MOV CR0,EAX
+here:
+        WBINVD
+        AND EAX,9fffffff   ; cache enable, write-through
+        MOV CR0,EAX
+        POPFD
+
+
+
+
+
+Write / Read Model Specific Register (Pentium+ compatible)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: WRMSR / RDMSR
+Opcode  : 0F 30 / 0f 32
+Bug in  : Are minimally documented opcodes for Pentium+ compatible CPUs
+
+Function:
+It should be possible to use the WRMSR & RDMSR instructions on any CPU which
+A: supports the CPUID instruction and
+B: has the extension bit 5 in the feature bitmap of EDX set after
+   executing function 1 (EAX=1) with CPUID.
+
+WRMSR writes to a Model Specific Register. EDX:EAX contain the value to
+write into the register whose number is given in ECX.
+
+RDMSR reads from a Model Specific Register. EDX:EAX will receive the value
+from the MSR whose number is given in ECX.
+
+  List of Model Specific Registers:
+
+  00h   Machine Check Exception-Address register (Read-only)
+  01h   Machine Check Exception-Type register (Read-only)
+  02h   Unknown
+  ..
+  0dh   Unknown
+  0eh   Test register T12
+  0fh   Unknown
+  10h   Time Stamp Counter (See RDTSC)
+  11h   Counter / Event Selection register (See CESR Map)
+  12h   Counter #0 (40 bit resolution)
+  13h   Counter #1 (40 bit resolution)
+
+
+      CESR Map. Note that CESR is a 64-bit register, of which only the
+      bottom 32 bits are currently known to be used.
+
+      Bit 31                         16                              0
+      ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄ¿
+      ³r³r³r³r³r³r³r³c³3³2³t³t³t³t³t³t³r³r³r³r³r³r³r³C³3³2³T³T³T³T³T³T³
+      ÀÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÅÁÅÁÅÁÄÁÄÁÄÁÄÁÅÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÅÁÅÁÅÁÅÁÄÁÄÁÄÁÄÁÅÙ
+                     ³ ³ ³ ÀÄÄÄÄÄÂÄÄÄÙ               ³ ³ ³ ÀÄÄÄÄÂÄÄÄÄÙ
+      Counting methodÙ ³ ÀÄÄÄÄÄ¿ ³ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³ ³      ³
+      Allow counting in CPL3   ³ ³ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ³      ³
+      Allow counting in CPL0-2ÄÙ ³ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ      ³
+      Event type (what to count)ÄÙ ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+      (see list below)
+       ÀÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ ÀÄÄÄÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+      Counter #1:ÄÙ                     Counter #0:ÄÙ
+
+      Counting methods:         1= count CPU cycles     0= count events
+      Allow count in CPL3:      1= Yes                  0= No
+      Allow count in CPL0-2:    1= Yes                  0= No
+
+      Event Type List:
+        00h data read
+        01h data write
+        02h data TLB miss
+        03h data read miss
+        04h data write miss
+        05h Write (hit) to M (modified) or E (exclusive) cacheline
+            (MESI protocol)
+        06h data cache lines written back
+        07h data cache snoops
+        08h data cache snoop hits
+        09h memory accesses in both pipes
+            (cumulative ?)
+        0ah data bank access conflicts (U & V pipe access same data line in
+            data cache).
+        0bh misaligned data memory references
+        0ch code read
+        0dh code TLB miss
+        0eh code cache miss
+        0fh any segment register load
+        10h segment descriptor cache accesses
+        11h segment descriptor cache hits
+        12h branches
+        13h Branch Target Buffer (BTB) hits
+        14h taken branch or BTB hit
+        15h pipeline flushes
+        16h instructions executed
+        17h instructions executed in V pipe
+        18h bus utilization (apparently events in which the CPU has to wait
+            for bus access).
+        19h pipeline stalled by write backups
+        1ah pipeline stalled by data memory read
+        1bh pipeline stalled by write to M or E line
+        1ch locked bus cycle (for instance during xchg)
+        1dh I/O read or write cycles
+        1eh noncacheable memory references
+        1fh pipeline stalled by Address Generation Interlock (AGI)
+        20h unknown
+        21h unknown
+        22h floating point operations
+        23h breakpoint 0 match
+        24h breakpoint 1 match
+        25h breakpoint 2 match
+        26h breakpoint 3 match
+        27h hardware interrupts
+        28h data read or data write
+        29h data read miss or data write miss
+
+    (All info provided by Christian Ludloff)
+
+
+
+
+
+All mentioned x86 CPU instructions by Mnemonic
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  Click on any instruction mnemonic to see details.
+  See <Breakpoint errors> for CPU bugs relating to debugging.
+  See <Chip Step info> for a summary on revision codes.
+  See <General FPU bugs> for FPU bugs unrelated to instructions.
+  See <FPU mnemonics> for FPU bugs related to FPU instructions.
+  See <List of NEC mnemonics> for a list of NEC instructions.
+  See <NEC general info> for a summary of special features in NECs.
+
+
+  <AAA>     Adjust after addition      <AAD>    Adjust after division
+  <AAM>     Adjust after multiply      <AAS>    Adjust after subtraction
+  <BOUND>   Bounds check
+  <BSF>     Bit scan forward           <BSWAP>  4-Byte swap (e-registers)
+  <BT>      Bit test                   <BTC>    Bit test & complement
+  <BTR>     Bit test & reset           <BTS>    Bit test & set
+  <CHKIND>  Alias mnemonic for BOUND on NEC
+
+  <CMPS> CMPSB CMPSW CMPSD  String compare, Byte, Word, Doubleword
+
+  <CMPXCHG> Compare & exchange        <CPUID>   Identify CPU (486+)
+
+  <CR0> CR1 CR2 CR3 CR4 Map of control registers
+
+  <EFLAGS>  Map of EFLAGS register
+
+  <HLT>     Halt the CPU              <IBTS>    Insert bit string
+  <IMUL>    Integer multiply
+
+  <INS> INSB INSW INSD Input of string from I/O port, Byte, Word, Doubleword
+
+  <INVD>    Invalidate cache          <JMP>     Unconditional jump
+  <LAR>     Load access rights        <LOADALL> Load all registers.
+  <LSL>     Load segment limit        <MOV>     Move data to/from registers
+  <MOVS>    Move string               <MUL>     Multiply unsigned
+  <POP>     Pop data from stack       <POPA>    Pop all registers
+  <PUSH>    Push value onto stack     <RDTSC>   Read time stamp counter
+
+  <RDMSR>   Read Model Specific Register (Pentium+)
+
+  <Rotate and Shift>   Concerns all Rotation and Shift instructions
+
+  <SETALC>  Carry bit to all of al    <UNKNOWN> An unknown opcode
+  <VERR>    Verify segment for Read   <VERW>    Verify segment for Write
+
+  <WBINVD>  Write Back and Invalidate Cache (486+)
+  <WRMSR>   Write Model Specific Register (Pentium+)
+
+
+
+
+All mentioned FPU instructions by Mnemonic
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Alphabetic listing on FPU Mnemonics for instructions behaving different
+than expected. Instructions marked with * are considered undocumented.
+
+* <FCOS>              FPU Cosine in radians on IIT math coprocessor
+
+  <FDISI / FNDISI>    Disable Floating point interrupts
+  <FDIV  /  FDIVP>    Divide
+  <FDIVR / FDIVRP>    Divide reversed
+  <FENI  /  FNENI>    Enable Floating point interrupts
+
+  <FLDENV>            Load Floating point Environment
+  <FMUL4X4>           Matrix multiply on IIT math coprocessor
+  <FPREM>             Modulus of ST by ST(1) into ST
+  <FPTAN>             Tangent ratio of ST into ST & ST(1)
+  <FRSTPM>            Tells the FPU to use Real (or V86) Mode formats
+  <FRSTOR>            Loads the FPU state from memory see FSAVE
+  <FSAVE>             Saves the FPU state to memory see FRSTOR
+* <FSBP0,1,2,3>       Bankswitching on IIT math coprocessor
+  <FSCALE>            Adds the value in ST to the exponent in ST(1)
+  <FSETPM>            Tells the FPU to use Protected Mode formats
+* <FSIN>              FPU Sine in radians on IIT math coprocessor
+  <FSINCOS>           calculates FPU sine and cosine in radians
+  <FSTENV>            Store Floating point Environment
+
+
+
+
+General Intel FPU bugs, unrelated to opcodes
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: N/A
+Opcode  : N/A
+Bug in  : some 486 / 487
+
+Function:
+While using a maths coprocessor (also referred to as floating point
+unit FPU), errors may occur and invalid numbers may be generated.
+While most FPUs don't have any problem handling these situations, some
+steps may lock up or misbehave otherwise. The list below shows known
+malfunctions which may arise during FPU operations on some systems.
+
+    True bugs:
+    <FERR# not handled correctly by FPU>
+    <FPU performance degradation because IGNNE# active>
+
+    Incompatibilities between different types of FPU:
+    <Four indications for 'empty' in Condition Code Bits after FXAM>
+
+    '87 to 287 specific differences:
+    <Error signal does not go through PIC on 287+>
+    <Exceptions are different>
+    <Exception pointers saved by 287+ save prefixes>
+
+    <287+ need no synchronization>
+    <287 & 387 use reserved I/O ports>
+
+
+
+
+FERR# not handled correctly by FPU
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* FERR# not handled correctly by FPU:
+
+    In some cases an FPU operation may generate a floating point error,
+    which will not be recognized by the CPU.
+    The workaround for this is to replace all FWAIT with FNOP or follow
+    all FWAIT with a NOP, while masking all floating point errors.
+
+
+
+
+FPU performance degradation because IGNNE# active
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* FPU performance degradation because IGNNE# active:
+
+    If an unmasked exception occurs with bit NE (Numeric Error or Numeric
+    Exception) in CR0 cleared (recognize exceptions), while IGNNE# is
+    active, all following FPU instructions will require an additional 17 to
+    22 clocks. This because the exception remains pending due to the logic
+    conflict caused by contradicting signals. It lets the 486/487 execute
+    microcode in order to classify and analyze the exception, but it does
+    not let it handle it, prior to executing the next FPU opcode.
+    A workaround is to clear all unmasked exceptions with FCLEX or FINIT
+    within an exception handler before it finishes or to make sure IGNNE#
+    is not made active so exceptions are recognized and handled immediately
+    as they occur (when NE is cleared).
+
+
+
+
+Four indications for 'empty' in Condition Code Bits after FXAM
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* Four different indications for 'empty' in Condition Code Bits after FXAM:
+
+    The various FPUs use different bit patterns to indicate an empty FPU
+    register after the FXAM instruction. You should rely only on bits C0
+    and C3 to be 1 in case an FPU register is to be considered empty.
+    (See <FPU Condition Code Bits>)
+
+
+
+
+Error signal does not go through PIC on 287+
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* Error signal does not go through PIC on 287+
+
+    On the 86, an FPU error is signalled through the PIC (Programmable
+    Interrupt Controller). Starting with the 287, FPU errors are
+    signalled over a dedicated pin on the CPU / FPU combination,
+    namely ERROR#. There may be code which depends on the PIC handling
+    the error. These error handlers will need to be rewritten.
+
+
+
+
+Exceptions are different
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* Exceptions are different
+
+    The coprocessor segment overrun exception (09) is issued when the
+    FPU attempts to read the second or subsequent words of a data
+    operand beyond a segment limit on a 286. On a 386 it is not normally
+    used. The 486 signals exception 0dh instead.
+
+    The segment wraparound exception (General Protection exception 0dh)
+    will be issued if the FPU attempts to execute an instruction that
+    spans into or lies beyond a segment limit.
+
+    All other errors are signalled through interrupt 10h in 286 systems.
+
+
+
+
+Exception pointers saved by 287+ save prefixes
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* Exception pointers saved by 287+ save prefixes
+
+    The exception pointers on the 87 would point to the ESC instruction
+    itself, regardless of any segment overrides (or other prefixes for
+    that matter). The 287+ pointers point to the first prefix before
+    the ESC instruction, if any.
+
+
+
+
+287+ need no synchronization
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* 287+ need no synchronization
+
+    On the 87, the FPU and CPU worked separated from each other. Any
+    communication between the FPU and CPU had to be coordinated with
+    WAITs. On the 287+, no WAITs are required except for control
+    instructions. The CPU examines the BUSY# signal before communicating
+    with the FPU to assure the FPU can accept commands.
+
+    The 387 also examines BUSY# before sending commands to the FPU.
+    Data transfers are regulated by monitoring the PEREQ# pin.
+
+
+
+
+287 & 387 use reserved I/O ports
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+ <Back> (General Intel FPU bugs, unrelated to opcodes)
+
+* 287 & 387 use reserved I/O ports
+
+    On the 287, FPU instructions and data are sent to and received from
+    the FPU via I/O ports. These ports are f0-ff on the 286 / 287.
+    This property is important to consider when the number of I/O
+    waitstates on the mainboard can be changed. To safely increase the
+    FPU performance some experimentation may be necessary, but a 25%
+    speed increase has been accomplished on a 12 MHz 286 with 20 MHz
+    IIT 2c87 by decreasing the number of I/O waitstates from 6 to 4.
+
+    On the 387, FPU instructions and data are sent to and received from
+    the FPU via I/O ports too. These ports are 800000f0 - 800000ff.
+    Note that the I/O waitstate trick may very well work on 386 / 387
+    systems as well.
+
+
+
+
+FPU Condition Code Bits after a test, compare or reduction
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Vatious FPU test instructions set the Condition Code bits C0 to C3 based
+on the values tested. Below is a list of possible bit combinations.
+
+These C-bits map to the flags register as follows after stswax and sahf:
+
+Eflags map: ZF  PF  -   CF  (C1 has no flag assigned to it)
+            C3  C2  C1  C0
+
+Examine     0   0   0   0   +Unnormal (positive, valid, unnormalized)
+            0   0   0   1   +NaN      (positive, invalid, exponent is 0)
+            0   0   1   0   -Unnormal (negative, valid, unnormalized)
+            0   0   1   1   -NaN      (negative, invalid, exponent is 0)
+            0   1   0   0   +Normal   (positive, valid, normalized)
+            0   1   0   1   +Infinity (positive, infinity)
+            0   1   1   0   -Normal   (negative, valid, normalized)
+            0   1   1   1   -Infinity (negative, infinity)
+            1   0   0   0   +Zero     (positive, zero)
+            1   0   0   1   Empty     (empty register)
+            1   0   1   0   -Zero     (negative, zero)
+            1   0   1   1   Empty     (empty register)
+            1   1   0   0   +Denormal (positive, invalid, exponent is 0)
+            1   1   0   1   Empty     (empty register)
+            1   1   1   0   -Denormal (negative, invalid, exponent is 0)
+            1   1   1   1   Empty     (empty register)
+
+FCOM or
+STST        0   0   ?   0   ST > Source with FCOM or ST > 0 with FSTST
+            0   0   ?   1   ST < Source with FCOM or ST < 0 with FSTST
+            1   0   ?   0   ST = Source with FCOM or ST = 0 with FSTST
+            1   1   ?   1   ST cannot be compared ot tested
+
+Reduction   b1  0   b0  b2  If reduction was complete, bits 0,1 and 2
+                            equal the three lowest bits of the qoutient
+            ?   1   ?   ?   Reduction was incomplete
+
+
+
+
+FPU Status Word, Control Word and Tag Word layout
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The layout of the Status-, Control- and Tag Word of the FPU.
+
+      FPU Status Word
+
+      Bit 15                8                        0
+      ÚÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÁ¿
+      ³ B³c3³  ST n  ³c2³c1³c0³ES³sf³Pe³Ue³Oe³Ze³De³Ie³
+      ÀÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÙ
+        ³  ³  ÀÄÄÅÄÄÙ  ÀÄÄÅÄÄÙ  ³  ³  ³  ³  ³  ³  ³  ³
+      Busy ÔÍÍÍÍÍØÍÍÍÍÍÍÍÍµ     ³  ³  ³  ³  ³  ³  ³  ³
+      Stack TopÄÄÙ        ³     ³  ³  ³  ³  ³  ³  ³  ³
+      Condition Code BitsÄÙ     ³  ³  ³  ³  ³  ³  ³  ³
+      Exception Summary * ÄÄÄÄÄÄÙ  ³  ³  ³  ³  ³  ³  ³
+      Stack faultÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ  ³  ³  ³  ³  ³  ³
+      Precision exception (1=occurred)Ù  ³  ³  ³  ³  ³
+      Underflow exception (1=occurred)ÄÄÄÙ  ³  ³  ³  ³
+      Overflow exception (1=occurred)ÄÄÄÄÄÄÄÙ  ³  ³  ³
+      Zero divison exception (1=occurred)ÄÄÄÄÄÄÙ  ³  ³
+      Denormalized operand exception (1=occurred)ÄÙ  ³
+      Invalid operation exception (1=occurred)ÄÄÄÄÄÄÄÙ
+
+      * The Exception summary is called Interrupt request on 8087.
+
+      FPU Control Word
+
+      Bit 15                8                        0
+      ÚÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÁ¿
+      ³ r³ r³ r³ic³round³prec.³ie³ r³Pm³Um³Om³Zm³Dm³Im³
+      ÀÄÄÁÄÄÁÄÄÁÄÅÁÄÄÁÄÅÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÁÄÅÙ
+      Infinity   ³     ³  ³     ³     ³  ³  ³  ³  ³  ³
+      controlÄÄÄÄÙ     ³  ³     ³     ³  ³  ³  ³  ³  ³
+      Rounding controlÄÙ  ³     ³     ³  ³  ³  ³  ³  ³
+      Precision controlÄÄÄÙ     ³     ³  ³  ³  ³  ³  ³
+      Interrupt enable maskÄÄÄÄÄÙ     ³  ³  ³  ³  ³  ³
+                                      À¿ ³  ³  ³  ³  ³
+      Precision exception Mask 1=maskedÙ ³  ³  ³  ³  ³
+      Underflow exception Mask 1=maskedÄÄÙ  ³  ³  ³  ³
+      Overflow exception Mask 1=maskedÄÄÄÄÄÄÙ  ³  ³  ³
+      Zero divison exception Mask 1=maskedÄÄÄÄÄÙ  ³  ³
+      Denormalized operand exception Mask 1=maskedÙ  ³
+      Invalid operation exception Mask 1=maskedÄÄÄÄÄÄÙ
+
+    Infinity control is supported on the 8087 and 287 only.
+    The 87 and 287 (not the 287xl) have ic cleared by default and then
+    support projective closure. The 287xl+ only support affine closure.
+    To make sure an 87 or 287 will handle the numbers in the same way
+    as the 287xl+, set bit ic to make 87 & 287 support affine closure
+    as well. Note that a FINIT will clear ic again.
+    The ic setting is ignored on 287xl+.
+
+    Rounding control is set to 00 by default.
+    00 = Round to nearest or even
+    01 = Round down (towards negative infinity)
+    10 = Round up (towards positive infinity)
+    11 = Chop towards zero
+
+    Precision control is set to 11 by default.
+    00 = 24 bit precision (mantissa)
+    01 = reserved
+    10 = 53 bit precision (mantissa)
+    11 = 64 bit precision (mantissa)
+
+    Note: lesser precision does not significantly reduce execution time.
+
+
+      FPU Tag Word
+
+      Bit 15                8                        0
+      ÚÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÄÅÄÄÂÄÄÂÄÄÂÄÁ¿
+      ³ x  x³ x  x³ x  x³ x  x³ x  x³ x  x³ x  x³ x  x³
+      ÀÄÄÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÁÄÄÁÄÅÙ
+           7     6     5     4     3     2     1     0 Tag number
+
+      The tag number 0 corresponds to the register which is
+      currently ST0.
+      The bits for each tag have the same meaning:
+
+       0  0  Valid
+       0  1  Zero
+       1  0  Special (NaN,Infinity,Denormal,Unnormal,Unsupported)
+       1  1  Empty
+
+
+
+
+IIT bankswitching  (IIT math coprocessor)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSBP0, FSBP1, FSBP2, FSBP3
+Opcode  : DB E8, DB Eb, EB EA, DB E9  (6 clocks)
+Bug in  : Are IIT 2c87+ instructions
+
+Function:
+FSBP0 Selects the original bank. (default)
+FSBP1 Selects bank 1 from <FMUL4X4> instruction diagram
+FSBP2 Selects bank 2 from FMUL4X4 instruction diagram
+FSBP3 Selects the scratchpad bank3 used by the FMUL4X4 internally.
+
+The FSBP3 instruction is not publicly supported by IIT, it can be used to
+select the last bank of registers, which unfortunately cannot be used for
+regular operation. However, it is listed for completeness.
+
+
+
+
+FSIN / FCOS   Floating point sine and cosine
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSIN  / FCOS
+Opcode  : D9 FE / D9 FF
+Bug in  : Undocumented instructions on IIT 2c87 math chips
+
+Function:
+FSIN calculates the radial sine of the value in ST(0), leaving the result
+in ST(0). Apparently the IIT FSIN functions according to Intel's 287xl
+and 387+ specifications.
+
+FCOS calculates the radial cosine of the value in ST(0), leaving the result
+in ST(0). Apparently the IIT FCOS functions according to Intel's 287xl
+and 387+ specifications.
+
+Both these instructions are not officially supported by IIT for the 2c87.
+Both instructions are available on Intel 287xl and 387+ processors using the
+listed opcodes.
+
+
+
+
+FDIV / FDIVP  Floating point division / divide & POP
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FDIV / FDIVP
+Opcode  : various
+Bug in  : some 486
+
+Function:
+FDIV divides destination by source and returns the result in destination.
+FDIVP does the same but pops the FPU stack afterwards.
+
+The bug occurs when the instruction operates on an FPU register which is
+tagged as empty, but holds a nonzero value and the next FPU instruction
+occurs within 35 FPU clock counts. In that case, the current instruction
+will use the invalid number in the empty location, producing an invalid
+result and causing the following instruction to generate an invalid
+result as well. There is no workaround.
+
+
+
+
+FDIVR / FDIVRP  Floating point division reversed / divide & POP
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FDIVR / FDIVRP
+Opcode  : various
+Bug in  : some 486
+
+Function:
+FDIVR divides source by destination and returns the result in destination.
+FDIVRP does the same but pops the FPU stack afterwards.
+
+The bug occurs when the instruction operates on an FPU register which is
+tagged as empty, but holds a nonzero value and the next FPU instruction
+occurs within 35 FPU clock counts. In that case, the current instruction
+will use the invalid number in the empty location, producing an invalid
+result and causing the following instruction to generate an invalid
+result as well. There is no workaround.
+
+
+
+
+FLDENV  Load Floating point Environment
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FLDENV
+Opcode  : D9 [mod:100:r/m] disp
+Bug in  : some 387
+
+Function:
+FLDENV loads the entire FPU environment from the address given by the
+memory operand. See <FPU environment layout>.
+
+If either of the two last bytes of the environment cannot be read for
+whatever reason, the instruction cannot be restarted on some 387s.
+
+A workaround is to attempt to read those bytes before the FLDENV is
+executed or to align the environment on a 128 byte boundary so it is
+unlikely to fall outside a segment or page boundary.
+Should that be the case, the integer unit can cause an exception or
+make sure the page (in case of a swapped page) is read into memory
+before FLDENV starts.
+
+
+
+
+FMUL4X4 Matrix Multiply (IIT math coprocessor)
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FMUL4X4 or F4X4
+Opcode  : DB F1  (2c87=242, 3c87sx=242, 3c87=242 clocks)
+Bug in  : Is an IIT special instruction
+
+Function:
+This instruction is available only on the IIT (Integrated Information
+Technology Inc.) math processors. The instruction performs a 4x4 matrix
+multiply in one instruction using three banks of 8 floating point registers.
+The operands must be loaded to a specific bank in a specific order using
+
+Xn = (A00 * Xo) + (A01 * Xo) + (A02 * Xo) + (A03 * Xo)
+Yn = (A10 * Yo) + (A11 * Yo) + (A12 * Yo) + (A13 * Yo)
+Zn = (A20 * Zo) + (A21 * Zo) + (A22 * Zo) + (A23 * Zo)
+Vn = (A30 * Vo) + (A31 * Vo) + (A32 * Vo) + (A33 * Vo)
+
+Where Xo stands for the original X value and Xn for the result. Operands
+must be loaded to the following registers in the specified banks in the
+specified order.
+
+          Before FMUL4X4             After FMUL4X4
+
+                   bank              bank
+          Register: 0    1    2      0
+
+          ST(0)     Xo   A33  A31    Xn
+          ST(1)     Yo   A23  A21    Yn
+          ST(2)     Zo   A13  A11    Zn
+          ST(3)     Vo   A03  A01    Vn
+          ST(4)          A32  A30     ?
+          ST(5)          A22  A20     ?
+          ST(6)          A12  A10     ?
+          ST(7)          A02  A00     ?
+
+All four banks can be selected by using the bankswitching instructions,
+but only bank 0, 1 and 2 make sense since bank 3 is an internal scratchpad.
+The separate banks can contain 8 floating point numbers and may be used
+with normal instructions. Each bank acts like an independent 287.
+Provided the status of the status word is saved inbetween and restored
+properly after a bankswitch each bank can be used simultaneously.
+
+Alternatively you could keep an eye on the TOP and STACKPOINTER indicators,
+making sure they are the same as before when initiating a bankswitch.
+By using FFREE, FFREEP and FINCSTP or FDECSTP instructions you may manually
+manipulate the stack.
+
+This feature of the IIT chips can be used to perform complex operations
+in registers with many components remaining the same for a large dataset,
+only saving intermediary results to one memory location, bankswitching 
+to the next series of operands, loading that one operand and continuing the
+calculation with the next set of operands already in that bank. This does
+require another read into the new bank but may save time and memoryspace
+compared to memory based operands or multiple pass algorithms with multiple
+arrays of intermediary results.
+
+
+
+
+FENI / FDISI  Enable /Disable Floating point interrupts
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FENI     / FNENI / FDISI    / FNDISI
+Opcode  : 9B DB E0 / DB E0 / 9B DB E1 / DB E1
+Bug in  : Opcodes have no meaning on 287+ (are ignored there)
+
+Function:
+FENI Clears the interrupt enable mask in the FPU Control Word, effectively
+allowing the FPU to generate interrupts. FNENI does not issue a WAIT
+before doing this. These instruction only have a meaning on 87s.
+
+FDISI Sets the interrupt enable mask in the FPU Control Word, effectively
+denying the FPU to generate interrupts. FNDISI does not issue a WAIT
+before doing this. These instruction only have a meaning on 87s.
+
+All these instructions are effectively ignored on the 287+.
+They do not cause an invalid opcode exception.
+
+
+
+
+FPREM  Calculate modulus of ST by ST(1), store in ST
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FPREM
+Opcode  : D9 F8
+Bug in  : all 87 and 287
+
+Function:
+FPREM calculates the modulus remainder of ST divided by ST(1) and stores
+the result into ST. The procedure can also be seen as a repeated
+subtraction of ST by ST(1).
+
+There are several interesting things about this instruction:
+
+The exponent magnitude difference should be no more than 63 or else the
+instruction cannot reduce the ST properly in one execution. This means
+you would have to execute the instruction several times to get a correct
+result for large magnitude differences.
+If this is the case, condition code bit C2 is set until the result in ST
+is ok. Storing the Status Word and checking C2 should be done if the
+condition could occur in your data set.
+
+In addition to that, if the instruction is done, the least-significant
+three bits of the quotient are stored in C3,C1 and C0.
+If arguments to the tangent function are reduced by PI/4 the codes
+represent one of the eight octants of a radius for which the tangent is
+to be calculated.
+
+FPREM does not operate according to the IEEE 754 standard, FPREM1
+with opcode d9 f5 does, but is about 15-25 clocks slower than FPREM.
+
+The bug appears on the 87 and 287 when 64^a+b is performed with a>=1
+and b==1 or 2. In that case the condition code bits represent an
+incorrect value. There is no FP workaround. Test to prevent the situation.
+Apparently this bug does not appear in the FPREM1 instruction.
+
+
+
+
+FPTAN  Calculate tangent of ST
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FPTAN
+Opcode  : D9 F2
+Bug in  : some 486 / 487, difference between pre-287xls and 287xl+
+
+Function:
+FPTAN calculates the ratio between x and y in the following formula:
+
+   x
+   -  = TAN(original ST)
+   y
+
+The y result replaces the original argument in ST and x is then pushed
+onto the stack. On pre-287xl FPUs, the values for y and x may be anything,
+the ratio however is correct. On 287xl+ FPUs, x is always 1.
+ST(1) represents the fractional value itself there.
+To generate the same set of results on all FPUs, the FPTAN should be
+followed by FDIV and FLD1. Note that this reproduces the original
+results on the 287xl+.
+
+Note that ST(7) must be free or an invalid operation exception may occur
+because x is pushed onto the stack.
+
+The 486 bug occurs when a specific set of code is executed with a specific
+set of data. There is no way you can anticipate this and the workaround
+should always be implemented if code will run on a 486/487.
+The bug corrupts the FPU stack without signalling it to either FPU or CPU.
+Data corruption is usually the result.
+Workaround: FPTAN should always be followed by: FCLEX, FINIT, FLDCW, FSTSW,
+FSTSWAX, <FSAVE> or <FSTENV> or by a WAIT and a non-FPU instruction.
+Do note that some of these FPU instructions contain bugs themselves.
+
+
+
+
+FRSTOR  Restore FPU state saved to memory by FSAVE
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FRSTOR
+Opcode  : DB [mod:100:r/m] disp
+Bug in  : some 387
+
+Function:
+FRSTOR loads the FPU internal registers (including ST-registers) and the
+environment from the memory operand. See <FPU State image layout>.
+
+If either of the two last bytes of the image being read by FRSTOR cannot
+be read for whatever reason, the instruction cannot be restarted on
+some 387s.
+
+A workaround is to attempt to read those bytes before the FRSTOR is
+executed or to align the image on a 128 byte boundary so it is
+unlikely to fall outside a segment or page boundary.
+Should that be the case, the integer unit can cause an exception or
+make sure the page (in case of a swapped page) is read into memory
+before FRSTOR starts.
+
+
+
+
+FSAVE  Save FPU state to memory
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSAVE / FNSAVE
+Opcode  : (9B) DB [mod:110:r/m] disp
+Bug in  : some 387, some 386
+
+Function:
+FSAVE saves the FPU internal registers (including ST-registers) and the
+environment to the memory operand. See <FPU State image layout>.
+
+The FPU does not execute this instruction until all pending FPU
+operations have completed (decoded instructions have been processed).
+After completion, FSAVE initializes the FPU as if it had executed FINIT.
+
+Apparently on all FPUs, the contents of the data pointer field is
+undefined if the last FPU arithmetic instruction did not use a memory
+operand.
+
+On some 386s operating in Real or V86 mode, the opcode saved is incorrect.
+The linear address saved for the opcode's address however is correct and
+can be used to retrieve the opcode. No opcode is saved in Protected mode.
+
+If either of the two last bytes of the image being saved by FSAVE cannot
+be accessed for whatever reason, the instruction cannot be restarted on
+some 387s.
+
+A workaround is to attempt to write to those bytes before the FSAVE is
+executed or to align the image on a 128 byte boundary so it is
+unlikely to fall outside a segment or page boundary.
+Should that be the case, the integer unit can cause an exception or
+make sure the page (in case of a swapped page) is read into memory
+before FSAVE starts.
+
+
+
+
+FSETPM  Make FPU use Protected Mode format in FSAVE and FSTENV
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSETPM
+Opcode  : DB E4
+Bug in  : no bug, it only works on 287 and 287xl. ignored on 386+
+
+Function:
+FSETPM tells the FPU to use the data format specified in the Protected
+Mode format of the <FSTENV> and <FSAVE> instructions.
+These instructions save different types of data depending on the current
+operating mode of the FPU.
+
+The instruction only has a meaning on the 287 and 287xl.
+
+
+
+
+FRSTPM  Make FPU use Real-Mode format in FSAVE and FSTENV
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FRSTPM
+Opcode  : DB F4
+Bug in  : no bug, it only works on 287 and 287xl. ignored on 386+
+
+Function:
+FRSTPM tells the FPU to use the data format specified in the Real-Mode
+format of the <FSTENV> and <FSAVE> instructions.
+These instructions save different types of data depending on the current
+operating mode of the FPU.
+
+The instruction only has a meaning on the 287 and 287xl.
+
+
+
+
+FSCALE  Adds the integer number in ST(1) to the exponent of ST
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSCALE
+Opcode  : D9 FD
+Bug in  : some 486
+
+Function:
+FSCALE multiplies the value in ST by a power of two, given in ST(1).
+Pre-387s assume the value in ST(1) to be an integer in the range
+-2^15 <= , < +2^15. 387+ do not assume anything about the value.
+The value in ST(1) is always chopped to the nearest integer closest
+to zero.
+
+There is a bug in some 486s which allows denormal or pseudo-denormals to
+be returned as a result, apparently without issuing an Invalid Operation
+exception. For this to happen, ST(1) must be within the range
+-1 < ST(1) < 1 and ST must be a pseudo-denormal or denormal while
+underflow exceptions must not be masked. When it occurs, the value from
+ST is returned as the result.
+
+There is no workaround other than to avoid the situation. Leaving
+underflow exceptions masked may prevent this bug from showing up.
+
+
+
+
+FSINCOS  Calculate both Sine and Cosine of ST
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSINCOS
+Opcode  : DB FB
+Bug in  : some 486, invalid on pre-287xl and IIT
+
+Function:
+FSINCOS calculates both Sine and Cosine of an argument in ST.
+The first result, sine, is stored into the original ST, destroying the
+source value. The second result, cosine, is then pushed onto the stack.
+
+Note that ST(7) must be free or an invalid operation exception may occur
+because the cosine is pushed onto the stack.
+
+The 486 bug occurs when a specific set of code is executed with a specific
+set of data. There is no way you can anticipate this and the workaround
+should always be implemented if code will run on a 486/487.
+The bug corrupts the FPU stack without signalling it to either FPU or CPU.
+Data corruption is usually the result.
+Workaround: FSINCOS should always be followed by: FCLEX, FINIT, FLDCW,
+FSTSW, FSTSWAX, <FSAVE> or <FSTENV> or by a WAIT
+and a non-FPU instruction. Do note that some of these FPU instructions
+contain bugs themselves.
+
+
+
+
+FSTENV  Store Floating point Environment
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Mnemonic: FSTENV
+Opcode  : (9B) D9 [mod:110:r/m] disp
+Bug in  : some 386
+
+Function:
+FSTENV saves the FPU environment to the memory operand.
+See <FPU environment image layout>.
+This environment does not include the FPU stack, but does include
+Control Word, Status Word, Tag Word and exception pointers.
+
+The FPU does not execute this instruction until all pending FPU
+operations have completed (decoded instructions have been processed).
+After completion, FSTENV initializes the FPU as if it had executed FINIT.
+
+Apparently on all FPUs, the contents of the data pointer field is
+undefined if the last FPU arithmetic instruction did not use a memory
+operand.
+
+On some 386s operating in Real or V86 mode, the opcode saved is incorrect.
+The linear address saved for the opcode's address however is correct and
+can be used to retrieve the opcode. No opcode is saved in Protected mode.
+
+If either of the two last bytes of the image being saved by FSTENV cannot
+be accessed for whatever reason, the instruction cannot be restarted on
+some 387s.
+
+A workaround is to attempt to write to those bytes before the FSTENV is
+executed or to align the image on a 128 byte boundary so it is
+unlikely to fall outside a segment or page boundary.
+Should that be the case, the integer unit can cause an exception or
+make sure the page (in case of a swapped page) is read into memory
+before FSTENV starts.
+
+
+
+
+Layout of environment & state stored by FSTENV and FSAVE
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+The environment area saved by <FSTENV> and loaded by <FLDENV> depends on the
+current operating mode of the FPU. Apart from the mode, the current
+default addressing mode within the operating mode is also important.
+
+The state information saved by <FSAVE> and loaded by <FRSTOR>
+consists of the environment mentioned above but also has the eight FPU
+stack registers appended to it in temporary real format starting with the
+current ST register. Note that which register represents ST depends on
+the values in the Control Word.
+
+There are four states in which the 387+ FPU can operate
+
+  16-bit real or V86 mode (like in DOS)
+  16-bit Protected Mode (16-bit code segment)
+  32-bit real or V86 mode (using 66h and 67h prefixes)
+  32-bit Protected Mode (32-bit code segment)
+
+        16-bit real or V86 mode:
+
+    15     12      8       4       0
+    ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁ¿
+    ³d³d³d³d³0³0³0³0³0³0³0³0³0³0³0³0³ d = Data pointer bits 16 - 19
+    ÃÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄ´
+    ³ Data pointer bits 0-15        ³
+    ÃÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄÂÄ´     bit 11 is zero, not a typo.
+    ³i³i³i³i³0³o³o³o³o³o³o³o³o³o³o³o³ i = Instruction pointer bits 16 - 19
+    ÃÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄ´ o = Opcode highest 11 bits
+    ³ Instruction pointer bits 0-15 ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Tag Word (16 bit)             ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Status Word (16 bit)          ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Control Word (16 bit)         ³ Low memory
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+
+        16-bit Protected Mode:
+
+    15     12      8       4       0
+    ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁ¿
+    ³ Data selector                 ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Data offset                   ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Instruction selector          ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Instruction offset            ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Tag Word (16 bit)             ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Status Word (16 bit)          ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³ Control Word (16 bit)         ³ Low memory
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+
+
+
+        32-bit Real Mode:
+
+    31     28      24      20       15     12       8       4       0
+    ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÂÁÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁ¿
+    ³0³0³0³0³  Data pointer bits 16-31      ³0³0³0³0³0³0³0³0³0³0³0³0³
+    ÃÄÁÄÁÄÁÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄÁÄ´
+    ³- - - - - - - - - - - - - - - -³ Data pointer bits 0-15        ³
+    ÃÄÂÄÂÄÂÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÅÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³0³0³0³0³ Instruction pointer bits 16-31³0³ Opcode top 11 bits  ³
+    ÃÄÁÄÁÄÁÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÁÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Instruction pointer 0-15      ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Tag Word (16 bit)             ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Status Word (16 bit)          ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Control Word (16 bit)         ³
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                                                          Low memory
+
+
+        32-bit Protected Mode:
+
+    31     28      24      20       15     12       8       4       0
+    ÚÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÂÁÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÄÅÄÂÄÂÄÂÁ¿
+    ³- - - - - - - - - - - - - - - -³ Data selector                 ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³                      Data offset (32-bit)                     ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Instruction selector          ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³                  Instruction offset (32-bit)                  ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Tag Word (16 bit)             ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Status Word (16 bit)          ³
+    ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´
+    ³- - - - - - - - - - - - - - - -³ Control Word (16 bit)         ³
+    ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+                                                          Low memory
+
+     - = Don't care.

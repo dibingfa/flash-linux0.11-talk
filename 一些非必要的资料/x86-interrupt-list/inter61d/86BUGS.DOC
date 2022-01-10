@@ -1,0 +1,27 @@
+Hamarsoft (R) 86BUGS list, supplemental programs.
+The 86BUGSxy archive should contain the following files:
+
+- 86BUGS.HLP    Microsoft QuickHelp hypertext version of the list.
+- 86LISTnn.LST	The text version of the 86BUGS list.
+- FILE_ID.DIZ   An upload description for Bulletin Boards.
+- iAPX122.ZIP   Testing software archive from Chris Lueders, Germany.
+- INFO.EXE      CPU info program with various information regarding your
+                processor.
+- STAT.EXE      Pentium Processor Pipeline & features performance monitor.
+
+Both STAT and INFO are provided by Christian Ludloff. These programs are
+based on his article in the german C't Magazine of November 1994 (issue 11).
+
+iAPX122 is a testing program provided by Chris Lueders. It tests for some
+of the bugs mentioned in the 86BUGS list.
+
+All programs are provided with this list as a service from Hamarsoft to the
+readers of the 86BUGS list. Hamarsoft does not accept any liability for
+these programs whatsoever.
+
+The 86BUGS list is also distributed with Ralf Brown's Interrupt List.
+
+[86BUGS.HLP has been omitted for space reasons, and the other files except
+for 86LISTnn.LST are located in INTERrrD.ZIP.  86LISTnn.LST has been
+renamed to 86BUGS.LST for compatibility with hypertext conversion
+programs expecting that name.]

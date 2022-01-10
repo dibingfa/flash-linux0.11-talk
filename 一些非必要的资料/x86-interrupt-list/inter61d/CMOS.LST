@@ -1,0 +1,2015 @@
+CMOS-Memory Map			Release 61		Last change 16jul00
+Copyright (c) 1989-1999,2000 Ralf Brown
+
+Originally compiled from multiple sources by Padgett Peterson
+<padgett@tccslr.dnet.mmc.com>.
+
+No guarantees of any kind.
+
+Copyrights/Trademarks belong to whoever they may belong to.
+
+Found: Algorithm used by IBM in calculating CRC checksums for PS/2
+       (see bytes 32h-33h). Complex (recursive part is 12 lines of
+       assembly) and not yet validated for every model.
+--------!---Note-----------------------------
+			Background
+
+The CMOS (complementary metal oxide semiconductor) memory is actually 
+a 64 or 128 byte battery-backed RAM memory module that is a part of the 
+system clock chip. Some IBM PS/2 models have the capability for a
+2k (2048 byte) CMOS ROM Extension.
+
+First used with clock-calender cards for the IBM PC-XT, when the PC/AT
+(Advanced Technology) was introduced in 1985, the Motorola MC146818 
+became a part of the motherboard. Since the clock only uses fourteen of 
+the RAM bytes, the rest are available for storing system configuration data.
+
+Interestingly, the original IBM-PC/AT (Advanced Technology) standard for 
+the region 10h-3Fh is nearly universal with one notable exception: The 
+IBM PS/2 systems deviate considerably (Note: AMSTRAD 8086 machines were 
+among the first to actively use the CMOS memory available and since they 
+*predate* the AT, do not follow the AT standard).
+
+This is just another example of how IBM created a standard, lost control 
+of it, tried to replace it, failed and lost market share in the process. 
+
+Originally, the IBM PC/AT only made use of a small portion of CMOS memory
+and was defined in the IBM PC/AT Technical Reference Manual, specifically 
+bytes 10h, 12h, 14h-18h, 2Eh-33h. The balance was left undefined but was 
+quickly appropriated by various BIOS manufacturers for such user-selectable 
+options such as wait states, clock speeds, initial boot drive selection, and 
+password storage.
+
+Later, as CMOS memory requirements grew, newer clock chips with 128
+bytes of RAM came into use. However the fact remains that once the AT 
+standard was established, only IBM has tried to change the definitions 
+of that first description.
+
+			Accessing the CMOS
+
+The CMOS memory exists outside of the normal address space and cannot
+contain directly executable code. It is reachable through IN and OUT
+commands at port number 70h (112d) and 71h (113d). To read a CMOS byte,
+an OUT to port 70h is executed with the address of the byte to be read and
+an IN from port 71h will then retrieve the requested information. The 
+following BASIC fragment will read 128 CMOS bytes and print them to the 
+screen in 8 rows of 16 values.
+
+The CMOS RAM space has an upper limit of 128 bytes because of the structure
+of port 70: only bits 0-6 are used for addressing, bit 7 is used to 
+enable (0) or disable (1) Non-Maskable Interrupts (NMI) and explains why
+IBM uses 80h OR <address> to read/write data & follows with  a "throw-away"
+call.
+
+Note that if the CMOS only has 64 bytes available, addressing will 
+generally wrap and addresses from 40h-7Fh will mirror 00h-3Fh. Output will 
+be hexadecimal.
+
+10 CLS
+20 FOR i = 0 TO &H7F 
+30 OUT &H70, i
+40 PRINT USING "\   \"; HEX$(INP(&H71));
+50 NEXT i
+60 PRINT " " 
+
+Note: where not otherwise noted, all data points are expressed as BYTES
+      these are eight bit values and are read from MSB to LSB e.g.
+      0000 0000	    0101 1010 binary would be written as 5Ah
+      7654 3210	    where only some bits are used this is represented with
+		    Xs e.g bits 5-3 would be shown as 00xx x000
+
+Note: the entries for AMI WinBIOS also apply to AMIBIOS with core dates of 
+	12/15/95 or later
+
+
+Newer BIOSes have two checksums in the CMOS RAM, the second one covering
+bytes 40h through 7Ch (or 7Eh).  Unfortunately, the second checksum is at
+a different location in different BIOSes.  The following code from 
+Agapov Vasiliy Pavlovich <arhfond@online.ru> (28 Aug 1996) is designed to
+find the location of the second checksum byte on *any* BIOS (successfully
+tested on various versions of AMI and AWARD BIOSes).
+
+Agapov's instructions for use:
+> Before starting this code make sure to load the 128 bytes of CMOS data
+> to the buffer at CMOS_DATA and assume DS as data area segment register.
+
+START:	CALL	WHAT_CMOS
+	JC	NO_SECOND_CHS
+
+; Checksum location is in word at  CHECKS_ADDRESS
+
+NO_SECOND_CHS:
+
+; There's no second checksum in this CMOS
+
+END:
+
+;******************************* SUBS **********************************
+
+WHAT_CMOS:	MOV	SI,OFFSET CMOS_DATA+40H
+		MOV	DI,OFFSET CMOS_DATA+7EH
+		CALL	FIND_CMOS_CHS
+		JNC	END_WCMOS
+		MOV	SI,OFFSET CMOS_DATA+41H
+		MOV	DI,OFFSET CMOS_DATA+7EH
+		CALL	FIND_CMOS_CHS
+END_WCMOS:	RET
+
+
+FIND_CMOS_CHS:	XOR	DX,DX
+		MOV	AX,DX
+FIND_CMOS_C1:	LODSB			; GET BYTE
+		ADD	DX,AX
+		CMP	SI,OFFSET CMOS_DATA+7CH	; ADDRESS OF CHECKSUM ?
+		JB	FIND_CMOS_C1
+		XCHG	DH,DL
+		CMP	DX,[SI]		; CHECKSUM FOUND ?
+		JZ	END_FCMOS
+		XCHG	DH,DL
+		CMP	SI,DI
+		JB	FIND_CMOS_C1
+		STC
+		RET
+END_FCMOS:	MOV	[CHECKS_ADDRESS],SI	; SAVE CHECKSUM POSITION
+		CLC
+		RET
+
+******************************** DATA *******************************
+
+CHECKS_ADDRESS	DW	0
+
+CMOS_DATA	DB   128 DUP (?)
+
+--------!---Note-----------------------------
+		Organization of CMOS Memory - Clock
+
+00h-0Eh is defined by the clock hardware and all must follow it.  Other 
+manufacturers generally follow the same format as specified for the
+region 10h - 2Fh. Some also follow the IBM format for 30h-33h but not all 
+(Zenith in particular is different).
+
+The first fourteen bytes are dedicated to the MC146818 chip clock functions 
+and consist of ten read/write data registers and four status registers, two 
+of which are read/write and two of which are read only.
+
+The format of the ten clock data registers (bytes 00h-09h) is:
+
+----------R00--------------------------------
+CMOS 00h - RTC - SECONDS
+Desc:	(BCD 00-59, Hex 00-3B)
+Note: Bit 7 is read only	
+SeeAlso: CMOS 01h,CMOS 02h,CMOS 04h
+----------R01--------------------------------
+CMOS 01h - RTC - SECOND ALARM
+Desc:	(BCD 00-59, Hex 00-3B; "don't care" if C0-FF)
+SeeAlso: CMOS 00h,CMOS 03h,CMOS 05h,CMOS 7Dh
+----------R02--------------------------------
+CMOS 02h - RTC - MINUTES
+Desc:	(BCD 00-59, Hex 00-3B)
+SeeAlso: CMOS 00h,CMOS 03h,CMOS 04h
+----------R03--------------------------------
+CMOS 03h - RTC - MINUTE ALARM
+Desc:	(BCD 00-59, Hex 00-3B; "don't care" if C0-FF))	
+SeeAlso: CMOS 00h,CMOS 02h,CMOS 05h,CMOS 7Dh,CMOS 7Eh"AMD-645"
+----------R04--------------------------------
+CMOS 04h - RTC - HOURS
+Desc:	(BCD 00-23, Hex 00-17 if 24 hr mode)
+	(BCD 01-12, Hex 01-0C if 12 hr am)
+	(BCD 81-92. Hex 81-8C if 12 hr pm)	      
+SeeAlso: CMOS 00h,CMOS 02h,CMOS 05h
+----------R05--------------------------------
+CMOS 05h - RTC - HOUR ALARM
+Desc:	(same as hours; "don't care" if C0-FF))	    
+SeeAlso: CMOS 01h,CMOS 03h,CMOS 04h
+----------R06--------------------------------
+CMOS 06h - RTC - DAY OF WEEK
+Desc:	(01-07 Sunday=1)    
+SeeAlso: CMOS 07h,CMOS 08h,CMOS 09h
+----------R07--------------------------------
+CMOS 07h - RTC - DATE OF MONTH
+Desc:	(BCD 01-31, Hex 01-1F)
+SeeAlso: CMOS 06h,CMOS 08h,CMOS 09h
+----------R08--------------------------------
+CMOS 08h - RTC - MONTH
+Desc:	(BCD 01-12, Hex 01-0C)	  
+SeeAlso: CMOS 06h,CMOS 07h,CMOS 09h
+----------R09--------------------------------
+CMOS 09h - RTC - YEAR
+Desc:	(BCD 00-99, Hex 00-63)	  
+Notes:	BCD/Hex selection depends on Bit 2 of register B (0Bh)
+	12/24 Hr selection depends on Bit 1 of register B (0Bh)
+	Alarm will trigger when contents of all three Alarm byte registers
+	  match their companions.
+SeeAlso: CMOS 06h,CMOS 07h,CMOS 08h
+
+The following is the on-chip status register information. 
+
+----------R0A--------------------------------
+CMOS 0Ah - RTC - STATUS REGISTER A (read/write) (usu 26h)
+
+Bitfields for Real-Time Clock status register A:
+Bit(s)	Description	(Table C0001)
+ 7	=1 time update cycle in progress, data ouputs undefined 
+	(bit 7 is read only)
+ 6-4	22 stage divider
+	010 = 32768 Hz time base (default)
+ 3-0	rate selection bits for interrupt
+	0000 none
+	0011 122 microseconds (minimum)
+	1111 500 milliseconds	
+	0110 976.562 microseconds (default 1024 Hz)
+Notes:	some operating systems seem to change the CMOS clock rate to slower
+	  values for unknown purposes. Since on older ATs the clock rate does
+	  not get restored after a cold boot, this may slow down disk
+	  operations for example under PC DOS which depends on the clock rate.
+	If IBMBIO.COM finds a model byte FCh (sub-models 00h, 01h, 02h, 03h,
+	  or 06h) during init, it resets the clock rate to the default value
+	  (00100110b).
+SeeAlso: #C0002,#C0003,#C0004
+----------R0B--------------------------------
+CMOS 0Bh - RTC - STATUS REGISTER B (read/write) 
+
+Bitfields for Real-Time Clock status register B:
+Bit(s)	Description	(Table C0002)
+ 7	enable clock setting by freezing updates
+ 6	enable periodic interrupt
+ 5	enable alarm interrupt
+ 4	enable update-ended interrupt
+ 3	enable square wave output
+ 2	Data Mode - 0: BCD, 1: Binary
+ 1	24/12 hour selection - 1 enables 24 hour mode
+ 0	Daylight Savings Enable
+	=1 enables automatic switching to/from DST in April and October
+Notes:	some operating systems seem to change the CMOS clock rate to slower
+	  values for unknown purposes. Since on older ATs the clock rate does
+	  not get restored after a cold boot, this may slow down disk
+	  operations for example under PC DOS which depends on the clock rate.
+	If IBMBIO.COM finds a model byte FCh (sub-models 00h, 01h, 02h, 03h,
+	  or 06h) during init, it resets the clock rate to the default value
+	  (00100110b).
+SeeAlso: #C0001,#C0003,#C0004
+----------R0C--------------------------------
+CMOS 0Ch - RTC - STATUS REGISTER C (Read only)
+
+Bitfields for Real-Time Clock status register C:
+Bit(s)	Description	(Table C0003)
+ 7	Interrupt request flag
+	=1 when any or all of bits 6-4 are 1 and appropriate enables
+	  (Register B) are set to 1. Generates IRQ 8 when triggered.
+ 6	Periodic Interrupt flag
+ 5	Alarm Interrupt flag 
+ 4	Update-Ended Interrupt Flag
+ 3-0	unused
+SeeAlso: #C0001,#C0002,#C0004
+----------R0D--------------------------------
+CMOS 0Dh - RTC - STATUS REGISTER D (read only)
+
+Bitfields for Real-Time Clock status register D:
+Bit(s)	Description	(Table C0004)
+ 7	Valid RAM - 1 indicates battery power good, 0 if dead or disconnected.
+ 6-0	unused (0)
+--------!---Note-----------------------------
+		Organization of CMOS Memory - non-Clock
+
+The last two bytes in the first hexadecimal decade (hexade ?) were not 
+specified in the PC/AT but may have the following use on some systems:
+----------R0E--------------------------------
+CMOS 0Eh  - IBM PS/2 - DIAGNOSTIC STATUS BYTE 
+
+Bitfields for IBM PS/2 diagnostic status byte:
+Bit(s)	Description	(Table C0005)
+ 7	indicates clock has lost power
+ 6	incorrect checksum
+ 5	equipment configuration is incorrect
+	  (power-on check requires that at least one floppy be installed)
+ 4	error in memory size
+ 3	controller or disk drive failed initialization
+ 2	time is invalid
+ 1	installed adaptors do not match configuration
+ 0	time-out while reading adaptor ID
+Note:	Compaq machines with dual hard disk controllers support at least bits
+	  7 and 6
+----------R0E13------------------------------
+CMOS 0Eh-13h - AMSTRAD - TIME AND DATE MACHINE LAST USED
+----------R0F--------------------------------
+CMOS 0Fh - IBM - RESET CODE (IBM PS/2 "Shutdown Status Byte")
+
+(Table C0006)
+Values for Reset Code / Shutdown Status Byte:
+ 00h-03h perform power-on reset
+   00h	software reset or unexpected reset
+   01h	reset after memory size check in real/virtual mode
+	(or: chip set initialization for real mode reentry)
+   02h	reset after successful memory test in real/virtual mode
+   03h	reset after failed memory test in real/virtual mode
+ 04h	INT 19h reboot
+ 05h	flush keyboard (issue EOI) and jump via 40h:0067h
+ 06h	reset (after successful test in virtual mode)
+	(or: jump via 40h:0067h without EOI)
+ 07h	reset (after failed test in virtual mode)
+ 08h	used by POST during protected-mode RAM test (return to POST)
+ 09h	used for INT 15/87h (block move) support
+ 0Ah	resume execution by jump via 40h:0067h
+ 0Bh	resume execution via IRET via 40h:0067h
+ 0Ch	resume execution via RETF via 40h:0067h
+ 0Dh-FFh perform power-on reset
+--------!---Note-----------------------------
+
+The second group of values extends from address 10h to 2Dh. The word at
+2Eh-2Fh is a byte-wise summation of the values in these bytes. Most BIOSes
+will generate a CMOS Checksum error if this value is invalid however many 
+programs ignore the checksum and report the apparent value. The current
+version of MSD reports my XT as having 20+ MB of extended memory. 
+
+Where a definiton appears universal, no identification is made. Where
+the definition is thought to be specific to a manufacturer/model (AMI, 
+AMSTRAD, IBM AT, IBM PS/2) the identification is enclosed in parens. The
+AMSTAD definitions appear to relate to 8088/8086 (PC and PC/XT class)
+mchines only. AT class machines appear to adhere to IBM PC/AT fornat.
+
+----------R10--------------------------------
+CMOS 10h - IBM - FLOPPY DRIVE TYPE
+Note:	a PC having a 5 1/4 1.2 Mb A: drive and a 1.44 Mb B: drive will
+	  have a value of 24h in byte 10h. With a single 1.44 drive: 40h.
+
+Bitfields for floppy drives A/B types:
+Bit(s)	Description	(Table C0007)
+ 7-4	first floppy disk drive type (see #C0008)
+ 3-0	second floppy disk drive type (see #C0008)
+
+(Table C0008)
+Values for floppy drive type:
+ 00h	no drive
+ 01h	360 KB 5.25 Drive
+ 02h	1.2 MB 5.25 Drive - note: not listed in PS/2 technical manual
+ 03h	720 KB 3.5 Drive
+ 04h	1.44 MB 3.5 Drive
+ 05h	2.88 MB 3.5 drive
+ 06h-0Fh unused
+SeeAlso: #C0007
+----------R11--------------------------------
+CMOS 11h - IBM PS/2 - FIRST FIXED DISK DRIVE TYPE BYTE (00-FFh)
+Note:	if IBM ESDI or SCSI drive controller is used, CMOS drive type will be
+	  zero (00 - no drive) and INT 13h will be directed to controller ROM.
+----------R11--------------------------------
+CMOS 11h - older AMI Hi-Flex BIOS - KEYBOARD TYPEMATIC DATA 
+
+Bitfields for AMI Hi-Flex BIOS keyboard typematic data:
+Bit(s)	Description	(Table C0009)
+ 7	enable Typematic
+ 6-5	Typematic Delay (wait before begin repeating)
+	00b 250 ms
+	01b 500 ms
+	10b 750 ms
+	11b 100 ms
+ 4-0	Typematic Rate (char/sec)
+	00000b - 30.0	 01000b - 15.9	10000b - 7.5  11000b - 3.7
+	00001b - 26.7	 01001b - 13.3	10001b - 6.7  11001b - 3.3
+	00010b - 24.0	 01010b - 12.0	10010b - 6.0  11010b - 3.0
+	00011b - 21.8	 01011b - 10.9	10011b - 5.5  11011b - 2.7
+	00100b - 20.0	 01100b - 10.0	10100b - 5.0  11100b - 2.5
+	00101b - 18.5	 01101b -  9.2	10101b - 4.6  11101b - 2.3
+	00110b - 17.1	 01110b -  8.6	10110b - 4.3  11110b - 2.1
+	00111b - 16.0	 01111b -  8.0	10111b - 4.0  11111b - 2.0
+----------R11--------------------------------
+CMOS 11h - AMI - ADVANCED SETUP OPTIONS
+
+Bitfields for AMI advanced setup options:
+Bit(s)	Description	(Table C0010)
+ 7	mouse enabled
+ 6	test memory above 1 megabyte
+ 5	generate clicks during memory test
+ 4	enable memory parity check
+ 3	display key for Setup while booting
+ 2	store user-defined disk data at top of memory instead of 0030h:0000h
+ 1	request F1 keypress on boot error
+----------R11--------------------------------
+CMOS 11h - AMI WinBIOS - BOOT OPTIONS
+SeeAlso: CMOS 13h"AMI"
+
+Bitfields for AMI WinBIOS boot options:
+Bit(s)	Description	(Table C0011)
+ 7	systems boots with high CPU speed
+ 6	memory test above 1MB enabled
+ 5	memory test tick sound enabled
+ 4	floppy drive seek at boot enabled
+ 3	"Hit <Del>" message enabled
+ 2	BIOS extended RAM area takes 1K at top of memory instead of 30h:0000h
+ 1	wait for F1 key on error
+ 0	NumLock enabled at boot
+----------R11--------------------------------
+CMOS 11h - AWARD - CONFIGURATION BITS
+SeeAlso: CMOS 5Eh"AWARD"
+
+Bitfields for AWARD configuration bits:
+Bit(s)	Description	(Table C0012)
+ 7	NumLock ON at reboot
+ 6	IDE Block Mode enabled
+ 5	???
+ 4	Shadow ROM BIOS at CC00-CFFF
+ 3	Shadow ROM BIOS at C800-CBFF
+ 2	???
+ 1	BIOS Password Enabled (supervisor)
+ 0	0 = Password controls BIOS Setup Only
+	1 = Password required to enter System
+SeeAlso: #C0083
+
+Code snippet by Jens Rehsack:
+   FUNCTION CalcPossiblePassword( PasswordValue: WORD ): STRING[8];
+   VAR
+	    I			   :  BYTE;
+	    C			   :  CHAR;
+	    S			   :  STRING[8];
+
+   BEGIN
+     I := 0;
+     WHILE PasswordValue <> 0 DO
+     BEGIN
+       Inc( I );
+       IF $263 > PasswordValue THEN
+       BEGIN
+	 IF $80 > PasswordValue THEN
+	   S[I] := CHAR( PasswordValue )
+	 ELSE IF $B0 > PasswordValue THEN
+	   S[I] := CHAR( PasswordValue AND $77 )
+	 ELSE IF $11D > PasswordValue THEN
+	   S[I] := CHAR( $30 OR ( PasswordValue AND $0F ) )
+	 ELSE IF $114 > PasswordValue THEN
+	 BEGIN
+	   S[I] := CHAR( $64 OR ( PasswordValue AND $0F ) );
+	   IF '0' > S[I] THEN
+	     S[I] := CHAR( BYTE( S[I] ) + 8 );
+	 END ELSE IF $1C2 > PasswordValue THEN
+	   S[I] := CHAR( $70 OR ( PasswordValue AND $03 ) )
+	 ELSE IF $1E4 > PasswordValue THEN
+	   S[I] := CHAR( $30 OR ( PasswordValue AND $03 ) )
+	 ELSE
+	 BEGIN
+	   S[I] := CHAR( $70 OR ( PasswordValue AND $0F ) );
+	   IF 'z' < S[I] THEN
+	     S[I] := CHAR( BYTE( S[I] )	 - 8 );
+	 END;
+       END ELSE
+	 S[I] := CHAR( $30 OR ( PasswordValue AND $3 ) );
+       PasswordValue := ( PasswordValue - BYTE( S[I] ) ) SHR 2;
+     END;
+
+     S[0] := CHAR( I );
+     PasswordValue := I SHR 1;
+     WHILE PasswordValue < I DO
+     BEGIN {this is to do because award starts calculating with the last letter}
+
+       C := S[BYTE( S[0] ) - I + 1];
+       S[BYTE( S[0] ) - I + 1] := S[I];
+       S[I] := C;
+       Dec( I );
+     END;
+
+     CalcPossiblePassword := S;
+   END;
+
+"Okay, the algorithms based on the knowlege, that the award-bios' 4.50 and 4.51
+ but not (seems to) with earlier versions stores only the last 2 bit of every
+ character typed in..."
+
+   int CalcPasswordCRC( char pw[8] ): word
+   {
+     register int i = 8;
+     register unsigned w = 0;
+     while( i-- )
+       w |= ( unsigned( pw[i] ) & 0x3 ) << ( i * 2 );
+     return w;
+   }
+----------R11--------------------------------
+CMOS 11h - Quadtel HT12 BIOS 03.05.03 - CONFIGURATION BITS
+
+Bitfields for Quadtel HT12 configuration bits:
+Bit(s)	Description	(Table C0013)
+ 7	640K RAM present
+ 6	extension type (=CPU's Machine Status Word)
+ 3-2	NumLock state at boot time
+	00 Auto
+	01 NumLock on
+	10 Numlock off
+ 0	384K RAM relocated to top of memory
+----------R12--------------------------------
+CMOS 12h - IBM - HARD DISK DATA
+Notes:	A PC with a single type 2 (20 Mb ST-225) hard disk will have 20h in
+	  byte 12h
+	some PCs utilizing external disk controller ROMs will use type 0 to
+	  disable ROM BIOS (e.g. Zenith 248 with Plus HardCard).
+
+Bitfields for IBM hard disk data:
+Bit(s)	Description	(Table C0014)
+ 7-4	First Hard Disk Drive
+	00	No drive
+	01-0Eh	Hard drive Type 1-14
+	0Fh	Hard Disk Type 16-255
+		(actual Hard Drive Type is in CMOS RAM 19h)
+ 3-0	Second Hard Disk Drive Type
+	(same as first except extrnded type will be found in 1Ah).
+----------R12--------------------------------
+CMOS 12h - IBM PS/2 - SECOND FIXED DISK DRIVE TYPE (00-FFh)
+SeeAlso: CMOS 11h"IBM PS/2"
+----------R13--------------------------------
+CMOS 13h - AMI Hi-Flex BIOS - ADVANCED SETUP OPTIONS
+SeeAlso: CMOS 11h"WinBIOS"
+
+Bitfields for AMI Hi-Flex BIOS advanced setup options:
+Bit(s)	Description	(Table C0015)
+ 7	Mouse Enabled (1 = On)
+ 6	Test Memory above 1 MB (1 = On)
+ 5	Memory Test Tick Sound (1 = On)
+ 4	Memory Parity Error Check (1 = On)
+ 3	Press <Esc> to Disable Memory Test (1 = On)
+ 2	User-Defined Hard Disk (1 = Type 47 data area at address 0:300h)
+ 1	Wait for <F1> Message if Error (1 = On)
+ 0	Turn Num Lock On at boot (1 = On)
+----------R13--------------------------------
+CMOS 13h - AMI WinBIOS - PERIPHERAL OPTIONS
+
+Bitfields for AMI WinBIOS peripheral options:
+Bit(s)	Description	(Table C0016)
+ 7-5	typematic rate
+	000-111 = 6,8,10,12,15,20,24,30 cps
+ 4	numeric processor test enabled
+----------R13--------------------------------
+CMOS 13h - PS/2 MCA - INTERNAL POST OPERATIONS
+
+Bitfields for PS/2 MCA internal POST operations:
+Bit(s)	Description	(Table C0017)
+ 7	POST sets VGA pel information
+ 6	RTC battery OK
+ 5	invoke ROM BASIC from POST
+ 4	POST sets typematic to 30cps/250ms delay instead of 10.9cps/500ms
+ 3-2	unused or unknown
+ 1	network password installed
+ 0	power-on password installed
+----------R13--------------------------------
+CMOS 13h - AWARD - Configuration Bits
+
+Bitfields for AWARD configuration bits:
+Bit(s)	Description	(Table C0018)
+ 7	set keyboard typematic rate
+ 4-6	keyboard repeat rate
+	000 =  6 cps
+	001 =  8 cps
+	010 = 10 cps
+	011 = 12 cps
+	100 = 15 cps
+	101 = 20 cps
+	110 = 24 cps
+	111 = 30 cps
+ 2-3	keyboard typematic delay
+	00 =  250 Msec
+	01 =  500 Msec
+	10 =  750 Msec
+	11 = 1000 Msec
+ 1	???
+ 0	boot up floppy seek
+----------R14--------------------------------
+CMOS 14h - IBM - EQUIPMENT BYTE 
+
+Bitfields for IBM equipment byte:
+Bit(s)	Description	(Table C0019)
+ 7-6	number of floppy drives (system must have at least one)
+	00b   1 Drive
+	01b   2 Drives
+	10b ??? 3 Drives
+	11b ??? 4 Drives
+ 5-4	monitor type
+	00b Not CGA or MDA (observed for EGA & VGA)
+	01b 40x25 CGA
+	10b 80x25 CGA
+	11b MDA (Monochrome)
+ 3	display enabled (turned off to enable boot of rackmount)
+ 2	keyboard enabled (turn off to enable boot of rackmount)
+ 1	math coprocessor installed
+ 0	floppy drive installed (turned off for rackmount boot)
+----------R14--------------------------------
+CMOS 14h - AMSTRAD - BYTE user RAM checksum
+Desc:	LSB of sum of all user bytes should be AAh
+----------R15--------------------------------
+CMOS 15h - IBM - BASE MEMORY IN KB (low byte)
+----------R1516------------------------------
+CMOS 15h-16h - AMSTRAD - Enter key scancode/ASCII code
+Size:	WORD
+Desc:	specify the BIOS keycode for keyboard scancode 74h
+Note:	default: 1C0Dh	- emulates Return key
+SeeAlso: INT 09,CMOS 17h"AMSTRAD"
+----------R16--------------------------------
+CMOS 16h - IBM - BASE MEMORY IN KB (high byte)
+Note:	The value in 15h-16h should be the same as in 0:413h and that
+	  returned by INT 12h. A PC having 640k (280h) of conventional
+	  memory will return 80h in byte 15h and 02h in byte 16h.
+----------R17--------------------------------
+CMOS 17h - IBM - EXTENDED MEMORY IN KB (low byte)
+----------R1718------------------------------
+CMOS 17h-18h - AMSTRAD - Forward delete key scancode/ASCII code
+Size:	WORD
+Desc:	specify the BIOS keycode for keyboard scancode 70h
+Note:	default: 2207h	- emulates ^G (bell/beep)
+SeeAlso: INT 09,CMOS 15h"AMSTRAD",CMOS 19h"AMSTRAD"
+----------R18--------------------------------
+CMOS 18h - IBM - EXTENDED MEMORY IN KB (high byte)
+Notes:	some systems will only accommodate 15 MB extended (16 MB total)
+	Format is the same as in 15h-16h
+----------R19--------------------------------
+CMOS 19h - IBM - FIRST EXTENDED HARD DISK DRIVE TYPE
+Note:	not in original AT specification but now nearly universally used
+	  except for PS/2.
+
+(Table C0020)
+Values for extended hard disk drive type:
+  00-0Fh unused (would not require extension. Note: this has the effect of
+	  making type 0Fh (15d) unavailable.
+  10h-FFh First Extended Hard Drive Type 16d-255d
+Note: For most manufacturers the last drive type (typically either 47d or 49d)
+	is "user defined" and parameters are stored elsewhere in the CMOS.
+----------R19--------------------------------
+CMOS 19h - MCA - SLOT 0 ADAPTER CARD ID
+----------R19--------------------------------
+CMOS 19h - AMI - ???
+
+Bitfields for AMI location 19h:
+Bit(s)	Description	(Table C0021)
+ 3-0	???
+ 7-4	???
+----------R191A------------------------------
+CMOS 19h-1Ah - AMSTRAD - Joystick fire button 1 scancode/ASCII code
+Size:	WORD
+Desc:	specify the BIOS keycode for keyboard scancode 77h
+Note:	default: FFFFh	- (no translation)
+SeeAlso: INT 09,CMOS 17h"AMSTRAD",CMOS 1Bh"AMSTRAD"
+----------R1A--------------------------------
+CMOS 1Ah - SECOND EXTENDED HARD DISK DRIVE TYPE
+SeeAlso: CMOS 19h"IBM",#C0020
+----------R1A--------------------------------
+CMOS 1Ah - MCA - SLOT 0 ADAPTER CARD ID
+----------R1B--------------------------------
+CMOS 1Bh - MCA - SLOT 1 ADAPTER CARD ID
+----------R1B--------------------------------
+CMOS 1Bh - AMI - First Hard Disk (type 47) user defined: # of Cylinders, LSB
+Note:	this byte is also supported by Compaq machines with dual hard disk
+	  controllers
+SeeAlso: MEM F000h:FFE8h
+----------R1B1C------------------------------
+CMOS 1Bh-1Ch - AMSTRAD - Joystick fire button 2 scancode/ASCII code
+Size:	WORD
+Desc:	specify the BIOS keycode for keyboard scancode 78h
+Note:	default: FFFFh	- (no translation)
+SeeAlso: INT 09,CMOS 19h"AMSTRAD",CMOS 1Dh"AMSTRAD"
+----------R1B--------------------------------
+CMOS 1Bh - PHOENIX - LSB of Word to 82335 RC1 roll compare register
+----------R1B--------------------------------
+CMOS 1Bh - AWARD - CONFIGURATION BITS
+
+Bitfields for AWARD shadow RAM configuration bits:
+Bit(s)	Description	(Table C0022)
+ 7-4	???
+ 3	Shadow ROM BIOS at DC00-DFFF
+ 2	shadow	    "	 "   " D800-DBFF
+ 1	shadow	    "	 "   " D400-D7FF
+ 0	shadow	    "	 "   " D000-D3FF
+----------R1C--------------------------------
+CMOS 1Ch - MCA - SLOT 1 ADAPTER CARD ID
+----------R1C--------------------------------
+CMOS 1Ch - AMI - First Hard Disk user defined: # of Cylinders, High Byte
+----------R1C--------------------------------
+CMOS 1Ch - PHOENIX - MSB of Word to 82335 RC1 roll compare register
+--------y-R1C--------------------------------
+CMOS 1Ch,1Dh - AWARD - Password
+Note:	Stored as a checksum using the following algorithm:
+	    initialize 16-bit checksum to zero
+	    for each ASCII character between 32 (space) and 127 (DEL) in the
+	      password,	add character to checksum, then rotate left two bits
+	    store low byte of result in 1Ch and high byte in 1Dh (for user
+	      password, use locations 4Dh and 4Eh instead)
+SeeAlso: CMOS 4Dh"AWARD"
+----------R1D--------------------------------
+CMOS 1Dh - MCA - SLOT 2 ADAPTER CARD ID
+----------R1D--------------------------------
+CMOS 1Dh - AMI - First Hard Disk user defined: Number of Heads
+----------R1D--------------------------------
+CMOS 1Dh - AMSTRAD - mouse button 1 scancode/ASCII code
+Size:	WORD
+Desc:	specify the BIOS keycode for keyboard scancode 7Dh
+Note:	default: FFFFh	- (no translation)
+SeeAlso: INT 09,CMOS 1Bh"AMSTRAD",CMOS 1Fh"AMSTRAD"
+----------R1D--------------------------------
+CMOS 1Dh - Zenith Z-200 monitor - BOOT DRIVE SELECTION
+
+Bitfields for Zenith Z-200 boot drive selection:
+Bit(s)	Description	(Table C0023)
+ 6-5	(0xx0 0000)
+	00 - MFM Monitor
+	01 - First floppy drive (A:)
+	10 - First fixed disk (C:)
+	11 - First floppy drive (A:). If not there then First fixed disk (C:)
+		(this is the default).
+----------R1D--------------------------------
+CMOS 1Dh - PHOENIX - LSB of Word to 82335 RC2 roll compare register
+--------y-R1D--------------------------------
+CMOS 1Dh - AWARD - MSB of password checksum (see byte 1Ch)
+----------R1D--------------------------------
+CMOS 1Dh - Quadtel HT 12 BIOS - first user def. drive: # of cylinders low byte
+----------R1E--------------------------------
+CMOS 1Eh - MCA - SLOT 2 ADAPTER CARD ID
+----------R1E--------------------------------
+CMOS 1Eh - AMI - First Hard Disk user defined: WPC-low
+Desc:	Write Precompensation Cylinder, Low Byte, for first user-defined hard
+	  disk
+----------R1E--------------------------------
+CMOS 1Eh - PHOENIX - MSB of Word to 82335 RC2 roll compare register
+----------R1E--------------------------------
+CMOS 1Eh - AWARD - 2nd Hard Disk user defined: # of Cylinders Low Byte
+----------R1E--------------------------------
+CMOS 1Eh - Quadtel HT 12 BIOS - FIRST USER DEFINED DRIVE
+
+Bitfields for Quadtel HT-12 user-defined drive heads/cylinders:
+Bit(s)	Description	(Table C0024)
+ 7-4	number of heads
+ 3-0	number of cylinders (MSB)
+----------R1F--------------------------------
+CMOS 1Fh - MCA - SLOT 3 ADAPTER CARD ID
+----------R1F--------------------------------
+CMOS 1Fh - AMI - First Hard Disk user defined: WPC-high
+Desc:	Write Precompensation Cylinder, high byte, for first user-defined
+	  hard disk
+----------R1F20------------------------------
+CMOS 1Fh-20h - AMSTRAD - mouse button 2 scancode/ASCII code
+Size:	WORD
+Desc:	specify the BIOS keycode for keyboard scancode 7Eh
+Note:	default: FFFFh	- (no translation)
+SeeAlso: INT 09,CMOS 1Dh"AMSTRAD"
+----------R1F--------------------------------
+CMOS 1Fh - AWARD - 2nd Hard Disk user defined (type 48): # of Cylinders High
+----------R1F--------------------------------
+CMOS 1Fh - Quadtel HT 12 BIOS - first user def. drive: WPC-low
+Desc:	Write Precompensation Cylinder, low byte, for first user-defined
+	  hard disk
+----------R20--------------------------------
+CMOS 20h - MCA - SLOT 3 ADAPTER CARD ID
+----------R20--------------------------------
+CMOS 20h - AMI - First Hard Disk user defined: Control Byte
+
+Bitfields for AMI user-defined hard disk control byte:
+Bit(s)	Description	(Table C0025)
+ 7-6	no retries (1)
+ 5	bad sector map at last cylinder+1
+ 4	unused (0)
+ 3	more than 8 heads
+ 2-0	unused (0)
+----------R20--------------------------------
+CMOS 20h - AMI WinBIOS - First Hard Disk user defined: Landing Zone, Low Byte
+----------R20--------------------------------
+CMOS 20h - PHOENIX - First user defined hard disk (type 48) Cylinders LSB
+----------R20--------------------------------
+CMOS 20h - AWARD - 2nd Hard Disk user defined (type 48): Number of Heads
+----------R20--------------------------------
+CMOS 20h - Quadtel HT 12 BIOS - FIRST USER DEFINED DRIVE
+SeeAlso: CMOS 26h"Quadtel"
+
+Bitfields for Quadtel landing zone/write-precompensation:
+Bit(s)	Description	(Table C0026)
+ 7-4	landing zone MSB
+ 3-0	write precom. cyl. MSB
+----------R21--------------------------------
+CMOS 21h - MCA - Programmable Option Select configuration byte 2
+----------R21--------------------------------
+CMOS 21h - AMI - First Hard Disk user defined: Landing Zone, Low Byte
+----------R21--------------------------------
+CMOS 21h - AMI WinBIOS - First Hard Disk user defined: Landing Zone, High Byte
+----------R21--------------------------------
+CMOS 21h - AMSTRAD - MOUSE X SCALING FACTOR
+Note:	default: 0Ah
+----------R21--------------------------------
+CMOS 21h - PHOENIX - First user defined hard disk (type 48) Cylinders MSB
+----------R21--------------------------------
+CMOS 21h - AWARD - 2nd Hard Disk user defined (type 48): Write Precomp Low Byte
+----------R21--------------------------------
+CMOS 21h - Quadtel HT 12 BIOS - first user def. drive: landing zone low byte
+----------R22--------------------------------
+CMOS 22h - MCA - Programmable Option Select configuration byte 3
+----------R22--------------------------------
+CMOS 22h - AMI - First Hard Disk user defined: Landing Zone, High Byte
+----------R22--------------------------------
+CMOS 22h - AMI WinBIOS - First Hard Disk user defined: # of Sectors per track
+----------R22--------------------------------
+CMOS 22h - AMSTRAD - MOUSE Y SCALING FACTOR
+Note:	default: 0Ah
+----------R22--------------------------------
+CMOS 22h - PHOENIX - First user defined hard disk (type 48)	 of Heads
+----------R22--------------------------------
+CMOS 22h - AWARD - 2nd Hard Disk user defined (type 48): Write Precomp High Byte
+----------R22--------------------------------
+CMOS 22h - Quadtel HT 12 BIOS - first user def. drive: sectors per track
+----------R23--------------------------------
+CMOS 23h - MCA - Programmable Option Select configuration byte 4
+----------R23--------------------------------
+CMOS 23h - AMI - First Hard Disk user defined: # of Sectors per track
+----------R23--------------------------------
+CMOS 23h - AMI WinBIOS - Second Hard Disk user defined: # Cylinders, Low Byte
+----------R23--------------------------------
+CMOS 23h - AMSTRAD - INITIAL VDU MODE AND DRIVE COUNT
+Note:	default: 20h
+
+Bitfields for Amstrad initial VDU mode/drive count:
+Bit(s)	Description	(Table C0027)
+ 7	enables extended serial flow control (NB this is buggy)
+ 6	set if two floppy drives installed
+ 5-4	(from Amstrad 1640 tech ref)
+	00    Internal video adapter
+	01    CGA card added; 40 x 25 mode
+	10    CGA card added; 80 x 25 mode
+	11    mono card added; 80 x 25 mode
+----------R23--------------------------------
+CMOS 23h - PHOENIX - First user defined hard disk (type 48) Write Precomp. LSB
+----------R23--------------------------------
+CMOS 23h - AWARD - 2nd Hard Disk user defined (type 48): Landing Zone Low Byte
+----------R23--------------------------------
+CMOS 23h - Quadtel HT 12 BIOS - second user def. drive: # of cylinders low byte
+----------R24--------------------------------
+CMOS 24h - MCA - Programmable Option Select configuration byte 5
+----------R24--------------------------------
+CMOS 24h - AMI - Second Hard Disk user defined: # Cylinders, Low Byte
+----------R24--------------------------------
+CMOS 24h - AMI WinBIOS - Second Hard Disk user defined: # Cylinders, High Byte
+----------R24--------------------------------
+CMOS 24h - AMSTRAD - INITIAL VDU CHARACTER ATTRIBUTE
+Note: default: 7h
+----------R24--------------------------------
+CMOS 24h - PHOENIX - First user defined hard disk (type 48) Write Precomp. MSB
+----------R24--------------------------------
+CMOS 24h - AWARD - 2nd Hard Disk user defined (type 48): Landing Zone High Byte
+----------R24--------------------------------
+CMOS 24h - Quadtel HT 12 BIOS - SECOND USER DEFINED DRIVE
+SeeAlso: CMOS 1Eh"Quadtel",#C0024
+----------R25--------------------------------
+CMOS 25h - AMI - Second Hard Disk user defined: # of Cylinders, High Byte
+----------R25--------------------------------
+CMOS 25h - AMI WinBIOS - Second Hard Disk user defined: Number of Heads
+----------R25--------------------------------
+CMOS 25h - AMSTRAD - size of RAM disk in 2K blocks
+Note:	default: 0  - only used by the RAMDISK software supplied.
+----------R25--------------------------------
+CMOS 25h - PHOENIX - First user defined hard disk (type 48) Parking zone LSB
+----------R25--------------------------------
+CMOS 25h - AWARD - 2nd Hard Disk user defined (type 48): Sectors per Track
+----------R25--------------------------------
+CMOS 25h - Quadtel HT 12 BIOS - second user def. drive: WPC-low
+Desc:	Write Precompensation Cylinder, low byte
+----------R25--------------------------------
+CMOS 25h - COMPAQ 386 - MACHINE CONFIGURATION
+SeeAlso: MEM F000h:FFE0h
+
+Bitfields for Compaq machine configuration:
+Bit(s)	Description	(Table C0099)
+ 3	soft drive???
+----------R26--------------------------------
+CMOS 26h - AMI - Second Hard Disk user defined: Number of Heads
+----------R26--------------------------------
+CMOS 26h - AMI WinBIOS - Second Hard Disk user defined: WPC-low
+Desc:	Write Precompensation Cylinder, Low Byte
+----------R26--------------------------------
+CMOS 26h - AMSTRAD - INITIAL SYSTEM UART SETUP BYTE
+Note:	default: E3h - format as for Int 14h fn 0
+----------R26--------------------------------
+CMOS 26h - PHOENIX - First user defined hard disk (type 48) Parking zone MSB
+----------R26--------------------------------
+CMOS 26h - AWARD - 1st Hard Disk user defined (type 49): # Cylinders, Low Byte
+----------R26--------------------------------
+CMOS 26h - Quadtel HT 12 BIOS - SECOND USER DEFINED DRIVE
+SeeAlso: CMOS 20h"Quadtel",#C0026
+----------R27--------------------------------
+CMOS 27h - AMI - Second Hard Disk user defined: WPC-low
+Desc:	Write Precompensation Cylinder, Low Byte
+----------R27--------------------------------
+CMOS 27h - AMI WinBIOS - Second Hard Disk user defined: WPC-high
+Desc:	Write Precompensation Cylinder, High Byte
+----------R27--------------------------------
+CMOS 27h - AMSTRAD - INITIAL EXTERNAL UART SETUP BYTE
+Note:	default: E3h - format as for Int 14h fn 0
+----------R27--------------------------------
+CMOS 27h - PHOENIX - First user defined hard disk (type 48) Sectors per track
+----------R27--------------------------------
+CMOS 27h - AWARD - 1st Hard Disk user defined (type 49): # Cylinders, High Byte
+----------R27--------------------------------
+CMOS 27h - Quadtel HT 12 BIOS - SECOND USER DEF. DRIVE: landing zone low byte
+----------R28--------------------------------
+CMOS 28h - AMI - Second Hard Disk user defined: WPC-high
+Desc:	Write Precompensation Cylinder, High Byte
+----------R28--------------------------------
+CMOS 28h - AMI WinBIOS - Second Hard Disk user defined: Landing Zone, Low Byte
+----------R28--------------------------------
+CMOS 28h - HP Vectra - checksum over bytes 29h-2Dh
+----------R28--------------------------------
+CMOS 28h - AWARD - 1st Hard Disk user defined (type 49): Number of Heads
+----------R28--------------------------------
+CMOS 28h - Quadtel HT 12 BIOS - second user def. drive: sectors per track
+----------R283F------------------------------
+CMOS 28h-3Fh - AMSTRAD - user applications default: zeroes
+----------R29--------------------------------
+CMOS 29h - AMI - Second Hard Disk user defined: Control Byte
+Note:	80h if # of heads is equal or greater than 8
+----------R29--------------------------------
+CMOS 29h - AMI WinBIOS - Second Hard Disk user defined: Landing Zone, High Byte
+----------R29--------------------------------
+CMOS 29h - PHOENIX - LSB word to Intel 82335 CC0 compare register
+----------R29--------------------------------
+CMOS 29h - AWARD - 1st Hard Disk user defined (type 49): Write Precomp Low Byte
+----------R29--------------------------------
+CMOS 29h - HP Vectra - OFFICIALLY RESERVED "CMOS_HPCONFIG"
+
+Bitfields for HP Vectra CMOS_HPCONFIG:
+Bit(s)	Description	(Table C0028)
+ 7	include byte 2Ch in checksum (default = 0)
+ 6	select second ROM video adapter as primary (default = 0)
+ 5-1	reserved
+ 0	manufacturing test enabled
+----------R2A--------------------------------
+CMOS 2Ah - AMI - Second Hard Disk user defined: Landing Zone, Low Byte
+----------R2A--------------------------------
+CMOS 2Ah - AMI WinBIOS - Second Hard Disk user defined: # of Sectors per track
+----------R2A--------------------------------
+CMOS 2Ah - HP Vectra - OFFICIALLY RESERVED
+----------R2A--------------------------------
+CMOS 2Ah - PHOENIX - MSB word to Intel 82335 CC0 compare register
+----------R2A--------------------------------
+CMOS 2Ah - AWARD - 1st Hard Disk user defined (type 49): Write Precomp High
+----------R2B--------------------------------
+CMOS 2Bh - AMI - Second Hard Disk user defined: Landing Zone, High Byte
+----------R2B--------------------------------
+CMOS 2Bh - AMI WinBIOS - IDE and shadowing control
+
+Bitfields for AMI WinBIOS IDE/shadowing control:
+Bit(s)	Description	(Table C0029)
+ 7	LBA mode enabled
+ 6	IDE block mode enabled
+ 5	32-bit transfer enabled
+ 4	unused
+ 3	shadowing of DC00h enabled
+ 2	shadowing of D800h enabled
+ 1	shadowing of D400h enabled
+ 0	shadowing of D000h enabled
+SeeAlso: #C0030
+----------R2B--------------------------------
+CMOS 2Bh - HP Vectra - OFFICIALLY RESERVED
+----------R2B--------------------------------
+CMOS 2Bh - PHOENIX - LSB word to Intel 82335 CC1 compare register
+----------R2B--------------------------------
+CMOS 2Bh - AWARD - 1st Hard Disk user defined (type 49): Landing Zone  Low Byte
+----------R2C--------------------------------
+CMOS 2Ch - AMI - Second Hard Disk user defined: # of Sectors per track
+----------R2C--------------------------------
+CMOS 2Ch - AMI WinBIOS - CACHE CONTROL
+
+Bitfields for AMI WinBIOS cache control:
+Bit(s)	Description	(Table C0030)
+ 7	external RAM cache enabled
+ 6	internal RAM cache enabled
+ 5	shadowing of E000h enabled
+ 4	shadowing of CC00h enabled
+ 3	shadowing of C800h enabled
+ 2	shadowing of C400h (video ROM) enabled
+ 1	shadowing of C000h (video ROM) enabled
+ 0	shadowing of system BIOS (F000h, 64K) enabled
+SeeAlso: #C0029
+----------R2C--------------------------------
+CMOS 2Ch - HP Vectra - OFFICIALLY RESERVED
+----------R2C--------------------------------
+CMOS 2Ch - COMPAQ - NumLock CONTROL
+
+Bitfields for Compaq NumLock control:
+Bit(s)	Description	(Table C0031)
+ 6	0 - numlock OFF on boot, 1 - numlock ON at boot
+----------R2C--------------------------------
+CMOS 2Ch - PHOENIX - MSB word to Intel 82335 CC1 compare register
+----------R2C--------------------------------
+CMOS 2Ch - AWARD - 1st Hard Disk user defined (type 49): Landing Zone High Byte
+----------R2D--------------------------------
+CMOS 2Dh - AMI Hi-Flex BIOS - CONFIGURATION OPTIONS 
+
+Bitfields for AMI Hi-Flex BIOS configuration options:
+Bit(s)	Description	(Table C0032)
+ 7	Weitek Installed
+ 6	Floppy Drive Seek - turn off for fast boot
+ 5	Boot Order
+	0 - Drive C:, then A:
+	1 - Drive A:, then C:
+ 4	Boot Speed (0 - Low; 1 - High)
+ 3	External Cache Enable (1 = On)
+ 2	Internal Cache Enable (1 = On)
+ 1	Use Fast Gate A20 after boot (1 = On)
+ 0	Turbo Switch (1 = On)
+----------R2D--------------------------------
+CMOS 2Dh - AMI WinBIOS - flags
+
+Bitfields for AMI WinBIOS flags:
+Bit(s)	Description	(Table C0033)
+ 7	Weitek Installed
+ 6	bootsector virus protection enabled
+ 5	mouse enabled
+ 4	password checking (0 setup, 1 always)
+ 3	parity error check enabled
+ 2-1	boot order (00 = C:A:, 01 = A:C:)
+ 0	turbo switch enabled
+----------R2D--------------------------------
+CMOS 2Dh - HP Vectra - OFFICIALLY RESERVED
+----------R2D--------------------------------
+CMOS 2Dh - PHOENIX - ???
+Note:	checks for values AAh or CCh
+----------R2D--------------------------------
+CMOS 2Dh - AWARD - 1st Hard Disk user defined (type 49): Sectors per Track
+----------R2E--------------------------------
+CMOS 2Eh - IBM - Standard CMOS Checksum, High Byte
+----------R2F--------------------------------
+CMOS 2Fh - IBM - Standard CMOS Checksum, Low Byte
+
+ 2Eh and 2Fh are as defined by the original IBM PC/AT specification and
+ represent a byte-wise additive sum of the values in locations 10h-2Dh only,
+ 00h-0Fh and 30h-33h are not included. This definition is used by most
+ clone manufacturers including AMI, Compaq, Tandon, NEC, and Zenith. The 
+ IBM PS/2 line does not follow this standard with the range 19h-31h being 
+ undefined.  On the original HP Vectra, this checksum only covers locations
+ 10h to 20h, with a separate checksum for bytes 29h-2Ch (see offset 28h).
+
+----------R30--------------------------------
+CMOS 30h - IBM - EXTENDED MEMORY IN KB (low byte)
+SeeAlso: CMOS 17h"IBM",CMOS 31h
+----------R31--------------------------------
+CMOS 31h - IBM - EXTENDED MEMORY IN KB (high byte) 
+ (this appears to mirror the value in bytes 17h-18h.) 
+SeeAlso: CMOS 18h"IBM",CMOS 30h
+----------R32--------------------------------
+CMOS 32h - IBM - CENTURY BYTE (BCD value for the century - currently 19h)
+SeeAlso: CMOS 7Fh
+----------R32--------------------------------
+CMOS 32h - IBM PS2 - CONFIGURATION CRC LOW BYTE
+Desc:	CRC for range 10h-31h
+SeeAlso: CMOS 33h"PS/2"
+----------R33--------------------------------
+CMOS 33h - IBM - INFORMATION FLAG
+
+Bitfields for IBM information flag:
+Bit(s)	Description	(Table C0034)
+ 7	128K ??? believe this indicates the presence of the special 128k
+	  memory expansion board for the AT to boost the "stock" 512k
+	  to 640k - all machines surveyed have this bit set)
+ 6-0	???
+----------R33--------------------------------
+CMOS 33h - IBM PS/2 - CONFIGURATION CRC HIGH BYTE (see entry for 32h)
+SeeAlso: CMOS 32h"PS/2"
+----------R33--------------------------------
+CMOS 33h - PHOENIX - Bit 4 (000x 0000) bit 4 from Intel CPU register CR0
+----------R33--------------------------------
+CMOS 33h - AMI WinBIOS - INFORMATION FLAGS
+
+Bitfields for AMI WinBIOS information flags:
+Bit(s)	Description	(Table C0035)
+ 7	IBM-defined top 128K present
+ 6-4	CPU internal clock frequency
+	000-011 = 25, 33, 40, 50 MHz
+	100 = 60/66 MHz
+	101 = 75 MHz
+	110 = 80 MHz
+	111 = 90/100 MHz
+ 2-1	CPU internal clock multiplier
+	00-11 = 1,2,3,4
+ 0	FlashROM programming enabled (Ctrl-Home pressed at power on)
+	Note: this location is not included in any CMOS checksum fields
+----------R33--------------------------------
+CMOS 33h - Quadtel HT12 BIOS 03.05.03 - INFORMATION FLAGS
+
+Bitfields for Quadtel HT12 information flags:
+Bit(s)	Description	(Table C0036)
+ 7	640K RAM present
+ 6	extension type (=CPU's Machine Status Word)
+ 1	print welcome message
+----------R34--------------------------------
+CMOS 34h - AMI - SHADOWING & BOOT PASSWORD
+SeeAlso: CMOS 35h"AMI"
+
+Bitfields for AMI shadowing control 1:
+Bit(s)	Description	(Table C0037)
+ 7-6	password selection
+	00b Disable
+	10b Reserved
+	01b Set
+	11b Boot
+ 5	C8000h Shadow ROM (Bit 1 = On) 
+ 4	CC000h Shadow ROM (Bit 1 = On)
+ 3	D0000h Shadow ROM (Bit 1 = On)
+ 2	D4000h Shadow ROM (Bit 1 = On)
+ 1	D8000h Shadow ROM (Bit 1 = On)
+ 0	DC000h Shadow ROM (Bit 1 = On)
+SeeAlso: #C0038
+----------R34--------------------------------
+CMOS 34h - AMI - EXTENDED MEMORY >16M (low byte)
+Note:	this and the following byte contain the total extended memory in 64K
+	  blocks
+SeeAlso: CMOS 35h"AMI"
+----------R34--------------------------------
+CMOS 34h - (AMI WinBIOS) system-specific information (bits 3-1)
+----------R343A------------------------------
+CMOS 34h-3Ah - (AWARD) ??? unused ???  Defaults to all FFh's.
+----------R35--------------------------------
+CMOS 35h - AMI - EXTENDED MEMORY >16M (high byte)
+Note:	this and the previous byte contain the total extended memory in 64K
+	  blocks
+SeeAlso: CMOS 34h"AMI"
+----------R35--------------------------------
+CMOS 35h - AMI - SHADOWING CONTROL 2
+SeeAlso: CMOS 34"AMI"
+
+Bitfields for AMI shadowing control 2:
+Bit(s)	Description	(Table C0038)
+ 7	E0000h Shadow ROM (Bit 1 = On)
+ 6	E4000h Shadow ROM (Bit 1 = On)
+ 5	E8000h Shadow ROM (Bit 1 = On)
+ 4	EC000h Shadow ROM (Bit 1 = On)
+ 3	F0000h Shadow ROM (Bit 1 = On)
+ 2	C0000h Shadow ROM (Bit 1 = On)
+ 1	C4000h Shadow ROM (Bit 1 = On)
+ 0	reserved
+SeeAlso: #C0037
+----------R35--------------------------------
+CMOS 35h - AMI WinBIOS - EXTENDED MEMORY SIZE IN 64K BLOCKS (low byte)
+SeeAlso: CMOS 36h"AMI WinBIOS"
+----------R35--------------------------------
+CMOS 35h - PHOENIX - Second user defined hard disk (type 48) Cylinders LSB
+Note:	used only when PS/2 style password is NOT in effect
+----------R35--------------------------------
+CMOS 35h - AMI 1990 Hyundai super-NB368S notebook
+
+Bitfields for Hyundai configuration:
+Bit(s)	Description	(Table C0039)
+ 3-1	shadowing
+	000  shadow disabled
+	011  video BIOS shadowed
+	100  main BIOS shadowed
+	111  both
+ 0	coprocessor enabled
+----------R36--------------------------------
+CMOS 36h - PHOENIX - Second user defined hard disk (type 48) Cylinders MSB
+Note:	used only when PS/2 style password is NOT in effect.
+----------R36--------------------------------
+CMOS 36h - AWARD - IDE control
+
+Bitfields for AWARD IDE control:
+Bit(s)	Description	(Table C0040)
+ 6	IDE 32-bit transfer mode
+----------R36--------------------------------
+CMOS 36h - AMI - ???
+
+Bitfields for AMI ???:
+Bit(s)	Description	(Table C0041)
+ 1-0	???
+ 3-2	???
+----------R36--------------------------------
+CMOS 36h - AMI WinBIOS - EXTENDED MEMORY SIZE IN 64K BLOCKS (high byte)
+----------R36--------------------------------
+CMOS 36h - AMI 1990 Hyundai super-NB368S notebook - CPU/VIDEO CONFIGURATION
+
+Bitfields for Hyundai CPU/video control:
+Bit(s)	Description	(Table C0042)
+ 7	=1 LCD, 0 CRT at boot time
+ 6	=1 reversed, 0 normal video mode
+ 5	=1 external, 0 internal keyboard
+ 4-3	CPU speed
+	00  high
+	01  medium
+	10  low
+ 2-1	harddisk vendor 1,2,3,4
+ 0	relocation enabled
+----------R36--------------------------------
+CMOS 36h - Quadtel HT12 BIOS 03.05.03 - EXTENDED MEMORY (low byte)
+----------R37--------------------------------
+CMOS 37h - IBM PS/2 - DATE CENTURY BYTE 
+----------R37--------------------------------
+CMOS 37h - PHOENIX - Second user defined hard disk (type 48) # of heads
+       NOTE: used only when PS/2 style password is NOT in effect.
+----------R37--------------------------------
+CMOS 37h - AMI Hi-Flex BIOS - ???
+
+Bitfields for AMI Hi-Flex BIOS location 37h:
+Bit(s)	Description	(Table C0043)
+ 7	???
+----------R37--------------------------------
+CMOS 37h - AMI WinBIOS - SETUP COLORS, PASSWORD SEED
+
+Bitfields for AMI WinBIOS setup colors and password seed:
+Bit(s)	Description	(Table C0044)
+ 7-4	password seed
+ 3-0	WinBIOS/AMIBIOS setup color options
+----------R37--------------------------------
+CMOS 37h - Quadtel HT12 BIOS 03.05.03 - EXTENDED MEMORY (high byte)
+--------y-R373A------------------------------
+CMOS 37h-3Ah - AMI 1990 Hyundai super-NB368S notebook - PASSWORD
+Desc:	encoded password, max 4 bytes.
+----------R38--------------------------------
+CMOS 38h - PHOENIX - Second user defined hard disk (type 48) Write Precomp. LSB
+Note:	used only when PS/2 style password is NOT in effect.
+--------y-R383D------------------------------
+CMOS 38h-3Dh - AMI - Encrypted Password
+--------y-R383F------------------------------
+CMOS 38h-3Fh - ??? IBM PS/2 - Encrypted Password
+Note:	Initialized to 00h in all bytes. Will accept from 1-7 scan codes. 
+----------R39--------------------------------
+CMOS 39h - PHOENIX - Second user defined hard disk (type 48) Write Precomp. MSB
+Note:	used only when PS/2 style password is NOT in effect.
+----------R3A--------------------------------
+CMOS 3Ah - PHOENIX - Second user defined hard disk (type 48) Parking Zone LSB
+Note:	used only when PS/2 style password is NOT in effect.
+----------R3B--------------------------------
+CMOS 3Bh - PHOENIX - Second user defined hard disk (type 48) Parking Zone MSB
+Note:	used only when PS/2 style password is NOT in effect.
+----------R3B--------------------------------
+CMOS 3Bh - AWARD - CONFIGURATION BITS
+
+Bitfields for AWARD configuration bits:
+Bit(s)	Description	(Table C0045)
+ 4-7	Screen Colors Used in Setup (see #C0046)
+ 3-2	translation used for first disk
+	00 normal, 01 LBA, 10 Large, 11 Auto
+ 1	??? Default = 1
+ 0	Enable External Cache
+
+(Table C0046)
+Values for AWARD setup colors:
+ 0000  Yellow/White on Blue (Default)
+ 0001  Magenta/White on Blue
+ 0010  Yellow/Black on Green
+ 0011  Yellow/Green on Cyan
+ 0100  Black/Yellow on Cyan
+ 0101  Brown/White on Cyan
+ 0110  White/Green on Red
+ 0111  White/White on Red
+ 1000  Green/White on Magenta
+ 1001  Yellow/Red on Magenta
+ 1010  Red/White on Grey
+ 1011  Yellow/White on Grey
+ 1100  Cyan/White on Grey
+ 1101  Cyan/Yellow on Black
+ 1110  White on Black (Monochrome)
+ 1111  Green/Red on Black
+SeeAlso: #C0045
+----------R3C--------------------------------
+CMOS 3Ch - PHOENIX - Second user defined hard disk (type 48) Sectors per track
+Note:	used only when PS/2 style password is NOT in effect.
+----------R3C--------------------------------
+CMOS 3Ch - AWARD - Boot Configuration Bits
+
+Bitfields for AWARD boot configuration bits:
+Bit(s)	Description	(Table C0047)
+ 7	disable virus warning on boot
+ 6,5	???
+ 4	Quick POST Enabled
+ 3,2	translation used for second disk
+	00 normal, 01 LBA, 10 Large, 11 Auto
+ 1	Enable Turbo Switch Input
+ 0	0 = Boot from A, then C
+	1 = Boot from C, then A
+----------R3C--------------------------------
+CMOS 3Ch - Quadtel HT12 BIOS 03.05.03 - TOTAL MEMORY (low byte)
+SeeAlso: CMOS 3Dh"Quadtel"
+----------R3D--------------------------------
+CMOS 3Dh - AWARD - ???
+----------R3D--------------------------------
+CMOS 3Dh - Phoenix - ???
+Note:	bit 3 = base memsize 512K/640K
+----------R3D--------------------------------
+CMOS 3Dh - Quadtel HT12 BIOS 03.05.03 - TOTAL MEMORY (high byte)
+SeeAlso: CMOS 3Ch"Quadtel"
+----------R3E--------------------------------
+CMOS 3Eh - AMI - Extended CMOS Checksum, High Byte
+Note:	this checksum covers locations 34h - 3Dh, but is not used by some
+	  later AMI BIOSes
+----------R3E--------------------------------
+CMOS 3Eh - AWARD - BOOT CONFIGURATION BITS
+
+Bitfields for AWARD boot configuration bits:
+Bit(s)	Description	(Table C0048)
+ 7	Shadow Video BIOS at C000h
+ 6,5	???
+ 4	Swap Floppy Drive
+ 3	???
+ 2	Don't Halt on Diskette Errors at Boot
+ 1	Don't Halt on Keyboard Errors at Boot
+ 0	Never Halt for any error at Boot
+----------R3E--------------------------------
+CMOS 3Eh - Quadtel HT12 BIOS 03.05.03 - ???
+
+Bitfields for Quadtel ???:
+Bit(s)	Description	(Table C0049)
+ 2	system error occurred ?? (timer/RTC)
+ 0	=0 extended system configuration loaded
+	=1 checksum error
+----------R3E--------------------------------
+CMOS 3Eh - Phoenix - SHADOWING CONTROL
+
+Bitfields for Phoenix shadowing control:
+Bit(s)	Description	(Table C0050)
+ 7	relocate enable
+ 1	shadow video enable
+ 0	shadow BIOS enable
+----------R3F--------------------------------
+CMOS 3Fh - AMI - Extended CMOS Checksum, Low Byte
+Note:	this checksum covers locations 34h - 3Dh, but is not used by some
+	  later AMI BIOSes
+----------R3F--------------------------------
+CMOS 3Fh - AWARD - ???
+---------------------------------------------
+
+ End of original 64 CMOS RAM bytes. Many modern chips now contain 128
+ bytes and the IBM PS/2 has provision for 2k of "Expansion CMOS". 
+ The AMI HI-FLEX description is below. If the chip does have only
+ 64 bytes, addresses will wrap so that requests for bytes 40h-7Fh will 
+ return the same values as 00h-3Fh.
+
+--------p-R40--------------------------------
+CMOS 40h - AMI 1990 Hyundai super-NB368S notebook - POWER-SAVE CONFIGURATION
+
+Bitfields for Hyundai power-save configuration:
+Bit(s)	Description	(Table C0051)
+ 7	power save enabled
+ 6-0	HD power save wait, units of 1 minute (0-20)
+----------R40--------------------------------
+CMOS 40h - AWARD - Motherboard Chipset (SiS 85C501/85C502 shown)
+
+Bitfields for AWARD motherboard chipset:
+Bit(s)	Description	(Table C0052)
+ 7-1	???
+ 0	Automatic Configuration Enabled (Default: 1=enabled)
+----------R4055------------------------------
+CMOS 40h-55h - AMI WinBIOS - PCI BIOS setup data
+----------R41--------------------------------
+CMOS 41h - AMI - WAIT STATE CONFIGURATION
+
+Bitfields for AMI wait state configuration:
+Bit(s)	Description	(Table C0053)
+ 7-6	IOR/IOW Wait states
+ 5-4	16-bit DMA Wait States
+ 3-2	8-bit DMA Wait States
+ 1	EMR bit
+ 0	DMA Clock Source
+----------R4243------------------------------
+CMOS 42h-43h - ???
+----------R4244------------------------------
+CMOS 42h-44h - AWARD - ??? chipset setup ???
+----------R44--------------------------------
+CMOS 44h - AMI - NMI CONTROL
+
+Bitfields for AMI NMI control:
+Bit(s)	Description	(Table C0054)
+ 4	NMI Power Fail Warning
+ 3	NMI Local Bus Timeout
+----------R45--------------------------------
+CMOS 45h - AMI - BUS DELAYS
+
+Bitfields for AMI bus delays:
+Bit(s)	Description	(Table C0055)
+ 7-6	AT Bus 32-Bit Delay
+ 5-4	AT Bus 16-Bit Delay
+ 3-2	AT Bus 8-Bit Delay
+ 1-0	AT Bus I/O Delay
+SeeAlso: #C0058
+----------R45--------------------------------
+CMOS 45h - AMI (Saturn) - CACHE TAGS
+SeeAlso: CMOS 46h"Saturn"
+
+Bitfields for AMI (Saturn) cache tags:
+Bit(s)	Description	(Table C0056)
+ 7	base memory 640K instead of 512K
+ 4-3	external cache tag width
+	00 8 bits
+	01 9 bits
+	10 7 bits
+	11 7 bits
+----------R45--------------------------------
+CMOS 45h - AWARD - Motherboard Chipset (SiS 85C501/85C502 shown)
+
+Bitfields for AWARD motherboard chipset:
+Bit(s)	Description	(Table C0057)
+ 7	System BIOS Cacheable (Default: 1=enabled)
+ 6	Video BIOS Cacheable  (Default: 1=enabled)
+ 5-0	???
+----------R46--------------------------------
+CMOS 46h - AMI - BUS WAIT STATES
+
+Bitfields for AMI bus wait states:
+Bit(s)	Description	(Table C0058)
+ 7-6	AT Bus 32 Bit Wait States
+ 5-4	AT Bus 16 Bit Wait States
+ 3-2	AT Bus	8 Bit Wait States
+ 1-0	AT Bus Clock Source
+SeeAlso: #C0055
+----------R46--------------------------------
+CMOS 46h - AMI (Saturn) - SHADOW RAM CONTROL 1
+
+Bitfields for AMI (Saturn) shadow RAM control 1:
+Bit(s)	Description	(Table C0059)
+ 7-6	D000h-D3FFh shadow RAM
+	00 don't shadow
+	01 absent
+	10 shadow
+	11 reserved
+ 5-4	CC00h-CFFFh shadow RAM (as for D000h-D3FFh)
+ 3-2	C800h-CBFFh shadow RAM (as for D000h-D3FFh)
+ 1-0	C000h-C7FFh shadow RAM (as for D000h-D3FFh)
+SeeAlso: #C0060
+----------R4647------------------------------
+CMOS 46h-47h - AWARD - ??? chipset setup ???
+----------R47--------------------------------
+CMOS 47h - AMI (Saturn) - SHADOW RAM CONTROL 2
+
+Bitfields for AMI (Saturn) shadow RAM control 2:
+Bit(s)	Description	(Table C0060)
+ 7-6	DC00h-DFFFh shadow RAM
+	00 don't shadow
+	01 absent
+	10 shadow
+	11 reserved
+ 5-4	D800h-DBFFh shadow RAM (as for DC00h-DFFFh)
+ 3-2	D400h-D7FFh shadow RAM (as for DC00h-DFFFh)
+ 0	PCI VGA palette snooping 
+SeeAlso: #C0059
+----------R4750------------------------------
+CMOS 47h-50h - ???
+----------R484F------------------------------
+CMOS 48h-4Fh - AWARD - ??? unused ???  Defaults to all FFh's.
+--------y-R484F------------------------------
+CMOS 48h-4Fh - PhoenixBIOS A486 v1.01.E - USER PASSWORD
+Desc:	stores scan-codes for the password in the first seven bytes, and the
+	  low byte of the password checksum in the eighth byte
+SeeAlso: CMOS 50h"A486 v1.01.E"
+----------R48--------------------------------
+CMOS 48h - AMI (Saturn) - EXTERNAL CACHE
+
+Bitfields for AMI (Saturn) external cache:
+Bit(s)	Description	(Table C0061)
+ 5	external cache write-back instead of write-through
+----------R49--------------------------------
+CMOS 49h - AMI (Saturn) - PERFORMANCE
+
+Bitfields for AMI (Saturn) performance:
+Bit(s)	Description	(Table C0062)
+ 1	DRAM enhanced performance mode
+ 0	ISA/DMA enhanced performance mode
+SeeAlso: #C0063
+----------R4A--------------------------------
+CMOS 4Ah - AMI (Saturn) - BUS CONFIGURATION
+
+Bitfields for AMI (Saturn) bus configuration:
+Bit(s)	Description	(Table C0063)
+ 7	ISA enhanced performance mode
+ 6	ISA bus master installed
+ 5-4	PCI slot IRQ
+	00 IRQ5
+	01 IRQ9
+	10 IRQ15
+	11 IRQ15
+ 3	PCI on-board SCSI controller enabled
+ 1-0	ISA frame buffer
+	00 disabled
+	01 1MB at 15MB
+	10 2MB at 14MB
+	11 4MB at 12MB
+SeeAlso: #C0062
+----------R4B--------------------------------
+CMOS 4Bh - AMI (Saturn) - ON-BOARD PERIPHERALS
+
+Bitfields for AMI (Saturn) on-board peripherals:
+Bit(s)	Description	(Table C0064)
+ 4	onboard FDC enabled
+ 0	onboard IDE enabled
+----------R4C--------------------------------
+CMOS 4Ch - AMI (Saturn) - PARALLEL PORT
+
+Bitfields for AMI (Saturn) parallel port:
+Bit(s)	Description	(Table C0065)
+ 4	IRQ active high
+ 3	parallel port extended mode
+ 1-0	parallel port address
+----------R4C--------------------------------
+CMOS 4Ch - AMI (PicoPower) - CLOCK SPEEDS
+
+Bitfields for AMI (PicoPower) clock speeds:
+Bit(s)	Description	(Table C0066)
+ 7-6	back-to-back I/O delay
+	00  none
+	01  1 SYSCLK
+	10  2 SYSCLKs
+	11  3 SYSCLKs
+ 5-3	Turbo clock select
+	001 CLK2IN/3
+	010 CLK2IN/4
+	011 CLK2IN/5
+	100 CLK2IN/6
+	101 CLK2IN/7
+	110 CLK2IN/8
+	111 CLK2IN/9
+ 2-0	SYSCLK select (same as for Turbo clock select)
+----------R4D--------------------------------
+CMOS 4Dh - AMI (Saturn) - RESERVED
+----------R4D--------------------------------
+CMOS 4Dh - AMI (PicoPower) - MIDDLE BIOS
+Note:	Middle BIOS is enabled if bit 1 set
+--------y-R4D--------------------------------
+CMOS 4Dh - AWARD - USER PASSWORD
+SeeAlso: CMOS 4Eh"AWARD",CMOS 1Ch"AWARD"
+----------R4E--------------------------------
+CMOS 4Eh - AMI (Saturn) - SERIAL PORT
+
+Bitfields for AMI (Saturn) serial port:
+Bit(s)	Description	(Table C0067)
+ 7-5	serial port 1
+ 4-2	serial port 2
+ 0	manual programming mode
+----------R4E--------------------------------
+CMOS 4Eh - AMI (PicoPower) - TURBO BUS VIDEO
+
+Bitfields for AMI (PicoPower) Turbo Bus video:
+Bit(s)	Description	(Table C0068)
+ 2	memory enabled
+ 1	I/O enabled
+--------y-R4E--------------------------------
+CMOS 4Eh - AWARD - USER PASSWORD
+SeeAlso: CMOS 4Dh"AWARD",CMOS 1Ch"AWARD"
+----------R50--------------------------------
+CMOS 50h - AWARD - PCI Bus Slot 1 Latency Timer 0-255 (default: 0)
+--------y-R5057------------------------------
+CMOS 50h-57h - PhoenixBIOS A486 v1.01.E - ADMIN PASSWORD
+Desc:	stores scan-codes for the password in the first seven bytes, and the
+	  low byte of the password checksum in the eighth byte
+SeeAlso: CMOS 48h"A486 v1.01.E"
+----------R51--------------------------------
+CMOS 51h - AMI - MEMORY ACCESS CONTROL
+
+Bitfields for AMI memory access control:
+Bit(s)	Description	(Table C0069)
+ 7	Bank 0/1 RAS Precharge
+ 6	Bank 0/1 Access Wait States
+ 3-2	Bank 0/1 Wait States
+----------R51--------------------------------
+CMOS 51h - AWARD - PCI Bus Setup
+
+Bitfields for AWARD PCI bus setup:
+Bit(s)	Description	(Table C0070)
+ 7	PIRQ0# Interrupt Triggering
+	0 = Edge Sensitive,
+	1 = Level Sensitive
+ 6-2	??? Default: all 1's
+ 0-1	Slot 1 IRQ Setup
+	00 = A-PIRQ0 (Default)
+	01 = B-PIRQ1
+	10 = C-PIRQ2
+	11 = D-PIRQ3
+----------R52--------------------------------
+CMOS 52h - ???
+----------R52--------------------------------
+CMOS 52h - AWARD - PCI Bus Slot 2 Latency Timer 0-255 (default: 0)
+----------R53--------------------------------
+CMOS 53h - AMI - MEMORY ACCESS CONTROL
+
+Bitfields for AMI memory access control:
+Bit(s)	Description	(Table C0071)
+ 7	Bank 2/3 RAS Precharge
+ 6	Bank 2/3 Access Wait States
+ 3-2	Bank 2/3 Wait States
+----------R53--------------------------------
+CMOS 53h - AWARD - PCI Bus Setup
+
+Bitfields for AWARD PCI bus setup:
+Bit(s)	Description	(Table C0072)
+ 7	PIRQ1# Interrupt Triggering
+	0 = Edge Sensitive,
+	1 = Level Sensitive
+ 6-2	??? Default: all 1's
+ 0-1	Slot 2 IRQ Setup
+	00 = A-PIRQ1 (Default)
+	01 = B-PIRQ2
+	10 = C-PIRQ3
+	11 = D-PIRQ0
+--------p-R53--------------------------------
+CMOS 53h - AWARD v4.51PG APM - APM FUNCTION CONFIGURATION FOR ATX POWER SUPPLY
+SeeAlso: CMOS 54h"v4.51PG"
+
+Bitfields for AWARD v4.51PG ATX Power Supply Configuration #1:
+Bit(s)	Description	(Table C0073)
+ 7	power button override enabled
+ 6-2	???
+ 1	VGA is active monitor
+ 0	???
+SeeAlso: #C0074
+----------R547F------------------------------
+CMOS 54h-7Fh - ???
+----------R54--------------------------------
+CMOS 54h - AWARD - PCI Bus Slot 3 Latency Timer 0-255 (default: 0)
+--------p-R54--------------------------------
+CMOS 54h - AWARD v4.51PG APM - APM FUNCTION CONFIGURATION FOR ATX POWER SUPPLY
+SeeAlso: CMOS 53h"v4.51PG"
+
+Bitfields for AWARD v4.51PG ATX Power Supply Configuration #2:
+Bit(s)	Description	(Table C0074)
+ 7-2	???
+ 1	enable Resume on Ring 
+ 0	enable Resume on Alarm
+SeeAlso: #C0073
+----------R55--------------------------------
+CMOS 55h - AWARD - PCI Bus Setup
+
+Bitfields for AWARD PCI bus setup:
+Bit(s)	Description	(Table C0075)
+ 7	PIRQ2# Interrupt Triggering
+	0 = Edge Sensitive,
+	1 = Level Sensitive
+ 6-2	??? Default: all 1's
+ 0-1	Slot 3 IRQ Setup
+	00 = A-PIRQ2 (Default)
+	01 = B-PIRQ3
+	10 = C-PIRQ0
+	11 = D-PIRQ1
+--------p-R55--------------------------------
+CMOS 55h - AWARD v4.51PG - APM - POWER-ON DAY OF MONTH (Resume by Alarm)
+Note:	value is binary, rather than BCD as for most calendar functions
+SeeAlso: CMOS 56h"v4.51PG",CMOS 57h"v4.51PG"
+----------R56--------------------------------
+CMOS 56h - AWARD - ??? reserved for PCI Bus Slot 4 Latency Timer ???
+--------p-R56--------------------------------
+CMOS 56h - AWARD v4.51PG - APM - POWER-ON HOUR (Resume by Alarm)
+Note:	value is binary, rather than BCD as for most calendar functions
+SeeAlso: CMOS 55h"v4.51PG",CMOS 57h"v4.51PG"
+----------R57--------------------------------
+CMOS 57h - AWARD - PCI Bus Setup
+
+Bitfields for AWARD PCI bus setup:
+Bit(s)	Description	(Table C0076)
+ 7	PIRQ3# Interrupt Triggering
+	0 = Edge Sensitive,
+	1 = Level Sensitive
+ 6-0	???not used	Default: all 1's
+--------p-R57--------------------------------
+CMOS 57h - AWARD v4.51PG - APM - POWER-ON MINUTE (Resume by Alarm)
+Note:	value is binary, rather than BCD as for most calendar functions
+SeeAlso: CMOS 56h"v4.51PG",CMOS 58h"v4.51PG"
+----------R58--------------------------------
+CMOS 58h - AWARD - ??? reserved for PCI Bus Slot 5 Latency Timer ???
+
+Bitfields for AWARD PCI bus slot 5 latency timer:
+Bit(s)	Description	(Table C0077)
+ 3	onboard CMD IDE Mode 3
+--------p-R58--------------------------------
+CMOS 58h - AWARD v4.51PG - APM - POWER-ON SECOND (Resume by Alarm)
+Note:	value is binary, rather than BCD as for most calendar functions
+SeeAlso: CMOS 55h"v4.51PG",CMOS 57h"v4.51PG"
+----------R59--------------------------------
+CMOS 59h - AWARD - ??? reserved for PCI Bus Setup ???
+----------R5A--------------------------------
+CMOS 5Ah - AWARD - PCI Bus IRQ Setup 1
+
+Bitfields for AWARD PCI bus IRQ setup 1:
+Bit(s)	Description	(Table C0078)
+ 4-7	PIRQ1# Interrupt Line (0=none, Bh=IRQ11, etc)
+ 0-3	PIRQ0# Interrupt Line	  "	     "	      "
+----------R5B--------------------------------
+CMOS 5Bh - AWARD - PCI Bus IRQ Setup 2
+
+Bitfields for AWARD PCI bus IRQ setup 2:
+Bit(s)	Description	(Table C0079)
+ 4-7	PIRQ3# Interrupt Line (0=none, Bh=IRQ11, etc)
+ 0-3	PIRQ2# Interrupt Line	  "	     "	      "
+----------R5C--------------------------------
+CMOS 5Ch - AMI (PicoPower) - LOW-SPEED CLOCK
+
+Bitfields for AMI (PicoPower) low-speed clock select:
+Bit(s)	Description	(Table C0080)
+ 2-0	low-speed clock divisor
+	000  /1
+	001  /2
+	010  /4
+----------R5C5F------------------------------
+CMOS 5Ch-5Fh - AWARD - ??? unused ???
+Note:	Defaults to all FFh's.
+--------p-R5D--------------------------------
+CMOS 5Dh - AMI (PicoPower) - DOZE MODE
+
+Bitfields for AMI (PicoPower) doze mode control:
+Bit(s)	Description	(Table C0081)
+ 7	APM enabled
+ 6-4	doze mode CPU clock speed (see #C0082)
+ 3	hotkey setup enabled
+ 2-0	"sleep mode" CPU CLK speed (see #C0082)
+SeeAlso: #C0084
+
+(Table C0082)
+Values for AMI (PicoPower) CPU clock speeds:
+ 000	MAX
+ 001	MAX/2
+ 010	MAX/4
+ 011	MAX/8
+ 100	MAX/16
+ 101	MAX/32
+ 110	MAX/64
+SeeAlso: #C0081,#C0084
+----------R5E--------------------------------
+CMOS 5Eh - AMI 1990 Hyundai super-NB368S notebook - ???
+	00h when values from bios defaults
+	34h when values from power up defaults
+----------R5E--------------------------------
+CMOS 5Eh - AWARD v4.50G - ?
+SeeAlso: CMOS 5Fh"AWARD"
+
+Bitfields for AWARD register 5Eh:
+Bit(s)	Description	(Table C0083)
+ 0	user password enabled
+SeeAlso: #C0012
+--------p-R5E--------------------------------
+CMOS 5Eh - AMI (PicoPower) - CPU SPEEDS
+
+Bitfields for AMI (PicoPower) CPU speeds:
+Bit(s)	Description	(Table C0084)
+ 7	suspend warning beeps enabled
+ 6-4	"full on" CPU CLK speed
+	000 MAX
+	001 MAX/2
+	010 MAX/4
+	011 MAX/8
+ 1-0	power management mode
+	00 disabled
+	01 Auto
+	10 enabled
+SeeAlso: #C0081
+--------p-R5F--------------------------------
+CMOS 5Fh - AMI (PicoPower) - POWER MANAGEMENT TIMEOUTS
+
+Bitfields for AMI (PicoPower) power management timeouts:
+Bit(s)	Description	(Table C0085)
+ 7	enable battery-low beeps
+ 5-3	SUSPEND timeout
+	000  disabled
+	001  5 minutes
+	010  10 minutes
+	011  15 minutes
+	100  20 minutes
+	101  30 minutes
+	110  40 minutes
+	111  60 minutes
+ 2-0	DOZE timeout
+	000  disabled
+	100  1 second
+	101  4 seconds
+	110  8 seconds
+	111  16 seconds
+SeeAlso: #C0087
+--------y-R5F--------------------------------
+CMOS 5Fh - AWARD v4.50G - USER PASSWORD CHECKSUM
+SeeAlso: CMOS 5Eh"AWARD"
+--------p-R60--------------------------------
+CMOS 60h - AWARD - POWER MANAGEMENT
+
+Bitfields for AWARD power management:
+Bit(s)	Description	(Table C0086)
+ 7	???
+ 6	Video Off Method
+	1  = V/H SYNC + Blank (default)
+	0  = Blank Screen
+ 4,5	Video Off Option
+	00 = Always On (default)
+	01 = Suspend -> Off
+	10 = Suspend, Standby -> Off
+	11 = All Modes -> Off
+ 3	PM Control by APM (1=Yes)
+ 2	???
+ 1,0	Power Management Setup
+	00  User Defined
+	01  Disabled (default)
+	10  Minimum Power Savings (40 Minutes for all events)
+	11  Maximum Power Savings (20 Seconds for all events)
+--------p-R60--------------------------------
+CMOS 60h - AMI (PicoPower) - SLEEP TIMEOUT
+
+Bitfields for AMI (PicoPower) sleep timeout:
+Bit(s)	Description	(Table C0087)
+ 5-3	SLEEP timeout
+	000  disabled
+	001  1 minute
+	010  2 minutes
+	011  3 minutes
+	100  4 minutes
+	101  6 minutes
+	110  8 minutes
+	111  12 minutes
+SeeAlso: #C0085,#C0089
+----------R6077------------------------------
+CMOS 60h-77h - AMI WinBIOS - PCI chipset-specific setup information
+--------p-R61--------------------------------
+CMOS 61h - AWARD - POWER MANAGEMENT
+
+Bitfields for AWARD power management:
+Bit(s)	Description	(Table C0088)
+ 7	PM Event on HDD Ports Activity (1=enable)
+ 6	PM Event on LPT Port Activity (1=enable)
+ 5	PM Event on COM Port Activity (1=enable)
+ 4	HDD Power Down on Suspend
+ 0-3	HDD Power Down Time
+	0	Disabled
+	1-15	Time in Minutes
+----------R62--------------------------------
+CMOS 62h - AMI 1990 Hyundai super-NB368S notebook - ???
+	FFh when values from bios defaults
+	FEh when values from power up defaults
+----------R62--------------------------------
+CMOS 62h - AMI (Neptune) - number of last PCI bus in system
+SeeAlso: INT 1A/AX=B101h
+--------p-R62--------------------------------
+CMOS 62h - AMI (PicoPower) - HARD-DISK POWERDOWN
+
+Bitfields for AMI (PicoPower) hard-disk powerdown timeout:
+Bit(s)	Description	(Table C0089)
+ 3-0	hard-disk timeout in minutes (0000 = disabled)
+SeeAlso: #C0087
+--------p-R62--------------------------------
+CMOS 62h - AWARD - POWER MANAGEMENT
+
+Bitfields for AWARD power management:
+Bit(s)	Description	(Table C0090)
+ 7-4	Standby Mode Setting (for User Defined)
+	0   Disabled
+	1   20 Seconds
+	2   1 Minute
+	3   5 Minutes
+	4   10 Minutes
+	5   15 Minutes
+	6   20 Minutes
+	7   30 Minutes
+	8   40 Minutes
+ 0-3	Doze Mode Setting (for User Defined)
+	(See Standby Mode above)
+----------R62--------------------------------
+CMOS 62h - AWARD v4.51pg - BIT FLAGS
+
+Bitfields for AWARD v4.51pg CMOS 62h:
+Bit(s)	Description	(Table C0091)
+ 0	user password is enabled
+--------p-R63--------------------------------
+CMOS 63h - AWARD - POWER MANAGEMENT
+
+Bitfields for AWARD power management:
+Bit(s)	Description	(Table C0092)
+ 7	Disable PM Event on IRQ3 Activity (COM2) (1=disable)
+ 6	PM Event on VGA Activity (1=enable)
+ 5	??? (Defaults to 1)
+ 4	PM Event on PCI/ISA Master Activity (1=enable)
+ 0-3	Suspend Mode Setting (for User Defined)
+	(See Standby Mode above)
+--------p-R63--------------------------------
+CMOS 63h - AMI (PicoPower) - BATTERY-LOW ACTIONS
+
+Bitfields for AMI (PicoPower) battery-low actions:
+Bit(s)	Description	(Table C0093)
+ 5-3	battery-very-low action
+	000  MAX
+	001  MAX/2
+	010  MAX/4
+	011  MAX/8
+	100  MAX/16
+	101  MAX/32
+	110  MAX/64
+	111  suspend
+ 2-0	battery-low action (same as battery-very-low action)
+----------R64--------------------------------
+CMOS 64h - AMI 1990 Hyundai super-NB368S notebook - ???
+--------p-R64--------------------------------
+CMOS 64h - AMI (PicoPower) - BATTERY POWER
+
+Bitfields for AMI (PicoPower) battery power:
+Bit(s)	Description	(Table C0094)
+ 6	extended battery debounce enabled
+ 4-3	resume with modem ring
+	00 disabled
+	01 one ring
+	10 two rings
+	11 three rings
+ 2	365SL power on during suspend
+ 1-0	suspend-mode DRAM refresh cycle
+	00 15 usec
+	01 120 usec (1/8 normal)
+	10 self
+--------p-R64--------------------------------
+CMOS 64h - AWARD - POWER MANAGEMENT - IRQ activity events #1
+SeeAlso: CMOS 65h"AWARD"
+
+Bitfields for AWARD power management IRQ activity events:
+Bit(s)	Description	(Table C0095)
+ 7	Disable PM Event on IRQ11 Activity (1=disable)
+ 6	Disable PM Event on IRQ10 Activity (1=disable)
+ 5	Disable PM Event on IRQ9 Activity (IRQ2 Redir) (1=disable)
+ 4	Disable PM Event on IRQ8 Activity (RTC Alarm) (1=disable)
+ 3	Disable PM Event on IRQ7 Activity (LPT1) (1=disable)
+ 2	Disable PM Event on IRQ6 Activity (Floppy) (1=disable)
+ 1	Disable PM Event on IRQ5 Activity (LPT2) (1=disable)
+ 0	Disable PM Event on IRQ4 Activity (COM1) (1=disable)
+--------p-R65--------------------------------
+CMOS 65h - AWARD - POWER MANAGEMENT - IRQ activity events #2
+SeeAlso: CMOS 64h"AWARD"
+
+Bitfields for AWARD power management:
+Bit(s)	Description	(Table C0096)
+ 7-4	??? may be unused.  Defaults to all 1's
+ 3	Disable PM Event on IRQ15 Activity (1=disable)
+ 2	Disable PM Event on IRQ14 Activity (Hard Disk) (1=disable)
+ 1	Disable PM Event on IRQ13 Activity (Coprocessor) (1=disable)
+ 0	Disable PM Event on IRQ12 Activity (PS/2 Mouse) (1=disable)
+----------R65--------------------------------
+CMOS 65h - AMI (PicoPower) - PC PIN STAGGER
+
+Bitfields for AMI (PicoPower) PC pin stagger:
+Bit(s)	Description	(Table C0097)
+ 7-6	PC pin stagger period
+	00  immediate
+	01  4 msec
+	10  16 msec
+	11  64 msec
+--------p-R66--------------------------------
+CMOS 66h - AMI 1990 Hyundai super-NB368S notebook - DOZE MODE TIMEOUT
+Note:	doze mode timeout 00-0F, from table (0,12 -14 sec)
+----------R6679------------------------------
+CMOS 66h - AWARD - ??? unused ???
+Note:	Defaults to FFh
+----------R6679------------------------------
+CMOS 67h - AWARD - TYPE OF FIRST DRIVE ON SECOND IDE PORT
+----------R67--------------------------------
+CMOS 67h - AMI 1990 Hyundai super-NB368S notebook - SLEEP MODE TIMEOUT
+Desc:	sleep mode timeout 00-0F, units of 1 second
+----------R68--------------------------------
+CMOS 68h - AMI 1990 Hyundai super-NB368S notebook - SUSPEND MODE TIMEOUT
+Desc:	suspend mode timeout 01-0F, units of 5 minutes
+----------R686F------------------------------
+CMOS 68h-6Fh - AWARD - IDE hard disk params for first drive on second IDE port
+----------R69--------------------------------
+CMOS 69h - AMI 1990 Hyundai super-NB368S notebook - LCD MODE TIMEOUT
+Desc:	LCD mode timeout 01-0F, units of 1 minute
+----------R6A--------------------------------
+CMOS 6Ah - AMI 1990 Hyundai super-NB368S notebook - ???
+----------R70--------------------------------
+CMOS 70h - AWARD - TYPE OF SECOND DRIVE ON SECOND IDE PORT
+----------R7178------------------------------
+CMOS 71h-78h - AWARD - IDE hard disk params for second drive on second IDE port
+----------R787D------------------------------
+CMOS 78h-7Dh - AMI WinBIOS - used by BIOS as scratch RAM
+----------R79--------------------------------
+CMOS 79h - AWARD - SECONDARY IDE DRIVE TRANSLATION
+
+Bitfields for AWARD Secondary IDE drive translation:
+Bit(s)	Description	(Table C0098)
+ 7-4    ??? Default = 1111
+ 3-2    translation used for secondary master
+	00 normal, 01 LBA, 10 Large, 11 Autio
+ 1-0    translation used for secondary slave (as for bits 3-2)
+----------R7A--------------------------------
+CMOS 7Ah - AWARD - EXTENDED CMOS CHECKSUM (high byte)
+Note:	Award's extended checksum is the arithmetic sum of all the bytes
+	  from 40h (64 decimal) through 79h (121 decimal). [42h-79h for v4.50G]
+SeeAlso: CMOS 7Bh"AWARD"
+----------R7B--------------------------------
+CMOS 7Bh - AWARD - EXTENDED CMOS CHECKSUM (low byte)
+Note:	Award's extended checksum is the arithmetic sum of all the bytes
+	  from 40h (64 decimal) through 79h (121 decimal). [42h-79h for v4.50G]
+SeeAlso: CMOS 7Ah"AWARD"
+----------R7D--------------------------------
+CMOS 7Dh - AMD-645 Clock - DATE ALARM
+Desc:	on an AMD-645, this byte specifies the day of the month on which
+	  the alarm will activate
+SeeAlso: CMOS 01h,CMOS 03h,CMOS 05h,CMOS 7Eh
+----------R7E--------------------------------
+CMOS 7Eh - AMD-645 Clock - MONTH ALARM
+Desc:	on an AMD-645, this byte specifies the month of the year on which
+	  the alarm will activate
+SeeAlso: CMOS 01h,CMOS 03h,CMOS 05h,CMOS 7Dh
+--------p-R7E7F------------------------------
+CMOS 7Eh-7Fh - AMI WinBIOS - used as scratch RAM by power management code
+----------R7F--------------------------------
+CMOS 7Fh - AMD-645 Clock - CENTURY
+SeeAlso: CMOS 32h
+---------------------------------------------
+--------!---Admin----------------------------
+Highest Table Number = C0099
+--------!---History--------------------------
+Revision History
+
+v1.26	Sep,  1995	reformatted (Ralf)
+v1.25	June  1995	Added AMI WinBIOS info from Daniel Miller (Ralf)
+v1.24	Jan,  1995	Added Award info from Tim Farley (Ralf)
+v1.23	June, 1994	Added some MCA info from _The_Undocumented_PC_
+v1.22	Feb,  1994	Added NMI mask note
+v1.21	Jan,  1994	Added note for PS/2 checksum found
+v1.20	Sept, 1993	PHOENIX data from Wim Osterholt added
+			additional AMI data from Howie (hjh@gwd.dst.gov.au)
+v1.15	June, 1993	AMSTRAD data updated
+v1.1	June, 1993	AMSTRAD & PS/2 data added 
+v1.0	June, 1993	First release: Motorola MC 146818,  PC-AT & AMI 
+			"Hi-Flex" information baselined
+--------!---CONTACT_INFO---------------------
+Internet: ralf@pobox.com (currently forwards to ralf@telerama.lm.com)
+FIDO: Ralf Brown 1:129/26.1

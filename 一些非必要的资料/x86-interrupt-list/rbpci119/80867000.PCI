@@ -1,0 +1,60 @@
+%! Detailed register description file for PCICFG.EXE by Ralf Brown
+%!
+%! Filename 80867000.PCI = Vendor 8086h, Device 7000h -- Intel 82371SB ISA Br.
+%! Last Edit 10jan99 by Ralf Brown
+%!
+
+[See file BLANK.PCI for description of formatting specification and how
+to create your own device descriptions.]
+
+!begin
+Intel 82371FB/SB ISA Controller registers in detail:
+ I/O Recovery Time:    8-bit: %[4C:6]y - %[4C:3-5]1d SYSCLK  16-bit: %[4C:2]y - %[4C:0-1]1d SYSCLK
+ X-Bus Chip Select:    BIOS enabled at %[4E:7]/FFF80000/ %[4E:6]/E000/
+		       %[4E:6]|do not;| trigger IRQ13 on FERR#
+		       %[4E:5]e IRQ12 mouse function
+		       BIOS memory is %[4E:2]|not;| write protected
+		       keyboard controller I/O ports are %[4E:1]ed
+		       Real-Time Clock I/O ports are %[4E:0]ed
+                       I/O APIC %[4F:0]ed
+ IRQ0# Route Control:  %[60:0-3]2x (%[60:7]Ed)
+ IRQ1# Route Control:  %[61:0-3]2x (%[61:7]Ed)
+ IRQ2# Route Control:  %[62:0-3]2x (%[62:7]Ed)
+ IRQ3# Route Control:  %[63:0-3]2x (%[63:7]Ed)
+ ISA Top Of Memory:    %[69:7-4+1]2dM
+ ISA/DMA lower BIOS:   %[69:3]|not;| forwarded to PCI
+ A000/B000 segment:    %[69:2]|not;| forwarded to PCI
+ 8000-A000 segment:    %[69:1]|not;| forwarded to PCI
+ Miscell. Status:      enable SERR# on delayed transaction: %[6A:15]y
+                       NB Retry %[6A:7]ed
+		       EXTSMI# mode with PCI bridge %[6A:6]ed
+		       USB %[6A:4]ed
+		       PCI multifunction bit %[6A:2]ed
+		       internal DMA mode: %[6A:1]y
+		       SYSCLK divisor is %[6A:0+3]d
+ Motherboard IRQ0#:    IRQ%[70:0-3]d (%[70:7]Ed)
+                       MIRQ0/IRQ0 sharing %[70:6]ed
+		       IRQ0 output %[70:5]ed
+ Motherboard IRQ1#:    IRQ%[71:0-3]d (%[71:7]Ed)
+                       MIRQ1/IRQ1 sharing %[71:6]ed
+		       IRQ1 output %[71:5]ed
+ Motherboard DMA0:     Type F and DMA buffer %[76:7]ed
+		       DMA channel %[76:2-0]d (%[76:3]Ed)
+ Motherboard DMA1:     Type F and DMA buffer %[77:7]ed
+		       DMA channel %[77:2-0]d (%[77:3]Ed)
+ Prog. Chip Select:    %[78:1-0]|four;eight;no;sixteen| bytes at I/O address %[78:15-2<2]4x
+ APIC Base Address:    FEC0%[80:5-0<10]4x (A12 %[80:6]|ho;ig|nored)
+ Determistic Latency:  SERR# on delayed transation timeout is %[82:3]ed
+		       USB passive release is %[82:2]ed
+		       passive release is %[82:1]ed
+		       delayed transactions are %[82:0]ed
+ SMI Control:	       STPCLK# signal %[A0:1]ed, scaling %[A0:2]ed
+		       SMI# on system management interrupt is %[A0:0]ed
+ SMI Enable:           %[A2:8]/USB/ %[A2:7]/APMCwrite/ %[A2:6]/EXTSMI/ %[A2:5]/FastOff/ %[A2:4]/IRQ12/ %[A2:3]/IRQ8/ %[A2:2]/IRQ4/ %[A2:1]/IRQ3/ %[A2:0]/IRQ1/
+ System Event Enable:  Fast-Off: %[A4:31]/SMI/ %[A4:30]/INTR/ %[A4:28]/APIC/ %[A4:29]/NMI/
+		       reset Fast-Off on IRQ%[A4:0]/0/ %[A4:1]/1/ %[A4:3]/3/ %[A4:4]/4/ %[A4:5]/5/ %[A4:6]/6/ %[A4:7]/7/ %[A4:8]/8/ %[A4:9]/9/ %[A4:10]/10/ %[A4:10]/11/ %[A4:10]/12/ %[A4:10]/13/ %[A4:10]/14/ %[A4:15]/15/
+ SMI Request:	       due to %[AA:8]/legacy USB/ %[AA:7]/APM/ %[AA:6]/EXTSMI#/ %[AA:5]/Fast-Off/ IRQ: %[AA:4]/12/ %[AA:3]/8/ %[AA:2]/4/ %[AA:1]/3/ %[AA:0]/0/
+ Fast-Off Timer:       %[A8+1]2d %[A0:4-3]|minutes;stopped;PCICLKs;milliseconds|
+!end
+
+%! end of file

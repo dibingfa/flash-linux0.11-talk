@@ -1,0 +1,271 @@
+%! Detailed register description file for PCICFG.EXE
+%!
+%! Filename 11060585.PCI -- VIA VT82C585VPX Host Bus-PCI Bridge
+%! Last Edit 20sep98 by Denis Vlasenko
+%!
+%! Source: 580VPX.PDF file from VIA WWW site.
+%! Very detailed. All registers dumped in binary and all bits shown.
+%!
+%! '%!??' - doubtful and/or untested places.
+
+!begin
+VIA VPX Host Bus-PCI Bridge registers in detail:	    [by Denis Vlasenko]
+
+(50) Cache Control 1                    %[50]8b
+    7-6 Cache Enable:                   %[50:7-6]|00 disabled;01 init;10 enabled;11 reserved|
+      5 Linear Burst Enabled:		%[50:5]Y
+    4-3 Tag Configuration:              %[50:4-3]|00 8 tag bits, no dirty bit;01 7 tag bits + dirty bit;10 10 tag bits, no dirty bit;11 9 tag bits + dirty bit|
+      2 SDRAM Interface Select:         %[50:2]|0 CWE[0-7]#;1 GWE#, BWE#, SCASx#, SRASx#, SWEx#|
+                (Selects the function of pins 90-93 and 73-76)
+    1-0 SRAM Type:                      %[50:1-0]|00 no SRAM;01 reserved;10 burst SRAM;11 pipelined burst SRAM|
+
+(51) Cache Control 2                    %[51]8b
+    7-6 Reserved:                       %[51:7-6]2b
+      5 Backoff CPU:                    %[51:5]|0 defer ready return until L2 is filled;1 backoff CPU until L2 is filled|
+      4 Reserved:                       %[51:4]1b
+      3 SRAM Banks:			%[51:3]|1 bank;2 banks|
+      2 Reserved:                       %[51:2]1b
+    1-0 Cache Size:                     %[51:1-0]|00 256K;01 512K;10 1M;11 2M|
+
+(52) Non-Cacheable Control              %[52]8b
+        Cacheable & Write-Protected:
+      7 C0000-C7FFF:			%[52:7]Y
+      6 D0000-DFFFF:			%[52:6]Y
+      5 E0000-EFFFF:			%[52:5]Y
+      4 F0000-FFFFF:			%[52:4]Y
+      3 Reserved:                       %[52:3]1b
+      2 L2 fill:                        %[52:2]|0 normal;1 forced (ignores CPU CACHE#)|
+      1 Reserved:                       %[52:1]1b
+      0 L2 mode:                        %[52:0]|0 write-back;1 write-through|
+
+(53) System Performance Control         %[53]8b
+      7 Read Around Write:		%[53:7]ed
+      6 Cache Read Pipeline Cycle:	%[53:6]ed
+      5 Cache Write Pipeline Cycle:	%[53:5]ed
+      4 DRAM Pipeline Cycle:		%[53:4]ed
+      3 PCI Master Peer Concurrency:	%[53:3]ed
+    2-0 Reserved:                       %[53:2-0]3b
+
+(54-55) Non-Cacheable Region #1         %[54]8b %[55]8b         %!?? VIA's pdf says: 54:15-8 Base Address MSBs - A<28:21>
+   15-3 Address:                        %[54|55:7-3<16]8x hex   %!                   55:7-3  Base Address LSBs - A<20:16>
+    2-0 Size:                           %[55:2-0](RegionSize)   %!                   55:2-0  Range (Region Size)
+
+(56-57) Non-Cacheable Region #2         %[56]8b %[57]8b         %!?? Similar to above
+   15-3 Address:                        %[56|57:7-3<16]8x hex
+    2-0 Size:                           %[57:2-0](RegionSize)
+
+(58) DRAM Configuration 1               %[58]8b
+    7-5 Bank 0/1 MA Map Type (EDO/FPG): %[58:7-5](EDOmapType)
+        Bank 0/1 MA Map Type (SDRAM):   %[58:7]|0xx 16Mbit SDRAM;1xx 64Mbit SDRAM|
+      4 Reserved:                       %[58:4]1b
+    3-1 Bank 2/3 MA Map Type (EDO/FPG): %[58:3-1](EDOmapType)
+        Bank 2/3 MA Map Type (SDRAM):   %[58:3]|0xx 16Mbit SDRAM;1xx 64Mbit SDRAM|
+      0 Reserved:                       %[58:1]1b
+
+(59) DRAM Configuration 2               %[59]8b
+    7-5 Bank 4/5 MA Map Type (EDO/FPG): %[59:7-5](EDOmapType)
+        Bank 4/5 MA Map Type (SDRAM):   %[59:7]|0xx 16Mbit SDRAM;1xx 64Mbit SDRAM|
+    4-3 Reserved:                       %[59:4-3]2b
+    2-0 Last Bank DRAM Populated:       %[59:2-0]|000 bank 0;001 bank 1;010 bank 2;011 bank 3;100 bank 4;101 bank 5;11x reserved|
+
+(5A) Bank 0 Ending (HA[29:22]):         %[5A]8b %[5A<2]4dMb
+(5B) Bank 1 Ending (HA[29:22]):         %[5B]8b %[5B<2]4dMb
+(5C) Bank 2 Ending (HA[29:22]):         %[5C]8b %[5C<2]4dMb
+(5D) Bank 3 Ending (HA[29:22]):         %[5D]8b %[5D<2]4dMb
+(5E) Bank 4 Ending (HA[29:22]):         %[5E]8b %[5E<2]4dMb
+(5F) Bank 5 Ending (HA[29:22]):         %[5F]8b %[5F<2]4dMb
+
+(60) DRAM Type                          %[60]8b
+    7-6 Reserved:                       %[60:7-6]2b
+    5-4 DRAM Type for Bank 4/5:         %[60:5-4](DRAMtype)
+    3-2 DRAM Type for Bank 2/3:         %[60:3-2](DRAMtype)
+    1-0 DRAM Type for Bank 0/1:         %[60:1-0](DRAMtype)
+
+(61) Shadow RAM Control 1               %[61]8b
+    7-6 CC000h-CFFFFh:                  %[61:7-6](Shadow)
+    5-4 C8000h-CBFFFh:                  %[61:5-4](Shadow)
+    3-2 C4000h-C7FFFh:                  %[61:3-2](Shadow)
+    1-0 C0000h-C3FFFh:                  %[61:1-0](Shadow)
+
+(62) Shadow RAM Control 2               %[62]8b
+    7-6 DC000h-DFFFFh:                  %[62:7-6](Shadow)
+    5-4 D8000h-DBFFFh:                  %[62:5-4](Shadow)
+    3-2 D4000h-D7FFFh:                  %[62:3-2](Shadow)
+    1-0 D0000h-D3FFFh:                  %[62:1-0](Shadow)
+
+(63) Shadow RAM Control 3               %[63]8b
+    7-6 E0000h-EFFFFh                   %[63:7-6](Shadow)
+    5-4 F0000h-FFFFFh                   %[63:5-4](Shadow)
+    3-2 Memory Hole                     %[63:3-2]|00 none;01 512K-640K;10 15M-16M (1M);11 14M-16M (2M)|
+      1 SMI Redirect to A0000h-BFFFFh:	%[63:1]ed
+      0 I/O in A0000h-BFFFFh:           %[63:0]|0 accesses VGA;1 accesses DRAM (not VGA!)|
+
+(64) DRAM Reference Timing (FPG Only)   %[64]8b
+    7-6 RAS Precharge Time:             %[64:7-6]|00 2T;01 3T;10 4T;11 6T|
+    5-4 RAS Pulse Width:                %[64:5-4]|00 3T;01 4T;10 5T;11 6T|
+    3-2 CAS Read Pulse Width:           %[64:3-2]|00 1T;01 2T (FPG), 1T (EDO);10 3T (FPG), 2T (EDO);11 4T (FPG), 3T (EDO)|
+      1 CAS Write Pulse Width:          %[64:1]|0 1T;1 2T|
+      0 Column Address to CAS Delay:    %[64:0]|0 1T;1 2T|
+                (see also 67:7)
+
+(65) DRAM Timing Control 1 (EDO/SDRAM)  %[65]8b
+    7-6 Page Mode Control:              %[65:7-6]|00 page closes after access;01 reserved;10 page stays open after access;11 page closes if CPU is idle|
+      5 Fast DRAM Decoding Enable:      %[65:5]|0 end of second T2;1 end of first T2|
+      4 EDO Leadoff Cycle Reduction:    %[65:4]|0 normal leadoff cycle;1 reduce leadoff cycle by 1T|
+      3 DRAM Data Latch Delay:          %[65:3]|0 latch DRAM data 1 cycle before CPU;1 latch DRAM data 1/2 cycle before CPU|
+      2 Pin 88 Function Select:         %[65:2]|0 DB32;1 TA9|
+      1 Reserved:                       %[65:1]1b
+      0 Relaxed DRAM Read Cycle Latency:%[65:0]|0 DRAM decoding time is end of T2;1 DRAM decoding time is the end of the second T2 if the write-buffer is not empty|
+
+(66) DRAM Timing Control 2 (EDO/SDRAM)  %[66]8b
+      7 EDO Test Mode Enable:           %[66:7]|0 normal mode;1 test mode|
+      6 Reserved:                       %[66:6]1b
+ 5,6C:3 SDRAM CAS Latency:              %[66:5|6C:3]|00 latency is 2;<>00 latency is 3|
+      4 Reserved:                       %[66:4]1b
+      3 Turbo EDO Mode Enable:          %[66:3]|0 -2-2-2 two-cycle burst;1 -1-1-1 one-cycle burst|
+      2 DRAM-to-CPU FIFO Control:       %[66:2]|0 -1-1-1 to pop data from FIFO to CPU;1 -2-2-2 to pop data from FIFO to CPU|
+      1 SDRAM RAS-Precharge Reduction:  %[66:1]|0 use 64:7-6 for RAS-precharge time;1 reduce 64:7-6 RAS precharge time by 1T|
+      0 SDRAM RAS-to-CAS Delay Reduct.: %[66:0]|0 use 64:0 for col addr to CAS delay;1 column address to CAS delay is 1T|
+
+(67) 32-Bit DRAM Width                  %[67]8b
+      7 RAS to Column Address Delay:    %[67:7]|0 1T;1 2T|
+      6 NA# Delay:                      %[67:6]|0 no NA# delay, 3-1-1-1-2-1-1-1;1 delay NA# 1T, 3-1-1-1-3-1-1-1|
+                (This bit only applies when 2 banks of PBSRAM are installed.)
+      5 Bank 5 Width:                   %[67:5]|0 64 bit;1 32 bit|
+      4 Bank 4 Width:                   %[67:4]|0 64 bit;1 32 bit|
+      3 Bank 3 Width:                   %[67:3]|0 64 bit;1 32 bit|
+      2 Bank 2 Width:                   %[67:2]|0 64 bit;1 32 bit|
+      1 Bank 1 Width:                   %[67:1]|0 64 bit;1 32 bit|
+      0 Bank 0 Width:                   %[67:0]|0 64 bit;1 32 bit|
+
+(68) Reserved (Do Not Program)          %[68]8b
+    7-4 Reserved (do not program):      %[68:7-4]4b
+      3 Pin 126 Function Select:        %[68:3]|0 remains high all the time;1 pin 126 is MA12 for 64Mb DRAM support|
+                (0 - backward compatibility with VP)
+    2-0 Reserved (do not program):      %[68:2-0]3b
+
+(69) Reserved (Do Not Program)          %[69]8b
+
+(6A) Refresh Counter:                   %[6A]dx16 CPUCLKs
+                (When set to 0, DRAM refresh is disabled)
+
+(6B) Refresh Control                    %[6B]8b
+      7 CBR (CAS-before-RAS) Refresh:	%[6B:7]ed
+      6 Burst Refresh (Burst 4 Times):	%[6B:6]ed
+    5-3 Reserved:                       %[6B:5-3]3b
+      2 Extended Timing:                %[6B:2]|0 normal timing;1 force 2T from MA to RAS# and CAS# falling for all cases|
+    1-0 Reserved:                       %[6B:1-0]2b
+
+(6C) SDRAM Control                      %[6C]8b
+      7 SDRAM Interleave (64Mbit only): %[6C:7]|0 2-bank interleave;1 4-bank interleave|
+                (16Mbit can have 2-bank interleave only)
+      6 SDRAM Burst Write:		%[6C:6]ed
+      5 SDRAM Bank Interleave Enable:	%[6C:5]ed
+      4 Reserved:                       %[6C:4]1b
+ 3,66:5 SDRAM CAS Latency:              %[6C:3|66:5]|00 latency is 2;<>00 latency is 3|
+    2-0 SDRAM Operation Mode Select:    %[6C:2-0]|000 normal;001 NOP command enabled;010 all-banks-precharge command enabled;011 CPU-to-DRAM cycles conv to commands;100 CBR cycle enabled;101 reserved;11x reserved|
+
+(6D) DRAM Control Drive Strength        %[6D]8b
+      7 Bank Decoding Test:             %[6D:7]1b
+      6 MA[0:1] Drive:                  %[6D:6]|0 12mA;1 24mA|
+      5 Duplicate Copy of MA[0:1]:      %[6D:5]|0 RAS5# RAS4# bit 0;1 MA1 MA0 bit 6|
+      4 Force SMM Mode:                 %[6D:4]1b
+      3 SDRAM Command Drive:            %[6D:3]|0 12mA;1 24mA|
+      2 MA[2:13] / WE# Drive:           %[6D:2]|0 12mA;1 24mA|
+      1 CAS# Drive:                     %[6D:1]|0  8mA;1 12mA|
+      0 RAS# Drive:                     %[6D:0]|0 12mA;1 24mA|
+
+(70) PCI Buffer Control                 %[70]8b
+      7 CPU to PCI Post-Write:		%[70:7]ed
+      6 PCI Master to DRAM Post-Write:	%[70:6]ed
+      5 PCI Master to DRAM Prefetch:	%[70:5]ed
+    4-2 Reserved:                       %[70:4-2]3b
+      1 PCI Retry for CPU QW Access:	%[70:1]ed
+      0 PCI Master Flushes PCI Buffer:  %[70:0]|0 yes;1 no|
+
+(71) CPU to PCI Flow Control 1          %[71]8b
+    7,3 CPU writes burst on PCI:        %[71:7|71:3]|00 PCI bursts disabled;01 only burst writes;1x all writes burst if possible|
+      6 Byte Merge:			%[71:6]ed
+      5 Reserved:                       %[71:5]1b
+      4 PCI I/O Cycle Post Write:	%[71:4]ed
+      2 PCI Fast Back-to-Back Write:	%[71:2]ed
+      1 Quick Frame Generation: 	%[71:1]ed
+      0 1 Wait State PCI Cycles:	%[71:0]ed
+
+(72) CPU to PCI Flow Control 2          %[72]8b
+      7 Retry Status over 16/64 Times:  %[72:7]|0 no retry occurred;1 retry occurred (write 1 to clear)|
+      6 Retry Timeout Action:           %[72:6]|0 retry forever;1 flush buffer/return FFFFFFFF for read|
+    5-4 Retry Count and Retry Backoff:  %[72:5-4]|00 retry 2 times, back off CPU;01 retry 16 times;10 retry 4 times, back off CPU;11 retry 64 times|
+      3 Clear Failed Data and Continue Retry:   %[72:3]|0 disabled;1 keep posting|
+      2 CPU Backoff on PCI Read Retry Failure:  %[72:2]|0 disabled;1 backoff CPU|
+      1 Reduce 1T for FRAME# Generation:	%[72:1]ed
+      0 Reduce 1T for CPU Read PCI Slave:       %[72:0]|0 disabled;1 enabled (bypass TRDY# to LRDY#)|
+
+(73) PCI Master Control 1               %[73]8b
+      7 Local Memory Decoding:          %[73:7]|0 fast (address phase);1 slow (first data phase)|
+      6 PCI Master 1-Wait-State Write:  %[73:6]|0 zero wait state TRDY# response;1 one wait state TRDY# response|
+      5 PCI Master 1-Wait-State Read:   %[73:5]|0 zero wait state TRDY# response;1 one wait state TRDY# response|
+      4 Reserved:                       %[73:4]1b
+        Assert STOP#...
+      3 ..after PCI Master Wrt Timeout: %[73:3]ed
+      2 ..after PCI Master Read Timeout:%[73:2]ed
+      1 LOCK# Function: 		%[73:1]ed
+      0 PCI Master Broken Timer Enable: %[73:0]ed
+                (Enabled - force into arbitration when there is no
+                 FRAME# 16 PCICLK's after the GRANT)
+
+(74) PCI Master Control 2               %[74]8b
+      7 PCI Enhance Command Support:	%[74:7]ed
+      6 PCI Master Single Write Merge:	%[74:6]ed
+    5-0 Reserved:                       %[74:5-0]6b
+
+(75) PCI Arbitration 1                  %[75]8b
+      7 Arbitration Mechanism:          %[75:7]|0 PCI has priority;1 fair arbitration between PCI and CPU|
+      6 Arbitration Mode:               %[75:6]|0 REQ-based (arbitrate at end of REQ#);1 frame-based (arbitrate at end of each FRAME#)|
+    5-4 Reserved:                       %[75:5-4]2b
+    3-0 PCI Master Bus Time-Out:        %[75:3-0]dx32 PCICLKs
+                (force into arbitration after a period of time)
+                (0 - disable)
+
+(76) PCI Arbitration 2                  %[76]8b
+      7 Master Priority Rotation Enable:%[76:7]|0 disabled (arbitration per 75:7);1 enabled (arbitration per 76:5-4)|
+      6 Reserved:                       %[76:6]1b
+    5-4 Master Priority Rotation Ctrl:  %[76:5-4]|00 disabled (arbitration per 75:7);01 grant to CPU after every PCI master grant;10 grant to CPU after every 2 PCI master grants;11 grant to CPU after every 3 PCI master grants|
+    3-0 Reserved:                       %[76:3-0]4b
+!end
+
+!enum EDOmapType
+  000 8-bit column address
+  001 9-bit column address
+  010 10-bit column address
+  011 11-bit column address
+  100 12-bit column address
+  101 reserved
+  11x reserved
+!end
+
+!enum RegionSize
+  000 region disabled
+  001 64K
+  010 128K
+  011 256K
+  100 512K
+  101 1M
+  110 2M
+  111 4M
+!end
+
+!enum DRAMtype
+  00 Fast Page Mode DRAM
+  01 EDO DRAM
+  10 reserved
+  11 Synchronous DRAM
+!end
+
+!enum Shadow
+  00 read/write disabled
+  01 write enabled
+  10 read enabled
+  11 read/write enabled
+!end
+
