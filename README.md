@@ -61,6 +61,7 @@
    * [第14回 中断初始化 trap_init](https://mp.weixin.qq.com/s/sFp_388qRncB-jpJeRzCGQ)
    * [第15回 块设备请求项初始化 blk_dev_init](https://mp.weixin.qq.com/s/pIbVY1XPCktxGogc4lI1Bw)
    * [第16回 控制台初始化 tty_init](https://mp.weixin.qq.com/s/yIrzEWUUuZC9OsiuU_lOaw)
+   * [第17回 时间初始化 time_init](https://mp.weixin.qq.com/s/y26MMfj8pP5PmbKDZBT5-A)
 
 * **第三部分：一个新进程的诞生**
 
