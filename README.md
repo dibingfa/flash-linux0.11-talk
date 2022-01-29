@@ -64,6 +64,8 @@
    * [第17回 时间初始化 time_init](https://mp.weixin.qq.com/s/y26MMfj8pP5PmbKDZBT5-A)
    * [第18回 进程调度初始化 sched_init](https://mp.weixin.qq.com/s/j4FYWUSX_2gpDb_h4vEFqQ)
    * [第19回 缓冲区初始化 buffer_init](https://mp.weixin.qq.com/s/X8BSbf1qShS11_fzfyOhTg)
+   * [第20回 硬盘初始化 hd_init](https://mp.weixin.qq.com/s/803C9jHxIe42i9BrNzEvPA)
+   * [第二部分总结与回顾](https://mp.weixin.qq.com/s/Hf9B1ww1wFxiUDkWb0obeQ)
 
 * **第三部分：一个新进程的诞生**
 
