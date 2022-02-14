@@ -69,6 +69,9 @@
 
 * **第三部分：一个新进程的诞生**
 
+   * [第21回 新进程诞生全局概述](https://mp.weixin.qq.com/s/H_OCZ2ZtGHWHge_rYKCkJw)
+   * [第22回 从内核态切换到用户态](https://mp.weixin.qq.com/s/eoBFcgm0QrHOVi_WoS7PwA)
+
 * **第四部分：shell 程序的到来**
 
 * **第五部分：从一个命令的执行看操作系统各模块的运作**
