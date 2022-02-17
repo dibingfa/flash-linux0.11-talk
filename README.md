@@ -70,7 +70,8 @@
 * **第三部分：一个新进程的诞生**
 
    * [第21回 新进程诞生全局概述](https://mp.weixin.qq.com/s/H_OCZ2ZtGHWHge_rYKCkJw)
-   * [第22回 从内核态切换到用户态](https://mp.weixin.qq.com/s/eoBFcgm0QrHOVi_WoS7PwA)
+   * [第22回 从内核态切换到用户态](https://mp.weixin.qq.com/s/AVl6R2N9d_sldkhfvC6aEw)
+   * [第23回 如果让你来设计进程调度](https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q)
 
 * **第四部分：shell 程序的到来**
 
