@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>X Windows: Color allocation problems</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Win32 only: Tools to manipulate disk images"
+HREF="winimage.html"><LINK
+REL="NEXT"
+TITLE="Screen saver turns on too quickly"
+HREF="screensaver.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="winimage.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="screensaver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="XCOLORMAP"
+>8.5. X Windows: Color allocation problems</A
+></H1
+><P
+>One common problem in X windows is that the screen colors can be abnormal
+if other X programs have already allocated all the colors.  If the colors
+don't look right, try quitting colorful applications such as Netscape,
+clearing any complex images in the background, etc. so that Bochs has a
+chance to allocate the colors it needs.</P
+><P
+>If Bochs continues to have problems, or you want Bochs to have perfect
+colors without having to quit any other application, you can try turning
+on the <A
+HREF="bochsrc.html#BOCHSOPT-PRIVATE-COLORMAP"
+>private_colormap option</A
+>
+in the configuration file.  Using a private
+colormap causes the Bochs window to have its own set of 256 colors to work
+with.  When the cursor is over the Bochs display, Bochs will look correct
+and other parts of the screen may change to very strange colors.  When the
+cursor goes to any other window, the other windows will look correct
+and Bochs will have strange colors.  A better solution, if your hardware
+can support it, is to run your X server with 24-bit or 32-bit color.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="winimage.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="screensaver.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Win32 only: Tools to manipulate disk images</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Screen saver turns on too quickly</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Installation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Release Notes"
+HREF="release-notes.html"><LINK
+REL="NEXT"
+TITLE="Tracking the source code with CVS"
+HREF="get-src-cvs.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="release-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="get-src-cvs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="INSTALLATION"
+></A
+>Chapter 3. Installation</H1
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DOWNLOADING"
+>3.1. Downloading Bochs</A
+></H1
+><P
+>You can download Bochs from our web site at <A
+HREF="http://bochs.sourceforge.net"
+TARGET="_top"
+>bochs.sourceforge.net</A
+>.  First, you
+need to choose what version to get: a recent release or a development
+version.  If you trying to get things working for the first time, a release
+version is recommended since it has been tested the most.  The development
+versions (sometimes called snapshots) may have some newer bug fixes and new
+features, but have not been tested as much as the releases.</P
+><P
+>Second, you can choose to compile Bochs from source code or install a binary
+(if one is available for your platform).  Binary packages will be quicker to
+install, and most include a small demo of a guest operating system called DLX
+Linux to get you started.  However, some features can only be enabled if you
+compile Bochs yourself, for example the Bochs debugger.  For multiuser systems,
+you will probably need system administrator privileges (root) to install a
+binary package.  If you decide to get a binary, download it to your hard disk,
+uncompress it, then go to the section called <A
+HREF="install-binary.html"
+>Installing a Binary</A
+> for more information.</P
+><P
+>If you are going to compile Bochs yourself, you need the gzipped tarball
+containing the source code, called
+<TT
+CLASS="FILENAME"
+>bochs-<TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+>.tar.gz</TT
+>.  For
+Windows and Mac, the prebuilt Makefiles are separate, so also get
+the Makefiles for your platform.  To unpack a compressed TAR file<A
+NAME="AEN386"
+HREF="#FTN.AEN386"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+> on a Unix machine<A
+NAME="AEN388"
+HREF="#FTN.AEN388"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+>
+, type
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  gunzip -c bochs-<TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+>.tar.gz | tar -xvf -</PRE
+></TD
+></TR
+></TABLE
+>
+This creates a directory called
+<TT
+CLASS="FILENAME"
+>bochs-<TT
+CLASS="REPLACEABLE"
+><I
+>version</I
+></TT
+></TT
+> full of
+files.  This directory will be referred to as <CODE
+CLASS="VARNAME"
+>$BOCHS</CODE
+>.  Go into
+<CODE
+CLASS="VARNAME"
+>$BOCHS</CODE
+> and you are ready to compile.  Instructions for compiling 
+Bochs are in the section, <A
+HREF="compiling.html"
+>Compiling Bochs</A
+>.</P
+><P
+>Alternatively, you can also obtain the sources for any Bochs version using CVS.
+See the <A
+HREF="get-src-cvs.html"
+>CVS instructions</A
+> for details.</P
+></DIV
+></DIV
+><H3
+CLASS="FOOTNOTES"
+>Notes</H3
+><TABLE
+BORDER="0"
+CLASS="FOOTNOTES"
+WIDTH="100%"
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN386"
+HREF="installation.html#AEN386"
+><SPAN
+CLASS="footnote"
+>[1]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>A TAR file is a single file that contains many files packed inside.  Bochs
+TAR files are compressed with a program called gzip, and another program
+called gunzip is used to uncompress them.</P
+></TD
+></TR
+><TR
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="5%"
+><A
+NAME="FTN.AEN388"
+HREF="installation.html#AEN388"
+><SPAN
+CLASS="footnote"
+>[2]</SPAN
+></A
+></TD
+><TD
+ALIGN="LEFT"
+VALIGN="TOP"
+WIDTH="95%"
+><P
+>On Windows, look for software called WinZip to unpack the TAR.</P
+></TD
+></TR
+></TABLE
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="release-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="get-src-cvs.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Release Notes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Tracking the source code with CVS</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

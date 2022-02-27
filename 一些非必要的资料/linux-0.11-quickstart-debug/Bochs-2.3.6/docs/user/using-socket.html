@@ -1,0 +1,244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using the 'socket' networking module</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Using the 'slirp' networking module"
+HREF="using-slirp.html"><LINK
+REL="NEXT"
+TITLE="Using Bochs internal debugger"
+HREF="internal-debugger.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="using-slirp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="internal-debugger.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="USING-SOCKET"
+>8.13. Using the 'socket' networking module</A
+></H1
+><P
+>The original patch for the 'socket' networking module has been written by
+Mariusz Matuszek in 2003. It supported interconnecting two Bochs sessions
+running on the same machine via UDP using an external program called 'bxhub'.</P
+><P
+>The 'socket' networking module is now integrated in the Bochs code with these
+extensions:
+<P
+></P
+><UL
+><LI
+><P
+>Integrated 'vnet' server features (ARP, ICMP-echo, DHCP and TFTP)</P
+></LI
+><LI
+><P
+>Command line options for 'bxhub' added for base UDP port and 'vnet' server features</P
+></LI
+><LI
+><P
+>Support for connects from up to 6 Bochs sessions</P
+></LI
+><LI
+><P
+>Support for connecting 'bxhub' on other machine</P
+></LI
+></UL
+></P
+><P
+>The 'socket' networking module uses two UDP ports per Bochs session. By default
+the first session receives packets from port 40000 and sends packets to port
+40001. The second session uses then the ports 40002 and 40003. For further
+sessions the port numbers are incremented accordingly. The port number for
+receiving packets is specified with the 'ethdev' parameter of the bochsrc
+line for the network adapter. The format is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>host:port</I
+></SPAN
+>
+for connecting the 'bxhub' utility. If it runs on the same machine
+('localhost') the host name can be omitted.</P
+><P
+>These examples show how to use the 'socket' module with the NE2000 adapter. The line
+is very similar for the E1000 or PCI Pseudo NIC.
+<PRE
+CLASS="SCREEN"
+>ne2k: mac=52:54:00:12:34:56, ethmod=socket, ethdev=mymachine:40000, script=""
+ne2k: mac=52:54:00:12:34:56, ethmod=socket, ethdev=40000, script=""</PRE
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN4144"
+>8.13.1. Using the 'bxhub' utility</A
+></H2
+><P
+>If <B
+CLASS="COMMAND"
+>bxhub</B
+> is started without command line options, these
+default values are used:
+<P
+></P
+><UL
+><LI
+><P
+>UDP base port 40000</P
+></LI
+><LI
+><P
+>2 client connections</P
+></LI
+><LI
+><P
+>Server MAC address b0:c4:20:00:00:0f</P
+></LI
+><LI
+><P
+>TFTP support disabled</P
+></LI
+></UL
+></P
+><P
+>To change the default settings, these parameters are supported:
+<PRE
+CLASS="SCREEN"
+>Usage: bxhub [options]
+
+Supported options:
+  -ports=...    number of virtual ethernet ports (2 - 6)
+  -base=...     base UDP port (bxhub uses 2 ports per Bochs session)
+  -mac=...      host MAC address (default is b0:c4:20:00:00:0f)
+  -tftp=...     enable TFTP support using specified directory
+  --help        display this help and exit</PRE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="using-slirp.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="internal-debugger.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using the 'slirp' networking module</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using Bochs internal debugger</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

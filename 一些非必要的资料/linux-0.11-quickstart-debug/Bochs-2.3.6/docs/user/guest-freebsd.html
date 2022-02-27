@@ -1,0 +1,370 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>FreeBSD 5.2.1</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="OpenBSD"
+HREF="guest-openbsd.html"><LINK
+REL="NEXT"
+TITLE="FreeDOS Beta 8"
+HREF="guest-freedos.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-openbsd.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-freedos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-FREEBSD"
+>9.5. FreeBSD 5.2.1</A
+></H1
+><P
+>    Contributed by Alexander Schuch.
+  </P
+><P
+>    This section describes how to install FreeBSD 5.2.1 (miniinst) inside of Bochs, using an ISO image.
+  </P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3719"
+>9.5.1. Getting FreeBSD</A
+></H2
+><P
+>      As <TT
+CLASS="FILENAME"
+>5.2.1-RELEASE-i386-miniinst.iso</TT
+> (240M) is no longer available from
+      the FreeBSD FTP server, you might want to ask a (file) search engine of your choice
+      for a download location. Once you downloaded the file, you should check its integrity
+      using the provided MD5 checksum from the
+      <A
+HREF="http://www.freebsd.org/releases/5.2.1R/announce.html"
+TARGET="_top"
+>FreeBSD 5.2.1 release announcement</A
+>.
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3724"
+>9.5.2. Preparing Bochs</A
+></H2
+><P
+>      Create a new hard disk image using <B
+CLASS="COMMAND"
+>bximage</B
+> (see
+      <A
+HREF="using-bximage.html"
+>Section 8.19</A
+>) with a size of at least 350M, as the standard
+      installation uses 280M on its own.
+    </P
+><P
+>      Next, you need to setup your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> so that Bochs knows about your
+     (still empty) hard disk, as well as about your ISO image. Make Bochs boot from CD-ROM and
+     start the emulation.
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3731"
+>9.5.3. Installing FreeBSD</A
+></H2
+><P
+>      This is just a very short step-by-step installation guide for FreeBSD in Bochs. It
+      doesn't explain what you do nor why you do it, it just tells you how to do it.
+      For in-deepth information refer to the FreeBSD handbook:
+      <A
+HREF="http://www.freebsd.org/doc/handbook/install.html"
+TARGET="_top"
+>Installing FreeBSD</A
+>.
+    </P
+><P
+>      FreeBSD boots up and shows a nice (text-mode) boot option screen. Just press
+      <B
+CLASS="KEYCAP"
+>return</B
+> there, that is, use the default option. After loading the
+      kernel and needed device drivers, select 'Standard' in the installation menu.
+    </P
+><P
+>      A fdisk like partition program is loaded next, where you just press <B
+CLASS="KEYCAP"
+>A</B
+>
+      to use the entire disk, followed by <B
+CLASS="KEYCAP"
+>Q</B
+> to finish the selection. The next
+      dialog asks for the boot manager you want to use. Select 'Standard' and continue.
+    </P
+><P
+>      In the Disklabel Editor, you have to setup the layout of your partition. If your (virtual)
+      hard disk is large enough, you can press <B
+CLASS="KEYCAP"
+>A</B
+> for auto-layout. However, you
+      need to make sure that the <TT
+CLASS="FILENAME"
+>/usr</TT
+> partition is at least
+      250M large, or you will end up with a 'disk full' error message during installation. If
+      this is not the case, select one partition after another and press <B
+CLASS="KEYCAP"
+>D</B
+> to
+      delete it again. After you deleted all partitions, create two new ones. The first one will
+      be a swap partition; press <B
+CLASS="KEYCAP"
+>C</B
+>, enter '32M' as size and select 'Swap' from
+      the dialog. Press <B
+CLASS="KEYCAP"
+>C</B
+> again, and accept the remaining capacity for your
+      filesystem partition. Choose 'FS' as partition type and enter '/' (slash) as mount point.
+      Your partition layout is complete now; press <B
+CLASS="KEYCAP"
+>Q</B
+> to leave the editor.
+
+      <DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>        This 'all-in-one' partition layout is not recommended for a FreeBSD installation on a
+        real box; use 'auto-layout' or something comparable to that there.
+      </P
+></BLOCKQUOTE
+></DIV
+>
+    </P
+><P
+>      You now can choose what set of programs/files (distribution) you want to install. Take
+      'User' (option 8), and select 'No' when asked to install the ports collection. You are
+      back in the distribution selection, where you select the first item, called 'Exit'.
+      Choose to install from 'CD/DVD' and answer the 'Are you sure?' dialog with 'yes'.
+    </P
+><P
+>      Now, while FreeBSD installs, it is a very good time to take a look at the
+      <A
+HREF="http://www.freebsd.org/docs.html"
+TARGET="_top"
+>FreeBSD documentation</A
+>, especially
+      the <A
+HREF="http://www.freebsd.org/doc/handbook/index.html"
+TARGET="_top"
+>FreeBSD handbook</A
+>
+      and the <A
+HREF="http://www.freebsd.org/doc/faq/index.html"
+TARGET="_top"
+>FreeBSD FAQ</A
+>.
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3754"
+>9.5.4. Post-installation configuration</A
+></H2
+><P
+>      All files are installed on your (virtual) hard disk now, and FreeBSD is ready for getting set
+      up. As this is a very basic FreeBSD installation, you just answer 'no' to nearly all questions,
+      but the one about your mouse: Answer 'yes' for PS/2 mouse, and choose 'Exit' at mouse configuration.
+      The miniinst FreeBSD ISO image contains nearly no binary packages, so don't browse the package
+      collection. Then, when asked to create a new user account, answer 'yes' and create a new user
+      called 'bochs' (or whatever you like). You might want to use <TT
+CLASS="FILENAME"
+>/bin/csh</TT
+>
+      or <TT
+CLASS="FILENAME"
+>/bin/tcsh</TT
+> as shell rather than <TT
+CLASS="FILENAME"
+>/bin/sh</TT
+>. Next,
+      you are asked for the super user (root) password. The installation is finished now, there is
+      no need to visit the general configuration menu again - answer 'no' to that question. FreeBSD
+      will then reboot. Shutdown Bochs, as soon as the (virtual) computer boots.
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3760"
+>9.5.5. Using FreeBSD</A
+></H2
+><P
+>      Open your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> and change the boot sequence, so that Bochs will boot
+      from hard disk, rather than from CD-ROM from now on. Start Bochs again and watch the FreeBSD
+      boot process.
+    </P
+><P
+>      Your keyboard might use the wrong keymap, so login (into FreeBSD) as super user and use
+      <B
+CLASS="COMMAND"
+>/stand/sysinstall</B
+> to start the FreeBSD configuration program. Choose
+      'keymap' and select the keymap you want to use.
+    </P
+><P
+>      You have successfully installed FreeBSD now. You might want to shutdown FreeBSD using
+      <B
+CLASS="COMMAND"
+>shutdown -h now</B
+>, quit Bochs, and create a backup of your hard disk
+      image, before you start playing around.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-openbsd.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-freedos.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>OpenBSD</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FreeDOS Beta 8</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

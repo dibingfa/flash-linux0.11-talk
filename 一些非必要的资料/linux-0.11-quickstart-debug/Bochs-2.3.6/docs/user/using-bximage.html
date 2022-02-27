@@ -1,0 +1,183 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using the bximage tool</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Disk Image Modes"
+HREF="harddisk-modes.html"><LINK
+REL="NEXT"
+TITLE="Using the bxcommit tool"
+HREF="using-bxcommit.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="harddisk-modes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-bxcommit.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="USING-BXIMAGE"
+>8.19. Using the bximage tool</A
+></H1
+><P
+>Bximage is an easy to use console based tool for creating disk images,
+particularly for use with Bochs. It is completely  interactive if no command
+line arguments are used. It can be switched to a non-interactive mode if all
+required parameters are given in the command line.</P
+><P
+>When you run bximage without one of the following options,
+it will  appear  in  interactive  mode and  ask   for  all
+required parameters to create an image.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>-fd        Create a floppy image.
+-hd        Create a hard disk image.
+-mode=...  Image mode (for hard disks only - see the bochsrc sample for
+           supported options).
+-size=...  Image size in megabytes (e.g. 1.44 for floppy image, 10 for hard
+           disk image).
+-q         Quiet  mode (don't prompt for user input). Without this option bximage
+           uses the command line parameters as defaults for the interactive mode.
+           If this option is given and one of the required parameters is missing,
+           bximage will fall back to interactive mode.
+--help     Print  a  summary  of  the command line options for bximage and exit.
+
+The filename parameter specifies the name of the image to be created.</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>For an example of the usage, refer to <A
+HREF="howto.html#DISKIMAGEHOWTO"
+>Section 8.1</A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="harddisk-modes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-bxcommit.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Disk Image Modes</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using the bxcommit tool</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,295 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Supported Platforms</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction to Bochs"
+HREF="introduction.html"><LINK
+REL="PREVIOUS"
+TITLE="Features"
+HREF="features.html"><LINK
+REL="NEXT"
+TITLE="FAQ"
+HREF="faq.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="features.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Introduction to Bochs</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SUPPORTED-PLATFORMS"
+>1.8. Supported Platforms</A
+></H1
+><P
+>The following table shows the supported platforms with a small description and
+the available display libraries on these platforms. The display library is the
+code that displays the Bochs VGA screen and handles keyboard and mouse events.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN233"
+></A
+><P
+><B
+>Table 1-2. Supported platforms</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Platform</TH
+><TH
+>Description</TH
+><TH
+>Display Libraries</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>Unix/X11</TD
+><TD
+>        X windows has always been well supported because it was
+        Kevin Lawton's main development platform. Bryce Denney maintains
+        the Unix/X11 platform now. Most features and fixes (not all) are
+        tried first in Unix and then ported to the others; see
+        <A
+HREF="compiling.html"
+>Section 3.4</A
+> for compile instructions.
+      </TD
+><TD
+>x, sdl, wx, term, rfb</TD
+></TR
+><TR
+><TD
+>Win32</TD
+><TD
+>        This port was done by David Ross and is now maintained by
+        Don Becker. You can compile with Microsoft Visual C++ 5.0 or 6.0,
+        see <A
+HREF="compiling.html#COMPILING-WIN32"
+>Section 3.4.4</A
+> for compile instructions,
+        or Cygwin, see <A
+HREF="compiling.html#COMPILE-CYGWIN"
+>Section 3.4.5</A
+>.
+      </TD
+><TD
+>win32, sdl, wx, rfb</TD
+></TR
+><TR
+><TD
+>BeOS</TD
+><TD
+>        Kevin Lawton wrote this port, originally to R3/PPC using
+        CodeWarrior. It now works on R4/x86 with egcs. Simon Huet picked up
+        maintaining/reworking the BeOS GUI port. In September 2001, Bernd Korz
+        of Yellow Tab, Inc.
+        (<A
+HREF="http://www.yellowtab.com"
+TARGET="_top"
+>www.yellowtab.com</A
+>), took
+        over the BeOS/Zeta port, and is working on raw CD-ROM and raw floppy
+        support. For compiling, see <A
+HREF="compiling.html#COMPILE-BEOS"
+>Section 3.4.8</A
+>.
+      </TD
+><TD
+>beos, sdl</TD
+></TR
+><TR
+><TD
+>MacOS X</TD
+><TD
+>        Emmanuel Mailliard ported the Macintosh code to MacOS X with Carbon API.
+        Jeremy Parsons (Br'fin) has been maintaining the MacOS X port since
+        March 2002; see <A
+HREF="compiling.html#COMPILE-MACOSX"
+>Section 3.4.7</A
+> for compile instructions.
+      </TD
+><TD
+>carbon, x, rfb, sdl</TD
+></TR
+><TR
+><TD
+>Macintosh</TD
+><TD
+>        David Batterham
+        ported Bochs to the Mac. He compiled with CodeWarrior Pro R1 (CW12)
+        but has not had time to maintain the Mac port since early 2000.
+        If you have Mac development tools and want to contribute, contact
+        the <A
+HREF="mailinglist.html#BOCHS-DEVELOPERS"
+>bochs-developers mailing list</A
+>; see <A
+HREF="compiling.html#COMPILE-MACOS9-CODEWARRIOR"
+>Section 3.4.6</A
+> for
+        compile instructions.
+      </TD
+><TD
+>macos</TD
+></TR
+><TR
+><TD
+>Amiga/MorphOS</TD
+><TD
+>        This port is written and maintained by Nicholai Benalal, see
+        <A
+HREF="compiling.html#COMPILE-MORPHOS"
+>Section 3.4.9</A
+> for compile instructions.
+      </TD
+><TD
+>amigaos</TD
+></TR
+><TR
+><TD
+>OS/2</TD
+><TD
+>        Nick Behnken used PE2LX to translate David Ross' Win32
+        port to an OS/2 program. This hasn't been updated for a long time,
+        and Nick Behnken's page seems to be inactive.
+        Also, Craig Ballantyne ported Bochs to OS/2, but his web page has
+        disappeared and his port has not been updated since March 2000.
+        If you want to bring the OS/2 port up to date, contact the <A
+HREF="mailinglist.html#BOCHS-DEVELOPERS"
+>bochs-developers mailing list</A
+>.
+      </TD
+><TD
+>???</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="features.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="faq.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Features</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="introduction.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FAQ</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

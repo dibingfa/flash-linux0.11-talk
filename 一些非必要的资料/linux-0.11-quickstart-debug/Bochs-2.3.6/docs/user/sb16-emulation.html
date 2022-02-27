@@ -1,0 +1,529 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Sound Blaster 16 Emulation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Setup"
+HREF="setup.html"><LINK
+REL="PREVIOUS"
+TITLE="bochsrc"
+HREF="bochsrc.html"><LINK
+REL="NEXT"
+TITLE="How to write your own keymap table"
+HREF="keymap.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="bochsrc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Setup</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="keymap.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SB16-EMULATION"
+>4.3. Sound Blaster 16 Emulation</A
+></H1
+><P
+>This section is a detailed description for configuring Sound Blaster 16 from
+source. If you have a binary and all you want to know is what to put in your
+<TT
+CLASS="FILENAME"
+>bochsrc</TT
+> file, see <A
+HREF="bochsrc.html#SB16LINE"
+>sb16 option</A
+>.</P
+><P
+>Sound Blaster 16 (SB16) emulation for Bochs was written and donated by
+Josef Drexler, who has a
+<A
+HREF="http://publish.uwo.ca/~jdrexler/bochs/"
+TARGET="_top"
+>web page</A
+> on the topic.
+The entire set of his SB16 patches have been integrated into
+Bochs, however, so you can find everything you need here.</P
+><P
+>SB16 Emulation has been tested with several soundcards and versions of Linux.  Please give
+Josef <A
+HREF="mailto:jdrexler@julian.uwo.ca"
+TARGET="_top"
+>feedback</A
+> on
+whether is does or doesn't work on your combination of software and hardware.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1942"
+>4.3.1. How well does it work?</A
+></H2
+><P
+>Right now, MPU401 emulation is next to perfect. It supports UART
+and SBMIDI mode, because the SB16's MPU401 ports can't do anything else as well.</P
+><P
+>The digital audio basically works, but the emulation is too slow for fluent
+output unless the application doesn't do much in the background (or the
+foreground, really). The sound tends to looping or crackle on slower
+computer, but the emulation appears to be correct. Even a MOD
+player works, although only for lower sampling speeds.</P
+><P
+>Also, the MIDI data running through the MPU401 ports can be written
+into a SMF, that is the standard midi file. The wave output
+can be written into a VOC file, which has a format defined by
+Creative Labs. This file format can be converted to WAV by
+sox for example.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1947"
+>4.3.2. Output to a sound card</A
+></H2
+><P
+>Output is supported on Windows, Linux, FreeBSD, MacOS 9 and MacOSX at the moment.</P
+><P
+>On Linux, the output goes to any file or device. If you have a wavetable synthesizer,
+midi can go to <TT
+CLASS="FILENAME"
+>/dev/midi00</TT
+>, otherwise you may need
+a midi interpreter. For example, the midid program from the DosEmu project would work.
+Wave output should go to <TT
+CLASS="FILENAME"
+>/dev/dsp</TT
+>. These devices
+are assumed to be OSS devices, if they're not some of the ioctl's might fail.</P
+><P
+>On Windows, midi and (wave) output go to the midi mapper and the wave mapper,
+respectively. A future version might have selectable output devices.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1954"
+>4.3.3. Installation on Linux</A
+></H2
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN1956"
+>4.3.3.1. Prerequisites</A
+></H3
+><P
+>A wavetable synthesizer on <TT
+CLASS="FILENAME"
+>/dev/midi00</TT
+>
+and a working <TT
+CLASS="FILENAME"
+>/dev/dsp</TT
+> if you want real
+time music and sound, otherwise output to midi and wave files is also possible.
+Optionally, you can use a software midi interpreter, such as the midid program
+from the DosEmu project instead of <TT
+CLASS="FILENAME"
+>/dev/midi00</TT
+>.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN1962"
+>4.3.3.2. Configuring Bochs</A
+></H3
+><P
+>You need to <B
+CLASS="COMMAND"
+>configure</B
+> Bochs using the <CODE
+CLASS="OPTION"
+>--enable-sb16</CODE
+>
+option.
+There are a few values in <TT
+CLASS="FILENAME"
+>config.h</TT
+> that are relevant to the sound functions.
+Edit <TT
+CLASS="FILENAME"
+>config.h</TT
+> after running configure, but before compiling.</P
+><P
+>BX_USE_SB16_SMF should be 1 unless you intend to have several sound cards
+running at the same time.</P
+><P
+>BX_USE_SOUND_VIRTUAL can be 0 or 1, and determines whether the output class
+uses virtual functions or not. The former is more versatile and allows to
+select the class at runtime (not supported at the moment), while the latter
+is slightly faster.</P
+><P
+>BX_SOUND_OUTPUT_C is the name of the class used for output.  The default is
+to have no output functions, so you need to change this if you want any sound.
+The following are supported at the moment:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>        bx_sound_linux_c    for output to /dev/dsp and /dev/midi00 on Linux
+                            (and maybe other OSes that use the OSS driver)
+        bx_sound_windows_c  for output to the midi and wave mapper of
+                            Windows 3.1 and higher.
+        bx_sound_output_c   for no output at all.</PRE
+></TD
+></TR
+></TABLE
+><P
+>Setup the SB16 emulation in your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+>, according to instructions
+in that file (see <A
+HREF="bochsrc.html#SB16LINE"
+>sb16 option</A
+>).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN1976"
+>4.3.3.3. Runtime configuration</A
+></H3
+><P
+>The source for the SB16CTRL program that is used to modify
+the runtime behaviour of the SB16 emulation is included in
+<TT
+CLASS="FILENAME"
+>misc/sb16/</TT
+>. It is a C
+program that can be run from inside the emulation.</P
+><P
+>It currently supports the following commands:</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN1981"
+></A
+><P
+><B
+>Table 4-5. Supported options for <B
+CLASS="COMMAND"
+>sb16ctl</B
+></B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Option</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+><CODE
+CLASS="OPTION"
+>-i <TT
+CLASS="REPLACEABLE"
+><I
+>number</I
+></TT
+></CODE
+></TD
+><TD
+>        Show the selected emulator info string,
+        e.g. <B
+CLASS="COMMAND"
+>sb16ctrl -i 3</B
+> to show how many patch translations are active.
+      </TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="OPTION"
+>-t <TT
+CLASS="REPLACEABLE"
+><I
+>six numbers</I
+></TT
+></CODE
+></TD
+><TD
+>        Load a translation into the translation table. The numbers are:
+        "OldBankMSB,OldBankLSB,OldProgram,NewBankMSB,NewBankLSB,NewProgram".
+        All values can be 0..127 or 255. 255 for "Old" values means <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>match
+        any</I
+></SPAN
+> and for "New" values means <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>don't change</I
+></SPAN
+>,
+        e.g. <B
+CLASS="COMMAND"
+>sb16ctrl -t 255,255,0,255,255,32</B
+>
+        to change patch 0 (Piano) to patch 32 (Acoustic Bass).
+      </TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="OPTION"
+>-r</CODE
+></TD
+><TD
+>        Reset the patch translation table e.g. <B
+CLASS="COMMAND"
+>sb16ctrl -r</B
+>.
+      </TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="OPTION"
+>-m <TT
+CLASS="REPLACEABLE"
+><I
+>some numbers</I
+></TT
+></CODE
+></TD
+><TD
+>        Upload the given numbers to the midi output device. Note
+        that it should be a complete midi message, and also that it is
+        subject to patch translation,
+        e.g. <B
+CLASS="COMMAND"
+>sb16ctrl -m 0x80,64,0</B
+>
+        to send a note-off message to channel 0.
+      </TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="OPTION"
+>-f <TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+></CODE
+></TD
+><TD
+>        Read in a file and execute the commands in it. These have
+        the same format as the above commands, except that they don't have
+        the dash "-" in front of them.
+        Comment lines are supported and start with a hash sign "#".
+      </TD
+></TR
+><TR
+><TD
+><CODE
+CLASS="OPTION"
+>-h</CODE
+></TD
+><TD
+>        Show a brief summary of the commands.
+      </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+><P
+>All numbers can be valid parameters to the <CODE
+CLASS="FUNCTION"
+>strtol()</CODE
+> function, so hex and
+octal notation is fine. They have to be delimited by either commas "," or
+slashes "/", spaces are not allowed.</P
+><P
+>The command line can have any number of commands. However, if none are given,
+"-f -" is assumed, which means commands are taken from stdin.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2027"
+>4.3.4. Features planned for the future</A
+></H2
+><P
+></P
+><UL
+><LI
+><P
+>Port it to more OS's, but I can't do this myself.</P
+></LI
+><LI
+><P
+>Finish the OPL3 FM emulation by translating the music to midi data.</P
+></LI
+></UL
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2034"
+>4.3.5. Description of the sound output classes</A
+></H2
+><P
+>You can find a description of the sound output classes and more details on
+Sound Blaster 16 emulation in the
+<A
+HREF="../development/sb16-emulation-basics.html"
+TARGET="_top"
+>developer documentation</A
+>.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="bochsrc.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="keymap.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>bochsrc</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="setup.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How to write your own keymap table</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

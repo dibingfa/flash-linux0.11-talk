@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Save and restore simulation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Using Bochs"
+HREF="using-bochs.html"><LINK
+REL="PREVIOUS"
+TITLE="The configuration interface 'textconfig'"
+HREF="textconfig.html"><LINK
+REL="NEXT"
+TITLE="Common problems and what to do about them (Troubleshooting)"
+HREF="common-problems.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="textconfig.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Using Bochs</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="common-problems.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="USING-SAVE-RESTORE"
+>5.4. Save and restore simulation</A
+></H1
+><P
+>Starting with version 2.3, Bochs has limited save/restore support. The state of
+cpu(s), memory and all devices can be saved now. When running Bochs with there
+will be a button in the header bar called "Suspend". Depending on config interface
+and gui there will be a prompt where you can enter a path or a gui folder
+selection dialog box. It is possible to save the state at any time, but we
+recommend to do it when the simulation is idle. After pressing OK/Enter, Bochs
+will save a set of files into the selected folder. The state of hard disk images
+is not handled yet, so Bochs will ask you if you want to continue after saving
+state. We don't recommend to continue unless you are running a read-only guest
+system (e.g. Live-CD).</P
+><P
+>To restore the saved simulation state you can select the restore function in the
+text mode start menu or specify the restore path at the command line:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>bochs -r /path/to/save-restore-data</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>Then Bochs will start up using the saved configuration and log options, restores
+the state of the hardware and begins the simulation. In the restore mode Bochs
+will ignore bochsrc options from the command line and does not load a normal
+config file.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="textconfig.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="common-problems.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The configuration interface 'textconfig'</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="using-bochs.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Common problems and what to do about them (Troubleshooting)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

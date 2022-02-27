@@ -1,0 +1,104 @@
+#!/bin/sh
+
+# This is a2dll 1.0
+# (c)1999-2000 Paul Sokolovsky
+# a2dll is distrubuted under GNU General Public License, see http://www.gnu.org
+
+
+usage() {
+        echo 'a2dll 1.0: convert static library into win32 dll'
+        echo '  by <Paul.Sokolovsky@technologist.com>'
+	echo 'Usage: a2dll <staticlib> [-o <dllname>] [linker commands:-L,-l,-s] [--relink]'
+	exit 0
+}
+
+
+cmdline=$@
+
+while test $# -ge 1
+do
+case "$1" in
+    -\? | -h* | --h*) usage;;
+    -o ) out="$2"; shift; shift;;
+    --relink) relink=1; shift;;
+    -* ) libs="$libs $1"; shift;;
+    *) in=$1; shift;;
+    esac
+done
+
+if [ "$in" = "" ]
+then
+	usage
+fi
+
+base=`basename $in .a`
+
+if [ "$out" = "" ]
+then
+        out=`awk -v n=$base 'BEGIN {print substr(n,4); exit;}'`.dll
+fi
+
+if [ "$relink" != "1" ]
+then
+	rm -f .dll/*
+	/usr/bin/mkdir -p .dll
+	cd .dll
+	ar x ../$in
+else
+	cd .dll
+fi
+
+echo Creating shared library \'$out\'
+
+dllwrap --export-all -o ../$out `ls` $libs >../ld.err 2>&1
+
+cd ..
+if [ `wc ld.err|awk ' {print $1}' ` -gt 2 ]
+then
+	echo Linking error, consult file \'ld.err\', correct errors, and run
+        echo \'$0 $cmdline --relink\'
+        exit 1
+else
+# cleanup
+
+        rm -f ld.err
+	rm -f .dll/*
+	/usr/bin/rmdir .dll
+
+# create .def
+# we use pexports on dll instead of dlltool on objects for this,
+# because it's:
+# 1. faster
+# 2. I just saw that dlltool lies about assembly-sourced files, it
+#    lists their symbols as data 
+
+        pexports $out >$base.def
+
+# create import library
+
+	mv $in $in.static
+        dlltool --dllname $out --def $base.def --output-lib $in
+
+# finally, we check whether dll exports data symbols
+# if yes, we suggest user on steps to perform
+
+        pexports $out | awk '/DATA/ { print $1}' >$out.data
+	if test -s $out.data
+        then
+                echo
+        	echo Shared library exports data symbols, they are listed \
+in \'$out.data\'. For using them in client application, you should mark \
+them as __declspec\(dllimport\) in library headers. You can quickly \
+find places where these data symbols declared by issuing
+                echo
+		echo "	grep -f $out.data *.h"
+                echo
+                echo in library header directory. Also note that this step is optional, you can postpone \
+it until you\'ll get during linking unresolved symbol _imp__\<something\>, where \
+\<something\> is one of the symbols listed in $out.data. Read documentation \
+\(static2dll_howto.txt\) for more information.
+        else
+        	rm $out.data
+        fi
+        rm $base.def
+fi

@@ -1,0 +1,373 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Pre-defined CPU models</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Using Bochs"
+HREF="using-bochs.html"><LINK
+REL="PREVIOUS"
+TITLE="The configuration interface 'textconfig'"
+HREF="textconfig.html"><LINK
+REL="NEXT"
+TITLE="Save and restore simulation"
+HREF="using-save-restore.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="textconfig.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Using Bochs</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-save-restore.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="CPU-MODELS"
+>5.4. Pre-defined CPU models</A
+></H1
+><P
+>If Bochs is compiled with cpu level 5 or higher the CPUID opcode is supported
+and it can return some information about the cpu model and it's features. When
+using a pre-defined CPU model in Bochs the features reported by CPUID are set up
+according to the model's specification. The following table shows all available
+CPU models with a short description. The amount of choices depends on the CPU
+features enabled at compile time (3rd column).</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN3021"
+></A
+><P
+><B
+>Table 5-2. Bochs CPU models</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Value</TH
+><TH
+>Description</TH
+><TH
+>Required Features</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>bx_generic</TD
+><TD
+>Default Bochs CPU configured with <A
+HREF="bochsrc.html#BOCHSOPT-CPUID"
+>CPUID</A
+> option</TD
+><TD
+>cpu level 5</TD
+></TR
+><TR
+><TD
+>pentium</TD
+><TD
+>Intel Pentium (P54C)</TD
+><TD
+>cpu level 5</TD
+></TR
+><TR
+><TD
+>pentium_mmx</TD
+><TD
+>Intel Pentium MMX</TD
+><TD
+>cpu level 5</TD
+></TR
+><TR
+><TD
+>amd_k6_2_chomper</TD
+><TD
+>AMD-K6(tm) 3D processor (Chomper)</TD
+><TD
+>cpu level 5</TD
+></TR
+><TR
+><TD
+>p2_klamath</TD
+><TD
+>Intel Pentium II (Klamath)</TD
+><TD
+>cpu level 6</TD
+></TR
+><TR
+><TD
+>p3_katmai</TD
+><TD
+>Intel Pentium III (Katmai)</TD
+><TD
+>cpu level 6</TD
+></TR
+><TR
+><TD
+>p4_willamette</TD
+><TD
+>Intel(R) Pentium(R) 4 (Willamette)</TD
+><TD
+>cpu level 6</TD
+></TR
+><TR
+><TD
+>core_duo_t2400_yonah</TD
+><TD
+>Intel(R) Core(TM) Duo CPU T2400 (Yonah)</TD
+><TD
+>cpu level 6</TD
+></TR
+><TR
+><TD
+>atom_n270</TD
+><TD
+>Intel(R) Atom(TM) CPU N270</TD
+><TD
+>cpu level 6</TD
+></TR
+><TR
+><TD
+>p4_prescott_celeron_336</TD
+><TD
+>Intel(R) Celeron(R) 336 (Prescott)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>athlon64_clawhammer</TD
+><TD
+>AMD Athlon(tm) 64 Processor 2800+ (Clawhammer)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>athlon64_venice</TD
+><TD
+>AMD Athlon(tm) 64 Processor 3000+ (Venice)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>turion64_tyler</TD
+><TD
+>AMD Turion(tm) 64 X2 Mobile TL-60 (Tyler)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>phenom_8650_toliman</TD
+><TD
+>AMD Phenom X3 8650 (Toliman)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>core2_penryn_t9600</TD
+><TD
+>Intel Mobile Core 2 Duo T9600 (Penryn)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>corei5_lynnfield_750</TD
+><TD
+>Intel(R) Core(TM) i5   750 (Lynnfield)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>corei5_arrandale_m520</TD
+><TD
+>Intel(R) Core(TM) i5 M 520 (Arrandale)</TD
+><TD
+>cpu level 6, x86-64</TD
+></TR
+><TR
+><TD
+>corei7_sandy_bridge_2600k</TD
+><TD
+>Intel(R) Core(TM) i7-2600K (Sandy Bridge)</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+><TR
+><TD
+>zambezi</TD
+><TD
+>AMD FX(tm)-4100 Quad-Core Processor (Zambezi)</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+><TR
+><TD
+>trinity_apu</TD
+><TD
+>AMD A8-5600K APU (Trinity)</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+><TR
+><TD
+>ryzen</TD
+><TD
+>AMD Ryzen 7 1700</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+><TR
+><TD
+>corei7_ivy_bridge_3770k</TD
+><TD
+>Intel(R) Core(TM) i7-3770K CPU (Ivy Bridge)</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+><TR
+><TD
+>corei7_haswell_4770</TD
+><TD
+>Intel(R) Core(TM) i7-4770 CPU (Haswell)</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+><TR
+><TD
+>broadwell_ult</TD
+><TD
+>Intel(R) Processor 5Y70 CPU (Broadwell)</TD
+><TD
+>cpu level 6, x86-64, avx</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="textconfig.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-save-restore.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>The configuration interface 'textconfig'</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="using-bochs.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Save and restore simulation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

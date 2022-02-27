@@ -1,0 +1,498 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Emulator Objects</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="About the code"
+HREF="about-the-code.html"><LINK
+REL="PREVIOUS"
+TITLE="Directory Structure"
+HREF="directory-structure.html"><LINK
+REL="NEXT"
+TITLE="Configure Scripting"
+HREF="configure-scripting.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="directory-structure.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. About the code</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="configure-scripting.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="EMULATOR-OBJECTS"
+>2.3. Emulator Objects</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN175"
+>2.3.1. Weird macros and other mysteries</A
+></H2
+><P
+>Bochs has many macros with inscrutable names. One might even go as far as to
+say that Bochs is macro infested.
+Some of them are gross speed hacks, to cover up the slow speed that C++ causes.
+Others paper over differences between the simulated PC configurations.
+Many of the macros exhibit the same problem as C++ does: too much stuff happens
+behind the programmer's back. More explicitness would be a big win.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="STATIC-METHODS-HACK"
+>2.3.2. Static methods hack</A
+></H2
+><P
+>C++ methods have an invisible parameter called the this pointer - otherwise the
+method wouldn't know which object to operate on. In many cases in Bochs, there
+will only ever be one object - so this flexibility is unnecessary. There is a
+hack that can be enabled by #defining BX_USE_CPU_SMF to 1 in <TT
+CLASS="FILENAME"
+>config.h</TT
+> that makes most methods static, which means they have a "special
+relationship" with the class they are declared in but apart from that are
+normal C functions with no hidden parameters. Of course they still need access
+to the internals of an object, so the single object of their class has a globally
+visible name that these functions use. It is all hidden with macros.</P
+><P
+>Declaration of a class, from iodev/pic.h:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>...
+#if BX_USE_PIC_SMF
+#  define BX_PIC_SMF  static
+#  define BX_PIC_THIS thePic-&#62;
+#else
+#  define BX_PIC_SMF
+#  define BX_PIC_THIS this-&#62;
+#endif
+...
+class bx_pic_c : public bx_pic_stub_c {
+
+public:
+  bx_pic_c(void);
+  ~bx_pic_c(void);
+...
+  BX_PIC_SMF void   service_master_pic(void);
+  BX_PIC_SMF void   service_slave_pic(void);
+  BX_PIC_SMF void   clear_highest_interrupt(bx_pic_t *pic);
+  };</PRE
+></TD
+></TR
+></TABLE
+><P
+>And iodev/pic.cc:</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>...
+#define LOG_THIS thePic-&#62;
+...
+bx_pic_c *thePic = NULL;
+...
+  void
+bx_pic_c::service_master_pic(void)
+{
+  Bit8u unmasked_requests;
+  int irq;
+  Bit8u isr, max_irq;
+  Bit8u highest_priority = BX_PIC_THIS s.master_pic.lowest_priority + 1;
+  if(highest_priority &#62; 7)
+    highest_priority = 0;
+
+  if (BX_PIC_THIS s.master_pic.INT) { /* last interrupt still not acknowleged */
+    return;
+    }
+
+  if (BX_PIC_THIS s.master_pic.special_mask) {
+    /* all priorities may be enabled.  check all IRR bits except ones
+     * which have corresponding ISR bits set
+     */
+    max_irq = highest_priority;
+    }
+  else { /* normal mode */
+    /* Find the highest priority IRQ that is enabled due to current ISR */
+    isr = BX_PIC_THIS s.master_pic.isr;
+...
+}
+...</PRE
+></TD
+></TR
+></TABLE
+><P
+>Ugly, isn't it? If we use static methods, methods prefixed with BX_PIC_SMF are
+declared static and references to fields inside the object, which are prefixed
+with BX_PIC_THIS, will use the globally visible object, thePic-&#62;. If we don't
+use static methods, BX_PIC_SMF evaluates to nothing and BX_PIC_THIS becomes this-&#62;.
+Making it evaluate to nothing would be a lot cleaner, but then the scoping rules
+would change slightly between the two Bochs configurations, which would be a load
+of bugs just waiting to happen. Some classes use BX_SMF, others have their own
+version of the macro, like BX_PIC_SMF above.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="CPU-MEM-OBJECTS"
+>2.3.3. CPU und memory objects in UP/SMP configurations</A
+></H2
+><P
+>The CPU class is a special case of the above: if Bochs is simulating a uni-
+processor machine then there is obviously only one bx_cpu_c object and the
+static methods trick can be used. If, on the other hand, Bochs is simulating an
+smp machine then we can't use the trick. The same seems to be true for memory:
+for some reason, we have a memory object for each CPU object. This might become
+relevant for NUMA machines, but they are not all that common -- and even the
+existing IA-32 NUMA machines bend over backwards to hide that fact: it should
+only be visible in slightly worse timing for non-local memory and non-local
+peripherals. Other than that, the memory map and device map presented to each
+CPU will be identical.</P
+><P
+>In a UP configuration, the CPU object is declared as bx_cpu. In an SMP
+configuration it will be an array of pointers to CPU objects (bx_cpu_array[]).
+For memory that would be bx_mem and bx_mem_array[], respectively.
+Each CPU object contains a pointer to its associated memory object.
+Access of a CPU object often goes through the BX_CPU(x) macro, which either
+ignores the parameter and evaluates to &amp;bx_cpu, or evaluates to bx_cpu_array
+[n], so the result will always be a pointer. The same goes for BX_MEM(x).
+If static methods are used then BX_CPU_THIS_PTR evaluates to BX_CPU(0)-&#62;. Ugly,
+isn't it?</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="CONFIG-PARAMETER-TREE"
+>2.3.4. The configuration parameter tree</A
+></H2
+><P
+>Starting with version 1.3, the Bochs configuration parameters are stored in parameter
+objects. These objects have get/set methods with min/max checks and it is possible
+to define parameter handlers to perform side effects and to override settings.
+Each parameter type has it's own object type with specific features (numeric,
+boolean, enum, string and file name). A special object type containing a list of
+parameters is designed for building and managing configuration menus or dialogs
+automatically. In the original implementation the parameters could be accessed
+only with their unique id from a static list or a special structure containing
+pointers to all parameters.</P
+><P
+>Starting with version 2.3, the Bochs parameter object handling has been rewritten
+to a parameter tree. There is now a root list containing child lists, and these
+lists can contain lists or parameters and so on. The parameters are now accessed
+by a name build from all the list names in the path and finally the parameter
+name separated by periods.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Bit32u megs = SIM-&#62;get_param_num("memory.standard.ram.size")-&#62;get();</PRE
+></TD
+></TR
+></TABLE
+></P
+><P
+>The example above shows how to get the memory size in megabytes from the simulator
+interface. In the root list (".") there is child list named "memory" containing
+a child list "standard". It's child list "ram" contains the numeric parameter type
+"size". The SIM-&#62;get_param_num() methods returns the object pointer and the get()
+method returns the parameter value.</P
+><P
+>The table below shows all parameter types used by the Bochs configuration interface.
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN198"
+></A
+><P
+><B
+>Table 2-2. Parameter types</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Type</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>bx_object_c</TD
+><TD
+>Base class for all the other parameter types. It contains the unique parameter id and the object type value.</TD
+></TR
+><TR
+><TD
+>bx_param_c</TD
+><TD
+>Generic parameter class. It contains the name, label, description and the input/output formats.</TD
+></TR
+><TR
+><TD
+>bx_param_num_c</TD
+><TD
+>Numerical (decimal/hex) config settings are stored in this parameter type.</TD
+></TR
+><TR
+><TD
+>bx_param_bool_c</TD
+><TD
+>This parameter type is based on bx_param_num_c, but it is designed for boolean values. A dependency
+list can be defined to enable/disable other parameters depending on the value change.</TD
+></TR
+><TR
+><TD
+>bx_param_enum_c</TD
+><TD
+>Based on bx_param_num_c this parameter type contains a list of valid values.</TD
+></TR
+><TR
+><TD
+>bx_param_string_c</TD
+><TD
+>Configuration strings are stored in this type of parameter.</TD
+></TR
+><TR
+><TD
+>bx_param_filename_c</TD
+><TD
+>Based on bx_param_string_c this parameter type is used for file names.</TD
+></TR
+><TR
+><TD
+>bx_list_c</TD
+><TD
+>Contains a list of pointers to parameters (bx_param_*_c and bx_list_c).
+In the config interface it is used for menus/dialogs.</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="SAVE-RESTORE"
+>2.3.5. The save/restore feature</A
+></H2
+><P
+>The save/restore feature is based on an extension to the parameter tree concept.
+A subtree (list) called "bochs" appears in the root of the parameter tree
+and some new "shadow" parameter types store pointers to values instead of the values
+itself. All the hardware objects have register_state() methods to register pointers
+to the device registers and switches that need to be saved. The simulator interface
+saves the registered data in text format to the specified folder (usually one file
+per item in the save/restore list). Large binary arrays are registered with a
+special parameter type, so they are saved as separate files.</P
+><P
+>The table below shows the additional parameter types for save/restore.
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN234"
+></A
+><P
+><B
+>Table 2-3. Save/restore parameter types</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Type</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>bx_shadow_num_c</TD
+><TD
+>Based on bx_param_num_c this type stores a pointer to a numerical variable.</TD
+></TR
+><TR
+><TD
+>bx_shadow_bool_c</TD
+><TD
+>This parameter type stores a pointer to a boolean variable.</TD
+></TR
+><TR
+><TD
+>bx_shadow_data_c</TD
+><TD
+>This special parameter type stores pointer size of a binary array.</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+It is also possible to use the bx_param_num_c object with parameter save/restore
+handlers. With this special way several device settings can be save to and restored
+from one single parameter.</P
+><P
+>All devices can uses these two save/restore specific methods:
+<P
+></P
+><UL
+><LI
+><P
+>register_state() is called after the device init() to register the device members for save/restore</P
+></LI
+><LI
+><P
+>after_restore_state() is an optional method to do things directly after restore</P
+></LI
+></UL
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="directory-structure.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="configure-scripting.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Directory Structure</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="about-the-code.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Configure Scripting</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

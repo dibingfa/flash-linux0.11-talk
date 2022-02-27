@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using CVS write access</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Resources for developers"
+HREF="resources.html"><LINK
+REL="PREVIOUS"
+TITLE="Resources for developers"
+HREF="resources.html"><LINK
+REL="NEXT"
+TITLE="SourceForge bug, feature, and patch trackers"
+HREF="trackers.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="resources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Resources for developers</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="trackers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="USING-CVS-WRITE-ACCESS"
+>1.2. Using CVS write access</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN59"
+>1.2.1. Checking in files</A
+></H2
+><P
+>Once you have a Bochs directory with cvs write access, you can compile the
+files, edit them, test them, etc.  See the documentation section, "Tracking
+the source code with CVS" for more info on CVS, in the User Manual.
+(FIXME: add cross reference) But what's new and different is that you can now
+do cvs commits.  When a file is all fixed and ready to share with the rest of
+the world, you run a commit command to upload your version to the server.
+First, it's good to do a cvs update to make sure nobody else has changed it
+since you downloaded it last.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  $ cvs update file.cc
+  <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sf.net's password:        <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;--type your password</I
+></TT
+>
+  $ cvs commit file.cc
+  <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sf.net's password:        <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;--type your password</I
+></TT
+>
+  [editor opens. type log message, save, and exit.]</PRE
+></TD
+></TR
+></TABLE
+><P
+>When CVS starts an editor, The default is usually vi.  If you want a different
+editor, set the EDITOR environment variable to the name of your preferred
+editor.  When you're done, just save the file and quit the editor.  Unless
+there's some problem, you will see a message that says what the new revision
+number for the file is, and then "done".  If while you're editing the log
+message, you decide that you don't want to commit after all, don't save the
+file.  Quit the editor, and when it asks where the log message went, tell it
+to abort.</P
+><P
+>Here is an example of a successful checkin:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  $ cvs commit misc.txt
+  <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sf.net's password:        <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;--type your password</I
+></TT
+>
+  [edit log msg]
+  Checking in misc.txt;
+  /cvsroot/bochs/bochs/doc/docbook/misc.txt,v  &#60;--  misc.txt
+  new revision: 1.6; previous revision: 1.5
+  done</PRE
+></TD
+></TR
+></TABLE
+>
+
+And here is an aborted one:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  $ cvs commit misc.txt
+  <TT
+CLASS="REPLACEABLE"
+><I
+>sfusername</I
+></TT
+>@bochs.cvs.sf.net's password:        <TT
+CLASS="REPLACEABLE"
+><I
+>&#60;--type your password</I
+></TT
+>
+  [quit editor without saving]
+  Log message unchanged or not specified
+  a)bort, c)ontinue, e)dit, !)reuse this message unchanged for remaining dirs
+  Action: a
+  cvs [commit aborted]: aborted by user</PRE
+></TD
+></TR
+></TABLE
+>&#13;</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="resources.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="trackers.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Resources for developers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="resources.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>SourceForge bug, feature, and patch trackers</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Updating the online documentation</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Webmastering"
+HREF="webmastering.html"><LINK
+REL="PREVIOUS"
+TITLE="Updating the SVN snapshot"
+HREF="update-svn-snapshot.html"><LINK
+REL="NEXT"
+TITLE="other content"
+HREF="other-content.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="update-svn-snapshot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 5. Webmastering</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="other-content.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="UPDATE-ONLINE-DOCS"
+>5.4. Updating the online documentation</A
+></H1
+><P
+>To update the online documentation, a file called <TT
+CLASS="FILENAME"
+>bochsdoc.tar.gz</TT
+>
+must be generated with the <B
+CLASS="COMMAND"
+>make</B
+>. This file must be uploaded
+to the location of the online documentation on SF using <B
+CLASS="COMMAND"
+>scp</B
+>.
+<PRE
+CLASS="SCREEN"
+>cd doc/docbook
+make bochsdoc.tar.gz
+scp bochsdoc.tar.gz vruppert,bochs@web.sf.net:htdocs/doc/docbook</PRE
+>
+After a successful upload, the HTML files must be unpacked from the SF shell.
+See section <A
+HREF="update-website.html"
+>Updating the Bochs website content</A
+>
+how to create a shell.
+<PRE
+CLASS="SCREEN"
+>cd /home/project-web/bochs/htdocs/doc/docbook
+tar xvzf bochsdoc.tar.gz</PRE
+>
+The updated files can be accessed from the sidebar of the Bochs website.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="update-svn-snapshot.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="other-content.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Updating the SVN snapshot</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="webmastering.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>other content</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

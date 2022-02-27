@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Simulating a Symmetric Multiprocessor (SMP) Machine</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Mounting a disk image using the loop device"
+HREF="loop-device-usage.html"><LINK
+REL="NEXT"
+TITLE="Setting Up Networking in DLX Linux"
+HREF="dlxlinux-networking.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="loop-device-usage.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="dlxlinux-networking.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SMP"
+>8.8. Simulating a Symmetric Multiprocessor (SMP) Machine</A
+></H1
+><P
+>Bochs can now simulate an SMP machine when you use "--enable-smp" in the
+configure command.  SMP support was added by Bryce Denney, who
+was very interested in watching a multiprocessor operating system work 
+at a low level.  It should also be helpful to operating system developers
+who are writing SMP drivers, or just for users who want to test drive
+an SMP machine to see what it looks like.</P
+><P
+>Starting with Bochs 2.2.6 you can set up the number of processors in the
+<TT
+CLASS="FILENAME"
+>bochsrc</TT
+>. See <A
+HREF="bochsrc.html#BOCHSOPT-CPU"
+>Section 4.2.2</A
+> how to
+set up the number of processors.</P
+><P
+>It is important to understand that configuring bochs for 4 processors will NOT
+make your single-threaded applications run faster in general!  On the contrary,
+it has to spend time simulating idle processors as well as the ones doing your
+task.  The point is to simulate an SMP system, not to speed up a uniprocessor
+application.</P
+><P
+>What was required to make SMP work in Bochs?
+
+<P
+></P
+><UL
+><LI
+><P
+> local APIC on each processor with timer</P
+></LI
+><LI
+><P
+> one I/O APIC model</P
+></LI
+><LI
+><P
+> implement RDTSC (read time stamp counter)</P
+></LI
+><LI
+><P
+> a data structure called the Intel Multiprocessor Configuration
+must be present in BIOS memory space. An SMP-aware operating system probes BIOS
+memory to find the structure, which contains information about how many
+processors, their IDs, interrupt sources, etc. Starting with Bochs 2.2.5 these
+structures are dynamicly created by Bochs.</P
+></LI
+><LI
+><P
+> ACPI support is required to boot SMP system in most of modern
+operating systems. For example WinXP 64 bit require ACPI support even for 
+single processor configuration. Still not supported by Bochs. (FIXME)</P
+></LI
+></UL
+></P
+><P
+>What needs to be done to improve SMP support?
+
+<P
+></P
+><UL
+><LI
+><P
+>debugger support is still limited.  For example, you can set breakpoints,
+but you can't specify which processor you want to set the breakpoint for.</P
+></LI
+><LI
+><P
+>test on any possible SMP operating systems. Currently success reported for
+Knoppix 4.0.2 and WinNT 4.0 SMP.</P
+></LI
+><LI
+><P
+>several parts of the APIC model which weren't needed before are not 
+implemented yet and cause a panic.  If you boot linux 2.4.3 for 
+example, it says "panic: cluster model addressing not implemented".</P
+></LI
+><LI
+><P
+>A number of people have suggested using threads to simulate each CPU in
+a different thread.  Then on a real SMP machine, the threads can execute
+in parallel.  This is a great idea, but it's not done at present.</P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="loop-device-usage.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="dlxlinux-networking.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Mounting a disk image using the loop device</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Setting Up Networking in DLX Linux</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -1,0 +1,1311 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Disk Image Modes</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Notes about Cirrus SVGA usage"
+HREF="cirrus-notes.html"><LINK
+REL="NEXT"
+TITLE="Using the bximage tool"
+HREF="using-bximage.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="cirrus-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="using-bximage.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HARDDISK-MODES"
+>8.18. Disk Image Modes</A
+></H1
+><P
+>Bochs can handle independent disk image format for each
+disk present on the ata interfaces. 
+
+The disk image type is selected in the configuration file 
+by the "mode" option of the ataX-xxx directives. 
+Example:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>ata0-master: type=disk, mode=flat, path=10M.sample, cylinders=306, heads=4, spt=17</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>If unspecified, the default "mode" is flat. </P
+></BLOCKQUOTE
+></DIV
+><P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN3348"
+></A
+><P
+><B
+>Table 8-3. Supported Disk Modes</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Name</TH
+><TH
+>Description</TH
+><TH
+>Features</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+> flat </TD
+><TD
+> one file, flat layout </TD
+><TD
+> 
+       accessible with mtools or winimage-like tools
+       </TD
+></TR
+><TR
+><TD
+> concat </TD
+><TD
+> multiple files, concatenated </TD
+><TD
+> 
+       mappable to contained partitions
+       </TD
+></TR
+><TR
+><TD
+> external </TD
+><TD
+> accessed through an external C++ class </TD
+><TD
+> 
+       developer specific, needs a C++ class at compile time
+       </TD
+></TR
+><TR
+><TD
+> dll </TD
+><TD
+> accessed through a DLL </TD
+><TD
+> 
+       developer specific, windows only
+       </TD
+></TR
+><TR
+><TD
+> sparse </TD
+><TD
+> up to 10 layers stackable files </TD
+><TD
+> 
+       commitable, rollbackable, growing
+       </TD
+></TR
+><TR
+><TD
+> vmware3 </TD
+><TD
+> vmware3 disk support </TD
+><TD
+> 
+       vmware version 3 compatibility
+       </TD
+></TR
+><TR
+><TD
+> vmware4 </TD
+><TD
+> vmware4 disk support </TD
+><TD
+> 
+       vmware version 4 compatibility
+       </TD
+></TR
+><TR
+><TD
+> undoable </TD
+><TD
+> flat file with a commitable redolog </TD
+><TD
+> 
+       commitable, rollbackable
+       </TD
+></TR
+><TR
+><TD
+> growing </TD
+><TD
+>  one growing file </TD
+><TD
+> growing
+       </TD
+></TR
+><TR
+><TD
+> volatile </TD
+><TD
+> flat file with a volatile redolog </TD
+><TD
+> 
+       always rollbacked
+       </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="HARDDISK-MODE-FLAT"
+>8.18.1. flat</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3400"
+>8.18.1.1. description</A
+></H3
+><P
+>In flat mode, all sectors of the harddisk are stored in one flat file,
+in lba order. </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3403"
+>8.18.1.2. image creation</A
+></H3
+><P
+>Flat disk images can be created with the bximage utility
+(see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> for more information).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3407"
+>8.18.1.3. path</A
+></H3
+><P
+>The "path" option of the ataX-xxx directive in the configuration file
+must point to the flat image file.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="HARDDISK-MODE-FLAT-TOOLS"
+>8.18.1.4. external tools</A
+></H3
+><P
+>Flat images content can be accessed from the host by the
+following tools :
+<P
+></P
+><UL
+><LI
+><P
+> mtools (see <A
+HREF="mtools.html"
+>Section 8.2</A
+>)</P
+></LI
+><LI
+><P
+> mount with a loopback (see <A
+HREF="loop-device-usage.html"
+>Section 8.7</A
+>) </P
+></LI
+><LI
+><P
+> Winimage / DiskExplorer (see <A
+HREF="winimage.html"
+>Section 8.4</A
+>) </P
+></LI
+><LI
+><P
+> Bochs Tools (see <A
+HREF="bochs-linux-disktools.html"
+>Section 8.3</A
+>) </P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3426"
+>8.18.1.5. typical use</A
+></H3
+><P
+>Flat mode is Bochs default harddisk layout. This is also
+the layout of disk images provided on Bochs websites.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3429"
+>8.18.1.6. limitations</A
+></H3
+><P
+>On some host OSes, Bochs flat disk images are limited to 2GiB.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3432"
+>8.18.2. concat</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3435"
+>8.18.2.1. description</A
+></H3
+><P
+>In concat mode, all sectors of the harddisk are stored in several flat files,
+in lba order. </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3438"
+>8.18.2.2. image creation</A
+></H3
+><P
+>Disk images for the usage in 'concat' mode can be created with the bximage
+utility (see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> for more information).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3442"
+>8.18.2.3. path</A
+></H3
+><P
+>The "path" option of the ataX-xxx directive in the configuration file
+must point to the first file (e.g. win95-1). The lower layer files names are
+found by adding 1 to the last character (e.g. win95-2, win95-3, etc.).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3445"
+>8.18.2.4. external tools</A
+></H3
+><P
+>If every single file contains a complete partition, they can be accessed
+with same tools as the 'flat' mode images.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3448"
+>8.18.2.5. typical use</A
+></H3
+><P
+>If the partition sizes and file sizes are set up correctly, this allows you to
+store each partition in a separate file, which is very convenient if you want
+to operate on a single partition (e.g. mount with loopback, create filesystem,
+fsck, etc.).</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3451"
+>8.18.2.6. limitations</A
+></H3
+><P
+>On some host OSes, there is a limit of 2GiB per file.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3454"
+>8.18.3. external/dll</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3457"
+>8.18.3.1. description</A
+></H3
+><P
+>This mode is only useful for developers and needs an additional C++ class
+compiled in, or an additional DLL linked to Bochs.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3460"
+>8.18.4. sparse</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3463"
+>8.18.4.1. description</A
+></H3
+><P
+>    Sparse disk support has been added by JustinSB. Sparse disk features are:
+    <P
+></P
+><UL
+><LI
+><P
+>        Large hard drive can be created, and only used space will be stored
+        in the file.  In practice, on Unix, this is not a large gain as it is
+        done anyway.
+        </P
+></LI
+><LI
+><P
+>        Multiple sparse drive images can be mounted on top of each other.
+        Writes go to the top image.  This allows several similar configurations
+        to share a master "base" file, and also allows filesystem rollback or
+        no-write options.  Up to 10 disk images can be layered on top of each other.
+        </P
+></LI
+></UL
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3471"
+>8.18.4.2. image creation</A
+></H3
+><P
+>Sparse disk images must be created with the bximage utility
+(see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> for more information).
+Be sure to enter "sparse" when selecting the image type.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3475"
+>8.18.4.3. path</A
+></H3
+><P
+>The "path" option of the ataX-xxx directive in the configuration file
+must point to the top layered file. The lower layer files names are found by
+substracting 1 from the last character (must be a digit)</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3478"
+>8.18.4.4. external tools</A
+></H3
+><P
+>No external tool support Sparse disk images yet.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3481"
+>8.18.4.5. typical use</A
+></H3
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3483"
+>8.18.4.5.1. Space Saving</A
+></H4
+><P
+>    Create a sparse disk image using bximage.  Set size to eg 10GB.  
+    Only allocated space will be stored,
+    so your drive image should be only about as large as the files stored on it.
+  </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3486"
+>8.18.4.5.2. Disk Rollback</A
+></H4
+><P
+>    <P
+></P
+><UL
+><LI
+><P
+>          Create a sparse disk image called "c.img.0".  Point .bochsrc at "c.img.0".
+          In bochs, install your favourite OS.  Switch off bochs.
+        </P
+></LI
+><LI
+><P
+>          Create a sparse disk image (of the same size) 
+          and name it "c.img.1".  Point .bochsrc at "c.img.1"
+          "c.img.0" is visible, but all writes go to "c.img.1".  
+          After using bochs, you can simply delete
+          "c.img.1" to undo changes and go back to a clean OS install.
+        </P
+></LI
+></UL
+>
+  </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3494"
+>8.18.4.5.3. Disk Optional Commit</A
+></H4
+><P
+>    <P
+></P
+><UL
+><LI
+><P
+>          Create a sparse disk image called "c.img.0".  Point .bochsrc at "c.img.0".
+          In bochs, install your favourite OS.  Switch off bochs.
+        </P
+></LI
+><LI
+><P
+>          Create a sparse disk image (of the same size) and name it "c.img.1".  
+          Point .bochsrc at "c.img.1"
+          "c.img.0" is visible, but all writes go to "c.img.1".  
+          After using bochs, if you want to keep the
+          changes, use the (currently non-existant) merge utility 
+          to make a single unified drive image.
+        </P
+></LI
+><LI
+><P
+>          Alternatively simply create a new partition on top called "c.img.2".
+        </P
+></LI
+></UL
+>
+  </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3504"
+>8.18.4.5.4. Common Base</A
+></H4
+><P
+></P
+><UL
+><LI
+><P
+>          Create a sparse disk image called "base.img".  Point .bochsrc at "base.img".
+          In bochs, install your favourite OS.  Switch off bochs.
+        </P
+></LI
+><LI
+><P
+>          Create a sparse disk image (of the same size) and name it "www.img.1".  
+          Make "wwww.img.0" a symlink to
+          "base.img".  Point .bochsrc at "www.img.1". Using bochs, install a webserver.
+        </P
+></LI
+><LI
+><P
+>          Create a symlink to "base.img" called "db.img.0".  
+          Create a sparse disk image (of the same size)
+          and name it "db.img.1".  Point .bochsrc at "db.img.1".  
+          Using bochs, install a database server.
+        </P
+></LI
+></UL
+><P
+>     Now both a database server and webserver can be 
+     run in separate virtual machines, but they share the common OS image, 
+     saving drive space.
+    </P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3514"
+>8.18.4.6. limitations</A
+></H3
+><P
+>  There is a need for supporting utilities (yet unwritten) :
+  <P
+></P
+><UL
+><LI
+><P
+>to merge two sparse disk images into a single image </P
+></LI
+><LI
+><P
+>to defragment a sparse disk image and remove unused space </P
+></LI
+></UL
+></P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3522"
+>8.18.5. vmware3/vmware4</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3525"
+>8.18.5.1. description</A
+></H3
+><P
+>Sharvil Nanavati has added vmware3/4 disk image support into Bochs
+for Net Integration Technologies, Inc. 
+You should be able to use disk images created by vmware version 3 and 4.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3528"
+>8.18.5.2. image creation</A
+></H3
+><P
+>Create such disk image with vmware version 3 or 4.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3531"
+>8.18.5.3. path</A
+></H3
+><P
+>The "path" option of the ataX-xxx directive in the configuration file
+must point to the vmware3/4 disk image.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3534"
+>8.18.5.4. external tools</A
+></H3
+><P
+><IMG
+SRC="../images/undercon.png"> give a look at vmware3/4 tools : disk image creation, etc.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3538"
+>8.18.5.5. typical use</A
+></H3
+><P
+>If you want to use an existing vmware3/4 disk image.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3541"
+>8.18.5.6. limitations</A
+></H3
+><P
+>Only vmware versions 3 and 4 disk image files are supported.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3544"
+>8.18.6. undoable</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3547"
+>8.18.6.1. description</A
+></H3
+><P
+>    Undoable disks are commitable/rollbackable disk images. 
+    An undoable disk is based on a read-only flat image
+    (see <A
+HREF="harddisk-modes.html#HARDDISK-MODE-FLAT"
+>Section 8.18.1</A
+>), associated with 
+    a growing redolog, that contains all changes (writes)
+    made to the flat image content. </P
+><P
+>    This redolog is dynamically created at runtime, if it does not
+    previously exists.</P
+><P
+>    All writes go to the redolog, reads are done from the 
+    redolog if previously written, or from the flat file
+    otherwise.</P
+><P
+>    If unspecified with the "journal" option of the ataX-xxx directive,
+    the redolog file name is created by adding a ".redolog" 
+    suffix to the flat image name.</P
+><P
+>    File size of the redolog can grow up to the total disk
+    size plus a small overhead due to internal data managment
+    (about 3% for a 32MiB disk, 
+    less than 0.5% for a 2GiB disk).</P
+><P
+>    After a run, the redolog will still be present, so the changes 
+    are still visible the next time you run Bochs with this disk image.</P
+><P
+>    After a run, the redolog can be committed (merged) 
+    to the flat image with the bxcommit utility.</P
+><P
+>    After a run, the redolog can be rollbacked (discarded) 
+    by simply deleting the redolog file.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    In this mode, the flat file is always open in read-only mode,
+    so it can safely be stored on a read-only medium (for example on a cdrom).</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3560"
+>8.18.6.2. image creation</A
+></H3
+><P
+>The flat disk images must be created with the bximage utility
+(see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> for more information).
+    The growing redolog is created automatically if needed.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3564"
+>8.18.6.3. path</A
+></H3
+><P
+>    The "path" option of the ataX-xxx directive in the configuration file
+    must be the flat image name. The redolog name can be set with the "journal"
+    option of the same directive.
+    If not set, the redolog name is created by adding the
+    ".redolog" suffix to the flat image name.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3567"
+>8.18.6.4. external tools</A
+></H3
+><P
+>    See <A
+HREF="harddisk-modes.html#HARDDISK-MODE-FLAT-TOOLS"
+>Section 8.18.1.4</A
+> for tools
+    to access the flat disk image content.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    The up-to-date content can only be seen after you commit the redolog
+    to the flat file with the bxcommit utility.</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3573"
+>8.18.6.5. typical use</A
+></H3
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3577"
+>8.18.6.5.1. Commit</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3581"
+>8.18.6.5.2. Rollback</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3585"
+>8.18.6.5.3. Common Base</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3589"
+>8.18.6.5.4. Harddisk Image on a Read-Only Medium</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3593"
+>8.18.6.6. limitations</A
+></H3
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3597"
+>8.18.7. growing</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3600"
+>8.18.7.1. description</A
+></H3
+><P
+>    Growing disk images start as a small files, and 
+    grow whenever new data is written to them. 
+    </P
+><P
+>    Once a sector is 
+    written in the growing file, subsequent writes to the same
+    sector will happen in place.
+    </P
+><P
+>    File size of Growing disk images can go up to the total disk
+    size plus a small overhead due to internal data managment.
+    (about 3% for a 32MiB disk, 
+    less than 0.5% for a 2GiB disk).
+    </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3605"
+>8.18.7.2. image creation</A
+></H3
+><P
+>Growing disk images must be created with the bximage utility
+(see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> for more information).
+Be sure to enter "growing" when selecting the image type.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3609"
+>8.18.7.3. path</A
+></H3
+><P
+>    The "path" option of the ataX-xxx directive in the configuration file
+    must be the growing image name. </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3612"
+>8.18.7.4. external tools</A
+></H3
+><P
+>No external tool support Growing disk images yet.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3615"
+>8.18.7.5. typical use</A
+></H3
+><P
+>Growing disk images can be used whenever you want to maximize disk space. 
+However, please note that Bochs will not check if enough disk space is available
+before writing new data. If no disk space is available, a panic will occur.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3618"
+>8.18.7.6. limitations</A
+></H3
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3622"
+>8.18.8. volatile</A
+></H2
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3625"
+>8.18.8.1. description</A
+></H3
+><P
+>    Volatile disks are always-rollbacked disk images. 
+    An volatile disk is based on a read-only flat image
+    (see <A
+HREF="harddisk-modes.html#HARDDISK-MODE-FLAT"
+>Section 8.18.1</A
+>), associated with 
+    a growing temporary redolog, that contains all changes (writes)
+    made to the flat image content. All data written to
+    the  disk image are lost at the end of the Bochs
+    session.</P
+><P
+>    The redolog is dynamically created at runtime, when
+    Bochs starts, and is deleted when Bochs closes (win32)
+    or just after it has been created (Unix).</P
+><P
+>    All writes go to the redolog, reads are done from the 
+    redolog if previously written, or from the flat file
+    otherwise.</P
+><P
+>    If unspecified with the "journal" option of the ataX-xxx directive,
+    the redolog file name is created by adding a ".redolog" 
+    suffix to the flat image name.</P
+><P
+>    File size of the redolog can grow up to the total disk
+    size plus a small overhead due to internal data managment
+    (about 3% for a 32MiB disk, 
+    less than 0.5% for a 2GiB disk).</P
+><P
+>    After a run, the redolog is not any more present, so the changes 
+    are discarded.</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    In this mode, the flat file is always open in read-only mode,
+    so it can safely be stored on a read-only medium (for example on a cdrom).</P
+></BLOCKQUOTE
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3636"
+>8.18.8.2. image creation</A
+></H3
+><P
+>The flat disk images must be created with the bximage utility
+(see <A
+HREF="using-bximage.html"
+>Section 8.19</A
+> for more information).
+    The growing redolog is created automatically.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3640"
+>8.18.8.3. path</A
+></H3
+><P
+>    The "path" option of the ataX-xxx directive in the configuration file
+    must be the flat image name. The redolog name can be set with the "journal"
+    option of the same directive.
+    If not set, the redolog name is created by adding the
+    ".redolog" suffix to the flat image name.
+    A random suffix is also appended to the redolog name.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3643"
+>8.18.8.4. external tools</A
+></H3
+><P
+>    See <A
+HREF="harddisk-modes.html#HARDDISK-MODE-FLAT-TOOLS"
+>Section 8.18.1.4</A
+> for tools
+    to access the flat disk image content.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3647"
+>8.18.8.5. typical use</A
+></H3
+><P
+><IMG
+SRC="../images/undercon.png"> can be completed</P
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3651"
+>8.18.8.5.1. Repeatable simulations</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3655"
+>8.18.8.5.2. Multiple Bochs instances</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H4
+CLASS="SECTION"
+><A
+NAME="AEN3659"
+>8.18.8.5.3. Harddisk Image on a Read-Only Medium</A
+></H4
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN3663"
+>8.18.8.6. limitations</A
+></H3
+><P
+><IMG
+SRC="../images/undercon.png"> to be completed</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="cirrus-notes.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="using-bximage.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Notes about Cirrus SVGA usage</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using the bximage tool</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

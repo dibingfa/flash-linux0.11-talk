@@ -1,0 +1,365 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Building a Bochs release</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Coding"
+HREF="coding.html"><LINK
+REL="PREVIOUS"
+TITLE="Coding"
+HREF="coding.html"><LINK
+REL="NEXT"
+TITLE="Webmastering"
+HREF="webmastering.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="coding.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 4. Coding</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="webmastering.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SVN-RELEASE"
+>4.2. Building a Bochs release</A
+></H1
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1520"
+>4.2.1. Preparing source files and SVN</A
+></H2
+><P
+>Update version number and strings in configure.in.
+<PRE
+CLASS="SCREEN"
+>VERSION="2.6.9"
+VER_MAJOR=2
+VER_MINOR=6
+VER_REVISION=9
+VER_SVN=0
+REL_STRING="Build from SVN snapshot on April  9, 2017"</PRE
+>
+In the README file you have to update version number and date. Add some
+information about new features if necessary.
+<PRE
+CLASS="SCREEN"
+>Bochs x86 Pentium+ Emulator
+Updated: Sun Apr  9 08:45:00 CEST 2017
+Version: 2.6.9</PRE
+>
+In the file <TT
+CLASS="FILENAME"
+>bochs.manifest</TT
+> you have to update the version
+number for the Windows build.
+<PRE
+CLASS="SCREEN"
+>  version="2.6.9.0"</PRE
+>
+Check date, update/sumup info in CHANGES. Run autoconf to regenerate configure and check them in.
+Create an SVN tag that contains all files of the revision that was used in the release.
+For prereleases I create a normal SVN tag like this:
+<PRE
+CLASS="SCREEN"
+>  svn mkdir tags/REL_2_5_pre1_FINAL
+  svn copy trunk/bochs tags/REL_2_5_pre1_FINAL/bochs
+  svn commit</PRE
+>
+But for a real release, I make an SVN branch tag AND a normal tag.
+<PRE
+CLASS="SCREEN"
+>  svn mkdir tags/REL_2_5_FINAL
+  svn copy trunk/bochs tags/REL_2_5_FINAL/bochs
+  svn mkdir branches/REL_2_5
+  svn copy trunk/bochs branches/REL_2_5/bochs
+  svn commit</PRE
+>
+The tag marks where the branch split off of the main trunk.
+This is very useful in maintaining the branch since you can do diffs
+against it.
+<PRE
+CLASS="SCREEN"
+>   svn diff tags/REL_2_5_FINAL/bochs trunk/bochs
+   svn diff tags/REL_2_5_FINAL/bochs branches/REL_2_5
+   etc.</PRE
+>
+All bugfix-only releases after the final release should be created from the REL_2_5 branch.
+Now you can start building packages with the sources from the created release tag.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1530"
+>4.2.2. Anonymous SVN checkout and platform-independent sources</A
+></H2
+><P
+>An anonymous SVN checkout from the release tag is the base for all official
+release packages. Do this checkout from the release tag and specify a not yet
+existing directory name with the version number as the destination. Then create
+the source package from this new directory. These steps can be done both on
+Linux and Windows (Cygwin).
+<PRE
+CLASS="SCREEN"
+>  svn co http://svn.code.sf.net/p/bochs/code/tags/REL_2_5_FINAL/bochs bochs-2.5
+  tar czvf bochs-2.5.tar.gz --exclude=.svn bochs-2.5</PRE
+>
+The source TAR file bochs-2.5.tar.gz is ready for upload.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1534"
+>4.2.3. Building the release on Linux</A
+></H2
+><P
+>The RPM will be building using the configuration in .conf.linux with
+a few parameters from <B
+CLASS="COMMAND"
+>build/redhat/make-rpm</B
+>. Make any last
+minute changes to .conf.linux. Any changes will go into the source RPM. The
+DLX Linux demo package will be downloaded from the Bochs website to the Bochs
+root directory if it is not already present there.
+<PRE
+CLASS="SCREEN"
+>  ./build/redhat/make-rpm | tee ../build.txt</PRE
+>
+This produces two rpm files in the current directory. Test and upload.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1539"
+>4.2.4. Building the release on win32</A
+></H2
+><P
+>These instructions require cygwin and MSVC++. Use the Bochs sources from
+the SVN checkout or unpack the TAR file.</P
+><P
+>In Cygwin:
+<PRE
+CLASS="SCREEN"
+>  sh .conf.win32-vcpp         # runs configure
+  make win32_snap             # unzip workspace, make a win32 source ZIP</PRE
+>
+The source ZIP is present in the parent directory of the Bochs root and now
+ready for upload. To build the binary package, copy it to a Windows machine,
+if necessary.</P
+><P
+>Open up Visual C++ and load the workspace file Bochs.sln.  Check
+the Build:Set Active Project Configuration is set the way you want it.
+For releases I use "Win32 Release".</P
+><P
+>To create "bochsdbg.exe" with Bochs debugger support, manually change these
+lines in config.h to turn on the debugger and the enhanced debugger gui.
+<PRE
+CLASS="SCREEN"
+>#define BX_DEBUGGER 1
+#define BX_DISASM 1
+#define BX_DEBUGGER_GUI 1</PRE
+>
+One of the optimization features must be turned off, since it is currently
+not compatible with the debugger.
+<PRE
+CLASS="SCREEN"
+>#define BX_SUPPORT_HANDLERS_CHAINING_SPEEDUPS 0</PRE
+>
+VC++ will rebuild Bochs with debugger and overwrite bochs.exe.  To avoid
+trashing the non-debug version, move it out of the way while the debugger
+version is being built.  Then rename the debugger version to bochsdbg.exe.
+<PRE
+CLASS="SCREEN"
+>  cd obj-release
+  mv bochs.exe bochs-normal.exe
+  (build again with BX_DEBUGGER=1 this time)
+  mv bochs.exe bochsdbg.exe
+  mv bochs-normal.exe bochs.exe</PRE
+></P
+><P
+>Do make <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>install_win32</I
+></SPAN
+> into the NSIS folder in the Bochs
+source tree:
+<PRE
+CLASS="SCREEN"
+>  make install_win32 INSTDIR=./build/win32/nsis/bochs-2.5</PRE
+>
+This downloads and unpacks both the DLX Linux demo and the HTML docs from the
+Bochs website, copies all the files into <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>./build/win32/nsis/bochs-2.5</I
+></SPAN
+>
+and then creates a binary ZIP file in the NSIS folder.</P
+><P
+>Now make the NSIS installer package (the current script is known to work with NSIS 3.04)
+<PRE
+CLASS="SCREEN"
+>  cd build/win32/nsis
+  make</PRE
+>
+That gives an installer called <TT
+CLASS="FILENAME"
+>Bochs-2.5.exe</TT
+>. Test and upload it.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1556"
+>4.2.5. Creating a file release and uploading files on SF</A
+></H2
+><P
+>When you are ready with creating release packages you have to upload them using
+the SF file manager feature. Create a subdirectory with the version number in
+the <TT
+CLASS="FILENAME"
+>bochs</TT
+> directory. Point the download destination to the
+new directory and start uploading packages. The top of the <TT
+CLASS="FILENAME"
+>CHANGES</TT
+>
+file should be used as the release notes. After setting up the file properties the
+new release is ready for download.</P
+><P
+>After having all files set up in the download area, don't forget to post an announcement
+containing a brief summary of changes to the bochs-announce mailing list and the "Project
+News" section on SF.</P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="coding.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="webmastering.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Coding</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="coding.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Webmastering</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

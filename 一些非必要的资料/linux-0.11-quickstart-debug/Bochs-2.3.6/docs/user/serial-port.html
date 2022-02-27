@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using the serial port</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Using Bochs and the remote GDB stub"
+HREF="debugging-with-gdb.html"><LINK
+REL="NEXT"
+TITLE="BIOS Tips"
+HREF="bios-tips.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="debugging-with-gdb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="bios-tips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SERIAL-PORT"
+>8.13. Using the serial port</A
+></H1
+><P
+>        This section describes what is possible to do with Bochs serial port emulation.
+        These examples use dlxlinux disk image 
+        (downloaded from 
+        <A
+HREF="http://bochs.sourceforge.net/guestos/dlxlinux4.tar.gz"
+TARGET="_top"
+>        http://bochs.sourceforge.net/guestos/dlxlinux3.tar.gz</A
+>
+        ) running as guest, on a debian x86 linux 2.4.19 host.</P
+><P
+>        For the examples to work in dlxlinux, after you login as root, you will need to 
+        kill the running gpm, as it grabs the serial port.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Welcome to DLX V1.0 (C) 1995-96 Erich Boehm
+                    (C) 1995    Hannes Boehm
+
+
+dlx login: root
+Linux 1.3.89.
+dlx:~# ps | grep gpm
+   30  S0 S     0:00 /usr/bin/gpm -t bare
+   40   1 S     0:00 grep gpm
+dlx:~# kill -9 30
+dlx:~#</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3122"
+>8.13.1. Logging serial port output to a file</A
+></H2
+><P
+>        The first example shows how to log information sent to the serial port
+        on the guest system into a file on the host system.
+        </P
+><P
+>        Update the com1: section of your configuration file:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>com1: enabled=1, mode=file, dev=serial.txt
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        After you've launch dlxlinux, everything sent to the serial port will be
+        logged to serial.txt :
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>dlx:~# echo "logging to the serial port" &#62; /dev/cua0
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>host$ cat serial.txt
+logging to the serial port
+host$
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3129"
+>8.13.2. Interactivity : connecting to a virtual terminal</A
+></H2
+><P
+>        The second example shows how to connect to the guest OS, using a 
+        virtual terminal on the host OS.
+        </P
+><P
+>        First, you need to find an unused virtual terminal. Typically, 
+        X uses vt7; vt8 and up are unused. On my system, I can 
+        switch from X to vt9 by pressing ctrl-alt-f9 : this virtual
+        terminal is not used, the screen is all black. Pressing alt-f7 
+        switches back to X.
+        </P
+><P
+>        Once you found an unused vt, update the com1: section of your
+        configuration file:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>com1: enabled=1, mode=term, dev=/dev/tty9
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        The number must be set according to the terminal you want to use (here 9).
+        </P
+><P
+>        Now, launch dlxlinux. After you log in as root and kill gpm, 
+        enter the following command:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>dlx:~# /sbin/agetty 38400 cua0
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        If you switch to vt9, you can see dlx welcome banner, and the login prompt:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Welcome to DLX V1.0 (C) 1995-96 Erich Boehm
+                    (C) 1995    Hannes Boehm
+
+
+dlx login: </PRE
+></TD
+></TR
+></TABLE
+>
+        Note that dlxlinux is configured so you can not login as root from a
+        serial port. If you want to login, you have to create a new user first.
+        </P
+><P
+>        Also, if you plan to use this feature, the best would be to deactivate
+        gpm in /etc/rc.d/rc.local, and add a agetty line in /etc/inittab,
+        for example: 
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>T0:1234:respawn:/bin/agetty 38400 cua0</PRE
+></TD
+></TR
+></TABLE
+>
+        </P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3140"
+>8.13.3. Interactivity : connecting to a pseudo terminal</A
+></H2
+><P
+>        The third example is very similar to the second one, except that we
+        connect to the guest OS with kermit as client, and we the connection
+        is done through a pseudo terminal.
+        </P
+><P
+>        This example uses /dev/ptyp0 and /dev/ttyp0 as pseudo terminal pair.
+        We will tie Bochs to the controlling terminal, whereas kermit will
+        use the slave terminal.
+        </P
+><P
+>        Update the com1: section of your configuration file:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>com1: enabled=1, mode=term, dev=/dev/ptyp0
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        and lauch dlxlinux. After you log in as root, enter the command:
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>dlx:~# /sbin/agetty 38400 cua0
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        Then in the host OS, launch kermit :
+        <TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>host$ kermit -l /dev/ttyp0
+C-Kermit 7.0.196, 1 Jan 2000, for Linux
+ Copyright (C) 1985, 2000,
+  Trustees of Columbia University in the City of New York.
+Type ? or HELP for help.
+(/tmp/) C-Kermit&#62;connect
+Connecting to /dev/ttyp0, speed 0.
+The escape character is Ctrl-\ (ASCII 28, FS)
+Type the escape character followed by C to get back,
+or followed by ? to see other options.
+----------------------------------------------------
+
+Welcome to DLX V1.0 (C) 1995-96 Erich Boehm
+                    (C) 1995    Hannes Boehm
+
+
+dlx login: 
+        </PRE
+></TD
+></TR
+></TABLE
+>
+        The same comments as for example 2 apply here.
+        </P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="debugging-with-gdb.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="bios-tips.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using Bochs and the remote GDB stub</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>BIOS Tips</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
