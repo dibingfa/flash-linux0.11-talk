@@ -75,6 +75,9 @@
    * [第22回 从内核态切换到用户态](https://mp.weixin.qq.com/s/AVl6R2N9d_sldkhfvC6aEw)
    * [第23回 如果让你来设计进程调度](https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q)
    * [第24回 从一次定时器滴答来看进程调度](https://mp.weixin.qq.com/s/yFre8Qv_ZCtjRkTS49n6rw)
+   * [第25回 通过 fork 看一次系统调用流程](https://mp.weixin.qq.com/s/rYBSH_AZDwgc8knSKDSSxA)
+   * [第26回 fork 中进程基本信息的复制](https://mp.weixin.qq.com/s/8cy-xX3ekeqHelrFcYFkvw)
+   * [第27回 fork 中进程内存规划的问题](https://mp.weixin.qq.com/s/d2pHFSbTLb-nv2C_RfKlVA)
 
 * **第四部分：shell 程序的到来**
 
