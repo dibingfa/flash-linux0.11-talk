@@ -78,8 +78,14 @@
    * [第25回 通过 fork 看一次系统调用流程](https://mp.weixin.qq.com/s/rYBSH_AZDwgc8knSKDSSxA)
    * [第26回 fork 中进程基本信息的复制](https://mp.weixin.qq.com/s/8cy-xX3ekeqHelrFcYFkvw)
    * [第27回 fork 中进程内存规划的问题](https://mp.weixin.qq.com/s/d2pHFSbTLb-nv2C_RfKlVA)
+   * [第三部分总结与回顾](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247501947&idx=1&sn=cb94f53c75d674d30fb4903778c74c08&chksm=c2c5b2d6f5b23bc027d9652d3e9949e55fd3b101beb87f6f80dd77d8233c0b51bede73edad46&scene=21#wechat_redirect)
+   * [第28回 番外篇 - 我居然会认为权威书籍写错了...](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247500507&idx=1&sn=a7863ac6144a1fce942a91a9d573ef1a&chksm=c2c5b876f5b23160502f3d1e7a7d00ad43231aa49eea9809e063f010d65846c512ec87e752a0&scene=21#wechat_redirect)
+   * [第29回 番外篇 - 让我们一起来写本书？](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247501692&idx=1&sn=e68f273d16fbf4c1ccd30f7b4eb0943d&chksm=c2c5bdd1f5b234c7518f9ffa77b45491919bbcc9bf5a0db8056b0c7288c0515144009216aa01&scene=21#wechat_redirect)
+   * [第30回 番外篇 - 写时复制就这么几行代码](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502033&idx=1&sn=1acfd8b7f4c805906ecd51c33d0010eb&chksm=c2c5b27cf5b23b6a41051c7f93407afc97094a4b0a36ea050616778f4d072f074602f98983b2&scene=21#wechat_redirect)
 
 * **第四部分：shell 程序的到来**
+
+   * [第31回 拿到硬盘信息](https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502161&idx=1&sn=219186a1e587f40308515852d293aaf4&chksm=c2c5b3fcf5b23aead170092d4042abd54b272694cbaac3f750eb3adea584ee29653c72ad2915&token=1536500380&lang=zh_CN#rd)
 
 * **第五部分：从一个命令的执行看操作系统各模块的运作**
 
