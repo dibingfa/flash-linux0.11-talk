@@ -88,6 +88,8 @@
    * [第31回 拿到硬盘信息](https://mp.weixin.qq.com/s/1xNinBNJIUv3UTO03RRFXA)
    * [第32回 加载根文件系统](https://mp.weixin.qq.com/s/ruFNEgIBzlM5H-G9XR0ctw)
    * [第33回 打开终端设备文件](https://mp.weixin.qq.com/s/53IcRO_zg-_rQNaK1u_TJg)
+   * [第34回 进程2的创建](https://mp.weixin.qq.com/s/Uh03a48Zt_l8HgtZvm1o-A)
+   * [第35回 execve 加载并执行 shell 程序](https://mp.weixin.qq.com/s/IQnUCTmT0Hwn4nW0dqioiw)
 
 * **第五部分：从一个命令的执行看操作系统各模块的运作**
 
