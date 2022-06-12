@@ -1,0 +1,1660 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Harddisk Images based on redologs</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="About the code"
+HREF="about-the-code.html"><LINK
+REL="PREVIOUS"
+TITLE="Sound Blaster 16 Emulation"
+HREF="sb16-emulation-basics.html"><LINK
+REL="NEXT"
+TITLE="How to add keymapping in a GUI client"
+HREF="add-keymapping.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="sb16-emulation-basics.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. About the code</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="add-keymapping.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="HARDDISK-REDOLOGS"
+>2.9. Harddisk Images based on redologs</A
+></H1
+><P
+>This section describes how the three new disk images "undoable", "growing", and "volatile" are 
+implemented in Bochs 2.1 :</P
+><P
+></P
+><UL
+><LI
+><P
+>undoable -&#62; flat file, plus growing, commitable, rollbackable redolog file</P
+></LI
+><LI
+><P
+>growing  -&#62; growing files, all previously unwritten sectors go to the end of file</P
+></LI
+><LI
+><P
+>volatile -&#62; flat file, plus hidden growing redolog</P
+></LI
+></UL
+><P
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN635"
+>2.9.1. Description</A
+></H2
+><P
+>The idea behind volatile and undoable disk images 
+is to have a flat file, associated with one redolog file. </P
+><P
+>Reading a sector is done from the redolog file if it contains 
+the sector, or from the flat file otherwise. </P
+><P
+>Sectors written go to the redolog,
+so flat files are opened in read only mode in this configuration.</P
+><P
+>The redolog is designed in a way so it starts as a small file
+and grows with every new sectors written to it. Previously written
+sectors are done in place. Redolog files can not shrink.</P
+><P
+>The redolog is a growing file that can be created on the fly.</P
+><P
+>Now, it turns out that if you only use a redolog without any 
+flat file, you get a "growing" disk image.</P
+><P
+>So "undoable", "volatile" and "growing" harddisk images classes
+are implemented on top of a redolog class.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN644"
+>2.9.2. How redologs works ?</A
+></H2
+><P
+>At the start of a redolog file, there is a header, so Bochs can check whether
+a file is consistent. 
+This header could also be checked when we implement
+automatic type and size detection.</P
+><P
+>The generic part of the header contains values like type of image, and
+spec version number.</P
+><P
+>The header also has a specific part.
+For redologs, the number
+of entries of the catalog, the extent, bitmap and disk size are stored.</P
+><P
+>In a redolog, the disk image is divided in a number of equal size "extents".
+Each extent is a collection of successive 512-bytes sectors of the disk image,
+preceeded by a n*512bytes bitmap. </P
+><P
+>the n*512bytes bitmap defines the presence (data has been written to it)
+of a specific sector in the extent, one bit for each sector.
+Therefore with a 512bytes bitmap, each extent can hold up to 4k blocks</P
+><P
+>Typically the catalog can have 256k entries.
+With a 256k entries catalog and 512bytes bitmaps, the redolog can hold up to 512GiB</P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>All data is stored on images as little-endian values</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN654"
+>2.9.2.1. Header</A
+></H3
+><P
+>At the start of a redolog file, there is a header. This header is designed
+to be reusable by other disk image types.</P
+><P
+>The header length is 512 bytes. It contains :
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN658"
+></A
+><P
+><B
+>Table 2-7. Generic header description</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL><COL><THEAD
+><TR
+><TH
+>Start position in bytes</TH
+><TH
+>Length in bytes</TH
+><TH
+>Data type</TH
+><TH
+>Description</TH
+><TH
+>Possible values</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+> 0 </TD
+><TD
+> 32 </TD
+><TD
+> string </TD
+><TD
+> magical value </TD
+><TD
+> Bochs Virtual HD Image </TD
+></TR
+><TR
+><TD
+> 32 </TD
+><TD
+> 16 </TD
+><TD
+> string </TD
+><TD
+> type of file </TD
+><TD
+> Redolog </TD
+></TR
+><TR
+><TD
+> 48 </TD
+><TD
+> 16 </TD
+><TD
+> string </TD
+><TD
+> subtype of file </TD
+><TD
+> Undoable, Volatile, Growing </TD
+></TR
+><TR
+><TD
+> 64 </TD
+><TD
+> 4 </TD
+><TD
+> Bit32u </TD
+><TD
+> version of used specification </TD
+><TD
+> 0x00010000 </TD
+></TR
+><TR
+><TD
+> 68 </TD
+><TD
+> 4 </TD
+><TD
+> Bit32u </TD
+><TD
+> header size </TD
+><TD
+> 512 </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+>
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN699"
+></A
+><P
+><B
+>Table 2-8. Redolog specific header description</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL><COL><THEAD
+><TR
+><TH
+>Start position in bytes</TH
+><TH
+>Length in bytes</TH
+><TH
+>Data type</TH
+><TH
+>Description</TH
+><TD
+>&nbsp;</TD
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+> 72 </TD
+><TD
+> 4 </TD
+><TD
+> Bit32u </TD
+><TD
+> number of entries in the catalog </TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> 76 </TD
+><TD
+> 4 </TD
+><TD
+> Bit32u </TD
+><TD
+> bitmap size in bytes </TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> 80 </TD
+><TD
+> 4 </TD
+><TD
+> Bit32u </TD
+><TD
+> extent size in bytes</TD
+><TD
+>&nbsp;</TD
+></TR
+><TR
+><TD
+> 84 </TD
+><TD
+> 8 </TD
+><TD
+> Bit64u </TD
+><TD
+> disk size in bytes </TD
+><TD
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN729"
+>2.9.2.2. Catalog</A
+></H3
+><P
+>Immediately following the header, there is a catalog containing
+the position number (in extents) where each extent is located in the file.</P
+><P
+>Each position is a Bit32u entity.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN733"
+>2.9.2.3. Extent</A
+></H3
+><P
+>	 <IMG
+SRC="../images/undercon.png"></P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN737"
+>2.9.3. Parameters</A
+></H2
+><P
+>The following tables shows what parameters are used when creating redologs or creating "growing" images :
+<DIV
+CLASS="TABLE"
+><A
+NAME="AEN740"
+></A
+><P
+><B
+>Table 2-9.         How number of entries in the catalog and number of blocks by extents are computed</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><COL><COL><COL><THEAD
+><TR
+><TH
+>Catalog entries</TH
+><TH
+>Catalog size(KiB)</TH
+><TH
+>Bitmap size (B)</TH
+><TH
+>Extent size (KiB)</TH
+><TH
+>Disk Max Size</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>512</TD
+><TD
+>2</TD
+><TD
+>1</TD
+><TD
+>4</TD
+><TD
+>2MiB</TD
+></TR
+><TR
+><TD
+>512</TD
+><TD
+>2</TD
+><TD
+>2</TD
+><TD
+>8</TD
+><TD
+>4MiB</TD
+></TR
+><TR
+><TD
+>1k</TD
+><TD
+>4</TD
+><TD
+>2</TD
+><TD
+>8</TD
+><TD
+>8MiB</TD
+></TR
+><TR
+><TD
+>1k</TD
+><TD
+>4</TD
+><TD
+>4</TD
+><TD
+>16</TD
+><TD
+>16MiB</TD
+></TR
+><TR
+><TD
+>2k</TD
+><TD
+>8</TD
+><TD
+>4</TD
+><TD
+>16</TD
+><TD
+>32MiB</TD
+></TR
+><TR
+><TD
+>2k</TD
+><TD
+>8</TD
+><TD
+>8</TD
+><TD
+>32</TD
+><TD
+>64MiB</TD
+></TR
+><TR
+><TD
+>4k</TD
+><TD
+>16</TD
+><TD
+>8</TD
+><TD
+>32</TD
+><TD
+>128MiB</TD
+></TR
+><TR
+><TD
+>4k</TD
+><TD
+>16</TD
+><TD
+>16</TD
+><TD
+>64</TD
+><TD
+>256MiB</TD
+></TR
+><TR
+><TD
+>8k</TD
+><TD
+>32</TD
+><TD
+>16</TD
+><TD
+>64</TD
+><TD
+>512MiB</TD
+></TR
+><TR
+><TD
+>8k</TD
+><TD
+>32</TD
+><TD
+>32</TD
+><TD
+>128</TD
+><TD
+>1GiB</TD
+></TR
+><TR
+><TD
+>16k</TD
+><TD
+>64</TD
+><TD
+>32</TD
+><TD
+>128</TD
+><TD
+>2GiB</TD
+></TR
+><TR
+><TD
+>16k</TD
+><TD
+>64</TD
+><TD
+>64</TD
+><TD
+>256</TD
+><TD
+>4GiB</TD
+></TR
+><TR
+><TD
+>32k</TD
+><TD
+>128</TD
+><TD
+>64</TD
+><TD
+>256</TD
+><TD
+>8GiB</TD
+></TR
+><TR
+><TD
+>32k</TD
+><TD
+>128</TD
+><TD
+>128</TD
+><TD
+>512</TD
+><TD
+>16GiB</TD
+></TR
+><TR
+><TD
+>64k</TD
+><TD
+>256</TD
+><TD
+>128</TD
+><TD
+>512</TD
+><TD
+>32GiB</TD
+></TR
+><TR
+><TD
+>64k</TD
+><TD
+>256</TD
+><TD
+>256</TD
+><TD
+>1024</TD
+><TD
+>64GiB</TD
+></TR
+><TR
+><TD
+>128k</TD
+><TD
+>512</TD
+><TD
+>256</TD
+><TD
+>1024</TD
+><TD
+>128GiB</TD
+></TR
+><TR
+><TD
+>128k</TD
+><TD
+>512</TD
+><TD
+>512</TD
+><TD
+>2048</TD
+><TD
+>256GiB</TD
+></TR
+><TR
+><TD
+>256k</TD
+><TD
+>1024</TD
+><TD
+>512</TD
+><TD
+>2048</TD
+><TD
+>512GiB</TD
+></TR
+><TR
+><TD
+>256k</TD
+><TD
+>1024</TD
+><TD
+>1024</TD
+><TD
+>4096</TD
+><TD
+>1TiB</TD
+></TR
+><TR
+><TD
+>512k</TD
+><TD
+>2048</TD
+><TD
+>1024</TD
+><TD
+>4096</TD
+><TD
+>2TiB</TD
+></TR
+><TR
+><TD
+>512k</TD
+><TD
+>2048</TD
+><TD
+>2048</TD
+><TD
+>8192</TD
+><TD
+>4TiB</TD
+></TR
+><TR
+><TD
+>1024k</TD
+><TD
+>4096</TD
+><TD
+>2048</TD
+><TD
+>8192</TD
+><TD
+>8TiB</TD
+></TR
+><TR
+><TD
+>1024k</TD
+><TD
+>4096</TD
+><TD
+>4096</TD
+><TD
+>16384</TD
+><TD
+>16TiB</TD
+></TR
+><TR
+><TD
+>2048k</TD
+><TD
+>8192</TD
+><TD
+>4096</TD
+><TD
+>16384</TD
+><TD
+>32TiB</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN901"
+>2.9.4. Redolog class description</A
+></H2
+><P
+>The class <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>redolog_t();</I
+></SPAN
+> implements the necessary
+methods to create, open, close, read and write data to a redolog.
+Managment of header catalog and sector bitmaps is done internally
+by the class.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN905"
+>2.9.4.1. Constants</A
+></H3
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>#define STANDARD_HEADER_MAGIC     "Bochs Virtual HD Image"
+#define STANDARD_HEADER_VERSION   (0x00010000)
+#define STANDARD_HEADER_SIZE      (512)</PRE
+></TD
+></TR
+></TABLE
+>
+These constants are used in the generic part of the header.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>#define REDOLOG_TYPE "Redolog"
+#define REDOLOG_SUBTYPE_UNDOABLE "Undoable"
+#define REDOLOG_SUBTYPE_VOLATILE "Volatile"
+#define REDOLOG_SUBTYPE_GROWING  "Growing"</PRE
+></TD
+></TR
+></TABLE
+>
+These constants are used in the specific part of the header.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>#define REDOLOG_PAGE_NOT_ALLOCATED (0xffffffff)</PRE
+></TD
+></TR
+></TABLE
+>
+This constant is used in the catalog for an unwritten extent.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN913"
+>2.9.4.2. Methods</A
+></H3
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>redolog_t();</I
+></SPAN
+> instanciates a new redolog.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int make_header (const char* type, Bit64u size);</I
+></SPAN
+> creates a header 
+structure in memory, and sets its <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>type</I
+></SPAN
+> and parameters based on the
+disk image <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+>. Returns 0.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int create (const char* filename, const char* type, Bit64u size);</I
+></SPAN
+> 
+creates a new empty redolog file, with header and catalog, named <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>filename</I
+></SPAN
+>
+of type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>type</I
+></SPAN
+> for a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+> bytes image.
+Returns 0 for OK or -1 if a problem occured.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int create (int filedes, const char* type, Bit64u size);</I
+></SPAN
+>
+creates a new empty redolog file, with header and catalog, in a previously 
+opened file described by <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>filedes</I
+></SPAN
+>, of type <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>type</I
+></SPAN
+> 
+for a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+> bytes image.
+Returns 0 for OK or -1 if a problem occured.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int open (const char* filename, const char* type, Bit64u size);</I
+></SPAN
+>
+opens a redolog file named <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>filename</I
+></SPAN
+>, and checks
+for consistency of header values against a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>type</I
+></SPAN
+> and
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+>.
+Returns 0 for OK or -1 if a problem occured.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>void close ();</I
+></SPAN
+>
+closes a redolog file.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>off_t lseek (off_t offset, int whence);</I
+></SPAN
+>
+seeks at logical data offset <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>offset</I
+></SPAN
+> in a redolog.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>offset</I
+></SPAN
+> must be a multiple of 512.
+Only SEEK_SET is supported for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>whence</I
+></SPAN
+>.
+Returns -1 if a problem occured, or the current logical offset in
+the redolog.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t read (void* buf, size_t count);</I
+></SPAN
+>
+reads <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data of the redolog, from current logical offset,
+and copies it into <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+>.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes read, that can be 0 if the data
+has not previously be written to the redolog.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t write (const void* buf, size_t count);</I
+></SPAN
+>
+writes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+> 
+to the redolog, at current logical offset.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes written.</P
+></DIV
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN953"
+>2.9.5. Disk image classes description</A
+></H2
+><P
+>"volatile" and "undoable" disk images are easily implemented
+by instanciating a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>default_image_t</I
+></SPAN
+> object (flat image) 
+and a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>redolog_t</I
+></SPAN
+> object (redolog).</P
+><P
+>"growing" disk images only instanciates a <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>redolog_t</I
+></SPAN
+> object.</P
+><P
+>Classe names are <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>undoable_image_t</I
+></SPAN
+>, <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>volatile_image_t</I
+></SPAN
+>
+and <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>growing_image_t</I
+></SPAN
+>.</P
+><P
+>When using these disk images, the underlying data structure and layout
+is completely
+hidden to the caller. Then, all offset and size values are "logical" values,
+as if the disk was a flat file.</P
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN965"
+>2.9.5.1. Constants</A
+></H3
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>#define UNDOABLE_REDOLOG_EXTENSION ".redolog"
+#define UNDOABLE_REDOLOG_EXTENSION_LENGTH (strlen(UNDOABLE_REDOLOG_EXTENSION))
+#define VOLATILE_REDOLOG_EXTENSION ".XXXXXX"
+#define VOLATILE_REDOLOG_EXTENSION_LENGTH (strlen(VOLATILE_REDOLOG_EXTENSION))</PRE
+></TD
+></TR
+></TABLE
+>
+These constants are used when building redolog file names</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN969"
+>2.9.5.2. undoable_image_t methods</A
+></H3
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>undoable_image_t(Bit64u size, const char* redolog_name);</I
+></SPAN
+>
+instanciates a new <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>undoable_image_t</I
+></SPAN
+>
+object. This disk image logical length is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+> bytes and
+the redolog filename is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>redolog_name</I
+></SPAN
+>. </P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int open (const char* pathname);</I
+></SPAN
+>
+opens the flat disk image <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pathname</I
+></SPAN
+>,
+as an undoable disk image. The associated redolog will
+be named <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pathname</I
+></SPAN
+> with a 
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>UNDOABLE_REDOLOG_EXTENSION</I
+></SPAN
+>
+suffix, unless set in the constructor.
+Returns 0 for OK or -1 if a problem occured.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>void close ();</I
+></SPAN
+>
+closes the flat image and its redolog.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>off_t lseek (off_t offset, int whence);</I
+></SPAN
+>
+seeks at logical data position <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>offset</I
+></SPAN
+> in
+the undoable disk image. 
+Only SEEK_SET is supported for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>whence</I
+></SPAN
+>.
+Returns -1 if a problem occured, or the current logical
+offset in the undoable disk image.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t read (void* buf, size_t count);</I
+></SPAN
+>
+reads <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data 
+from the undoable disk image, from current logical offset,
+and copies it into <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+>.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes read.
+Data will be read from the redolog if it has
+been previously written or from the flat image
+otherwise.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t write (const void* buf, size_t count);</I
+></SPAN
+>
+writes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+> 
+to the undoable disk image, at current logical offset.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes written.
+Data will always be written to the redolog.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN997"
+>2.9.5.3. volatile_image_t methods</A
+></H3
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>volatile_image_t(Bit64u size, const char* redolog_name);</I
+></SPAN
+>
+instanciates a new <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>volatile_image_t</I
+></SPAN
+>
+object. This disk image logical length is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+> bytes and
+the redolog filename is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>redolog_name</I
+></SPAN
+> plus a 
+random suffix. </P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int open (const char* pathname);</I
+></SPAN
+>
+opens the flat disk image <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pathname</I
+></SPAN
+>,
+as a volatile disk image. The associated redolog will
+be named <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pathname</I
+></SPAN
+> with a 
+random suffix, unless set in the constructor.
+Returns 0 for OK or -1 if a problem occured.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>void close ();</I
+></SPAN
+>
+closes the flat image and its redolog.
+The redolog is deleted/lost after close is called.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>off_t lseek (off_t offset, int whence);</I
+></SPAN
+>
+seeks at logical data position <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>offset</I
+></SPAN
+> in
+the volatile disk image. 
+Only SEEK_SET is supported for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>whence</I
+></SPAN
+>.
+Returns -1 if a problem occured, or the current logical offset in
+the volatile disk image.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t read (void* buf, size_t count);</I
+></SPAN
+>
+reads <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data 
+from the volatile disk image, from current logical offset,
+and copies it into <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+>.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes read.
+Data will be read from the redolog if it has
+been previously written or from the flat image
+otherwise.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t write (const void* buf, size_t count);</I
+></SPAN
+>
+writes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+> 
+to the volatile disk image, at current logical offset.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes written.
+Data will always be written to the redolog.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H3
+CLASS="SECTION"
+><A
+NAME="AEN1024"
+>2.9.5.4. growing_image_t methods</A
+></H3
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>growing_image_t(Bit64u size);</I
+></SPAN
+>
+instanciates a new <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>growing_image_t</I
+></SPAN
+>
+object. This disk image logical length is <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>size</I
+></SPAN
+> bytes.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>int open (const char* pathname);</I
+></SPAN
+>
+opens the growing disk image <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>pathname</I
+></SPAN
+>,
+Returns 0 for OK or -1 if a problem occured.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>void close ();</I
+></SPAN
+>
+closes the growing disk image.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>off_t lseek (off_t offset, int whence);</I
+></SPAN
+>
+seeks at logical data position <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>offset</I
+></SPAN
+> in
+the growable disk image. 
+Only SEEK_SET is supported for <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>whence</I
+></SPAN
+>.
+Returns -1 if a problem occured, or the current logical offset in
+the grwoing image.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t read (void* buf, size_t count);</I
+></SPAN
+>
+reads <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data 
+from the growing disk image, from current logical offset,
+and copies it into <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+>.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes read.
+The buffer will be filled with null bytes if data
+has not been previously written to the growing image.</P
+><P
+><SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>ssize_t write (const void* buf, size_t count);</I
+></SPAN
+>
+writes <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> bytes of data from <SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>buf</I
+></SPAN
+> 
+to the growing disk image, at current logical offset.
+<SPAN
+CLASS="emphasis"
+><I
+CLASS="EMPHASIS"
+>count</I
+></SPAN
+> must be 512.
+Returns the number of bytes written.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="sb16-emulation-basics.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="add-keymapping.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Sound Blaster 16 Emulation</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="about-the-code.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>How to add keymapping in a GUI client</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

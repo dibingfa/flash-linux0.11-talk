@@ -1,0 +1,337 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Mounting a disk image using the loop device</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Screen saver turns on too quickly"
+HREF="screensaver.html"><LINK
+REL="NEXT"
+TITLE="Simulating a Symmetric Multiprocessor (SMP) Machine"
+HREF="smp.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="screensaver.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="smp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="LOOP-DEVICE-USAGE"
+>8.7. Mounting a disk image using the loop device</A
+></H1
+><P
+>This section describes how to access a floppy or hard disk image within Linux
+using the loop device. Why would you want to do this?  Let's say you have made
+a small Linux disk image for Bochs, and you want to install some more software
+on it. You have already downloaded the software onto your real system, so now
+you want to transfer it to the Bochs disk image.  A fast way to transfer
+the files is to mount the disk image using the loop device.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2822"
+>8.7.1. ...on Linux</A
+></H2
+><P
+>This section was contributed by Volker Ruppert.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Today I have made some tests with the loop device, because I want to exchange 
+files with the bochs disk images.  This is what I found out:
+
+1.  Using Floppy images is easy, because there is no partition table:
+
+    losetup /dev/loop0 /usr/local/bochs/dlxlinux/floppya.img
+
+    Now you can use the image like a real floppy:
+
+    - format           : mkfs.minix /dev/loop0
+    - filesystem check : fsck.minix /dev/loop0
+    - mount            : mount /dev/loop0 -o loop /mnt/floppy
+
+    Before you want to restart bochs you must do this:
+
+    losetup -d /dev/loop0
+
+    Don't forget to umount before.
+
+2.  If you want access to a hard disk image, you have to calculate the size of
+    the first cylinder. This value is the offset argument for losetup.
+
+    offset = bytes per sector * sectors per cylinder
+
+    The command for dlxlinux image looks like this:
+
+    losetup /dev/loop0 /usr/local/bochs/dlxlinux/hd10meg.img -o 8704
+
+    For images created by bximage you must use the value 32256.
+
+3.  The hard disk image access doesn't work if the image contains more than
+    one partition.
+
+4.  I have made this tests with Linux and I don't know how
+    this could be done with other operating systems.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN2826"
+>8.7.2. ...on FreeBSD</A
+></H2
+><P
+>This section was contributed by Alexander Schuch.</P
+><P
+>The following example mounts a Windows 95 hard disk image called <TT
+CLASS="FILENAME"
+>Windows 95 B (2031-16-63)</TT
+>
+into the FreeBSD file system. It is specific to FreeBSD 5.x; for
+hints on how to do the same task on FreeBSD 4.x, or for more information in
+general, check the proper section of the FreeBSD handbook:
+<A
+HREF="http://www.freebsd.org/doc/en/books/handbook/disks-virtual.html"
+TARGET="_top"
+>Network, Memory, and File-Backed File Systems</A
+>.
+You can use the same procedure for mounting floppy disk images.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><SAMP
+CLASS="PROMPT"
+>#</SAMP
+> <KBD
+CLASS="USERINPUT"
+>mdconfig -a -t vnode -f "Windows 95 B (2031-16-63)"</KBD
+>
+md0</PRE
+></TD
+></TR
+></TABLE
+>
+mdconfig returns the device, your file now is accessable from.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><SAMP
+CLASS="PROMPT"
+>#</SAMP
+> <KBD
+CLASS="USERINPUT"
+>mount -t msdosfs /dev/md0s1 /mnt</KBD
+></PRE
+></TD
+></TR
+></TABLE
+>
+If you already have other md devices configured, you need to substitute md0s1
+with, for example, md6s1.</P
+><P
+>Once you are done working with the image, unmount the md device and detach it.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><SAMP
+CLASS="PROMPT"
+>#</SAMP
+> <KBD
+CLASS="USERINPUT"
+>umount /mnt</KBD
+>
+<SAMP
+CLASS="PROMPT"
+>#</SAMP
+> <KBD
+CLASS="USERINPUT"
+>mdconfig -d -u 0</KBD
+></PRE
+></TD
+></TR
+></TABLE
+>
+And again, if there are other md devices configured, use the proper device
+number. In case you forgot the number, just ask <B
+CLASS="COMMAND"
+>mdconfig</B
+>, like:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+><SAMP
+CLASS="PROMPT"
+>#</SAMP
+> <KBD
+CLASS="USERINPUT"
+>mdconfig -l</KBD
+>
+md7
+<SAMP
+CLASS="PROMPT"
+>#</SAMP
+> <KBD
+CLASS="USERINPUT"
+>mdconfig -d -u 7</KBD
+></PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="screensaver.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="smp.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Screen saver turns on too quickly</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Simulating a Symmetric Multiprocessor (SMP) Machine</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

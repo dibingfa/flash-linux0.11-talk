@@ -159,6 +159,7 @@ int sys_open(const char * filename,int flag,int mode)
 		f->f_count=0;
 		return i;
 	}
+	//printf("inode_dev=%u", inode->i_dev);
 /* ttys are somewhat special (ttyxx major==4, tty major==5) */
 	if (S_ISCHR(inode->i_mode)) {
 		if (MAJOR(inode->i_zone[0])==4) {

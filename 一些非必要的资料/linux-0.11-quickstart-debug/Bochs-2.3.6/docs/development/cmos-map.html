@@ -1,0 +1,275 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Bochs's CMOS map</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="About the code"
+HREF="about-the-code.html"><LINK
+REL="PREVIOUS"
+TITLE="timers"
+HREF="timers.html"><LINK
+REL="NEXT"
+TITLE="Sound Blaster 16 Emulation"
+HREF="sb16-emulation-basics.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="timers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. About the code</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="sb16-emulation-basics.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="CMOS-MAP"
+>2.7. Bochs's CMOS map</A
+></H1
+><P
+>In addition to the default CMOS RAM layout, the Bochs BIOS uses some additional 
+registers for harddisk parameters and the boot sequence. The following table 
+shows all CMOS registers and their meaning.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Legend:
+S	- set by the emulator (Bochs)
+B	- set by the bios
+U	- unused by the bios
+
+LOC	NOTES	MEANING
+0x00	S	rtc seconds
+0x01	B	second alarm
+0x02	S	rtc minutes
+0x03	B	minute alarm
+0x04	S	rtc hours
+0x05	B	hour alarm
+
+0x06	S,U	day of week
+0x07	S,B	date of month
+0x08	S,B	month
+0x09	S,B	year
+
+0x0a	S,B	status register A
+0x0b	S,B	status register B
+0x0c	S	status register C
+0x0d	S	status register D
+
+0x0f	S	shutdown status
+    values:
+	0x00: normal startup
+	0x09: normal
+	0x0d+: normal
+	0x05: eoi ?
+	else: unimpl
+
+0x10	S	fd drive type (2 nibbles: high=fd0, low=fd1)
+    values:
+	1: 360K 5.25"
+	2: 1.2MB 5.25"
+	3: 720K 3.5"
+	4: 1.44MB 3.5"
+	5: 2.88MB 3.5"
+
+!0x11	configuration bits!!
+
+0x12	S	how many disks first (hd type)
+
+!0x13	advanced configuration bits!!
+
+0x14	S,U	equipment byte (?)
+	bits	where		what
+	7-6	floppy.cc
+	5-4	vga.cc		0 = vga
+	2	keyboard.cc	1 = enabled
+	0	floppy.cc
+
+0x15	S,U	base memory - low
+0x16	S,U	base memory - high
+
+0x17	S,U	extended memory in k - low
+0x18	S,U	extended memory in k - high
+
+0x19	S	hd0: extended type
+0x1a	S	hd1: extended type
+
+0x1b	S,U	hd0:cylinders - low
+0x1c	S,U	hd0:cylinders - high
+0x1d	S,U	hd0:heads
+0x1e	S,U	hd0:write pre-comp - low
+0x1f	S,U	hd0:write pre-comp - high
+0x20	S,U	hd0:retries/bad_map/heads&#62;8
+0x21	S,U	hd0:landing zone - low
+0x22	S,U	hd0:landing zone - high
+0x23	S,U	hd0:sectors per track
+
+0x24	S,U	hd1:cylinders - low
+0x25	S,U	hd1:cylinders - high
+0x26	S,U	hd1:heads
+0x27	S,U	hd1:write pre-comp - low
+0x28	S,U	hd1:write pre-comp - high
+0x29	S,U	hd1:retries/bad_map/heads&#62;8
+0x2a	S,U	hd1:landing zone - low
+0x2b	S,U	hd1:landing zone - high
+0x2c	S,U	hd1:sectors per track
+
+0x2d	S	boot from (bit5: 0:fd, 1:hd)
+
+0x2e	S,U	standard cmos checksum (0x10-&#62;0x2d) - high
+0x2f	S,U	standard cmos checksum (0x10-&#62;0x2d) - low
+
+0x30	S	extended memory in k - low
+0x31	S	extended memory in k - high
+
+0x32	S	rtc century
+
+0x34	S	extended memory in 64k - low
+0x35	S	extended memory in 64k - high
+
+0x37	S	ps/2 rtc century (copy of 0x32, needed for winxp)
+
+0x38	S	eltorito boot sequence + boot signature check
+	bits
+	0	floppy boot signature check (1: disabled, 0: enabled)
+	7-4	boot drive #3 (0: unused, 1: fd, 2: hd, 3:cd, else: fd)
+
+0x39	S	ata translation policy - ata0 + ata1
+	bits
+	1-0	ata0-master (0: none, 1: LBA, 2: LARGE, 3: R-ECHS)
+	3-2	ata0-slave
+	5-4	ata1-master
+	7-6	ata1-slave
+
+0x3a	S	ata translation policy - ata2 + ata3 (see above)
+
+0x3d	S	eltorito boot sequence (see above)
+	bits
+	3-0	boot drive #1
+	7-4	boot drive #2</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="timers.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="sb16-emulation-basics.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>timers</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="about-the-code.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Sound Blaster 16 Emulation</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

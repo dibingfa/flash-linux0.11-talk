@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Using Bochs and the remote GDB stub</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="Using Bochs internal debugger"
+HREF="internal-debugger.html"><LINK
+REL="NEXT"
+TITLE="Using the serial port"
+HREF="serial-port.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="internal-debugger.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="serial-port.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DEBUGGING-WITH-GDB"
+>8.12. Using Bochs and the remote GDB stub</A
+></H1
+><P
+>This section covers how you can use Bochs with a remote GDB stub to debug your kernel.</P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3101"
+>8.12.1. Configuring Bochs</A
+></H2
+><P
+>The GDB stub is not active in standard Bochs binary package.  So you must recompile Bochs.
+Download the Bochs source package, unpack it and run the configure script
+with the <B
+CLASS="COMMAND"
+>--enable-gdb-stub</B
+> argument.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  $ ./configure --enable-gdb-stub</PRE
+></TD
+></TR
+></TABLE
+>
+
+After that, just run make and you should have a Bochs binary that contain a GDB stub in your directory.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3106"
+>8.12.2. Running Bochs</A
+></H2
+><P
+>Enable the <A
+HREF="bochsrc.html#BOCHSOPT-GDBSTUB"
+>gdbstub option</A
+> in <TT
+CLASS="FILENAME"
+>bochsrc</TT
+>, then just start Bochs as normal. Bochs will stop and wait for GDB to connect to the stub.</P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3111"
+>8.12.3. Running GDB</A
+></H2
+><P
+>Bochs GDB stub waits for a connection on TCP port 1234. Just start GDB like this:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  $ gdb YOUR-KERNEL
+  .
+  .
+  .
+  (gdb) target remote localhost:1234
+  Remote debugging using localhost:1234
+  0x0000fff0 in ?? ()
+  (gdb)</PRE
+></TD
+></TR
+></TABLE
+>
+
+You are now connected to the remote GDB stub in Bochs. You are now able to set breakpoints.
+Use the continue (c) command to continue the simulation.
+
+Hitting ^C works. Example:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>  Program received signal 0, Signal 0.
+  syscall_testsuite_result (aux=0x1f11fe4) at ../rtmk/syscalls.c:33
+  33     {
+  (gdb)</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="internal-debugger.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="serial-port.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Using Bochs internal debugger</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Using the serial port</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

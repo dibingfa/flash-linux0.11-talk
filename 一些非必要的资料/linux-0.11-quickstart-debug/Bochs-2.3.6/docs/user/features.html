@@ -1,0 +1,536 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Features</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Introduction to Bochs"
+HREF="introduction.html"><LINK
+REL="PREVIOUS"
+TITLE="Third Party Software Licensing and Temporary Files"
+HREF="thirdparty.html"><LINK
+REL="NEXT"
+TITLE="Supported Platforms"
+HREF="supported-platforms.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="thirdparty.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 1. Introduction to Bochs</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="supported-platforms.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="FEATURES"
+>1.7. Features</A
+></H1
+><P
+>The following table shows the features of Bochs and which platforms they
+currently work with.</P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN83"
+></A
+><P
+><B
+>Table 1-1. Bochs Features</B
+></P
+><TABLE
+BORDER="1"
+RULES="all"
+CLASS="CALSTABLE"
+><COL><COL><COL><THEAD
+><TR
+><TH
+>Feature</TH
+><TH
+>Supported?</TH
+><TH
+>Description</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>configure script</TD
+><TD
+>Yes</TD
+><TD
+>Bochs uses GNU autoconf to configure Makefiles and headers.
+    Autoconf helps Bochs to compile on a wide variety of platforms.
+    </TD
+></TR
+><TR
+><TD
+>386,486,Pentium Emulation</TD
+><TD
+>Yes</TD
+><TD
+>Bochs can be configured to emulate one of several families of Intel hardware. Some Pentium features are unsupported, such as MTRR or SMM (System Management Mode).</TD
+></TR
+><TR
+><TD
+>P6 and later CPU Emulation</TD
+><TD
+>Yes</TD
+><TD
+>Bochs can be configured to emulate any P6 family processor including optional MMX and SSE instructions.
+    </TD
+></TR
+><TR
+><TD
+>Pentium 4 Emulation</TD
+><TD
+>Incomplete</TD
+><TD
+>A few Pentium 4 features are incomplete, such as an on-chip APIC extensions (XAPIC) for SMP simulation.
+    </TD
+></TR
+><TR
+><TD
+>x86-64 Extensions Emulation</TD
+><TD
+>Yes</TD
+><TD
+>Bochs can be configured to emulate x86-64 with all Intel (CMPXCHG16B instruction) or AMD (RDTSCP instruction) extensions.</TD
+></TR
+><TR
+><TD
+>Command Line Debugger</TD
+><TD
+>Yes</TD
+><TD
+>Powerful command line debugger (optional) that lets you stop
+    execution and examine registers and memory, set breakpoints, etc. Unfortunatelly
+    the debugger still lacks x86-64 support and almost unusable for debugging 
+    x86-64 workloads.
+    </TD
+></TR
+><TR
+><TD
+>Floating Point</TD
+><TD
+>Yes</TD
+><TD
+>Uses software floating point engine based on <A
+HREF="http://www.jhauser.us/arithmetic/SoftFloat.html"
+TARGET="_top"
+>SoftFloat floating point emulation library</A
+>.
+    </TD
+></TR
+><TR
+><TD
+>Enhanced BIOS</TD
+><TD
+>Yes</TD
+><TD
+>Implements ElTorito, EDD v3.0, basic APM feature, PCIBIOS features
+    and the PCI interrupt routing table. The latest version of the Bochs BIOS
+    has a 32-bit init for ACPI, SMM and SMP.
+    </TD
+></TR
+><TR
+><TD
+>VGA</TD
+><TD
+>Yes</TD
+><TD
+>VGA color graphics emulation in a window.
+    </TD
+></TR
+><TR
+><TD
+>VBE (VESA) Support</TD
+><TD
+>Yes</TD
+><TD
+>Currently resolutions up to 1024x768x32bpp are supported.
+    You must compile Bochs with VBE enabled and use the LGPL'd VGABIOS.
+    For more information see <A
+HREF="vesa-notes.html"
+>Section 8.16</A
+>.
+    </TD
+></TR
+><TR
+><TD
+>Cirrus Logic video card</TD
+><TD
+>Yes</TD
+><TD
+>Cirrus Logic CL-GD5430 ISA or CL-GD5446 PCI video card support.
+      For more information see <A
+HREF="cirrus-notes.html"
+>Section 8.17</A
+>.</TD
+></TR
+><TR
+><TD
+>Floppy disk</TD
+><TD
+>Yes</TD
+><TD
+>Supports floppy disk images on all platforms: 2.88M 3.5", 1.44M 3.5", 1.2M 5.25",
+    720K 3.5" and 360K 5.25". On Unix and Windows 9x/NT/2000/XP, Bochs can access the
+    physical floppy drive.
+    </TD
+></TR
+><TR
+><TD
+>Multiple ATA channels</TD
+><TD
+>Yes</TD
+><TD
+>Emulates up to 4 ATA channels. Up to 8 ATA/ATAPI emulated devices can be attached,
+    two per ATA channel.
+    So you can have eight hard disks or seven hard disks and a CD-ROM or four hard
+    disks and four CD-ROMs, or one hard disk and seven CD-ROMs, etc...
+    </TD
+></TR
+><TR
+><TD
+>Hard disk</TD
+><TD
+>Yes</TD
+><TD
+>Emulates ATA-6/IDE hard drives via image files.  Physical
+    hard disk access is supported on some architecture, but NOT recommended, primarily for safety reasons.
+    Hard disk up to 127GB are supported, on any platform that support large files access.
+    </TD
+></TR
+><TR
+><TD
+>CD-ROM</TD
+><TD
+>Yes</TD
+><TD
+>Emulates ATAPI-4/IDE CD-ROM.  The CD-ROMs can read from an ISO disk image
+    on any platform. On Windows (9x/ME/NT/2000/XP), Linux, SunOS, FreeBSD,
+    NetBSD, OpenBSD, Amiga/MorphOS, MacOSX and BeOS, Bochs can read from the
+    physical CD-ROM drive. Starting with version 1.4, Bochs is even able to boot from
+    a bootable CD or bootable ISO image.
+    </TD
+></TR
+><TR
+><TD
+>Keyboard</TD
+><TD
+>Yes</TD
+><TD
+>Emulates a PS/2 keyboard with North American key mappings. Optional keyboard layout
+    remapping files are provided to support localized keyboard in X11 (German, French, Italian, Spanish,
+    Danish, Swedish, Russian).
+    </TD
+></TR
+><TR
+><TD
+>Mouse</TD
+><TD
+>Yes</TD
+><TD
+>Emulates a serial, PS/2 or USB mouse with 3 buttons + optional mouse
+    wheel support.
+    </TD
+></TR
+><TR
+><TD
+>Sound Blaster</TD
+><TD
+>Yes</TD
+><TD
+>Emulates a Sound Blaster 16 card (ISA, no plug&amp;play). On Windows, Linux, FreeBSD, MacOS 9 and
+    MacOSX, the output can be sent to the host computer's sound system, see
+    <A
+HREF="sb16-emulation.html"
+>Section 4.3</A
+> for details.
+    </TD
+></TR
+><TR
+><TD
+>Network card</TD
+><TD
+>Yes</TD
+><TD
+>Emulates an NE2000 compatible network card.  On Windows NT/2000,
+    Linux, FreeBSD, and NetBSD, Bochs will forward packets to and from the
+    operating system so that the guest OS can talk on the physical network.
+    Unfortunately, on some platforms the guest OS can talk to any machine on
+    the network BUT NOT the host machine.  On Windows and on systems that
+    allow the TAP or TUN/TAP interface, there is no such limitation.  Often
+    the host machine may be configured so the guest OS has access to the
+    internet. On MacOSX, you may download the TUN driver from:
+    <A
+HREF="http://chrisp.de/en/projects/tunnel.html"
+TARGET="_top"
+>http://chrisp.de/en/projects/tunnel.html</A
+>
+    </TD
+></TR
+><TR
+><TD
+>Parallel Port</TD
+><TD
+>Yes</TD
+><TD
+>Parallel port emulation was added by Volker Ruppert for Bochs 1.3.
+    Data that is sent to the parallel port by the guest OS can be saved into a
+    file or sent directly into the parallel port device (Unix only).
+    </TD
+></TR
+><TR
+><TD
+>Serial Port</TD
+><TD
+>Yes</TD
+><TD
+>The serial port (single 16550A UART emulation) is usable, on GNU/Linux,
+    NetBSD, OpenBSD, FreeBSD and MacOSX as host and guest. On other OSes the
+    emulation is present, but the connection to hard- or software of the host is
+    not implemented yet. Up to 4 ports are available.
+    </TD
+></TR
+><TR
+><TD
+>Gameport</TD
+><TD
+>Yes</TD
+><TD
+>Emulates a standard PC gameport. The connection to a real joystick is
+    currently supported on Linux and win32 only.
+    </TD
+></TR
+><TR
+><TD
+>PCI</TD
+><TD
+>Yes</TD
+><TD
+>Emulates most of the i440FX PCI chipset. The Host-to-PCI bridge
+    (PMC/DBX), the PCI-to-ISA bridge and the PCI IDE controller (PIIX3) are
+    available. For PCI cards there are 5 PCI slots supported.
+    </TD
+></TR
+><TR
+><TD
+>USB</TD
+><TD
+>incomplete</TD
+><TD
+>The USB root hub and the devices 'mouse', 'tablet', 'keypad' and
+    'disk' are available. Plugging in and removing devices at runtime is
+    possible, but still experimental. Access to real hardware is not
+    implemented yet.
+    </TD
+></TR
+><TR
+><TD
+>Plugins</TD
+><TD
+>Yes</TD
+><TD
+>Plugins are supported on Linux, MacOS X, Solaris, and Cygwin.</TD
+></TR
+><TR
+><TD
+>16/32 bit addressing</TD
+><TD
+>Yes</TD
+><TD
+>16 or 32 bit operand sizes, stack size, and addressing</TD
+></TR
+><TR
+><TD
+>v8086/paging</TD
+><TD
+>Yes</TD
+><TD
+>Virtual-8086 mode including optional v8086 mode extensions (VME) and paging</TD
+></TR
+><TR
+><TD
+>PIC</TD
+><TD
+>Yes</TD
+><TD
+>Master and slave programmable interrupt controller.
+    </TD
+></TR
+><TR
+><TD
+>CMOS functions</TD
+><TD
+>Yes</TD
+><TD
+>CMOS functions</TD
+></TR
+><TR
+><TD
+>Dynamic Translation/Virtualization</TD
+><TD
+>No</TD
+><TD
+>Because Bochs is designed to be portable, it does not attempt
+    to do any dynamic code translation or virtualization. See
+    <A
+HREF="introduction.html#WHATISBOCHS"
+>Section 1.1</A
+> for details.
+    </TD
+></TR
+><TR
+><TD
+>Simulate a Multiprocessor</TD
+><TD
+>Yes</TD
+><TD
+>Bochs can be configured to simulate up to 8 processors.  This
+    feature is still experimental, but it can boot Linux 2.2 kernels with SMP
+    support.  Please note that this does NOT mean that Bochs can run
+    faster on a physical SMP machine.
+    </TD
+></TR
+><TR
+><TD
+>Take advantage of your SMP box</TD
+><TD
+>No</TD
+><TD
+>At present, Bochs does not use threads or parallel processing, so it
+    will not run any faster on multiprocessor hardware.
+    </TD
+></TR
+><TR
+><TD
+>Copy and Paste</TD
+><TD
+>Yes</TD
+><TD
+>Depending on the host platform, the text-mode screen text can be
+    exported to the clipboard. Text in the clipboard can also be pasted, through
+    Bochs, to the guest OS, as simulated keystrokes.
+    </TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="thirdparty.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="supported-platforms.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Third Party Software Licensing and Temporary Files</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="introduction.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Supported Platforms</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

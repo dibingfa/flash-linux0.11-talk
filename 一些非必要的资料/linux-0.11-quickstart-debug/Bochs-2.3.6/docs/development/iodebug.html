@@ -1,0 +1,391 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>I/O Interface to Bochs Debugger</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Debugger"
+HREF="debugger.html"><LINK
+REL="PREVIOUS"
+TITLE="techniques"
+HREF="debugger-techniques.html"><LINK
+REL="NEXT"
+TITLE="Coding"
+HREF="coding.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="debugger-techniques.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 3. Debugger</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="coding.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="IODEBUG"
+>3.5. I/O Interface to Bochs Debugger</A
+></H1
+><P
+>This device was added by Dave Poirier (eks@void-core.2y.net). </P
+><P
+>Compiling Bochs with iodebug support
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>./configure --enable-iodebug
+make</PRE
+></TD
+></TR
+></TABLE
+>
+Other optional fields may be added to the ./configure line, see Bochs documentation for all the information.</P
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Using the I/O Interface to the debugger
+
+port range:  0x8A00 - 0x8A01
+
+Port 0x8A00 servers as command register. You can use it to enable the i/o interface,
+change which data register is active, etc.
+
+Port 0x8A01 is used as data register for the memory monitoring.</PRE
+></TD
+></TR
+></TABLE
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1078"
+>3.5.1. Commands supported by port 0x8A00</A
+></H2
+><P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>&#13;0x8A00
+
+ Used to enable the device. Any I/O to the debug module before this command is sent
+ is sent will simply be ignored.
+
+
+0x8A01
+
+ Selects register 0: Memory monitoring range start address (inclusive)
+
+
+0x8A02
+
+ Selects register 1: Memory monitoring range end address (exclusive)
+
+
+0x8A80
+
+ Enable address range memory monitoring as indicated by register 0 and 1 and
+ clears both registers
+
+
+0x8AE0 - Return to Debugger Prompt
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE0 to port 0x8A00
+ after the device has been enabled will return the Bochs to the debugger prompt.
+ Basically the same as doing CTRL+C.
+
+
+0x8AE2 - Instruction Trace Disable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE2 to port 0x8A00
+ after the device has been enabled will disable instruction tracing
+
+
+0x8AE3 - Instruction Trace Enable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE3 to port 0x8A00
+ after the device has been enabled will enable instruction tracing
+
+
+0x8AE4 - Register Trace Disable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE4 to port 0x8A00
+ after the device has been enabled will disable register tracing.
+
+
+0x8AE5 - Register Trace Enable
+
+ If the debugger is enabled (via --enable-debugger), sending 0x8AE5 to port 0x8A00
+ after the device has been enabled will enable register tracing. This currently
+ output the value of all the registers for each instruction traced.
+ Note: instruction tracing must be enabled to view the register tracing
+
+
+0x8AFF
+
+ Disable the I/O interface to the debugger and the memory monitoring functions.</PRE
+></TD
+></TR
+></TABLE
+>
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>all accesses must be done using word</P
+></BLOCKQUOTE
+></DIV
+>
+<DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>reading this register will return 0x8A00 if currently activated, otherwise 0</P
+></BLOCKQUOTE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1086"
+>3.5.2. Access to port 0x8A01 (write-only)</A
+></H2
+><P
+>All accesses to this port must be done using words. Writing to this port will shift
+to the left by 16 the current value of the register and add the provided value to it.
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Sample:
+
+reg0 = 0x01234567
+
+out port: 0x8A01 data: 0xABCD
+
+reg0 = 0x4567ABCD</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN1090"
+>3.5.3. Sample</A
+></H2
+><P
+>Enable memory monitoring on first page of text screen (0xb8000-0xb8fa0):
+add in bochrc file: <B
+CLASS="COMMAND"
+>optromimage1: file=&quot;asmio.rom&quot;, address=0xd0000</B
+>
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>/*
+ *      Make asmio ROM file:
+ *      gcc -c asmio.S
+ *      objcopy -O binary asmio.o asmio.rom
+ */
+        .text
+        .global start
+        .code16
+
+/* ROM Header */
+        .byte 0x55
+        .byte 0xAA
+        .byte 1                 /* 512 bytes long */
+
+start:
+/* Monitor memory access on first page of text screen */
+        mov     $0x8A00,%dx     /* Enable iodebug (0x8A00-&#62;0x8A00) */
+        mov     %dx,%ax
+        out     %ax,%dx
+        mov     $0x8A01,%ax     /* Select register 0 start addr (0x8A01-&#62;0x8A00) */
+        out     %ax,%dx
+        mov     $0x8A01,%dx     /* Write start addr 0xB8000 (high word first) */
+        mov     $0xB,%ax
+        out     %ax,%dx
+        mov     $0x8000,%ax     /* Write start addr (low word) */
+        out     %ax,%dx
+
+        mov     $0x8A02,%ax     /* Select register 1 end addr (0x8A02-&#62;0x8A00) */
+        mov     $0x8A00,%dx
+        out     %ax,%dx
+        mov     $0x8A01,%dx     /* Write end addr 0xB8FA0 (high word first) */
+        mov     $0xB,%ax
+        out     %ax,%dx
+        mov     $0x8FA0,%ax     /* Write end addr (low word) */
+        out     %ax,%dx
+
+        mov     $0x8A00,%dx     /* Enable addr range memory monitoring (0x8A80-&#62;0x8A00) */
+        mov     $0x8A80,%ax
+        out     %ax,%dx
+
+        mov     $0x8A00,%dx     /* Return to Bochs Debugger Prompt (0x8AE0-&#62;0x8A00) */
+        mov     $0x8AE0,%ax
+        out     %ax,%dx
+        lret
+
+        .byte 0x6b              /* Checksum (code dependent!, update it as needed) */
+        .align 512              /* NOP follow */</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="debugger-techniques.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="coding.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>techniques</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="debugger.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Coding</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

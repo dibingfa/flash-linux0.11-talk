@@ -1,0 +1,211 @@
+# Bochs Keymap file
+# $Id: x11-pc-ru.map,v 1.1 2004/10/17 17:16:43 vruppert Exp $
+# Target: PC(x86) keyboard, RU keymap
+# Author: Dmitry Soshnikov
+#
+# The keymap file describes the layout of a keyboard, and how it translates
+# into Bochs key codes.
+#
+# Format:
+#  BX_Keysym                ASCII_equivalent      Xwin_Keysym
+#
+# Or, for keys that require modifiers:
+#  BX_Keysym+BX_Modifier    ASCII_equivalent    Xwin_Keysym
+#
+# BX_Keysym and BX_Modifier must be present in the bx_key_symbol[] list in
+# gui/keymap.cc.  The BX_Modifier is usually a shift key press, but it
+# could be any key.  Presently a maximum of one modifier is supported, but this
+# could be changed in keymap.h (structure def has only one slot for modifier),
+# keymap.cc (parsing code), and iodev/keyboard.cc (simulate keypresses for >1
+# modifier).
+#
+# The ASCII_equivalent must be either apostrophe + one character + apostrophe,
+# or one of these keywords: space, return, tab, backslash, apostrophe, none.
+# This format is designed to look like a char constant in C, but it's a very
+# simple parser.  There's no concept of backslash being an escape char.  The
+# backslash and apostrophe entries are provided for aesthetic purposes only: no
+# C++ programmer wants to see '\' or '''. The parser doesn't care, but they are
+# ugly.
+#
+# Xwin_Keysym is the X windows equivalent of the key combination.  These
+# codes should match whatever you find in /usr/X11R6/include/X11/keysymdef.h.
+# If you're running X windows, Bochs will take each of these Xwin_Keysyms,
+# pull off the XK_ in front, and use XStringToKeysym() to change them into
+# numerical codes.  If this lookup fails, you will get a panic and you need
+# to edit the keymap file.
+#
+# Note: this is charset-1251 layout map (using in Windows and some newest
+# implementations of Linux), which works properly. Users of KOI8-R should
+# slightly modify the map to achieve proper matching (actually didn't tested.
+# - D.S.) It concerns of "," and "." symbols, which are placed on the second
+# row of the keyboard (instead of placing it on "?/" button in charset-1251),
+# and some other (unimportant) symbols. Main symbolic keyboard should work.
+
+BX_KEY_0                                      '0'        XK_0
+BX_KEY_0+BX_KEY_SHIFT_L                       ')'        XK_parenright
+BX_KEY_1                                      '1'        XK_1
+BX_KEY_1+BX_KEY_SHIFT_L                       '!'        XK_exclam
+BX_KEY_2                                      '2'        XK_2
+BX_KEY_2+BX_KEY_SHIFT_L                       '"'        XK_quotedbl
+BX_KEY_3                                      '3'        XK_3
+BX_KEY_3+BX_KEY_SHIFT_L                       '?'        XK_numerosign
+BX_KEY_4                                      '4'        XK_4
+BX_KEY_4+BX_KEY_SHIFT_L                       ';'        XK_semicolon
+BX_KEY_5                                      '5'        XK_5
+BX_KEY_5+BX_KEY_SHIFT_L                       '%'        XK_percent
+BX_KEY_6                                      '6'        XK_6
+BX_KEY_6+BX_KEY_SHIFT_L                       ':'        XK_colon
+BX_KEY_7                                      '7'        XK_7
+BX_KEY_7+BX_KEY_SHIFT_L                       '?'        XK_question
+BX_KEY_8                                      '8'        XK_8
+BX_KEY_8+BX_KEY_SHIFT_L                       '*'        XK_asterisk
+BX_KEY_9                                      '9'        XK_9
+BX_KEY_9+BX_KEY_SHIFT_L                       '('        XK_parenleft
+BX_KEY_A+BX_KEY_SHIFT_L                       'Ô'        XK_Cyrillic_EF
+BX_KEY_A                                      'ô'        XK_Cyrillic_ef
+BX_KEY_B+BX_KEY_SHIFT_L                       'È'        XK_Cyrillic_I
+BX_KEY_B                                      'è'        XK_Cyrillic_i
+BX_KEY_C+BX_KEY_SHIFT_L                       'Ñ'        XK_Cyrillic_ES
+BX_KEY_C                                      'ñ'        XK_Cyrillic_es
+BX_KEY_D+BX_KEY_SHIFT_L                       'Â'        XK_Cyrillic_VE
+BX_KEY_D                                      'â'        XK_Cyrillic_ve
+BX_KEY_E+BX_KEY_SHIFT_L                       'Ó'        XK_Cyrillic_U
+BX_KEY_E                                      'ó'        XK_Cyrillic_u
+BX_KEY_F+BX_KEY_SHIFT_L                       'À'        XK_Cyrillic_A
+BX_KEY_F                                      'à'        XK_Cyrillic_a
+BX_KEY_G+BX_KEY_SHIFT_L                       'Ï'        XK_Cyrillic_PE
+BX_KEY_G                                      'ï'        XK_Cyrillic_pe
+BX_KEY_H+BX_KEY_SHIFT_L                       'Ð'        XK_Cyrillic_ER
+BX_KEY_H                                      'ð'        XK_Cyrillic_er
+BX_KEY_I+BX_KEY_SHIFT_L                       'Ø'        XK_Cyrillic_SHA
+BX_KEY_I                                      'ø'        XK_Cyrillic_sha
+BX_KEY_J+BX_KEY_SHIFT_L                       'Î'        XK_Cyrillic_O
+BX_KEY_J                                      'î'        XK_Cyrillic_o
+BX_KEY_K+BX_KEY_SHIFT_L                       'Ë'        XK_Cyrillic_EL
+BX_KEY_K                                      'ë'        XK_Cyrillic_el
+BX_KEY_L+BX_KEY_SHIFT_L                       'Ä'        XK_Cyrillic_DE
+BX_KEY_L                                      'ä'        XK_Cyrillic_de
+BX_KEY_M+BX_KEY_SHIFT_L                       'Ü'        XK_Cyrillic_SOFTSIGN
+BX_KEY_M                                      'ü'        XK_Cyrillic_softsign
+BX_KEY_N+BX_KEY_SHIFT_L                       'Ò'        XK_Cyrillic_TE
+BX_KEY_N                                      'ò'        XK_Cyrillic_te
+BX_KEY_O+BX_KEY_SHIFT_L                       'Ù'        XK_Cyrillic_SHCHA
+BX_KEY_O                                      'ù'        XK_Cyrillic_shcha
+BX_KEY_P+BX_KEY_SHIFT_L                       'Ç'        XK_Cyrillic_ZE
+BX_KEY_P                                      'ç'        XK_Cyrillic_ze
+BX_KEY_Q+BX_KEY_SHIFT_L                       'É'        XK_Cyrillic_SHORTI
+BX_KEY_Q                                      'é'        XK_Cyrillic_shorti
+BX_KEY_R+BX_KEY_SHIFT_L                       'Ê'        XK_Cyrillic_KA
+BX_KEY_R                                      'ê'        XK_Cyrillic_ka
+BX_KEY_S+BX_KEY_SHIFT_L                       'Û'        XK_Cyrillic_YERU
+BX_KEY_S                                      'û'        XK_Cyrillic_yeru
+BX_KEY_T+BX_KEY_SHIFT_L                       'Å'        XK_Cyrillic_IE
+BX_KEY_T                                      'å'        XK_Cyrillic_ie
+BX_KEY_U+BX_KEY_SHIFT_L                       'Ã'        XK_Cyrillic_GHE
+BX_KEY_U                                      'ã'        XK_Cyrillic_ghe
+BX_KEY_V+BX_KEY_SHIFT_L                       'Ì'        XK_Cyrillic_EM
+BX_KEY_V                                      'ì'        XK_Cyrillic_em
+BX_KEY_W+BX_KEY_SHIFT_L                       'Ö'        XK_Cyrillic_TSE
+BX_KEY_W                                      'ö'        XK_Cyrillic_tse
+BX_KEY_X+BX_KEY_SHIFT_L                       '×'        XK_Cyrillic_CHE
+BX_KEY_X                                      '÷'        XK_Cyrillic_che
+BX_KEY_Y+BX_KEY_SHIFT_L                       'Í'        XK_Cyrillic_EN
+BX_KEY_Y                                      'í'        XK_Cyrillic_en
+BX_KEY_Z+BX_KEY_SHIFT_L                       'ß'        XK_Cyrillic_YA
+BX_KEY_Z                                      'ÿ'        XK_Cyrillic_ya
+BX_KEY_F1                                     none       XK_F1
+BX_KEY_F2                                     none       XK_F2
+BX_KEY_F3                                     none       XK_F3
+BX_KEY_F4                                     none       XK_F4
+BX_KEY_F5                                     none       XK_F5
+BX_KEY_F6                                     none       XK_F6
+BX_KEY_F7                                     none       XK_F7
+BX_KEY_F8                                     none       XK_F8
+BX_KEY_F9                                     none       XK_F9
+BX_KEY_F10                                    none       XK_F10
+BX_KEY_F11                                    none       XK_F11
+BX_KEY_F12                                    none       XK_F12
+BX_KEY_ALT_L                                  none       XK_Alt_L
+BX_KEY_ALT_L                                  none       XK_Meta_L
+BX_KEY_ALT_R                                  none       XK_Alt_R
+BX_KEY_ALT_R                                  none       XK_Mode_switch
+BX_KEY_ALT_R                                  none       XK_Multi_key
+BX_KEY_BACKSLASH                              backslash  XK_backslash
+BX_KEY_BACKSLASH+BX_KEY_SHIFT_L               '|'        XK_bar
+BX_KEY_BACKSPACE                              none       XK_BackSpace
+BX_KEY_CAPS_LOCK                              none       XK_Caps_Lock
+BX_KEY_COMMA                                  'á'        XK_Cyrillic_be
+BX_KEY_COMMA+BX_KEY_SHIFT_L                   'Á'        XK_Cyrillic_BE
+BX_KEY_CTRL_L                                 none       XK_Control_L
+BX_KEY_CTRL_R                                 none       XK_Control_R
+BX_KEY_DELETE                                 none       XK_Delete
+BX_KEY_DOWN                                   none       XK_Down
+BX_KEY_END                                    none       XK_End
+BX_KEY_ENTER                                  return     XK_Return
+BX_KEY_EQUALS                                 '='        XK_equal
+BX_KEY_EQUALS+BX_KEY_SHIFT_L                  '+'        XK_plus
+BX_KEY_ESC                                    none       XK_Escape
+BX_KEY_GRAVE+BX_KEY_SHIFT_L                   '¨'        XK_Cyrillic_IO
+BX_KEY_GRAVE                                  '¸'        XK_Cyrillic_io
+BX_KEY_HOME                                   none       XK_Home
+BX_KEY_INSERT                                 none       XK_Insert
+BX_KEY_KP_5                                   none       XK_KP_5
+BX_KEY_KP_5                                   none       XK_KP_Begin
+BX_KEY_KP_ADD                                 none       XK_KP_Add
+BX_KEY_KP_DELETE                              none       XK_KP_Decimal
+BX_KEY_KP_DELETE                              none       XK_KP_Delete
+BX_KEY_KP_DIVIDE                              none       XK_KP_Divide
+BX_KEY_KP_DOWN                                none       XK_KP_2
+BX_KEY_KP_DOWN                                none       XK_KP_Down
+BX_KEY_KP_END                                 none       XK_KP_1
+BX_KEY_KP_END                                 none       XK_KP_End
+BX_KEY_KP_ENTER                               none       XK_KP_Enter
+BX_KEY_KP_HOME                                none       XK_KP_7
+BX_KEY_KP_HOME                                none       XK_KP_Home
+BX_KEY_KP_INSERT                              none       XK_KP_0
+BX_KEY_KP_INSERT                              none       XK_KP_Insert
+BX_KEY_KP_LEFT                                none       XK_KP_4
+BX_KEY_KP_LEFT                                none       XK_KP_Left
+BX_KEY_KP_MULTIPLY                            none       XK_KP_Multiply
+BX_KEY_KP_PAGE_DOWN                           none       XK_KP_3
+BX_KEY_KP_PAGE_DOWN                           none       XK_KP_Page_Down
+BX_KEY_KP_PAGE_UP                             none       XK_KP_9
+BX_KEY_KP_PAGE_UP                             none       XK_KP_Page_Up
+BX_KEY_KP_RIGHT                               none       XK_KP_6
+BX_KEY_KP_RIGHT                               none       XK_KP_Right
+BX_KEY_KP_SUBTRACT                            none       XK_KP_Subtract
+BX_KEY_KP_UP                                  none       XK_KP_8
+BX_KEY_KP_UP                                  none       XK_KP_Up
+BX_KEY_LEFT                                   none       XK_Left
+BX_KEY_LEFT_BRACKET+BX_KEY_SHIFT_L            'Õ'        XK_Cyrillic_HA
+BX_KEY_LEFT_BRACKET                           'õ'        XK_Cyrillic_ha
+BX_KEY_MENU                                   none       XK_Menu
+BX_KEY_MINUS                                  '-'        XK_minus
+BX_KEY_MINUS+BX_KEY_SHIFT_L                   '_'        XK_underscore
+BX_KEY_NUM_LOCK                               none       XK_Num_Lock
+BX_KEY_PAGE_DOWN                              none       XK_Page_Down
+BX_KEY_PAGE_UP                                none       XK_Page_Up
+BX_KEY_PAUSE                                  none       XK_Break
+BX_KEY_PAUSE                                  none       XK_Pause
+BX_KEY_PERIOD+BX_KEY_SHIFT_L                  'Þ'        XK_Cyrillic_YU
+BX_KEY_PERIOD                                 'þ'        XK_Cyrillic_yu
+BX_KEY_PRINT                                  none       XK_Print
+BX_KEY_PRINT                                  none       XK_Sys_Req
+BX_KEY_RIGHT                                  none       XK_Right
+BX_KEY_RIGHT_BRACKET+BX_KEY_SHIFT_L           'Ú'        XK_Cyrillic_HARDSIGN
+BX_KEY_RIGHT_BRACKET                          'ú'        XK_Cyrillic_hardsign
+BX_KEY_SCRL_LOCK                              none       XK_Scroll_Lock
+BX_KEY_SEMICOLON+BX_KEY_SHIFT_L               'Æ'        XK_Cyrillic_ZHE
+BX_KEY_SEMICOLON                              'æ'        XK_Cyrillic_zhe
+BX_KEY_SHIFT_L                                none       XK_Shift_L
+BX_KEY_SHIFT_R                                none       XK_Shift_R
+BX_KEY_SINGLE_QUOTE                           'ý'        XK_Cyrillic_e
+BX_KEY_SINGLE_QUOTE+BX_KEY_SHIFT_L            'Ý'        XK_Cyrillic_E
+BX_KEY_SLASH+BX_KEY_SHIFT_L                   ','        XK_comma
+BX_KEY_SLASH                                  '.'        XK_period
+BX_KEY_SPACE                                  space      XK_space
+BX_KEY_TAB                                    none       XK_ISO_Left_Tab
+BX_KEY_TAB                                    tab        XK_Tab
+BX_KEY_UP                                     none       XK_Up
+BX_KEY_WIN_L                                  none       XK_Super_L
+BX_KEY_WIN_R                                  none       XK_Super_R

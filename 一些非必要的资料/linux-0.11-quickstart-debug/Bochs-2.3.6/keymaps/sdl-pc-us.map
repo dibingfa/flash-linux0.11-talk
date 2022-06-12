@@ -1,0 +1,211 @@
+# Bochs Keymap file
+# $Id: sdl-pc-us.map,v 1.2 2002/10/24 21:06:55 bdenney Exp $
+# Target: PC(x86) keyboard, US keymap, SDL gui
+# Author: Bryce Denney
+#
+# The keymap file describes the layout of a keyboard, and how it translates
+# into Bochs key codes.
+#
+# Format:
+#  BX_Keysym                ASCII_equivalent      Host_key_name
+#
+# Or, for keys that require modifiers:
+#  BX_Keysym+BX_Modifier    ASCII_equivalent      Host_key_name
+#
+# BX_Keysym and BX_Modifier must be present in the bx_key_symbol[] list in
+# gui/keymap.cc.  The BX_Modifier is usually a shift key press, but it
+# could be any key.  Presently a maximum of one modifier is supported, but this
+# could be changed in keymap.h (structure def has only one slot for modifier),
+# keymap.cc (parsing code), and iodev/keyboard.cc (simulate keypresses for >1
+# modifier).
+#
+# The ASCII_equivalent must be either apostrophe + one character + apostrophe,
+# or one of these keywords: space, return, tab, backslash, apostrophe, none.
+# This format is designed to look like a char constant in C, but it's a very
+# simple parser.  There's no concept of backslash being an escape char.  The
+# backslash and apostrophe entries are provided for aesthetic purposes only: no
+# C++ programmer wants to see '\' or '''. The parser doesn't care, but they are
+# ugly.
+#
+# Host_key_name is the name of the key combination according to the gui library
+# (X windows, SDL, etc).  Each GUI module must provide a function that converts
+# these host key names into numbers.  A pointer to the conversion function is
+# passed to loadKeymap(), and it is used when parsing the keymap file.  As the
+# keymap file is parsed, the conversion function is called for each host key
+# name, to convert it into a number.  Only the number is stored.  If the host
+# key name is not found, the conversion function returns BX_KEYMAP_UNKNOWN, and
+# the keymap code will panic, like this: 
+#
+#    [KMAP ] line 51: unknown host key name 'SDLK_PAREN_RIGHT' 
+#
+# If this happens, you must edit the keymap file, and either correct the host
+# key name or comment out that line.
+#
+
+BX_KEY_0                                      '0'        SDLK_0
+BX_KEY_0+BX_KEY_SHIFT_L                       ')'        SDLK_RIGHTPAREN
+BX_KEY_1                                      '1'        SDLK_1
+BX_KEY_1+BX_KEY_SHIFT_L                       '!'        SDLK_EXCLAIM
+BX_KEY_2                                      '2'        SDLK_2
+BX_KEY_2+BX_KEY_SHIFT_L                       '@'        SDLK_AT
+BX_KEY_3                                      '3'        SDLK_3
+BX_KEY_3+BX_KEY_SHIFT_L                       '#'        SDLK_HASH
+BX_KEY_4                                      '4'        SDLK_4
+BX_KEY_4+BX_KEY_SHIFT_L                       '$'        SDLK_DOLLAR
+BX_KEY_5                                      '5'        SDLK_5
+#BX_KEY_5+BX_KEY_SHIFT_L                       '%'        SDLK_PERCENT
+BX_KEY_6                                      '6'        SDLK_6
+BX_KEY_6+BX_KEY_SHIFT_L                       '^'        SDLK_CARET
+BX_KEY_7                                      '7'        SDLK_7
+BX_KEY_7+BX_KEY_SHIFT_L                       '&'        SDLK_AMPERSAND
+BX_KEY_8                                      '8'        SDLK_8
+BX_KEY_8+BX_KEY_SHIFT_L                       '*'        SDLK_ASTERISK
+BX_KEY_9                                      '9'        SDLK_9
+BX_KEY_9+BX_KEY_SHIFT_L                       '('        SDLK_LEFTPAREN
+BX_KEY_A+BX_KEY_SHIFT_L                       'A'        SDLK_a
+BX_KEY_A                                      'a'        SDLK_a
+BX_KEY_B+BX_KEY_SHIFT_L                       'B'        SDLK_b
+BX_KEY_B                                      'b'        SDLK_b
+BX_KEY_C+BX_KEY_SHIFT_L                       'C'        SDLK_c
+BX_KEY_C                                      'c'        SDLK_c
+BX_KEY_D+BX_KEY_SHIFT_L                       'D'        SDLK_d
+BX_KEY_D                                      'd'        SDLK_d
+BX_KEY_E+BX_KEY_SHIFT_L                       'E'        SDLK_e
+BX_KEY_E                                      'e'        SDLK_e
+BX_KEY_F+BX_KEY_SHIFT_L                       'F'        SDLK_f
+BX_KEY_F                                      'f'        SDLK_f
+BX_KEY_G+BX_KEY_SHIFT_L                       'G'        SDLK_g
+BX_KEY_G                                      'g'        SDLK_g
+BX_KEY_H+BX_KEY_SHIFT_L                       'H'        SDLK_h
+BX_KEY_H                                      'h'        SDLK_h
+BX_KEY_I+BX_KEY_SHIFT_L                       'I'        SDLK_i
+BX_KEY_I                                      'i'        SDLK_i
+BX_KEY_J+BX_KEY_SHIFT_L                       'J'        SDLK_j
+BX_KEY_J                                      'j'        SDLK_j
+BX_KEY_K+BX_KEY_SHIFT_L                       'K'        SDLK_k
+BX_KEY_K                                      'k'        SDLK_k
+BX_KEY_L+BX_KEY_SHIFT_L                       'L'        SDLK_l
+BX_KEY_L                                      'l'        SDLK_l
+BX_KEY_M+BX_KEY_SHIFT_L                       'M'        SDLK_m
+BX_KEY_M                                      'm'        SDLK_m
+BX_KEY_N+BX_KEY_SHIFT_L                       'N'        SDLK_n
+BX_KEY_N                                      'n'        SDLK_n
+BX_KEY_O+BX_KEY_SHIFT_L                       'O'        SDLK_o
+BX_KEY_O                                      'o'        SDLK_o
+BX_KEY_P+BX_KEY_SHIFT_L                       'P'        SDLK_p
+BX_KEY_P                                      'p'        SDLK_p
+BX_KEY_Q+BX_KEY_SHIFT_L                       'Q'        SDLK_q
+BX_KEY_Q                                      'q'        SDLK_q
+BX_KEY_R+BX_KEY_SHIFT_L                       'R'        SDLK_r
+BX_KEY_R                                      'r'        SDLK_r
+BX_KEY_S+BX_KEY_SHIFT_L                       'S'        SDLK_s
+BX_KEY_S                                      's'        SDLK_s
+BX_KEY_T+BX_KEY_SHIFT_L                       'T'        SDLK_t
+BX_KEY_T                                      't'        SDLK_t
+BX_KEY_U+BX_KEY_SHIFT_L                       'U'        SDLK_u
+BX_KEY_U                                      'u'        SDLK_u
+BX_KEY_V+BX_KEY_SHIFT_L                       'V'        SDLK_v
+BX_KEY_V                                      'v'        SDLK_v
+BX_KEY_W+BX_KEY_SHIFT_L                       'W'        SDLK_w
+BX_KEY_W                                      'w'        SDLK_w
+BX_KEY_X+BX_KEY_SHIFT_L                       'X'        SDLK_x
+BX_KEY_X                                      'x'        SDLK_x
+BX_KEY_Y+BX_KEY_SHIFT_L                       'Y'        SDLK_y
+BX_KEY_Y                                      'y'        SDLK_y
+BX_KEY_Z+BX_KEY_SHIFT_L                       'Z'        SDLK_z
+BX_KEY_Z                                      'z'        SDLK_z
+BX_KEY_F1                                     none       SDLK_F1
+BX_KEY_F2                                     none       SDLK_F2
+BX_KEY_F3                                     none       SDLK_F3
+BX_KEY_F4                                     none       SDLK_F4
+BX_KEY_F5                                     none       SDLK_F5
+BX_KEY_F6                                     none       SDLK_F6
+BX_KEY_F7                                     none       SDLK_F7
+BX_KEY_F8                                     none       SDLK_F8
+BX_KEY_F9                                     none       SDLK_F9
+BX_KEY_F10                                    none       SDLK_F10
+BX_KEY_F11                                    none       SDLK_F11
+BX_KEY_F12                                    none       SDLK_F12
+BX_KEY_ALT_L                                  none       SDLK_LALT
+BX_KEY_ALT_L                                  none       SDLK_LMETA
+BX_KEY_ALT_R                                  none       SDLK_MODE
+#BX_KEY_ALT_R                                  none       SDLK_Multi_key
+BX_KEY_BACKSLASH                              backslash  SDLK_BACKSLASH
+#BX_KEY_BACKSLASH+BX_KEY_SHIFT_L               '|'        SDLK_bar
+BX_KEY_BACKSPACE                              none       SDLK_BACKSPACE
+BX_KEY_CAPS_LOCK                              none       SDLK_CAPSLOCK
+BX_KEY_COMMA                                  ','        SDLK_COMMA
+BX_KEY_COMMA+BX_KEY_SHIFT_L                   '<'        SDLK_LESS
+BX_KEY_CTRL_L                                 none       SDLK_LCTRL
+BX_KEY_CTRL_R                                 none       SDLK_RCTRL
+BX_KEY_DELETE                                 none       SDLK_DELETE
+BX_KEY_DOWN                                   none       SDLK_DOWN
+BX_KEY_END                                    none       SDLK_END
+BX_KEY_ENTER                                  return     SDLK_RETURN
+BX_KEY_EQUALS                                 '='        SDLK_EQUALS
+BX_KEY_EQUALS+BX_KEY_SHIFT_L                  '+'        SDLK_PLUS
+BX_KEY_ESC                                    none       SDLK_ESCAPE
+#BX_KEY_GRAVE+BX_KEY_SHIFT_L                   '~'        SDLK_asciitilde
+BX_KEY_GRAVE                                  '`'        SDLK_BACKQUOTE
+BX_KEY_HOME                                   none       SDLK_HOME
+BX_KEY_INSERT                                 none       SDLK_INSERT
+BX_KEY_KP_5                                   none       SDLK_KP5
+#BX_KEY_KP_5                                   none       SDLK_KP_BEGIN
+BX_KEY_KP_ADD                                 none       SDLK_KP_PLUS
+BX_KEY_KP_DELETE                              none       SDLK_KP_PERIOD
+#BX_KEY_KP_DELETE                              none       SDLK_KP_DELETE
+BX_KEY_KP_DIVIDE                              none       SDLK_KP_DIVIDE
+BX_KEY_KP_DOWN                                none       SDLK_KP2
+#BX_KEY_KP_DOWN                                none       SDLK_KP_DOWN
+BX_KEY_KP_END                                 none       SDLK_KP1
+#BX_KEY_KP_END                                 none       SDLK_KP_END
+BX_KEY_KP_ENTER                               none       SDLK_KP_ENTER
+BX_KEY_KP_HOME                                none       SDLK_KP7
+#BX_KEY_KP_HOME                                none       SDLK_KP_HOME
+BX_KEY_KP_INSERT                              none       SDLK_KP0
+#BX_KEY_KP_INSERT                              none       SDLK_KP_INSERT
+BX_KEY_KP_LEFT                                none       SDLK_KP4
+#BX_KEY_KP_LEFT                                none       SDLK_KP_LEFT
+BX_KEY_KP_MULTIPLY                            none       SDLK_KP_MULTIPLY
+BX_KEY_KP_PAGE_DOWN                           none       SDLK_KP3
+#BX_KEY_KP_PAGE_DOWN                           none       SDLK_KP_PAGE_DOWN
+BX_KEY_KP_PAGE_UP                             none       SDLK_KP9
+#BX_KEY_KP_PAGE_UP                             none       SDLK_KP_PAGE_UP
+BX_KEY_KP_RIGHT                               none       SDLK_KP6
+#BX_KEY_KP_RIGHT                               none       SDLK_KP_Right
+BX_KEY_KP_SUBTRACT                            none       SDLK_KP_MINUS
+BX_KEY_KP_UP                                  none       SDLK_KP8
+#BX_KEY_KP_UP                                  none       SDLK_KP_Up
+BX_KEY_LEFT                                   none       SDLK_LEFT
+#BX_KEY_LEFT_BRACKET+BX_KEY_SHIFT_L            '{'        SDLK_BRACELEFT
+BX_KEY_LEFT_BRACKET                           '['        SDLK_LEFTBRACKET
+BX_KEY_MENU                                   none       SDLK_MENU
+BX_KEY_MINUS                                  '-'        SDLK_MINUS
+BX_KEY_MINUS+BX_KEY_SHIFT_L                   '_'        SDLK_UNDERSCORE
+BX_KEY_NUM_LOCK                               none       SDLK_NUMLOCK
+BX_KEY_PAGE_DOWN                              none       SDLK_PAGEDOWN
+BX_KEY_PAGE_UP                                none       SDLK_PAGEUP
+BX_KEY_PAUSE                                  none       SDLK_BREAK
+BX_KEY_PAUSE                                  none       SDLK_PAUSE
+BX_KEY_PERIOD+BX_KEY_SHIFT_L                  '>'        SDLK_GREATER
+BX_KEY_PERIOD                                 '.'        SDLK_PERIOD
+BX_KEY_PRINT                                  none       SDLK_PRINT
+BX_KEY_PRINT                                  none       SDLK_SYSREQ
+BX_KEY_RIGHT                                  none       SDLK_RIGHT
+#BX_KEY_RIGHT_BRACKET+BX_KEY_SHIFT_L           '}'        SDLK_BRACERIGHT
+BX_KEY_RIGHT_BRACKET                          ']'        SDLK_RIGHTBRACKET
+BX_KEY_SCRL_LOCK                              none       SDLK_SCROLLOCK
+BX_KEY_SEMICOLON+BX_KEY_SHIFT_L               ':'        SDLK_COLON
+BX_KEY_SEMICOLON                              ';'        SDLK_SEMICOLON
+BX_KEY_SHIFT_L                                none       SDLK_LSHIFT
+BX_KEY_SHIFT_R                                none       SDLK_RSHIFT
+BX_KEY_SINGLE_QUOTE                           apostrophe SDLK_QUOTE
+BX_KEY_SINGLE_QUOTE+BX_KEY_SHIFT_L            '"'        SDLK_QUOTEDBL
+BX_KEY_SLASH+BX_KEY_SHIFT_L                   '?'        SDLK_QUESTION
+BX_KEY_SLASH                                  '/'        SDLK_SLASH
+BX_KEY_SPACE                                  space      SDLK_SPACE
+#BX_KEY_TAB                                    none       SDLK_ISO_LEFT_TAB
+BX_KEY_TAB                                    tab        SDLK_TAB
+BX_KEY_UP                                     none       SDLK_UP
+BX_KEY_WIN_L                                  none       SDLK_LSUPER
+BX_KEY_WIN_R                                  none       SDLK_LSUPER

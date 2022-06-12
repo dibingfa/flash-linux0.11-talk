@@ -1,0 +1,27 @@
+###############################################################
+# bochsrc.bxrc file for Tinix.
+###############################################################
+
+# how much memory the emulated machine will have
+megs: 32
+
+# filename of ROM images
+romimage: file=../bochs-2.3.6/BIOS-bochs-latest
+vgaromimage: file=../bochs-2.3.6/VGABIOS-elpin-2.40
+
+# what disk images will be used 
+floppya: 1_44=boot.img, status=inserted
+floppyb: 1_44=rootimage-0.11.img, status=inserted
+ata0-master: type=disk, path="hdc-0.11.img", mode=flat, cylinders=121, heads=16, spt=63
+
+# choose the boot disk.
+boot: a
+
+# where do we send log messages?
+log: bochsout.txt
+
+# disable the mouse, since Tinix is text only
+mouse: enabled=0
+
+# enable key mapping, using US layout as default.
+keyboard_mapping: enabled=1, map=../bochs-2.3.6/keymaps/x11-pc-us.map

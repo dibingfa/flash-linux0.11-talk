@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>FreeDOS Beta 8</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Guest operating systems"
+HREF="guests.html"><LINK
+REL="PREVIOUS"
+TITLE="FreeBSD 5.2.1"
+HREF="guest-freebsd.html"><LINK
+REL="NEXT"
+TITLE="GNU (Also known as GNU/Hurd)"
+HREF="guest-gnu.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="guest-freebsd.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 9. Guest operating systems</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="guest-gnu.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="GUEST-FREEDOS"
+>9.6. FreeDOS Beta 8</A
+></H1
+><P
+>This has been contributed by Volker Ruppert.
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>1. Download FDB8_144.DSK and base1.zip from www.freedos.org
+2. Unpack base1.zip to a local directory
+3. Create harddisk image with bximage (e.g. c.img with 10 MB)
+4. Create floppy image 'base1.img' with bximage
+5. Set up mtools.conf to access the new floppy image
+6. Copy the installation files from the local directory to the floppy using mcopy
+
+7. Set up Bochs for the FreeDOS installation:
+
+   boot: floppy
+   floppya: 1_44=FDB8_144.DSK, status=inserted
+   floppyb: 1_44=base1.img, status=inserted
+   ata0-master: type=disk, path=c.img, cylinders=20, heads=16, spt=63
+
+8. Unfortunately the format command fails here if it is called from the install
+   program. So I chose this way to prepare the main installation:
+
+   a. Start bochs and select 'Clean Boot [4]' in the install menu
+   b. Partition the harddisk with fdisk
+   c. After the reboot select 'Clean Boot [4]' again
+   d. Format the harddisk with 'format c: /s'
+   e. Press the reset button to reboot and select 'Mini Install [0]'
+
+7. Follow the instructions of the installation program. The source for the
+   installation is 'b:\'. After completing the installation you have to copy
+   the config.sys and autoexec.bat from the FreeDOS directory (e.g. C:\FDOS)
+   to 'c:\'.
+
+8. Quit Bochs and change the boot drive to 'c'. FreeDOS should boot from harddisk
+   without errors.
+
+9. I haven't tried the mouse or cdrom features inside of FreeDOS yet.</PRE
+></TD
+></TR
+></TABLE
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="guest-freebsd.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="guest-gnu.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FreeBSD 5.2.1</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="guests.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>GNU (Also known as GNU/Hurd)</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

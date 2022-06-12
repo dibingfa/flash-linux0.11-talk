@@ -1,0 +1,302 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Directory Structure</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Developers Guide"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="About the code"
+HREF="about-the-code.html"><LINK
+REL="PREVIOUS"
+TITLE="About the code"
+HREF="about-the-code.html"><LINK
+REL="NEXT"
+TITLE="Emulator Objects"
+HREF="emulator-objects.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Developers Guide</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="about-the-code.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 2. About the code</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="emulator-objects.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="DIRECTORY-STRUCTURE"
+>2.2. Directory Structure</A
+></H1
+><P
+><DIV
+CLASS="TABLE"
+><A
+NAME="AEN99"
+></A
+><P
+><B
+>Table 2-1. Directory structure</B
+></P
+><TABLE
+BORDER="1"
+CLASS="CALSTABLE"
+><COL><COL><THEAD
+><TR
+><TH
+>Location</TH
+><TH
+>Meaning</TH
+></TR
+></THEAD
+><TBODY
+><TR
+><TD
+>bios</TD
+><TD
+>System and VGA BIOS images, system BIOS sources and makefile</TD
+></TR
+><TR
+><TD
+>build</TD
+><TD
+>additional stuff required for building Bochs on different platforms</TD
+></TR
+><TR
+><TD
+>bx_debug</TD
+><TD
+>the builtin Bochs debugger</TD
+></TR
+><TR
+><TD
+>cpu</TD
+><TD
+>the cpu emulation sources</TD
+></TR
+><TR
+><TD
+>disasm</TD
+><TD
+>the disassembler for the Bochs debugger</TD
+></TR
+><TR
+><TD
+>doc/docbook</TD
+><TD
+>the Bochs documentation in DocBook format</TD
+></TR
+><TR
+><TD
+>doc/man</TD
+><TD
+>Bochs manual pages</TD
+></TR
+><TR
+><TD
+>docs-html</TD
+><TD
+>old Bochs documentation in HTML (will be replaced by DocBook)</TD
+></TR
+><TR
+><TD
+>dynamic</TD
+><TD
+>empty directory (reserved for dynamic translation code)</TD
+></TR
+><TR
+><TD
+>font</TD
+><TD
+>the default VGA font used by most of the display libraries</TD
+></TR
+><TR
+><TD
+>fpu</TD
+><TD
+>the fpu emulation sources</TD
+></TR
+><TR
+><TD
+>gui</TD
+><TD
+>display libraries (guis), the simulator interface and text mode config interface</TD
+></TR
+><TR
+><TD
+>gui/bitmaps</TD
+><TD
+>bitmaps for the headerbar</TD
+></TR
+><TR
+><TD
+>gui/keymaps</TD
+><TD
+>keymaps for the keyboard mapping feature</TD
+></TR
+><TR
+><TD
+>host</TD
+><TD
+>host specific drivers (currently only used by the pcidev kernel module for Linux)</TD
+></TR
+><TR
+><TD
+>instrument</TD
+><TD
+>directory tree for the instrumentation feature</TD
+></TR
+><TR
+><TD
+>iodev</TD
+><TD
+>standard PC devices, PCI devices, lowlevel networking and sound drivers</TD
+></TR
+><TR
+><TD
+>memory</TD
+><TD
+>memory management and ROM loader</TD
+></TR
+><TR
+><TD
+>misc</TD
+><TD
+>useful utilities (e.g. bximage, bxcommit, niclist)</TD
+></TR
+><TR
+><TD
+>misc/sb16</TD
+><TD
+>tool to control the SB16 emulation from the guest side</TD
+></TR
+><TR
+><TD
+>patches</TD
+><TD
+>pending patches</TD
+></TR
+><TR
+><TD
+>plex86</TD
+><TD
+>plex86 directory structure (possibly outdated)</TD
+></TR
+></TBODY
+></TABLE
+></DIV
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="about-the-code.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="emulator-objects.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>About the code</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="about-the-code.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Emulator Objects</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

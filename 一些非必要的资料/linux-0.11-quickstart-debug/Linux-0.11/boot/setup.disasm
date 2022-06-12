@@ -1,0 +1,131 @@
+00000000  B80090            mov ax,0x9000
+00000003  8ED8              mov ds,ax
+00000005  B403              mov ah,0x3
+00000007  30FF              xor bh,bh
+00000009  CD10              int 0x10
+0000000B  89160000          mov [0x0],dx
+0000000F  B488              mov ah,0x88
+00000011  CD15              int 0x15
+00000013  A30200            mov [0x2],ax
+00000016  B40F              mov ah,0xf
+00000018  CD10              int 0x10
+0000001A  891E0400          mov [0x4],bx
+0000001E  A30600            mov [0x6],ax
+00000021  B412              mov ah,0x12
+00000023  B310              mov bl,0x10
+00000025  CD10              int 0x10
+00000027  A30800            mov [0x8],ax
+0000002A  891E0A00          mov [0xa],bx
+0000002E  890E0C00          mov [0xc],cx
+00000032  B80000            mov ax,0x0
+00000035  8ED8              mov ds,ax
+00000037  C5360401          lds si,[0x104]
+0000003B  B80090            mov ax,0x9000
+0000003E  8EC0              mov es,ax
+00000040  BF8000            mov di,0x80
+00000043  B91000            mov cx,0x10
+00000046  F3A4              rep movsb
+00000048  B80000            mov ax,0x0
+0000004B  8ED8              mov ds,ax
+0000004D  C5361801          lds si,[0x118]
+00000051  B80090            mov ax,0x9000
+00000054  8EC0              mov es,ax
+00000056  BF9000            mov di,0x90
+00000059  B91000            mov cx,0x10
+0000005C  F3A4              rep movsb
+0000005E  B80015            mov ax,0x1500
+00000061  B281              mov dl,0x81
+00000063  CD13              int 0x13
+00000065  7205              jc 0x6c
+00000067  80FC03            cmp ah,0x3
+0000006A  7410              jz 0x7c
+0000006C  B80090            mov ax,0x9000
+0000006F  8EC0              mov es,ax
+00000071  BF9000            mov di,0x90
+00000074  B91000            mov cx,0x10
+00000077  B80000            mov ax,0x0
+0000007A  F3AA              rep stosb
+0000007C  FA                cli
+0000007D  B80000            mov ax,0x0
+00000080  FC                cld
+00000081  8EC0              mov es,ax
+00000083  050010            add ax,0x1000
+00000086  3D0090            cmp ax,0x9000
+00000089  740D              jz 0x98
+0000008B  8ED8              mov ds,ax
+0000008D  29FF              sub di,di
+0000008F  29F6              sub si,si
+00000091  B90080            mov cx,0x8000
+00000094  F3A5              rep movsw
+00000096  EBE9              jmp short 0x81
+00000098  B82090            mov ax,0x9020
+0000009B  8ED8              mov ds,ax
+0000009D  0F011E2C01        lidt [0x12c]
+000000A2  0F01163201        lgdt [0x132]
+000000A7  E85F00            call word 0x109
+000000AA  B0D1              mov al,0xd1
+000000AC  E664              out 0x64,al
+000000AE  E85800            call word 0x109
+000000B1  B0DF              mov al,0xdf
+000000B3  E660              out 0x60,al
+000000B5  E85100            call word 0x109
+000000B8  B011              mov al,0x11
+000000BA  E620              out 0x20,al
+000000BC  EB00              jmp short 0xbe
+000000BE  EB00              jmp short 0xc0
+000000C0  E6A0              out 0xa0,al
+000000C2  EB00              jmp short 0xc4
+000000C4  EB00              jmp short 0xc6
+000000C6  B020              mov al,0x20
+000000C8  E621              out 0x21,al
+000000CA  EB00              jmp short 0xcc
+000000CC  EB00              jmp short 0xce
+000000CE  B028              mov al,0x28
+000000D0  E6A1              out 0xa1,al
+000000D2  EB00              jmp short 0xd4
+000000D4  EB00              jmp short 0xd6
+000000D6  B004              mov al,0x4
+000000D8  E621              out 0x21,al
+000000DA  EB00              jmp short 0xdc
+000000DC  EB00              jmp short 0xde
+000000DE  B002              mov al,0x2
+000000E0  E6A1              out 0xa1,al
+000000E2  EB00              jmp short 0xe4
+000000E4  EB00              jmp short 0xe6
+000000E6  B001              mov al,0x1
+000000E8  E621              out 0x21,al
+000000EA  EB00              jmp short 0xec
+000000EC  EB00              jmp short 0xee
+000000EE  E6A1              out 0xa1,al
+000000F0  EB00              jmp short 0xf2
+000000F2  EB00              jmp short 0xf4
+000000F4  B0FF              mov al,0xff
+000000F6  E621              out 0x21,al
+000000F8  EB00              jmp short 0xfa
+000000FA  EB00              jmp short 0xfc
+000000FC  E6A1              out 0xa1,al
+000000FE  B80100            mov ax,0x1
+00000101  0F01F0            lmsw ax
+00000104  EA00000800        jmp word 0x8:0x0
+00000109  EB00              jmp short 0x10b
+0000010B  EB00              jmp short 0x10d
+0000010D  E464              in al,0x64
+0000010F  A802              test al,0x2
+00000111  75F6              jnz 0x109
+00000113  C3                ret
+00000114  0000              add [bx+si],al
+00000116  0000              add [bx+si],al
+00000118  0000              add [bx+si],al
+0000011A  0000              add [bx+si],al
+0000011C  FF07              inc word [bx]
+0000011E  0000              add [bx+si],al
+00000120  009AC000          add [bp+si+0xc0],bl
+00000124  FF07              inc word [bx]
+00000126  0000              add [bx+si],al
+00000128  0092C000          add [bp+si+0xc0],dl
+0000012C  0000              add [bx+si],al
+0000012E  0000              add [bx+si],al
+00000130  0000              add [bx+si],al
+00000132  0008              add [bx+si],cl
+00000134  1403              adc al,0x3
+00000136  0900              or [bx+si],ax

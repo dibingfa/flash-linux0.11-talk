@@ -1,0 +1,521 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Reading and Writing</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs Documentation Manual"
+HREF="index.html"><LINK
+REL="PREVIOUS"
+TITLE="Conventions"
+HREF="conventions.html"><LINK
+REL="NEXT"
+TITLE="Nsgmls"
+HREF="nsgmls.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs Documentation Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="conventions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="nsgmls.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="READING-WRITING"
+></A
+>Chapter 4. Reading and Writing</H1
+><P
+>The DocBook source code -- user.dbk, for example -- is a plain text file that 
+can be directly edited and saved with any text editor such as emacs or vi.  </P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>If you just want to read the documentation, you should not
+need to read and understand this section, and render the docs yourself.  The
+<A
+HREF="http://bochs.sourceforge.net"
+TARGET="_top"
+>Bochs web site</A
+> has all this information in readable form already.</P
+></BLOCKQUOTE
+></DIV
+><P
+>To render DocBook source code into the nice readable form the end-user will
+require, several tools are needed.  These tools allow the .dbk file to be
+rendered into such formats as HTML, PDF, and PostScript.  This section
+describes the tools you need and the steps you take to render the Bochs
+documentation.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>The rendering process is one-way.  That is, the DocBook source files will be 
+downloaded from CVS, edited, and uploaded to CVS as .dbk files.  Along the
+way, it will probably be necessary to render them into HTML, but only to 
+check one's work or to post them as part of a web page.  (I hope I'm not the
+only person to spend nine minutes trying to figure out how to 'compile' HTML
+into DocBook format.)</P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="AEN113"
+>4.1. Jade and DSSSL</A
+></H1
+><P
+>Here is what the Linux Documentation Project says about jade:
+
+  <A
+NAME="AEN116"
+></A
+><TABLE
+BORDER="0"
+WIDTH="100%"
+CELLSPACING="0"
+CELLPADDING="0"
+CLASS="BLOCKQUOTE"
+><TR
+><TD
+WIDTH="10%"
+VALIGN="TOP"
+>&nbsp;</TD
+><TD
+VALIGN="TOP"
+><P
+>  Jade is the front-end processor for SGML and XML. It uses the DSSSL and
+  DocBook DTD to perform the verification and rendering from SGML and XML into
+  the target format.
+  </P
+></TD
+><TD
+WIDTH="10%"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="RIGHT"
+VALIGN="TOP"
+>--<SPAN
+CLASS="ATTRIBUTION"
+>  LDP author's guide
+  </SPAN
+></TD
+><TD
+WIDTH="10%"
+>&nbsp;</TD
+></TR
+></TABLE
+></P
+><P
+>What does all this mean?
+For purposes of Bochs documentation, jade reads the docbook source file and
+writes out a HTML/PDF/PS file.  Bochs documentation is in SGML format, though
+apparantly jade can handle XML Docbooks as well.  DSSSL stands for 
+<SPAN
+CLASS="QUOTE"
+>"Document Style Semantics and Specification Language"</SPAN
+>, and it
+tells jade how to translate the docbook tags into the target format.  DSSSL
+files are written in the Scheme programming language, which is a variant of
+LISP.  Learn more about DSSSL at <A
+HREF="http://www.jclark.com/dsssl"
+TARGET="_top"
+>Jim Clark's DSSSL page</A
+>.
+The DocBook DTD is the formal description of what elements and attributes can
+be used in a docbook.</P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN122"
+>4.1.1. Installation</A
+></H2
+><P
+>The easiest way to get jade working in Linux is to install packages.  The
+recent RedHat, Suse, and Mandrake Linux distributions all include
+openjade and SGML tools.  If you can get the right packages installed,
+you may save yourself a few hours of compiling and configuring from scratch.
+For plex86, which also uses docbook, Kevin Lawton listed the packages that
+he installed on Mandrake to get jade working:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  jadetex-3.5-2mdk
+  openjade-1.3-10mdk
+  docbook-dtd31-sgml-1.0-3mdk
+  docbook-utils-0.6-1mdk
+  docbook-style-dsssl-1.62-4mdk
+  docbook-dtd412-xml-1.0-3mdk
+  sgml-common-0.2-4mdk
+  xml-common-0.1-3mdk</PRE
+></TD
+></TR
+></TABLE
+>
+
+Under Debian, the following packages seem to be a bare minimum to install
+DocBook and get it to render Bochs documentation into reader-friendly formats:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  jade
+  docbook
+  docbook-dsssl</PRE
+></TD
+></TR
+></TABLE
+>
+
+It's worth mentioning that, at the time of this writing, at least some of
+the above-mentioned packages were in the testing or unstable branches of
+Debian.</P
+><P
+>Under FreeBSD, just install the following ports:
+
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  textproc/jade
+  textproc/dsssl-docbook-modular
+  textproc/docbook-410</PRE
+></TD
+></TR
+></TABLE
+>
+
+<IMG
+SRC="../images/undercon.png"> The generated HTML output doesn't look exactly the same as the Bochs
+documentation on the web, so it seems as if some kind of configuration is still
+needed.</P
+><P
+>Hopefully, the required packages on other Linux distributions have
+similar names.  If you have jade working, please tell a documentation
+writer the package names that you used so that we can include it in the docs.
+<IMG
+SRC="../images/undercon.png"></P
+><P
+>If you cannot get jade to work using packages, you need to find and install
+three things: the DocBook DTD version 4.1 from <A
+HREF="http://www.oasis-open.org/"
+TARGET="_top"
+>OASIS</A
+>, the program 
+<A
+HREF="http://www.jclark.com/jade/"
+TARGET="_top"
+>jade</A
+> 
+(or <A
+HREF="http://openjade.sourceforge.net/"
+TARGET="_top"
+>openjade</A
+>), and the
+<A
+HREF="http://sourceforge.net/projects/docbook/"
+TARGET="_top"
+>Docbook DSSSL
+stylesheets</A
+> for the formats that you want to render to.  The whole
+process is described in <A
+HREF="http://www.docbook.org/tdg/en/html/docbook.html"
+TARGET="_top"
+>DocBook: The Definitive Guide</A
+> in Appendix III section A.  If you want
+to render to PostScript or Adobe PDF, you also need to install TeX and
+and some associated tools.  It is a nontrivial process.</P
+><DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Tip: </B
+>Just use the packages.</P
+></BLOCKQUOTE
+></DIV
+><P
+>For now, building the Bochs documentation also depends on some scripts called
+docbook2html, docbook2pdf, and docbook2ps.  These come from the docbook-tools
+project at <A
+HREF="http://sources.redhat.com/docbook-tools"
+TARGET="_top"
+>http://sources.redhat.com/docbook-tools</A
+>.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN142"
+>4.1.2. Using jade with docbook2x scripts</A
+></H2
+><P
+>Check to see if you have the docbook2ps, docbook2pdf, and docbook2html
+scripts.  If so, you can probably use the Bochs Makefile.  Just do
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  cd $BOCHS/doc/docbook
+  make</PRE
+></TD
+></TR
+></TABLE
+>
+It should render three docbook books, one in user, one in development, and one
+in and documentation.  If there are no errors, look for the user guide
+in <TT
+CLASS="FILENAME"
+>$BOCHS/doc/docbook/user/user.pdf</TT
+>,
+<TT
+CLASS="FILENAME"
+>$BOCHS/doc/docbook/users/user.ps</TT
+>, and
+<TT
+CLASS="FILENAME"
+>$BOCHS/doc/docbook/users/book1.html</TT
+>.  The HTML is broken
+into lots of little chunks that link to each other, but book1.html is the first
+one.</P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="AEN149"
+>4.1.3. Using jade directly</A
+></H2
+><P
+>If you don't have docbook2<TT
+CLASS="REPLACEABLE"
+><I
+>format</I
+></TT
+> scripts, you
+can also run jade manually.  The command is long, so you may want to make 
+your own script or edit your copy of the makefile.  These commands assume that
+you installed Norman Walsh's DSSSL stylesheets in <CODE
+CLASS="VARNAME"
+>$DSSSL</CODE
+>.
+To render the user's guide into HTML, type:
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  cd $BOCHS/doc/docbook/user
+  jade -t sgml -d <CODE
+CLASS="VARNAME"
+>$DSSSL</CODE
+>/html/docbook.dsl user.dbk</PRE
+></TD
+></TR
+></TABLE
+>
+Or, if you want to render the developer's guide into TeX format,
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  cd $BOCHS/doc/docbook/developer
+  jade -t tex -d <CODE
+CLASS="VARNAME"
+>$DSSSL</CODE
+>/print/docbook.dsl developer.dbk</PRE
+></TD
+></TR
+></TABLE
+>
+Or, if you want to render the documentation guide into Rich Text Format,
+<TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>  cd $BOCHS/doc/docbook/documentation
+  jade -t rtf -d <CODE
+CLASS="VARNAME"
+>$DSSSL</CODE
+>/print/docbook.dsl documentation.dbk</PRE
+></TD
+></TR
+></TABLE
+>
+I believe that the HTML stylesheet must have "-t sgml" but the print
+stylesheet in the second example can have "-t rtf" for Rich Text Format,
+"-t tex" for TeX, or "-t mif" for MIF.</P
+><P
+>Bochs has the convention of calling the docbook files
+<TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>.dbk, but any file name would work.  Some
+other people call them <TT
+CLASS="REPLACEABLE"
+><I
+>NAME</I
+></TT
+>.sgm for SGML.</P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="conventions.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="nsgmls.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Conventions</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+>&nbsp;</TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Nsgmls</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

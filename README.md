@@ -15,6 +15,8 @@
 
 **互动方式**：微信群（关注公众号并回复“os”）
 
+**创作番外故事**：[知识星球](https://mp.weixin.qq.com/s/NFUgJ4-hIyrs1sQr8AUCvA)
+
 **开篇词**：[闪客新系列！你管这破玩意叫操作系统源码](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
 
 **一些非必须的资料**：[资料包](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E4%B8%80%E4%BA%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E8%B5%84%E6%96%99)
@@ -31,7 +33,7 @@
 
 **架构图**
 
-![架构图](https://user-images.githubusercontent.com/25787738/141248934-7b48b96c-dbb6-4f9e-a438-6f6f414c8113.png)
+![架构图](https://user-images.githubusercontent.com/25787738/163914291-4aba48d7-f49e-4557-a4c4-d9ff07a20894.png)
 
 ---
 
@@ -72,8 +74,22 @@
    * [第21回 新进程诞生全局概述](https://mp.weixin.qq.com/s/H_OCZ2ZtGHWHge_rYKCkJw)
    * [第22回 从内核态切换到用户态](https://mp.weixin.qq.com/s/AVl6R2N9d_sldkhfvC6aEw)
    * [第23回 如果让你来设计进程调度](https://mp.weixin.qq.com/s/Sf9vV7RCnVDlBKXx5jXs1Q)
+   * [第24回 从一次定时器滴答来看进程调度](https://mp.weixin.qq.com/s/yFre8Qv_ZCtjRkTS49n6rw)
+   * [第25回 通过 fork 看一次系统调用流程](https://mp.weixin.qq.com/s/rYBSH_AZDwgc8knSKDSSxA)
+   * [第26回 fork 中进程基本信息的复制](https://mp.weixin.qq.com/s/8cy-xX3ekeqHelrFcYFkvw)
+   * [第27回 fork 中进程内存规划的问题](https://mp.weixin.qq.com/s/d2pHFSbTLb-nv2C_RfKlVA)
+   * [第三部分总结与回顾](https://mp.weixin.qq.com/s/V_Ryxox3iDCO994FzkSFfA)
+   * [第28回 番外篇 - 我居然会认为权威书籍写错了...](https://mp.weixin.qq.com/s/JzCy_4RPhy17_G6KbY3f2g)
+   * [第29回 番外篇 - 让我们一起来写本书？](https://mp.weixin.qq.com/s/NFUgJ4-hIyrs1sQr8AUCvA)
+   * [第30回 番外篇 - 写时复制就这么几行代码](https://mp.weixin.qq.com/s/Pdnmys_hGoToZN193rfnoQ)
 
 * **第四部分：shell 程序的到来**
+
+   * [第31回 拿到硬盘信息](https://mp.weixin.qq.com/s/1xNinBNJIUv3UTO03RRFXA)
+   * [第32回 加载根文件系统](https://mp.weixin.qq.com/s/ruFNEgIBzlM5H-G9XR0ctw)
+   * [第33回 打开终端设备文件](https://mp.weixin.qq.com/s/53IcRO_zg-_rQNaK1u_TJg)
+   * [第34回 进程2的创建](https://mp.weixin.qq.com/s/Uh03a48Zt_l8HgtZvm1o-A)
+   * [第35回 execve 加载并执行 shell 程序](https://mp.weixin.qq.com/s/IQnUCTmT0Hwn4nW0dqioiw)
 
 * **第五部分：从一个命令的执行看操作系统各模块的运作**
 

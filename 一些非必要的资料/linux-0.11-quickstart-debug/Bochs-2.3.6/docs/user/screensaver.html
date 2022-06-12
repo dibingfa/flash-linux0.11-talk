@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Screen saver turns on too quickly</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="X Windows: Color allocation problems"
+HREF="xcolormap.html"><LINK
+REL="NEXT"
+TITLE="Mounting a disk image using the loop device"
+HREF="loop-device-usage.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="xcolormap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="loop-device-usage.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="SCREENSAVER"
+>8.6. Screen saver turns on too quickly</A
+></H1
+><P
+>One thing you may notice is that the screen saver turns on (screen goes
+blank) very quickly after you have stopped typing.  The reason is that Bochs
+simulates everything as fast as it can.  If the CPU is very busy (running
+instructions nonstop), simulated time goes by slowly.  If the CPU is idle (just
+waiting for you to type, for example), simulated time speeds up dramatically.
+In any case, if the screen saver blanks out the screen, just press a key (try
+shift or control) to restore the screen.</P
+><P
+>There are two strategies to fix this problem.  One is to increase the
+<B
+CLASS="COMMAND"
+>ips</B
+> parameter of the <A
+HREF="bochsrc.html#BOCHSOPT-CPU"
+>cpu option</A
+>
+in your configuration file. This will cause the simulation time
+to pass more slowly.  The other strategy is to enable the experimental
+realtime PIT, which tries to keep Bochs in sync with real time. See the <TT
+CLASS="FILENAME"
+>bochsrc</TT
+>
+option <A
+HREF="bochsrc.html#BOCHSOPT-CLOCK"
+>clock</A
+>.</P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="xcolormap.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="loop-device-usage.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>X Windows: Color allocation problems</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Mounting a disk image using the loop device</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

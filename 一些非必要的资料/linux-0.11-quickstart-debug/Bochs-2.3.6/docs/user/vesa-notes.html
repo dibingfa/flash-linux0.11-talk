@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>Notes about VESA usage</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+TITLE="Bochs User Manual"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Tips and Techniques"
+HREF="howto.html"><LINK
+REL="PREVIOUS"
+TITLE="How to enter special key combination"
+HREF="enter-special-keys.html"><LINK
+REL="NEXT"
+TITLE="Notes about Cirrus SVGA usage"
+HREF="cirrus-notes.html"></HEAD
+><BODY
+CLASS="SECTION"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>Bochs User Manual</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="enter-special-keys.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 8. Tips and Techniques</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="cirrus-notes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECTION"
+><H1
+CLASS="SECTION"
+><A
+NAME="VESA-NOTES"
+>8.16. Notes about VESA usage</A
+></H1
+><P
+>    Since Bochs 1.4 it is possible to use VESA graphics. There are some limitations in
+    the current implementation, but in general it should work ok (we have run several test
+    programs, the XFree86 VESA display driver, etc.)
+  </P
+><P
+>    In order to use VESA VBE, you need to compile Bochs using the <CODE
+CLASS="OPTION"
+>--enable-vbe</CODE
+>
+    option and enable it in your <TT
+CLASS="FILENAME"
+>bochsrc</TT
+> by setting the
+    <A
+HREF="bochsrc.html#BOCHSOPT-VGA"
+>vga option</A
+> to <CODE
+CLASS="PARAMETER"
+>vbe</CODE
+>.
+    Finally, you need to use the
+    <A
+HREF="http://savannah.nongnu.org/projects/vgabios/"
+TARGET="_top"
+>LGPL'd VGABIOS</A
+>
+    as <A
+HREF="bochsrc.html#BOCHSOPT-VGAROMIMAGE"
+>vgaromimage option</A
+> for
+    applications to correctly detect VESA support.
+  </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    The VGABIOS is already included in the Bochs release, so no separate download is necessary.
+  </P
+></BLOCKQUOTE
+></DIV
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><P
+><B
+>Note: </B
+>    To take advantage of the VBE, you must tell Bochs to use the LGPL'd VGA BIOS
+    version 0.4c or higher. A current version of the VGA BIOS will work.
+  </P
+></BLOCKQUOTE
+></DIV
+><P
+>Current limitations:
+<P
+></P
+><UL
+><LI
+><P
+> 4bpp modes support is incomplete (8, 15, 16, 24 and 32bpp should work)</P
+></LI
+><LI
+><P
+> banked mode is very slow (if you can, just use Linear Frame Buffering instead!) </P
+></LI
+><LI
+><P
+> only 320x200, 640x400, 640x480, 800x600, 1024x768 are currently supported</P
+></LI
+></UL
+></P
+><P
+>Interesting Facts:
+<P
+></P
+><UL
+><LI
+><P
+> You need a display driver capable of using the VESA BIOS for this to work 
+	                  (a recent XFree86 will do, Windows 9x/NT/2K/XP probably will not work 'out of the box'. </P
+></LI
+><LI
+><P
+> Currently the VBE2 extension should be supported ok </P
+></LI
+></UL
+></P
+><DIV
+CLASS="SECTION"
+><H2
+CLASS="SECTION"
+><A
+NAME="AEN3318"
+>8.16.1. Instructions to setup Bochs VBE in Windows Guest OS</A
+></H2
+><P
+>This was contributed by Martin Bochnig in February 2004.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Instructions for Win95/98:
+==========================
+I can only confirm that SciTech finally made a VBE driver
+for Windows. It works out of the box, at least with win95
+as guest OS, provided you use Bochs 2.1 with the LGPL 
+vgabios.
+
+Here is how I did it :
+- install win95 with the vga driver.
+- download sdd 7 beta from <A
+HREF="http://www.majorgeeks.com/download382.html"
+TARGET="_top"
+>http://www.majorgeeks.com/download382.html</A
+>
+- download pmhelp.vxd from <A
+HREF="http://unununium.org/viewcvs/snap/redist/release/pmhelp.vxd"
+TARGET="_top"
+>http://unununium.org/viewcvs/snap/redist/release/pmhelp.vxd</A
+>
+- copy pmhelp.vxd to the win95 system directory
+- install sdd7
+
+800x600 and 1024x768 in 16 and 24 bpp modes here.
+I did not try 32bpp.&#13;</PRE
+></TD
+></TR
+></TABLE
+><P
+>This was contributed by Stanislav Shwartsman in September 2004.</P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="SCREEN"
+>Instructions for Win2000/XP:
+============================
+
+Bochs VBE Display Drivers for Windows NT/2000
+<A
+HREF="http://dhenriq.en.eresmas.com/"
+TARGET="_top"
+>http://dhenriq.en.eresmas.com/</A
+></PRE
+></TD
+></TR
+></TABLE
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="enter-special-keys.html"
+ACCESSKEY="P"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="cirrus-notes.html"
+ACCESSKEY="N"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>How to enter special key combination</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="howto.html"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Notes about Cirrus SVGA usage</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
