@@ -85,11 +85,17 @@
 
 * **第四部分：shell 程序的到来**
 
-   * [第31回 拿到硬盘信息](https://mp.weixin.qq.com/s/1xNinBNJIUv3UTO03RRFXA)
-   * [第32回 加载根文件系统](https://mp.weixin.qq.com/s/ruFNEgIBzlM5H-G9XR0ctw)
-   * [第33回 打开终端设备文件](https://mp.weixin.qq.com/s/53IcRO_zg-_rQNaK1u_TJg)
-   * [第34回 进程2的创建](https://mp.weixin.qq.com/s/Uh03a48Zt_l8HgtZvm1o-A)
-   * [第35回 execve 加载并执行 shell 程序](https://mp.weixin.qq.com/s/IQnUCTmT0Hwn4nW0dqioiw)
+   * [第31回 | 拿到硬盘信息](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502161&idx=1&sn=219186a1e587f40308515852d293aaf4&chksm=c2c5b3fcf5b23aead170092d4042abd54b272694cbaac3f750eb3adea584ee29653c72ad2915&scene=21#wechat_redirect)
+   * [第32回 | 加载根文件系统](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502181&idx=1&sn=b6dcbd1d2cf930002852008a1c4e6a65&chksm=c2c5b3c8f5b23ade1532b725995dbc3b0138202555e44a6e308b84d668a2ef3041eb5cf77f86&scene=21#wechat_redirect)
+   * [第33回 | 打开终端设备文件](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502230&idx=1&sn=44e023bf0b9b37261e35a6e3722bc57f&chksm=c2c5b33bf5b23a2d10a9dd36606c497f41a1c3dced57845ce7ef12741a348fab82beba462a8a&scene=21#wechat_redirect)
+   * [第34回 | 进程2的创建](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502269&idx=1&sn=19f6831de5bac0d8a588b80757dbb1f4&chksm=c2c5b310f5b23a0633df6a75e36f4dae515e9d9aee1fa046888573e3d60e62752612edae536a&scene=21#wechat_redirect)
+   * [第35回 | execve 加载并执行 shell 程序](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502475&idx=1&sn=4fcdbaa03bf6a1ca04db4013309c6aa3&chksm=c2c5b026f5b2393049efca68c429df5038fa0f317eea79fbd9ec2c661c3ec12b47a0701376a7&scene=21#wechat_redirect)
+   * [第36回 | 缺页中断](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502511&idx=1&sn=eacddbb11dd2402c561a611f708ee045&chksm=c2c5b002f5b23914ccd645d94bdc59e0322776f71f41e6744fddeca2bfa027d12a25ec6bfc8a&scene=21#wechat_redirect)
+   * [第37回 | shell 程序跑起来了](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502581&idx=1&sn=df3f2c19ce511ac24145091892f47837&chksm=c2c5b058f5b2394ee095d679071b43c23853dc86d5cfd4cc961568643110ab734f635b899984&scene=21#wechat_redirect)
+   * [第38回 | 操作系统启动完毕](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502613&idx=1&sn=d7e85595323d3de138e5ac52bf8e61dd&chksm=c2c5b1b8f5b238ae8785f45bf83434839689e7e5a697026d9ebde5738f11a83c4379a16c349f&scene=21#wechat_redirect)
+   * [第39回 | 番外篇 - Linux 0.11 内核调试](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502498&idx=1&sn=01cf816694f74ca8437374a9aa23ab64&chksm=c2c5b00ff5b23919c43ac96a38bc8b09f42ea17f92ea933157db3e7f0c77bb876bf7d0524afa&scene=21#wechat_redirect)
+   * [第40回 | 番外篇 - 为什么你怎么看也看不懂](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502517&idx=1&sn=d6a20fb6ad50da584ac32e60823a1834&chksm=c2c5b018f5b2390e690c465aa35d822d14a23a2b76587303e9374aca431a718e1b104569efe4&scene=21#wechat_redirect)
+   * [第四部分总结与回顾](https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502650&idx=1&sn=ad947d70d372a1bc46741c459fd0ef9a&chksm=c2c5b197f5b23881a5e61c5581300beb4b3f1db8cab79eabec22fd847f1cdc0e11d3a713fd9f&token=1320754592&lang=zh_CN#rd)
 
 * **第五部分：从一个命令的执行看操作系统各模块的运作**
 
