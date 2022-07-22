@@ -95,8 +95,13 @@
    * [第38回 | 操作系统启动完毕](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502613&idx=1&sn=d7e85595323d3de138e5ac52bf8e61dd&chksm=c2c5b1b8f5b238ae8785f45bf83434839689e7e5a697026d9ebde5738f11a83c4379a16c349f&scene=21#wechat_redirect)
    * [第39回 | 番外篇 - Linux 0.11 内核调试](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502498&idx=1&sn=01cf816694f74ca8437374a9aa23ab64&chksm=c2c5b00ff5b23919c43ac96a38bc8b09f42ea17f92ea933157db3e7f0c77bb876bf7d0524afa&scene=21#wechat_redirect)
    * [第40回 | 番外篇 - 为什么你怎么看也看不懂](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502517&idx=1&sn=d6a20fb6ad50da584ac32e60823a1834&chksm=c2c5b018f5b2390e690c465aa35d822d14a23a2b76587303e9374aca431a718e1b104569efe4&scene=21#wechat_redirect)
-   * [第四部分总结与回顾](https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502650&idx=1&sn=ad947d70d372a1bc46741c459fd0ef9a&chksm=c2c5b197f5b23881a5e61c5581300beb4b3f1db8cab79eabec22fd847f1cdc0e11d3a713fd9f&token=1320754592&lang=zh_CN#rd)
+   * [第四部分总结与回顾](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502650&idx=1&sn=ad947d70d372a1bc46741c459fd0ef9a&chksm=c2c5b197f5b23881a5e61c5581300beb4b3f1db8cab79eabec22fd847f1cdc0e11d3a713fd9f&scene=21#wechat_redirect)
 
 * **第五部分：从一个命令的执行看操作系统各模块的运作**
+
+   * [第41回 | 番外篇 - 跳票是不可能的](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502821&idx=1&sn=0ffa47028dfa013ead148f06d90fbb33&chksm=c2c5b148f5b2385e7d3f213517eb387ff85a1d94977788a2558e31194c5dcd0afb003c98ecaf&scene=21#wechat_redirect)
+   * [第42回 | 用键盘输入一条命令](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502876&idx=1&sn=2c34491abd6ea14c9c7ccc3d2d9827c1&chksm=c2c5b6b1f5b23fa7bdf9c3e2bf811b84da937d30a2c9825ceba8a57c2c3e8e157dedae0bfc8d&scene=21#wechat_redirect)
+   * [第43回 | shell 程序读取你的命令](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247502944&idx=1&sn=cf2601b43a4bc3f89d7a517cbf7fd588&chksm=c2c5b6cdf5b23fdb306af852e9293bb64df019bffa3c403e6fa59b856b7bddd77a42e5fc75eb&scene=21#wechat_redirect)
+   * [第44回 | 进程的阻塞与唤醒](https://mp.weixin.qq.com/s/HFQL5d-C24DKjQbYAQfl8g)
 
 * **第六部分：操作系统哲学与思想**
