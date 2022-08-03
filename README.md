@@ -105,3 +105,10 @@
    * [第44回 | 进程的阻塞与唤醒](https://mp.weixin.qq.com/s/HFQL5d-C24DKjQbYAQfl8g)
 
 * **第六部分：操作系统哲学与思想**
+
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=sunym1993/flash-linux0.11-talk&type=Date)](https://star-history.com/#sunym1993/flash-linux0.11-talk&Date)
+
