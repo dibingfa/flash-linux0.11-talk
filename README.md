@@ -15,6 +15,8 @@
 
 **互动方式**：微信群（关注公众号并回复“os”）
 
+**极客时间**：[免费专栏 | Linux 0.11 源码趣读](http://gk.link/a/11Nim)
+
 **创作番外故事**：[知识星球](https://mp.weixin.qq.com/s/NFUgJ4-hIyrs1sQr8AUCvA)
 
 **开篇词**：[闪客新系列！你管这破玩意叫操作系统源码](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
