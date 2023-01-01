@@ -1,7 +1,7 @@
 ## 品读 Linux 0.11 核心代码
 
 <p align='center'>
-<a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客sun-2277cc.svg?style=flat-square&logo=GitHub"></a>
+<a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客-2277cc.svg?style=flat-square&logo=GitHub"></a>
 <a href="https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-低并发编程-009977.svg?style=flat-square&logo=WeChat"></a>
 </p>
 
