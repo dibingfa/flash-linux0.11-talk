@@ -112,5 +112,4 @@
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sunym1993/flash-linux0.11-talk&type=Date)](https://star-history.com/#sunym1993/flash-linux0.11-talk&Date)
-
+[![Star History Chart](https://api.star-history.com/svg?repos=dibingfa/flash-linux0.11-talk&type=Date)](https://star-history.com/#dibingfa/flash-linux0.11-talk&Date)
