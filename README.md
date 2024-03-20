@@ -11,9 +11,7 @@
 
 ![qrcode_for_gh_711c6efc893a_258](https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg)
 
-**互动方式**：知识星球
-
-![image](https://github.com/dibingfa/flash-linux0.11-talk/assets/25787738/6cca0735-0bee-4cf1-ab29-5d4efea731c3)
+**互动方式**：知识星球 [『闪客的读者朋友们』](https://t.zsxq.com/1872x4o91)
 
 **书籍购买**：[《Linux 源码趣读》](https://mp.weixin.qq.com/s/UJ9llP9TVxruhIC9jj-Q1g)
 
