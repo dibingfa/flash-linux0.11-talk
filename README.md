@@ -2,40 +2,20 @@
 
 <p align='center'>
 <a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客-2277cc.svg?style=flat-square&logo=GitHub"></a>
-<a href="https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-低并发编程-009977.svg?style=flat-square&logo=WeChat"></a>
+<a href="https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-无聊的闪客-009977.svg?style=flat-square&logo=WeChat"></a>
 </p>
 
 **目标**：带大家把 Linux 0.11 核心代码与操作系统的设计思想啃下来
 
-**首发地址**：公众号 低并发编程
+**首发地址**：公众号 无聊的闪客
 
 ![qrcode_for_gh_711c6efc893a_258](https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg)
 
-**发文时间**：每周一和每周四
+**互动方式**：知识星球 [『闪客的读者朋友们』](https://t.zsxq.com/1872x4o91)
 
-**互动方式**：微信群（关注公众号并回复“os”）
-
-**极客时间**：[免费专栏 | Linux 0.11 源码趣读](http://gk.link/a/11Nim)
-
-**创作番外故事**：[知识星球](https://mp.weixin.qq.com/s/NFUgJ4-hIyrs1sQr8AUCvA)
+**书籍购买**：[《Linux 源码趣读》](https://mp.weixin.qq.com/s/UJ9llP9TVxruhIC9jj-Q1g)
 
 **开篇词**：[闪客新系列！你管这破玩意叫操作系统源码](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
-
-**一些非必须的资料**：[资料包](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E4%B8%80%E4%BA%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E8%B5%84%E6%96%99)
-
-**一些共性的问题**：[FAQ](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/FAQ)
-
-**一些读者分享和见解**：[读者分享](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E8%AF%BB%E8%80%85%E5%88%86%E4%BA%AB)
-
-**还有个有趣的事情大家可以共同参与进来**：[Intel手册翻译计划](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/Intel%20%E6%89%8B%E5%86%8C%E4%B8%AD%E6%96%87%E7%89%88)
-
-当然，欢迎大家一同维护这个项目，有关操作系统普及的各种信息，都可以发起 PR 提交
-
----
-
-**架构图**
-
-![架构图](https://user-images.githubusercontent.com/25787738/163914291-4aba48d7-f49e-4557-a4c4-d9ff07a20894.png)
 
 ---
 
@@ -113,3 +93,7 @@
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=dibingfa/flash-linux0.11-talk&type=Date)](https://star-history.com/#dibingfa/flash-linux0.11-talk&Date)
+
+## 架构图
+
+![架构图](https://user-images.githubusercontent.com/25787738/163914291-4aba48d7-f49e-4557-a4c4-d9ff07a20894.png)
