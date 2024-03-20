@@ -2,22 +2,20 @@
 
 <p align='center'>
 <a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客-2277cc.svg?style=flat-square&logo=GitHub"></a>
-<a href="https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-低并发编程-009977.svg?style=flat-square&logo=WeChat"></a>
+<a href="https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-无聊的闪客-009977.svg?style=flat-square&logo=WeChat"></a>
 </p>
 
 **目标**：带大家把 Linux 0.11 核心代码与操作系统的设计思想啃下来
 
-**首发地址**：公众号 低并发编程
+**首发地址**：公众号 无聊的闪客
 
 ![qrcode_for_gh_711c6efc893a_258](https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg)
 
-**发文时间**：每周一和每周四
+**互动方式**：知识星球
 
-**互动方式**：微信群（关注公众号并回复“os”）
+![image](https://github.com/dibingfa/flash-linux0.11-talk/assets/25787738/6cca0735-0bee-4cf1-ab29-5d4efea731c3)
 
-**极客时间**：[免费专栏 | Linux 0.11 源码趣读](http://gk.link/a/11Nim)
-
-**创作番外故事**：[知识星球](https://mp.weixin.qq.com/s/NFUgJ4-hIyrs1sQr8AUCvA)
+**书籍购买**：[《Linux 源码趣读》](https://mp.weixin.qq.com/s/UJ9llP9TVxruhIC9jj-Q1g)
 
 **开篇词**：[闪客新系列！你管这破玩意叫操作系统源码](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
 
