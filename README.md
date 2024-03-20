@@ -94,8 +94,6 @@
 
 [![Star History Chart](https://api.star-history.com/svg?repos=dibingfa/flash-linux0.11-talk&type=Date)](https://star-history.com/#dibingfa/flash-linux0.11-talk&Date)
 
----
-
-**架构图**
+## 架构图
 
 ![架构图](https://user-images.githubusercontent.com/25787738/163914291-4aba48d7-f49e-4557-a4c4-d9ff07a20894.png)
