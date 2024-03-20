@@ -17,16 +17,6 @@
 
 **开篇词**：[闪客新系列！你管这破玩意叫操作系统源码](https://mp.weixin.qq.com/s/tvbkGLfhDq03xxM-FZ4zuA)
 
-**一些非必须的资料**：[资料包](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E4%B8%80%E4%BA%9B%E9%9D%9E%E5%BF%85%E8%A6%81%E7%9A%84%E8%B5%84%E6%96%99)
-
-**一些共性的问题**：[FAQ](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/FAQ)
-
-**一些读者分享和见解**：[读者分享](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/%E8%AF%BB%E8%80%85%E5%88%86%E4%BA%AB)
-
-**还有个有趣的事情大家可以共同参与进来**：[Intel手册翻译计划](https://github.com/sunym1993/flash-linux0.11-talk/tree/main/Intel%20%E6%89%8B%E5%86%8C%E4%B8%AD%E6%96%87%E7%89%88)
-
-当然，欢迎大家一同维护这个项目，有关操作系统普及的各种信息，都可以发起 PR 提交
-
 ---
 
 ### 已发布文章：
