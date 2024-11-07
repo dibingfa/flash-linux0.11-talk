@@ -7,9 +7,7 @@
 
 **目标**：带大家把 Linux 0.11 核心代码与操作系统的设计思想啃下来
 
-**首发地址**：公众号 闪客
-
-![qrcode_for_gh_711c6efc893a_258](https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg)
+**首发地址**：公众号「闪客」
 
 **互动方式**：知识星球 [『闪客的读者朋友们』](https://t.zsxq.com/1872x4o91)
 
