@@ -88,7 +88,7 @@
    * [第47回 | 读取硬盘数据的细节](http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247503228&idx=1&sn=e73ea3c148ecb7a15c9ef93b36b8a5cb&chksm=c2c5b7d1f5b23ec7f92fd29e2fe179d3122ed5180fb8054a0859afa1391c5c4314cf8c05ba45&scene=21#wechat_redirect)
    * [第48回 | 信号](https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&mid=2247503287&idx=1&sn=62e5c9ea5142960a4cb02e18e2a6bdb3&chksm=c2c5b71af5b23e0cfaeb5151397436f213e82ffe0673b8a841b7b557815d377ca9ae563f19d0&scene=178&cur_album_id=2123743679373688834#rd)
    * [操作系统大完结](https://mp.weixin.qq.com/s/eWrNCtkirUu-1YsetR30Kg)
-   * [我的第一本数出版了](https://mp.weixin.qq.com/s/UJ9llP9TVxruhIC9jj-Q1g)
+   * [我的第一本书出版了](https://mp.weixin.qq.com/s/UJ9llP9TVxruhIC9jj-Q1g)
 
 ## Star History
 
