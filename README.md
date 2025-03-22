@@ -3,8 +3,8 @@
 <p align='center'>
 <a href="https://www.github.com/sunym1993" target="_blank"><img src="https://img.shields.io/badge/作者-闪客-2277cc.svg?style=flat-square&logo=GitHub"></a>
 <a href="https://space.bilibili.com/325864133" target="_blank"><img src="https://img.shields.io/badge/bilibili-飞天闪客-2277cc.svg?style=flat-square&logo=bilibili"></a>
-</p>
 <a href="https://user-images.githubusercontent.com/25787738/141248489-c7dc20c1-cc5d-4a2d-bb5d-b5d8f9182058.jpg" target="_blank"><img src="https://img.shields.io/badge/公众号-闪客-009977.svg?style=flat-square&logo=WeChat"></a>
+</p>
 
 **目标**：带大家把 Linux 0.11 核心代码与操作系统的设计思想啃下来
 
