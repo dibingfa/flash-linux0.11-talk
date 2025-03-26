@@ -2,5 +2,5 @@
 
 make
 
-..\bochs-2.3.6\bochs -f bochsrc.bxrc -q
+..\bochs-2.3.6\bochsdbg -f bochsrc.bxrc -q
 
